@@ -1081,6 +1081,309 @@ package NewBloodyMary
               fillColor={170,213,255},
               fillPattern=FillPattern.Solid)}));
     end VaporPressure;
+
+    model Ventilation
+        extends Physiolibrary.Icons.Lungs;
+
+      Physiolibrary.Types.RealIO.VolumeInput tidalVolume annotation (Placement(
+            transformation(extent={{38,80},{22,96}}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={-50,90})));
+      Physiolibrary.Types.RealIO.VolumeInput deadSpace annotation (Placement(
+            transformation(extent={{48,72},{32,87}}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={-10,90})));
+      Physiolibrary.Types.RealIO.FrequencyInput respiratoryRate annotation (
+          Placement(transformation(extent={{58,62},{42,78}}),
+            iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={30,90})));
+      Physiolibrary.Types.RealIO.PressureInput barometricPressure annotation (
+          Placement(transformation(extent={{-100,66},{-84,82}}),
+            iconTransformation(extent={{-100,80},{-80,100}})));
+      Physiolibrary.Types.RealIO.TemperatureInput atmosphericTemperature
+        annotation (Placement(transformation(extent={{-48,80},{-32,96}}),
+            iconTransformation(extent={{-100,-18},{-80,2}})));
+      Physiolibrary.Types.RealIO.TemperatureInput bodyTemperature annotation (
+          Placement(transformation(extent={{90,52},{74,68}}),
+            iconTransformation(extent={{-100,-44},{-80,-24}})));
+      Physiolibrary.Types.RealIO.FractionInput airHumidity annotation (
+          Placement(transformation(extent={{-44,52},{-28,68}}),
+            iconTransformation(extent={{-100,58},{-80,78}})));
+      Physiolibrary.Types.RealIO.FractionInput FiO2 annotation (Placement(
+            transformation(extent={{-104,48},{-86,66}}), iconTransformation(
+              extent={{-100,36},{-80,56}})));
+      Physiolibrary.Types.RealIO.FractionInput FiCO2 annotation (Placement(
+            transformation(extent={{-56,23},{-36,43}}), iconTransformation(
+              extent={{-100,10},{-80,30}})));
+      AlveolarVentilation_BTPS alveolarVentilation_BTPS
+        annotation (Placement(transformation(extent={{-24,42},{18,88}})));
+      Physiolibrary.Chemical.Components.GasSolubility O2gasSolubility(
+        useHeatPort=true,
+        solubilityRateCoef(displayUnit="ml/min") = 0.1,
+        kH_T0(displayUnit="(mmol/l)/kPa at 37degC") = 0.02707666941329,
+        solventFraction=1)
+        annotation (Placement(transformation(extent={{-70,-60},{-50,-40}})));
+      Physiolibrary.Chemical.Components.GasSolubility gasSolubility1(
+        useHeatPort=true,
+        solubilityRateCoef(displayUnit="m3/s"),
+        kH_T0(displayUnit="(mmol/l)/(mmol/l)") = 0.604)
+        annotation (Placement(transformation(extent={{50,-60},{70,-40}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a O2 annotation (Placement(
+            transformation(extent={{-70,-94},{-50,-74}}), iconTransformation(
+              extent={{-70,-94},{-50,-74}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a CO2 annotation (
+          Placement(transformation(extent={{50,-94},{70,-74}}),
+            iconTransformation(extent={{20,-100},{40,-80}})));
+      Physiolibrary.Chemical.Sources.UnlimitedGasStorage airO2(useHeatPort=true,
+          usePartialPressureInput=true)
+        annotation (Placement(transformation(extent={{-92,16},{-78,30}})));
+      AlveolarVentilation O2alveolarVentilation
+        annotation (Placement(transformation(extent={{-78,-22},{-44,12}})));
+      AlveolarVentilation CO2alveolarVentilation
+        annotation (Placement(transformation(extent={{42,-22},{76,12}})));
+      Physiolibrary.Thermal.Sources.UnlimitedHeat alveolusHeat(
+          useTemperatureInput=true)
+        annotation (Placement(transformation(extent={{-4,-56},{8,-44}})));
+      GasPartialPressure PiO2 annotation (Placement(transformation(
+            extent={{-7,-6},{7,6}},
+            rotation=0,
+            origin={-69,60})));
+      GasPartialPressure PiCO2
+        annotation (Placement(transformation(extent={{-30,30},{-16,42}})));
+      Physiolibrary.Chemical.Sources.UnlimitedGasStorage airCO2(useHeatPort=
+            true, usePartialPressureInput=true)
+        annotation (Placement(transformation(extent={{18,14},{32,28}})));
+    equation
+      connect(alveolarVentilation_BTPS.TidalVolume, tidalVolume)
+        annotation (Line(points={{13.8,88},{30,88},{30,88}}, color={0,0,127}));
+      connect(respiratoryRate, alveolarVentilation_BTPS.RespRate) annotation (
+          Line(points={{50,70},{13.8,70},{13.8,69.6}}, color={0,0,127}));
+      connect(bodyTemperature, alveolarVentilation_BTPS.core_T) annotation (
+          Line(points={{82,60},{13.8,60},{13.8,60.4}}, color={0,0,127}));
+      connect(alveolarVentilation_BTPS.DeadSpace, deadSpace) annotation (Line(
+            points={{13.8,78.8},{17.9,78.8},{17.9,79.5},{40,79.5}}, color={0,0,
+              127}));
+      connect(atmosphericTemperature, alveolarVentilation_BTPS.AmbientTemperature)
+        annotation (Line(points={{-40,88},{-19.8,88}}, color={0,0,127}));
+      connect(barometricPressure, alveolarVentilation_BTPS.EnvironmentPressure)
+        annotation (Line(points={{-92,74},{-19.8,74},{-19.8,74.2}}, color={0,0,
+              127}));
+      connect(alveolarVentilation_BTPS.EnvironmentRelativeHumidity, airHumidity)
+        annotation (Line(points={{-19.8,60.4},{-23.9,60.4},{-23.9,60},{-36,60}},
+            color={0,0,127}));
+      connect(O2gasSolubility.q_in, O2) annotation (Line(
+          points={{-60,-58},{-60,-58},{-60,-84}},
+          color={107,45,134},
+          thickness=1));
+      connect(gasSolubility1.q_in, CO2) annotation (Line(
+          points={{60,-58},{60,-58},{60,-84}},
+          color={107,45,134},
+          thickness=1));
+      connect(alveolusHeat.temperature, bodyTemperature) annotation (Line(
+            points={{-4,-50},{-10,-50},{-10,32},{50,32},{50,60},{82,60}}, color
+            ={0,0,127}));
+      connect(alveolusHeat.port, gasSolubility1.heatPort) annotation (Line(
+          points={{8,-50},{34,-50},{60,-50}},
+          color={191,0,0},
+          thickness=1));
+      connect(O2alveolarVentilation.inspired, airO2.q_out) annotation (Line(
+          points={{-78,8.6},{-78,8.6},{-78,23}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2alveolarVentilation.expired, airO2.q_out) annotation (Line(
+          points={{-44,8.6},{-44,23},{-78,23}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2gasSolubility.q_out, O2alveolarVentilation.alveolar)
+        annotation (Line(
+          points={{-60,-40},{-60,-40},{-60,-22},{-60.66,-22}},
+          color={107,45,134},
+          thickness=1));
+      connect(airCO2.q_out, CO2alveolarVentilation.expired) annotation (Line(
+          points={{32,21},{76,21},{76,8.6}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2alveolarVentilation.inspired, airCO2.q_out) annotation (Line(
+          points={{42,8.6},{32,8.6},{32,21}},
+          color={107,45,134},
+          thickness=1));
+      connect(gasSolubility1.q_out, CO2alveolarVentilation.alveolar)
+        annotation (Line(
+          points={{60,-40},{60,-40},{60,-22},{59.34,-22}},
+          color={107,45,134},
+          thickness=1));
+      connect(FiO2, PiO2.gasFractionConcentration) annotation (Line(points={{
+              -95,57},{-86.5,57},{-77.4,57}}, color={0,0,127}));
+      connect(PiCO2.gasFractionConcentration, FiCO2) annotation (Line(points={{
+              -31.4,33},{-34.7,33},{-34.7,33},{-46,33}}, color={0,0,127}));
+      connect(PiCO2.pressure, alveolarVentilation_BTPS.EnvironmentPressure)
+        annotation (Line(points={{-31.4,39.72},{-44,39.72},{-44,74},{-19.8,74},
+              {-19.8,74.2}}, color={0,0,127}));
+      connect(alveolusHeat.port, O2gasSolubility.heatPort) annotation (Line(
+          points={{8,-50},{8,-62},{-28,-62},{-28,-50},{-60,-50}},
+          color={191,0,0},
+          thickness=1));
+      connect(alveolusHeat.port, airO2.heatPort) annotation (Line(
+          points={{8,-50},{8,-50},{8,28},{-85,28},{-85,23}},
+          color={191,0,0},
+          thickness=1));
+      connect(alveolusHeat.port, airCO2.heatPort) annotation (Line(
+          points={{8,-50},{12,-50},{12,14},{25,14},{25,21}},
+          color={191,0,0},
+          thickness=1));
+      connect(PiCO2.partialPressure, airCO2.partialPressure) annotation (Line(
+            points={{-14.95,36},{-2,36},{14,36},{14,21},{18,21}}, color={0,0,
+              127}));
+      connect(airO2.partialPressure, PiO2.partialPressure) annotation (Line(
+            points={{-92,23},{-94,23},{-94,24},{-94,44},{-94,50},{-58,50},{-58,
+              60},{-60.95,60}}, color={0,0,127}));
+      connect(PiO2.pressure, alveolarVentilation_BTPS.EnvironmentPressure)
+        annotation (Line(points={{-77.4,63.72},{-82,63.72},{-82,74},{-19.8,74},
+              {-19.8,74.2}}, color={0,0,127}));
+      connect(CO2alveolarVentilation.AlveolarVentilation_Env,
+        alveolarVentilation_BTPS.AlveolarVentilation) annotation (Line(points={
+              {72.6,-1.6},{90,-1.6},{90,51.2},{18,51.2}}, color={0,0,127}));
+      connect(alveolarVentilation_BTPS.BronchiDilution, CO2alveolarVentilation.BronchiDilution)
+        annotation (Line(points={{18,42},{48,42},{82,42},{82,-11.8},{72.6,-11.8}},
+            color={0,0,127}));
+      connect(O2alveolarVentilation.BronchiDilution, CO2alveolarVentilation.BronchiDilution)
+        annotation (Line(points={{-47.4,-11.8},{32,-11.8},{32,-30},{82,-30},{82,
+              -11.8},{72.6,-11.8}}, color={0,0,127}));
+      connect(O2alveolarVentilation.AlveolarVentilation_Env,
+        alveolarVentilation_BTPS.AlveolarVentilation) annotation (Line(points={
+              {-47.4,-1.6},{38,-1.6},{38,-26},{90,-26},{90,51.2},{18,51.2}},
+            color={0,0,127}));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
+                -100,-100},{100,100}})), Diagram(coordinateSystem(
+              preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+    end Ventilation;
+
+    model AlveolarVentilation
+      extends Physiolibrary.Icons.Lungs;
+    //  parameter Real EnvironmentPressure(final displayUnit="mmHg");
+    //  parameter Real EnvironmentTemperature(final displayUnit="degC");
+    Physiolibrary.Chemical.Interfaces.ChemicalPort_b expired annotation (
+        extent=[-10,-110; 10,-90], Placement(transformation(extent={{68,18},{
+              88,38}}), iconTransformation(extent={{90,70},{110,90}})));
+
+    Physiolibrary.Chemical.Interfaces.ChemicalPort_a inspired annotation (
+        Placement(transformation(extent={{-120,8},{-80,48}}),
+          iconTransformation(extent={{-110,70},{-90,90}})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput AlveolarVentilation_Env
+      annotation (Placement(transformation(extent={{-14,44},{0,58}}),
+          iconTransformation(
+          extent={{-20,-20},{20,20}},
+          rotation=180,
+          origin={80,20})));
+    Physiolibrary.Chemical.Components.Stream solventFlowPump(q_out(conc(start=
+             0.13686)), useSolutionFlowInput=true)
+      annotation (Placement(transformation(extent={{-2,18},{18,38}})));
+    Physiolibrary.Chemical.Components.Dilution dilution(useDilutionInput=true)
+                                                        annotation (Placement(
+          transformation(
+          extent={{-8,8},{12,-12}},
+          origin={-26,30})));
+    Physiolibrary.Chemical.Components.Stream solventFlowPump1(
+        useSolutionFlowInput=true)
+      annotation (Placement(transformation(extent={{44,18},{64,38}})));
+    Physiolibrary.Chemical.Interfaces.ChemicalPort_b   alveolar annotation (
+        extent=[-10,-110; 10,-90], Placement(transformation(extent={{20,-14},
+              {40,6}}), iconTransformation(extent={{-8,-110},{12,-90}})));
+      Physiolibrary.Types.RealIO.FractionInput BronchiDilution
+                                             annotation (Placement(
+            transformation(
+            extent={{-10.0004,-10.0004},{4.00021,4.00021}},
+            origin={-78.0002,73.9998}),
+                               iconTransformation(
+            extent={{-20,-20},{20,20}},
+            rotation=180,
+            origin={80,-40})));
+    equation
+
+      connect(solventFlowPump1.q_out, expired) annotation (Line(
+          points={{64,28},{78,28}},
+          color={200,0,0},
+          smooth=Smooth.None,
+          thickness=1));
+      connect(solventFlowPump.q_out, solventFlowPump1.q_in) annotation (Line(
+          points={{18,28},{44,28}},
+          color={200,0,0},
+          smooth=Smooth.None,
+          thickness=1));
+
+    connect(AlveolarVentilation_Env, solventFlowPump.solutionFlow)
+      annotation (Line(
+        points={{-7,51},{8,51},{8,35}},
+        color={0,0,127},
+        smooth=Smooth.None));
+    connect(AlveolarVentilation_Env, solventFlowPump1.solutionFlow)
+      annotation (Line(
+        points={{-7,51},{54,51},{54,35}},
+        color={0,0,127},
+        smooth=Smooth.None));
+      connect(BronchiDilution, dilution.dilution) annotation (Line(
+          points={{-81.0003,70.9997},{-46,70.9997},{-46,20},{-34,20}},
+          color={0,0,127},
+          smooth=Smooth.None));
+    connect(dilution.q_out, solventFlowPump.q_in) annotation (Line(
+        points={{-14,28},{-2,28}},
+        color={200,0,0},
+        thickness=1,
+        smooth=Smooth.None));
+    connect(inspired, dilution.q_in) annotation (Line(
+        points={{-100,28},{-34,28}},
+        color={200,0,0},
+        thickness=1,
+        smooth=Smooth.None));
+    connect(solventFlowPump.q_out, alveolar) annotation (Line(
+        points={{18,28},{36,28},{36,-4},{30,-4}},
+        color={107,45,134},
+        thickness=1,
+        smooth=Smooth.None));
+     annotation (
+        Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
+                100,100}}), graphics={Polygon(
+              points={{-38,93},{40,80},{-38,66},{-38,93}},
+              lineColor={0,0,127},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid), Text(
+              extent={{-92,-90},{84,-60}},
+              textString="%name",
+              lineColor={0,0,255})}));
+    end AlveolarVentilation;
+
+    model GasPartialPressure
+
+      Physiolibrary.Types.RealIO.PressureInput pressure annotation (Placement(
+            transformation(extent={{-140,42},{-100,82}}),   iconTransformation(
+              extent={{-140,42},{-100,82}})));
+      Physiolibrary.Types.RealIO.PressureOutput partialPressure annotation (
+          Placement(transformation(extent={{94,-2},{114,18}}), iconTransformation(
+              extent={{100,-15},{130,15}})));
+      Physiolibrary.Types.RealIO.FractionInput gasFractionConcentration annotation (
+         Placement(transformation(extent={{-140,-70},{-100,-30}}),
+                                                                 iconTransformation(
+              extent={{-140,-70},{-100,-30}})));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}),
+                             graphics={Rectangle(
+              extent={{-100,100},{100,-100}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid), Text(
+              extent={{-102,42},{102,-30}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="%name")}), Diagram(coordinateSystem(
+              preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+    equation
+      partialPressure = pressure * gasFractionConcentration;
+    end GasPartialPressure;
   end Parts;
 
   package tests
@@ -1128,8 +1431,8 @@ package NewBloodyMary
             extent={{-4,-4},{4,4}},
             rotation=180,
             origin={58,42})));
-      Physiolibrary.Types.Constants.FrequencyConst frequency(k=0.2) annotation
-        (Placement(transformation(
+      Physiolibrary.Types.Constants.FrequencyConst frequency(k=0.2) annotation (
+         Placement(transformation(
             extent={{-4,-4},{4,4}},
             rotation=180,
             origin={60,18})));
@@ -1151,8 +1454,8 @@ package NewBloodyMary
       connect(TidelVolumeBTPS.y, alveolarVentilation_STPD.TidalVolume)
         annotation (Line(points={{59,64},{42,64},{42,56},{17.8,56}}, color={0,0,
               127}));
-      connect(DeadVolumeBTPS.y, alveolarVentilation_STPD.DeadSpace) annotation
-        (Line(points={{53,42},{36,42},{36,39.6},{17.8,39.6}}, color={0,0,127}));
+      connect(DeadVolumeBTPS.y, alveolarVentilation_STPD.DeadSpace) annotation (
+         Line(points={{53,42},{36,42},{36,39.6},{17.8,39.6}}, color={0,0,127}));
       connect(frequency.y, alveolarVentilation_STPD.RespRate) annotation (Line(
             points={{55,18},{40,18},{40,23.2},{17.8,23.2}}, color={0,0,127}));
       connect(teplotaJadra.y, alveolarVentilation_STPD.core_T) annotation (Line(
@@ -1160,6 +1463,57 @@ package NewBloodyMary
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
                 -100,-100},{100,100}})));
     end test_alveoalrVentilation;
+
+    model testVentilation
+
+      Parts.Ventilation ventilation
+        annotation (Placement(transformation(extent={{-38,-2},{44,72}})));
+      Physiolibrary.Types.Constants.PressureConst barometricPressure(k=
+            99991.79056125)
+        annotation (Placement(transformation(extent={{-86,72},{-78,80}})));
+      Physiolibrary.Types.Constants.FractionConst airHumidity(k=0.58)
+        annotation (Placement(transformation(extent={{-88,56},{-80,64}})));
+      Physiolibrary.Types.Constants.FractionConst FiO2(k=0.21)
+        annotation (Placement(transformation(extent={{-90,44},{-82,52}})));
+      Physiolibrary.Types.Constants.FractionConst FiCO2(k=0.00038)
+        annotation (Placement(transformation(extent={{-72,38},{-64,46}})));
+      Physiolibrary.Types.Constants.TemperatureConst atmosphericTemperature(k=
+            298.15)
+        annotation (Placement(transformation(extent={{-62,28},{-54,36}})));
+      Physiolibrary.Types.Constants.TemperatureConst bodyTemperature(k=310.15)
+        annotation (Placement(transformation(extent={{-76,14},{-68,22}})));
+      Physiolibrary.Types.Constants.VolumeConst inspiredTidalVolume(k=0.0005)
+        annotation (Placement(transformation(extent={{-42,78},{-34,86}})));
+      Physiolibrary.Types.Constants.VolumeConst deadVolume(k=0.00015)
+        annotation (Placement(transformation(extent={{-24,86},{-16,94}})));
+      Physiolibrary.Types.Constants.FrequencyConst breathingFrequency(k=
+            0.29333333333333)
+        annotation (Placement(transformation(extent={{0,88},{8,96}})));
+    equation
+      connect(barometricPressure.y, ventilation.barometricPressure) annotation
+        (Line(points={{-77,76},{-56,76},{-56,68.3},{-33.9,68.3}}, color={0,0,
+              127}));
+      connect(airHumidity.y, ventilation.airHumidity) annotation (Line(points={
+              {-79,60},{-33.9,60},{-33.9,60.16}}, color={0,0,127}));
+      connect(FiO2.y, ventilation.FiO2) annotation (Line(points={{-81,48},{-60,
+              48},{-60,52.02},{-33.9,52.02}}, color={0,0,127}));
+      connect(FiCO2.y, ventilation.FiCO2) annotation (Line(points={{-63,42},{
+              -33.9,42},{-33.9,42.4}}, color={0,0,127}));
+      connect(atmosphericTemperature.y, ventilation.atmosphericTemperature)
+        annotation (Line(points={{-53,32},{-33.9,32},{-33.9,32.04}}, color={0,0,
+              127}));
+      connect(bodyTemperature.y, ventilation.bodyTemperature) annotation (Line(
+            points={{-67,18},{-52,18},{-52,22.42},{-33.9,22.42}}, color={0,0,
+              127}));
+      connect(inspiredTidalVolume.y, ventilation.tidalVolume) annotation (Line(
+            points={{-33,82},{-17.5,82},{-17.5,68.3}}, color={0,0,127}));
+      connect(deadVolume.y, ventilation.deadSpace) annotation (Line(points={{
+              -15,90},{-1.1,90},{-1.1,68.3}}, color={0,0,127}));
+      connect(breathingFrequency.y, ventilation.respiratoryRate) annotation (
+          Line(points={{9,92},{15.3,92},{15.3,68.3}}, color={0,0,127}));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
+                -100,-100},{100,100}})));
+    end testVentilation;
   end tests;
   annotation (uses(Modelica(version="3.2.1"), Physiolibrary(version="2.3.1"),
       Physiomodel(version="1.0.0")));
