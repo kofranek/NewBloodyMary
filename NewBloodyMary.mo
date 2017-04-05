@@ -1184,8 +1184,8 @@ package NewBloodyMary
           color={107,45,134},
           thickness=1));
       connect(alveolusHeat.temperature, bodyTemperature) annotation (Line(
-            points={{-4,-50},{-10,-50},{-10,32},{50,32},{50,60},{82,60}}, color
-            ={0,0,127}));
+            points={{-4,-50},{-10,-50},{-10,32},{50,32},{50,60},{82,60}}, color=
+             {0,0,127}));
       connect(alveolusHeat.port, gasSolubility1.heatPort) annotation (Line(
           points={{8,-50},{34,-50},{60,-50}},
           color={191,0,0},
@@ -1368,6 +1368,8 @@ package NewBloodyMary
          Placement(transformation(extent={{-140,-70},{-100,-30}}),
                                                                  iconTransformation(
               extent={{-140,-70},{-100,-30}})));
+    equation
+      partialPressure = pressure * gasFractionConcentration;
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}}),
                              graphics={Rectangle(
@@ -1381,8 +1383,6 @@ package NewBloodyMary
               fillPattern=FillPattern.Solid,
               textString="%name")}), Diagram(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
-    equation
-      partialPressure = pressure * gasFractionConcentration;
     end GasPartialPressure;
   end Parts;
 
@@ -1490,8 +1490,8 @@ package NewBloodyMary
             0.29333333333333)
         annotation (Placement(transformation(extent={{0,88},{8,96}})));
     equation
-      connect(barometricPressure.y, ventilation.barometricPressure) annotation
-        (Line(points={{-77,76},{-56,76},{-56,68.3},{-33.9,68.3}}, color={0,0,
+      connect(barometricPressure.y, ventilation.barometricPressure) annotation (
+         Line(points={{-77,76},{-56,76},{-56,68.3},{-33.9,68.3}}, color={0,0,
               127}));
       connect(airHumidity.y, ventilation.airHumidity) annotation (Line(points={
               {-79,60},{-33.9,60},{-33.9,60.16}}, color={0,0,127}));
