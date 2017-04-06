@@ -1082,7 +1082,7 @@ package NewBloodyMary
               fillPattern=FillPattern.Solid)}));
     end VaporPressure;
 
-    model totalO2CO2
+    model bloodO2CO2
 
       Physiolibrary.Types.RealIO.FractionOutput sO2
                                           annotation (Placement(
@@ -1381,7 +1381,7 @@ package NewBloodyMary
               fillPattern=FillPattern.Solid,
               textString="cDPG")}), Diagram(coordinateSystem(preserveAspectRatio=
                 false, extent={{-100,-100},{100,100}}), graphics));
-    end totalO2CO2;
+    end bloodO2CO2;
 
     model TotalCO2
       extends BloodCO2Base;
@@ -1438,7 +1438,7 @@ package NewBloodyMary
             graphics));
     end TotalO2;
 
-    model PO2PCO2
+    model bloodPO2PCO2
 
       Physiolibrary.Types.RealIO.FractionOutput sO2
                                           annotation (Placement(
@@ -1848,9 +1848,9 @@ package NewBloodyMary
               fillPattern=FillPattern.Solid,
               textString="cdCO2")}),Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
-    end PO2PCO2;
+    end bloodPO2PCO2;
 
-    model CO2O2BEox
+    model bloodCO2O2BEox
 
       Physiolibrary.Types.RealIO.FractionOutput sO2
                                           annotation (Placement(
@@ -1986,7 +1986,7 @@ package NewBloodyMary
             extent={{-7,-7},{7,7}},
             rotation=270,
             origin={55,-101})));
-      PO2PCO2 bloodPO2PCO2_
+      bloodPO2PCO2 bloodPO2PCO2_
         annotation (Placement(transformation(extent={{-64,-30},{64,102}})));
       Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints
         annotation (Placement(transformation(extent={{-74,-72},{-34,-48}})));
@@ -2225,7 +2225,7 @@ package NewBloodyMary
               fillPattern=FillPattern.Solid,
               textString="cdCO2")}),Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
-    end CO2O2BEox;
+    end bloodCO2O2BEox;
 
     partial model HendersonHasselbach
       import Modelica.Math;
@@ -3194,6 +3194,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
     end ctHb_to_Htc;
 
     model VenousO2CO2
+      import NewBloodyMary;
 
       Physiolibrary.Types.RealIO.MolarFlowRateInput VO2
         "oxygen comsumption in mmol/sec" annotation (Placement(transformation(
@@ -3369,7 +3370,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
                 -50}})));
       VenousFick venousFick
         annotation (Placement(transformation(extent={{-72,-96},{50,0}})));
-      CO2O2BEox bloodCO2O2BEox
+      NewBloodyMary.Parts.bloodCO2O2BEox bloodCO2O2BEox
         annotation (Placement(transformation(extent={{-68,24},{52,100}})));
        Physiolibrary.Types.RealIO.ConcentrationOutput cdO2v(displayUnit=
             "mmol/l") "venous O2 dissolved concentration" annotation (Placement(
@@ -4073,7 +4074,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
 
       VenousO2CO2 VenousBlood
         annotation (Placement(transformation(extent={{-36,-68},{38,10}})));
-      PO2PCO2 ArterialBlood
+      bloodPO2PCO2 ArterialBlood
         annotation (Placement(transformation(extent={{-60,34},{2,94}})));
       Physiolibrary.Types.Constants.MassConcentrationConst ctGlb(k(displayUnit=
               "kg/m3") = 2.93)
@@ -4575,6 +4576,83 @@ Test Tool")}));
                 -100,-100},{100,100}})), Diagram(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
     end Ventilation;
+
+    model BloodO2CO2Equilibrium
+
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a BloodO2in annotation (
+          Placement(transformation(extent={{-94,8},{-74,28}}),
+            iconTransformation(extent={{-94,8},{-74,28}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a BloodCO2in annotation (
+          Placement(transformation(extent={{-92,-38},{-72,-18}}),
+            iconTransformation(extent={{-92,-38},{-72,-18}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b BloodO2out annotation (
+          Placement(transformation(extent={{74,6},{94,26}}), iconTransformation(
+              extent={{74,6},{94,26}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b BloodCO2out annotation (
+          Placement(transformation(extent={{74,-34},{94,-14}}),
+            iconTransformation(extent={{74,-34},{94,-14}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a O2alv annotation (
+          Placement(transformation(extent={{-38,70},{-18,90}}),
+            iconTransformation(extent={{-38,70},{-18,90}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b CO2alv annotation (
+          Placement(transformation(extent={{10,72},{30,92}}),
+            iconTransformation(extent={{10,72},{30,92}})));
+      bloodCO2O2BEox cO2O2BEox
+        annotation (Placement(transformation(extent={{-52,-54},{12,16}})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput bloodFlowRate annotation (
+          Placement(transformation(extent={{-116,38},{-76,78}}),
+            iconTransformation(extent={{-124,58},{-102,80}})));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
+                -100,-100},{100,100}}), graphics={
+            Rectangle(
+              extent={{-102,100},{98,-100}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid),
+            Text(
+              extent={{-70,26},{-48,8}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="O2"),
+            Text(
+              extent={{-38,66},{-16,48}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="O2"),
+            Text(
+              extent={{50,26},{72,8}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="O2"),
+            Text(
+              extent={{-68,-16},{-36,-44}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="CO2"),
+            Text(
+              extent={{36,-10},{68,-38}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="CO2"),
+            Text(
+              extent={{10,68},{42,40}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="CO2"),
+            Text(
+              extent={{-100,-50},{100,-94}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="%name")}), Diagram(coordinateSystem(
+              preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+    end BloodO2CO2Equilibrium;
   end Parts;
 
   package tests
@@ -4678,7 +4756,7 @@ Test Tool")}));
         annotation (Placement(transformation(extent={{-90,58},{-80,66}})));
       Physiolibrary.Types.Constants.PressureConst pCO(k=2.6664477483)
         annotation (Placement(transformation(extent={{56,16},{46,26}})));
-      Parts.PO2PCO2 bloodPO2PCO2_
+      Parts.bloodPO2PCO2 bloodPO2PCO2_
         annotation (Placement(transformation(extent={{-64,-12},{12,68}})));
       Physiolibrary.Types.Constants.VolumeDensityOfChargeConst
         volumeDensityOfCharge(k=0)
@@ -4764,7 +4842,7 @@ Test Tool")}));
         annotation (Placement(transformation(extent={{90,18},{76,26}})));
       Physiolibrary.Types.Constants.VolumeDensityOfChargeConst BEox(k=0)
         annotation (Placement(transformation(extent={{-88,-94},{-78,-86}})));
-      Parts.CO2O2BEox bloodCO2O2BEox_
+      Parts.bloodCO2O2BEox bloodCO2O2BEox_
         annotation (Placement(transformation(extent={{-72,-30},{52,96}})));
       Physiolibrary.Types.Constants.ConcentrationConst tO2(k=7.95)
         annotation (Placement(transformation(extent={{-90,-60},{-78,-50}})));
@@ -4827,7 +4905,7 @@ Test Tool")}));
 
       Parts.VenousO2CO2 VenousBlood
         annotation (Placement(transformation(extent={{-36,-68},{38,10}})));
-      Parts.PO2PCO2 ArterialBlood
+      Parts.bloodPO2PCO2 ArterialBlood
         annotation (Placement(transformation(extent={{-60,34},{2,94}})));
       Physiolibrary.Types.Constants.PressureConst pO2(k=13332.2387415)
         annotation (Placement(transformation(extent={{-28,14},{-18,24}})));
@@ -5128,7 +5206,7 @@ Test Tool")}));
         annotation (Placement(transformation(extent={{-82,-50},{-74,-42}})));
       Parts.Ventilation Ventilation
         annotation (Placement(transformation(extent={{-50,4},{76,90}})));
-      Parts.CO2O2BEox pulmVenousBlood
+      Parts.bloodCO2O2BEox pulmVenousBlood
         annotation (Placement(transformation(extent={{24,-68},{76,-10}})));
       Physiolibrary.Types.Constants.MassConcentrationConst ctGlb(k(displayUnit="kg/m3")=
              2.93)
