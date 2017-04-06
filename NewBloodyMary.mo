@@ -1082,7 +1082,8 @@ package NewBloodyMary
               fillPattern=FillPattern.Solid)}));
     end VaporPressure;
 
-    model BloodO2CO2
+    model totalO2CO2
+
       Physiolibrary.Types.RealIO.FractionOutput sO2
                                           annotation (Placement(
             transformation(extent={{-8,-8},{8,8}},
@@ -1160,9 +1161,9 @@ package NewBloodyMary
                 10,10}},
             rotation=180,
             origin={110,-30})));
-      BloodyMary.TotalCO2 tCO2
+      TotalCO2 tCO2
         annotation (Placement(transformation(extent={{-80,0},{-20,60}})));
-      BloodyMary.TotalO2 tO2
+      TotalO2 tO2
         annotation (Placement(transformation(extent={{20,0},{80,60}})));
       Physiolibrary.Types.RealIO.PressureInput pO2 annotation (Placement(
             transformation(extent={{-8,-6},{16,18}}), iconTransformation(
@@ -1260,11 +1261,11 @@ package NewBloodyMary
           color={0,0,127},
           smooth=Smooth.None));
       connect(tO2.totalO2, ctO2) annotation (Line(
-          points={{36.2,-3},{36.2,-11.5},{36,-11.5},{36,-26}},
+          points={{38.3,-5.7},{38.3,-11.5},{36,-11.5},{36,-26}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(tCO2.totalCO2, ctCO2) annotation (Line(
-          points={{-65,-3},{-65,-12.5},{-64,-12.5},{-64,-28}},
+          points={{-62,-6},{-62,-12.5},{-64,-12.5},{-64,-28}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(ctCO2, ctCO2) annotation (Line(
@@ -1380,7 +1381,7 @@ package NewBloodyMary
               fillPattern=FillPattern.Solid,
               textString="cDPG")}), Diagram(coordinateSystem(preserveAspectRatio=
                 false, extent={{-100,-100},{100,100}}), graphics));
-    end BloodO2CO2;
+    end totalO2CO2;
 
     model TotalCO2
       extends BloodCO2Base;
@@ -1391,15 +1392,21 @@ package NewBloodyMary
 
       Physiolibrary.Types.RealIO.ConcentrationOutput totalCO2 annotation (Placement(
             transformation(extent={{-80,-100},{-60,-80}}), iconTransformation(
-            extent={{-10,-10},{10,10}},
+            extent={{-20,-20},{20,20}},
             rotation=270,
-            origin={-50,-110})));
+            origin={-40,-120})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2p
+        "dissolved CO2 concentration" annotation (Placement(transformation(extent={{
+                -80,-100},{-60,-80}}), iconTransformation(
+            extent={{-20,-20},{20,20}},
+            rotation=270,
+            origin={-80,-120})));
     equation
+      cdCO2p = cdCO2;
       pCO2inp=pCO2;
       totalCO2=tCO2;
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-                -100},{100,100}}),
-                             graphics), Diagram(coordinateSystem(
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                {100,100}})),           Diagram(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}}), graphics));
     end TotalCO2;
 
@@ -1412,19 +1419,26 @@ package NewBloodyMary
 
       Physiolibrary.Types.RealIO.ConcentrationOutput totalO2 annotation (Placement(
             transformation(extent={{-80,-100},{-60,-80}}), iconTransformation(
-            extent={{-10,-10},{10,10}},
+            extent={{-19,-19},{19,19}},
             rotation=270,
-            origin={-46,-110})));
+            origin={-39,-119})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput cdO2p
+        "dissolved O2 concentration in plasma" annotation (Placement(transformation(
+              extent={{-80,-100},{-60,-80}}), iconTransformation(
+            extent={{-19,-19},{19,19}},
+            rotation=270,
+            origin={-79,-119})));
     equation
+      cdO2p = cdO2;
       pO2inp=pO2;
       totalO2=tO2;
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-                {100,100}}), graphics), Diagram(coordinateSystem(
+                {100,100}})),           Diagram(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
             graphics));
     end TotalO2;
 
-    model BloodPO2PCO2
+    model PO2PCO2
 
       Physiolibrary.Types.RealIO.FractionOutput sO2
                                           annotation (Placement(
@@ -1503,37 +1517,37 @@ package NewBloodyMary
             transformation(extent={{-8,16},{16,40}}), iconTransformation(
             extent={{-8,-8},{8,8}},
             rotation=90,
-            origin={26,-102})));
+            origin={36,-100})));
       Physiolibrary.Types.RealIO.PressureInput pCO2 annotation (Placement(
             transformation(extent={{-124,42},{-100,66}}), iconTransformation(
             extent={{-8,-8},{8,8}},
             rotation=90,
-            origin={54,-100})));
-      Physiolibrary.Types.RealIO.ConcentrationOutput ctCO2 annotation (Placement(
-            transformation(
+            origin={62,-100})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput ctCO2 annotation (
+          Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=270,
-            origin={-64,-6}), iconTransformation(
+            origin={-62,-6}), iconTransformation(
             extent={{-8,-8},{8,8}},
             rotation=270,
-            origin={-32,-102})));
+            origin={-16,-108})));
       Physiolibrary.Types.RealIO.ConcentrationOutput ctO2 annotation (Placement(
             transformation(
             extent={{-10,-10},{10,10}},
             rotation=270,
-            origin={36,-4}), iconTransformation(
+            origin={38,-4}), iconTransformation(
             extent={{-8,-8},{8,8}},
             rotation=270,
-            origin={-64,-104})));
+            origin={-38,-108})));
       BloodPhMeassure bloodPhMeassure
         annotation (Placement(transformation(extent={{26,-84},{80,-30}})));
       Physiolibrary.Types.RealIO.ConcentrationInput
                                          BEox
                                       annotation (Placement(transformation(extent={{-12,-68},
                 {12,-44}}),           iconTransformation(
-            extent={{-6,-6},{6,6}},
+            extent={{-7,-7},{7,7}},
             rotation=90,
-            origin={-2,-100})));
+            origin={15,-101})));
       Physiolibrary.Types.RealIO.ConcentrationInput ctAlb(
                                               displayUnit="mmol/l")
         "concentration of total haemoglobin in whole blood (8.4)"
@@ -1566,6 +1580,22 @@ package NewBloodyMary
             origin={-110,24})));
       ctHb_to_Htc ctHb_to_Htc1
         annotation (Placement(transformation(extent={{40,84},{14,100}})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput cdO2 annotation (Placement(
+            transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={26,-2}), iconTransformation(
+            extent={{-8,-8},{8,8}},
+            rotation=270,
+            origin={-92,-108})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2 annotation (
+          Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={-74,-10}), iconTransformation(
+            extent={{-8,-8},{8,8}},
+            rotation=270,
+            origin={-66,-108})));
     equation
       connect(cHCO3, cHCO3) annotation (Line(
           points={{-26,-38},{-26,-38}},
@@ -1620,15 +1650,15 @@ package NewBloodyMary
           color={0,0,127},
           smooth=Smooth.None));
       connect(totalO2.totalO2, ctO2) annotation (Line(
-          points={{36.2,19},{36.2,10.5},{36,10.5},{36,-4}},
+          points={{38.3,16.3},{38.3,10.5},{38,10.5},{38,-4}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(totalCO2.totalCO2, ctCO2) annotation (Line(
-          points={{-65,19},{-65,9.5},{-64,9.5},{-64,-6}},
+          points={{-62,16},{-62,-6}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(ctCO2, ctCO2) annotation (Line(
-          points={{-64,-6},{-64,-6}},
+          points={{-62,-6},{-62,-6}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(totalO2.pCO2, pCO2) annotation (Line(
@@ -1686,8 +1716,12 @@ package NewBloodyMary
           smooth=Smooth.None));
       connect(BEox, bloodPhMeassure.BEox) annotation (Line(points={{0,-56},{16,
               -56},{16,-20},{28.7,-20},{28.7,-27.3}}, color={0,0,127}));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-                -100},{100,100}}), graphics={
+      connect(totalO2.cdO2p, cdO2) annotation (Line(points={{26.3,16.3},{26.3,
+              11.15},{26,11.15},{26,-2}}, color={0,0,127}));
+      connect(totalCO2.cdCO2p, cdCO2) annotation (Line(points={{-74,16},{-74,16},
+              {-74,-10},{-74,-10}}, color={0,0,127}));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                {100,100}}),       graphics={
             Rectangle(
               extent={{-100,100},{100,-100}},
               lineColor={0,0,255},
@@ -1718,7 +1752,7 @@ package NewBloodyMary
               fillPattern=FillPattern.Solid,
               textString="pH"),
             Text(
-              extent={{-12,-80},{6,-90}},
+              extent={{2,-80},{20,-90}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
@@ -1730,13 +1764,13 @@ package NewBloodyMary
               fillPattern=FillPattern.Solid,
               textString="ctHb"),
             Text(
-              extent={{-72,-82},{-54,-92}},
+              extent={{-48,-90},{-30,-100}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
               textString="ctO2"),
             Text(
-              extent={{-40,-82},{-22,-92}},
+              extent={{-28,-88},{-6,-100}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
@@ -1748,13 +1782,13 @@ package NewBloodyMary
               fillPattern=FillPattern.Solid,
               textString="%name"),
             Text(
-              extent={{18,-80},{36,-90}},
+              extent={{24,-80},{42,-90}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
               textString="pO2"),
             Text(
-              extent={{44,-80},{62,-90}},
+              extent={{50,-78},{70,-92}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
@@ -1800,11 +1834,23 @@ package NewBloodyMary
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="ctAlb")}),Diagram(coordinateSystem(preserveAspectRatio=false,
+              textString="ctAlb"),
+            Text(
+              extent={{-100,-90},{-82,-100}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="cdO2"),
+            Text(
+              extent={{-78,-84},{-56,-106}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="cdCO2")}),Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
-    end BloodPO2PCO2;
+    end PO2PCO2;
 
-    model BloodCO2O2BEox
+    model CO2O2BEox
 
       Physiolibrary.Types.RealIO.FractionOutput sO2
                                           annotation (Placement(
@@ -1940,19 +1986,36 @@ package NewBloodyMary
             extent={{-7,-7},{7,7}},
             rotation=270,
             origin={55,-101})));
-      BloodPO2PCO2 bloodPO2PCO2_
+      PO2PCO2 bloodPO2PCO2_
         annotation (Placement(transformation(extent={{-64,-30},{64,102}})));
       Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints
         annotation (Placement(transformation(extent={{-74,-72},{-34,-48}})));
       Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints1
         annotation (Placement(transformation(extent={{10,-72},{50,-48}})));
+       Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2(
+                                            displayUnit="mmol/l")
+        "outgoing concentration of HCO3"                                                           annotation (Placement(
+            transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-88,-44}),                          iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-110,-24})));
+       Physiolibrary.Types.RealIO.ConcentrationOutput cdO2(displayUnit="mmol/l")
+        "outgoing concentration of HCO3" annotation (Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-88,-30}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-110,0})));
     equation
       connect(bloodPO2PCO2_.pH, pH) annotation (Line(
           points={{-70.4,51.84},{-85.25,51.84},{-85.25,52},{-96,52}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(BEox, bloodPO2PCO2_.BEox) annotation (Line(
-          points={{-2,-94},{-2,-30},{-1.28,-30}},
+          points={{-2,-94},{-2,-38},{10,-38},{10,-30.66},{9.6,-30.66}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(T, bloodPO2PCO2_.T) annotation (Line(
@@ -2003,17 +2066,12 @@ package NewBloodyMary
           points={{-33,-60},{-14,-60},{-14,-78},{16,-78},{16,-94}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(inverseBlockConstraints.y2, bloodPO2PCO2_.pO2) annotation (Line(
-          points={{-37,-60},{-40,-60},{-40,-54},{8,-54},{8,-42},{16.64,-42},{
-              16.64,-31.32}},
-          color={0,0,127},
-          smooth=Smooth.None));
       connect(pCO2, inverseBlockConstraints1.y1) annotation (Line(
           points={{34,-96},{34,-78},{58,-78},{58,-60},{51,-60}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(inverseBlockConstraints1.y2, bloodPO2PCO2_.pCO2) annotation (Line(
-          points={{47,-60},{34.56,-60},{34.56,-30}},
+          points={{47,-60},{39.68,-60},{39.68,-30}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(ctCO2, inverseBlockConstraints1.u1) annotation (Line(
@@ -2025,13 +2083,20 @@ package NewBloodyMary
           color={0,0,127},
           smooth=Smooth.None));
       connect(inverseBlockConstraints.u2, bloodPO2PCO2_.ctO2) annotation (Line(
-          points={{-70,-60},{-40.96,-60},{-40.96,-32.64}},
+          points={{-70,-60},{-24.32,-60},{-24.32,-35.28}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(inverseBlockConstraints1.u2, bloodPO2PCO2_.ctCO2) annotation (Line(
-          points={{14,-60},{20,-60},{20,-50},{-20.48,-50},{-20.48,-31.32}},
+          points={{14,-60},{20,-60},{20,-50},{-10.24,-50},{-10.24,-35.28}},
           color={0,0,127},
           smooth=Smooth.None));
+      connect(inverseBlockConstraints.y2, bloodPO2PCO2_.pO2) annotation (Line(
+            points={{-37,-60},{-50,-60},{-50,-54},{2,-54},{2,-42},{23.04,-42},{
+              23.04,-30}}, color={0,0,127}));
+      connect(bloodPO2PCO2_.cdO2, cdO2) annotation (Line(points={{-58.88,-35.28},
+              {-58.88,-42},{-70,-42},{-70,-30},{-88,-30}}, color={0,0,127}));
+      connect(bloodPO2PCO2_.cdCO2, cdCO2) annotation (Line(points={{-42.24,
+              -35.28},{-42.24,-44},{-88,-44}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}}), graphics={
             Rectangle(
@@ -2146,9 +2211,21 @@ package NewBloodyMary
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="ctGlb")}),Diagram(coordinateSystem(preserveAspectRatio=false,
-                       extent={{-100,-100},{100,100}}), graphics));
-    end BloodCO2O2BEox;
+              textString="ctGlb"),
+            Text(
+              extent={{-96,6},{-76,-6}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="cdO2"),
+            Text(
+              extent={{-96,-14},{-70,-30}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="cdCO2")}),Diagram(coordinateSystem(preserveAspectRatio=false,
+                       extent={{-100,-100},{100,100}})));
+    end CO2O2BEox;
 
     partial model HendersonHasselbach
       import Modelica.Math;
@@ -3124,7 +3201,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
                 {-98,88}})));
       Physiolibrary.Types.RealIO.MolarFlowRateOutput VCO2
         "CO2 production (mmol/sec)" annotation (Placement(transformation(extent={
-                {64,-20},{78,-6}}), iconTransformation(extent={{100,72},{114,86}})));
+                {64,-20},{78,-6}}), iconTransformation(extent={{100,84},{114,98}})));
       Physiolibrary.Types.RealIO.FractionInput RQ "respiration quotient"
         annotation (Placement(transformation(extent={{-98,-34},{-82,-18}}),
             iconTransformation(extent={{-112,58},{-98,72}})));
@@ -3166,7 +3243,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
                                        annotation (Placement(transformation(extent={{11,-11},
                 {-11,11}},
             rotation=180,
-            origin={-95,41}),         iconTransformation(
+            origin={-95,29}),         iconTransformation(
             extent={{-6,-6},{6,6}},
             rotation=0,
             origin={-104,-36})));
@@ -3231,7 +3308,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             origin={94,36}), iconTransformation(
             extent={{-8,-8},{8,8}},
             rotation=0,
-            origin={108,-40})));
+            origin={108,-48})));
        Physiolibrary.Types.RealIO.ConcentrationOutput cHCO3v(displayUnit="mmol/l")
         "venous  concentration of HCO3 in mmol/l" annotation (Placement(
             transformation(
@@ -3240,7 +3317,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             origin={93,23}),  iconTransformation(
             extent={{-8,-8},{8,8}},
             rotation=0,
-            origin={108,-64})));
+            origin={108,-68})));
       Physiolibrary.Types.RealIO.PressureOutput pCO2v
         "pCO2 in venous blood (Pa)"
         annotation (Placement(transformation(
@@ -3249,7 +3326,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             origin={40,12}),  iconTransformation(
             extent={{-7,-7},{7,7}},
             rotation=0,
-            origin={107,3})));
+            origin={107,-5})));
       Physiolibrary.Types.RealIO.PressureOutput pO2v "pO2 in venous blood (Pa)"
         annotation (Placement(transformation(
             extent={{-6,-6},{6,6}},
@@ -3257,7 +3334,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             origin={18,10}),  iconTransformation(
             extent={{-7,-7},{7,7}},
             rotation=0,
-            origin={107,23})));
+            origin={107,11})));
       Physiolibrary.Types.RealIO.pHOutput pHv "pH in venous blood" annotation (
           Placement(transformation(
             extent={{-8,-8},{8,8}},
@@ -3265,7 +3342,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             origin={-92,72}), iconTransformation(
             extent={{-8,-8},{8,8}},
             rotation=0,
-            origin={108,-18})));
+            origin={108,-28})));
       Physiolibrary.Types.RealIO.ConcentrationOutput ctO2v
         "total concentration of O2 in venous blood (in mmol/l)" annotation (
           Placement(transformation(
@@ -3274,7 +3351,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             origin={88,-26}), iconTransformation(
             extent={{-7,-7},{7,7}},
             rotation=0,
-            origin={107,59})));
+            origin={107,77})));
       Physiolibrary.Types.RealIO.ConcentrationOutput ctCO2v
         "total concentration of CO2 in venous blood (in mmol/l)" annotation (
           Placement(transformation(
@@ -3283,7 +3360,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             origin={89,-39}), iconTransformation(
             extent={{-7,-7},{7,7}},
             rotation=0,
-            origin={107,41})));
+            origin={107,63})));
       Physiolibrary.Types.RealIO.TemperatureInput T(start=310.15)
         "temperature (in K)"                                       annotation (Placement(transformation(extent={{-9,-9},
                 {9,9}},
@@ -3292,8 +3369,26 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
                 -50}})));
       VenousFick venousFick
         annotation (Placement(transformation(extent={{-72,-96},{50,0}})));
-      BloodCO2O2BEox bloodCO2O2BEox
+      CO2O2BEox bloodCO2O2BEox
         annotation (Placement(transformation(extent={{-68,24},{52,100}})));
+       Physiolibrary.Types.RealIO.ConcentrationOutput cdO2v(displayUnit=
+            "mmol/l") "venous O2 dissolved concentration" annotation (Placement(
+            transformation(
+            extent={{-7,-7},{7,7}},
+            rotation=180,
+            origin={-93,61}), iconTransformation(
+            extent={{-8,-8},{8,8}},
+            rotation=0,
+            origin={108,48})));
+       Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2v(displayUnit=
+            "mmol/l") "venous O2 dissolved concentration" annotation (Placement(
+            transformation(
+            extent={{-7,-7},{7,7}},
+            rotation=180,
+            origin={-91,49}), iconTransformation(
+            extent={{-8,-8},{8,8}},
+            rotation=0,
+            origin={108,32})));
     equation
       connect(venousFick.Q, Q) annotation (Line(
           points={{-73.83,-36},{-92,-36}},
@@ -3376,7 +3471,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           color={0,0,127},
           smooth=Smooth.None));
       connect(bloodCO2O2BEox.ctHb, ctHb) annotation (Line(
-          points={{-74,41.48},{-81,41.48},{-81,41},{-95,41}},
+          points={{-74,41.48},{-81,41.48},{-81,29},{-95,29}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(bloodCO2O2BEox.pH, pHv) annotation (Line(
@@ -3391,6 +3486,10 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
               -80.25,-83},{-80.25,-57.12},{-72.61,-57.12}}, color={0,0,127}));
       connect(venousFick.ctO2a, ctO2a) annotation (Line(points={{-72.61,-46.56},{
               -78.305,-46.56},{-78.305,-53},{-92.5,-53}}, color={0,0,127}));
+      connect(bloodCO2O2BEox.cdCO2, cdCO2v) annotation (Line(points={{-74,52.88},
+              {-80,52.88},{-80,49},{-91,49}}, color={0,0,127}));
+      connect(bloodCO2O2BEox.cdO2, cdO2v) annotation (Line(points={{-74,62},{
+              -80,62},{-80,61},{-93,61}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}})),                Icon(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
@@ -3407,7 +3506,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
               fillPattern=FillPattern.Solid,
               textString="VO2"),
             Text(
-              extent={{74,82},{94,74}},
+              extent={{74,96},{94,88}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
@@ -3509,41 +3608,41 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={82,24},
+              origin={82,14},
               rotation=180,
               textString="pO2v"),
             Text(
-              extent={{72,8},{90,-2}},
+              extent={{70,2},{90,-8}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
               textString="pCO2v"),
             Text(
-              extent={{74,-56},{96,-72}},
+              extent={{74,-60},{96,-76}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
               textString="cHCO3v"),
             Text(
-              extent={{76,-36},{92,-44}},
+              extent={{76,-42},{92,-50}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
               textString="sO2v"),
             Text(
-              extent={{78,-12},{94,-20}},
+              extent={{78,-20},{94,-28}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
               textString="pHv"),
             Text(
-              extent={{72,46},{90,36}},
+              extent={{74,70},{96,56}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
               textString="ctCO2v"),
             Text(
-              extent={{76,62},{90,54}},
+              extent={{76,82},{94,72}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
@@ -3557,7 +3656,19 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             Text(
               extent={{-68,92},{58,68}},
               lineColor={28,108,200},
-              textString="%name")}));
+              textString="%name"),
+            Text(
+              extent={{78,52},{96,42}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="cdO2v"),
+            Text(
+              extent={{74,40},{96,26}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="cdCO2v")}));
     end VenousO2CO2;
 
     model VenousFick
@@ -3962,15 +4073,15 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
 
       VenousO2CO2 VenousBlood
         annotation (Placement(transformation(extent={{-36,-68},{38,10}})));
-      BloodPO2PCO2 ArterialBlood
+      PO2PCO2 ArterialBlood
         annotation (Placement(transformation(extent={{-60,34},{2,94}})));
       Physiolibrary.Types.Constants.MassConcentrationConst ctGlb(k(displayUnit=
-              "kg/l") = 2.93)
-        annotation (Placement(transformation(extent={{44,34},{34,42}})));
+              "kg/m3") = 2.93)
+        annotation (Placement(transformation(extent={{44,26},{34,34}})));
       Physiolibrary.Types.Constants.PressureConst pCO(k=2.6664477483)
-        annotation (Placement(transformation(extent={{64,40},{54,50}})));
+        annotation (Placement(transformation(extent={{64,34},{54,44}})));
     Physiolibrary.Types.Constants.FractionConst FHbF(k=0.005)
-      annotation (Placement(transformation(extent={{68,52},{56,60}})));
+      annotation (Placement(transformation(extent={{72,46},{60,54}})));
     Physiolibrary.Types.Constants.FractionConst FMetHb(k=0.005)
       annotation (Placement(transformation(extent={{50,60},{38,68}})));
     Physiolibrary.Types.Constants.ConcentrationConst DPG(k=5.4)
@@ -4010,8 +4121,8 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             transformation(extent={{-124,78},{-102,100}}), iconTransformation(
               extent={{-120,-40},{-100,-20}})));
       Physiolibrary.Types.RealIO.MolarFlowRateOutput VCO2 annotation (Placement(
-            transformation(extent={{100,58},{120,78}}), iconTransformation(extent={{
-                100,58},{120,78}})));
+            transformation(extent={{100,8},{120,28}}),  iconTransformation(extent={{100,8},
+                {120,28}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_b O2 annotation (Placement(
             transformation(extent={{-70,-82},{-50,-62}}), iconTransformation(extent=
                {{-70,-82},{-50,-62}})));
@@ -4019,8 +4130,21 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             transformation(extent={{-98,-82},{-78,-62}}), iconTransformation(extent=
                {{50,-82},{70,-62}})));
       Physiolibrary.Types.RealIO.pHOutput pH annotation (Placement(transformation(
-              extent={{100,28},{120,48}}), iconTransformation(extent={{100,28},{120,
-                48}})));
+              extent={{100,-68},{120,-48}}),
+                                           iconTransformation(extent={{100,-68},
+                {120,-48}})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput cdO2
+        "concentration of dissolved O2 in plasma" annotation (Placement(
+            transformation(
+            extent={{-6,-6},{6,6}},
+            rotation=270,
+            origin={-58,18}), iconTransformation(extent={{100,-20},{120,0}})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2
+        "concentration of dissolved CO2 in plasma" annotation (Placement(
+            transformation(
+            extent={{-5,-5},{5,5}},
+            rotation=270,
+            origin={-49,19}), iconTransformation(extent={{100,-44},{120,-24}})));
     equation
       O2.conc = VenousBlood.ctO2v;
       CO2.conc = VenousBlood.ctCO2v;
@@ -4033,26 +4157,27 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       connect(FMetHb.y, ArterialBlood.FMetHb) annotation (Line(points={{36.5,64},
               {22,64},{22,70},{5.1,70}}, color={0,0,127}));
       connect(FMetHb.y, VenousBlood.FMetHb) annotation (Line(points={{36.5,64},
-              {54,64},{82,64},{82,62},{82,-88},{-1.22,-88},{-1.22,-68}}, color=
+              {36.5,56},{82,56},{82,48},{82,-102},{-1.22,-102},{-1.22,-68}},
+                                                                         color=
               {0,0,127}));
-      connect(FHbF.y, ArterialBlood.FHbF) annotation (Line(points={{54.5,56},{
-              32,56},{32,60},{10,60},{10,64},{5.1,64}}, color={0,0,127}));
-      connect(FHbF.y, VenousBlood.FHbF) annotation (Line(points={{54.5,56},{54,
-              56},{54,62},{80,62},{80,-86},{8.4,-86},{8.4,-68}}, color={0,0,127}));
-      connect(pCO.y, ArterialBlood.pCO) annotation (Line(points={{52.75,45},{
-              26.375,45},{26.375,58},{5.1,58}}, color={0,0,127}));
-      connect(pCO.y, VenousBlood.pCO) annotation (Line(points={{52.75,45},{
+      connect(FHbF.y, ArterialBlood.FHbF) annotation (Line(points={{58.5,50},{
+              32,50},{32,60},{10,60},{10,64},{5.1,64}}, color={0,0,127}));
+      connect(FHbF.y, VenousBlood.FHbF) annotation (Line(points={{58.5,50},{54,
+              50},{54,54},{80,54},{80,-94},{8.4,-94},{8.4,-68}}, color={0,0,127}));
+      connect(pCO.y, ArterialBlood.pCO) annotation (Line(points={{52.75,39},{
+              26.375,39},{26.375,58},{5.1,58}}, color={0,0,127}));
+      connect(pCO.y, VenousBlood.pCO) annotation (Line(points={{52.75,39},{
               52.75,32},{78,32},{78,-84},{17.28,-84},{17.28,-67.22}}, color={0,
               0,127}));
-      connect(ctGlb.y, ArterialBlood.ctGlb) annotation (Line(points={{32.75,38},
-              {20,38},{20,52},{5.1,52}}, color={0,0,127}));
-      connect(ctGlb.y, VenousBlood.ctGlb) annotation (Line(points={{32.75,38},{
-              32,38},{32,24},{32,22},{76,22},{76,-82},{27.64,-82},{27.64,-68}},
+      connect(ctGlb.y, ArterialBlood.ctGlb) annotation (Line(points={{32.75,30},
+              {20,30},{20,52},{5.1,52}}, color={0,0,127}));
+      connect(ctGlb.y, VenousBlood.ctGlb) annotation (Line(points={{32.75,30},{
+              32,30},{32,24},{32,22},{76,22},{76,-82},{27.64,-82},{27.64,-68}},
             color={0,0,127}));
-      connect(ArterialBlood.ctO2, VenousBlood.ctO2a) annotation (Line(points={{
-              -48.84,32.8},{-48.84,-22.37},{-37.85,-22.37}}, color={0,0,127}));
-      connect(ArterialBlood.ctCO2, VenousBlood.ctCO2a) annotation (Line(points=
-              {{-38.92,33.4},{-38.92,10},{-56,10},{-56,-29.39},{-37.85,-29.39}},
+      connect(ArterialBlood.ctO2, VenousBlood.ctO2a) annotation (Line(points={{-40.78,
+              31.6},{-40.78,-22.37},{-37.85,-22.37}},        color={0,0,127}));
+      connect(ArterialBlood.ctCO2, VenousBlood.ctCO2a) annotation (Line(points={{-33.96,
+              31.6},{-33.96,10},{-56,10},{-56,-29.39},{-37.85,-29.39}},
             color={0,0,127}));
       connect(VenousBlood.T, bloodTemp) annotation (Line(points={{-37.11,-51.23},{-98.555,
               -51.23},{-98.555,89},{-113,89}}, color={0,0,127}));
@@ -4066,16 +4191,20 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
               -3.65},{-37.85,-3.65}}, color={0,0,127}));
       connect(VenousBlood.VO2, VO2) annotation (Line(points={{-37.85,2.59},{-57.925,
               2.59},{-57.925,2},{-84,2}}, color={0,0,127}));
-      connect(BEox, ArterialBlood.BEox) annotation (Line(points={{-84,26},{-29.62,26},
-              {-29.62,34}}, color={0,0,127}));
+      connect(BEox, ArterialBlood.BEox) annotation (Line(points={{-84,26},{
+              -24.35,26},{-24.35,33.7}},
+                            color={0,0,127}));
       connect(VenousBlood.BEox, ArterialBlood.BEox) annotation (Line(points={{-37.48,
-              -36.8},{-64,-36.8},{-64,26},{-29.62,26},{-29.62,34}}, color={0,0,127}));
+              -36.8},{-64,-36.8},{-64,26},{-24.35,26},{-24.35,33.7}},
+                                                                    color={0,0,127}));
       connect(VenousBlood.Q, QCO) annotation (Line(points={{-37.85,-9.89},{-52.925,-9.89},
               {-52.925,-12},{-80,-12}}, color={0,0,127}));
-      connect(ArterialBlood.pCO2, PaCO2) annotation (Line(points={{-12.26,34},{-12.26,
-              30},{-9,30},{-9,19}}, color={0,0,127}));
-      connect(PaO2, ArterialBlood.pO2) annotation (Line(points={{-21,19},{-21,25.5},
-              {-20.94,25.5},{-20.94,33.4}}, color={0,0,127}));
+      connect(ArterialBlood.pCO2, PaCO2) annotation (Line(points={{-9.78,34},{
+              -9.78,30},{-9,30},{-9,19}},
+                                    color={0,0,127}));
+      connect(PaO2, ArterialBlood.pO2) annotation (Line(points={{-21,19},{-21,
+              25.5},{-17.84,25.5},{-17.84,34}},
+                                            color={0,0,127}));
       connect(cPi, VenousBlood.ctPO4) annotation (Line(points={{-30,-88},{-24,-88},{
               -18.98,-88},{-18.98,-68}}, color={0,0,127}));
       connect(cPi, ArterialBlood.ctPO4) annotation (Line(points={{-30,-88},{-26,-88},
@@ -4085,10 +4214,16 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       connect(ArterialBlood.ctAlb, VenousBlood.ctAlb) annotation (Line(points={{5.1,
               88},{5.1,90},{88,90},{88,-98},{-36,-98},{-36,-74},{-28.23,-74},{-28.23,
               -67.61}}, color={0,0,127}));
-      connect(VenousBlood.pHv, pH) annotation (Line(points={{40.96,-36.02},{49.48,-36.02},
-              {49.48,38},{110,38}}, color={0,0,127}));
-      connect(VenousBlood.VCO2, VCO2) annotation (Line(points={{40.59,1.81},{47.295,
-              1.81},{47.295,68},{110,68}}, color={0,0,127}));
+      connect(VenousBlood.pHv, pH) annotation (Line(points={{40.96,-39.92},{
+              49.48,-39.92},{49.48,-58},{110,-58}},
+                                    color={0,0,127}));
+      connect(VenousBlood.VCO2, VCO2) annotation (Line(points={{40.59,6.49},{
+              47.295,6.49},{47.295,18},{110,18}},
+                                           color={0,0,127}));
+      connect(ArterialBlood.cdCO2, cdCO2) annotation (Line(points={{-49.46,31.6},
+              {-49.46,27.8},{-49,27.8},{-49,19}}, color={0,0,127}));
+      connect(ArterialBlood.cdO2, cdO2) annotation (Line(points={{-57.52,31.6},
+              {-57.52,26.8},{-58,26.8},{-58,18}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}})), Icon(coordinateSystem(preserveAspectRatio=false,
               extent={{-100,-100},{100,100}}), graphics={Rectangle(
@@ -4543,7 +4678,7 @@ Test Tool")}));
         annotation (Placement(transformation(extent={{-90,58},{-80,66}})));
       Physiolibrary.Types.Constants.PressureConst pCO(k=2.6664477483)
         annotation (Placement(transformation(extent={{56,16},{46,26}})));
-      Parts.BloodPO2PCO2 bloodPO2PCO2_
+      Parts.PO2PCO2 bloodPO2PCO2_
         annotation (Placement(transformation(extent={{-64,-12},{12,68}})));
       Physiolibrary.Types.Constants.VolumeDensityOfChargeConst
         volumeDensityOfCharge(k=0)
@@ -4629,7 +4764,7 @@ Test Tool")}));
         annotation (Placement(transformation(extent={{90,18},{76,26}})));
       Physiolibrary.Types.Constants.VolumeDensityOfChargeConst BEox(k=0)
         annotation (Placement(transformation(extent={{-88,-94},{-78,-86}})));
-      Parts.BloodCO2O2BEox bloodCO2O2BEox_
+      Parts.CO2O2BEox bloodCO2O2BEox_
         annotation (Placement(transformation(extent={{-72,-30},{52,96}})));
       Physiolibrary.Types.Constants.ConcentrationConst tO2(k=7.95)
         annotation (Placement(transformation(extent={{-90,-60},{-78,-50}})));
@@ -4692,7 +4827,7 @@ Test Tool")}));
 
       Parts.VenousO2CO2 VenousBlood
         annotation (Placement(transformation(extent={{-36,-68},{38,10}})));
-      Parts.BloodPO2PCO2 ArterialBlood
+      Parts.PO2PCO2 ArterialBlood
         annotation (Placement(transformation(extent={{-60,34},{2,94}})));
       Physiolibrary.Types.Constants.PressureConst pO2(k=13332.2387415)
         annotation (Placement(transformation(extent={{-28,14},{-18,24}})));
@@ -4959,7 +5094,8 @@ Test Tool")}));
     end testVenousBlood;
 
     model testVenousBloodEquilibration
-      Parts.TestToolVenousBlood testToolVenousBlood
+
+      Parts.TestToolVenousBlood VenousBlood
         annotation (Placement(transformation(extent={{-44,-94},{8,-46}})));
       Physiolibrary.Types.Constants.PressureConst pO2(k=13332.2387415)
         annotation (Placement(transformation(extent={{-82,-34},{-74,-26}})));
@@ -4968,7 +5104,7 @@ Test Tool")}));
       Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=8.4)
         annotation (Placement(transformation(extent={{4,-4},{-4,4}},
             rotation=180,
-            origin={-84,-84})));
+            origin={-98,-80})));
       Physiolibrary.Types.Constants.TemperatureConst temp(k=310.15)
         annotation (Placement(transformation(extent={{-106,-28},{-98,-22}})));
       Physiolibrary.Types.Constants.ConcentrationConst ctPi(k=1.16) annotation (
@@ -4977,7 +5113,9 @@ Test Tool")}));
             rotation=0,
             origin={-79,-95})));
       Physiolibrary.Types.Constants.ConcentrationConst ctAlb(k=11.8)
-        annotation (Placement(transformation(extent={{-70,-92},{-60,-86}})));
+        annotation (Placement(transformation(extent={{-5,-3},{5,3}},
+            rotation=180,
+            origin={97,0})));
       Physiolibrary.Types.Constants.MolarFlowRateConst VO2(k=
             0.00023333333333333)
         annotation (Placement(transformation(extent={{-88,-68},{-80,-60}})));
@@ -4988,31 +5126,67 @@ Test Tool")}));
         annotation (Placement(transformation(extent={{-74,-60},{-66,-52}})));
       Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
         annotation (Placement(transformation(extent={{-82,-50},{-74,-42}})));
-      Parts.Ventilation ventilation
+      Parts.Ventilation Ventilation
         annotation (Placement(transformation(extent={{-50,4},{76,90}})));
+      Parts.CO2O2BEox pulmVenousBlood
+        annotation (Placement(transformation(extent={{24,-68},{76,-10}})));
+      Physiolibrary.Types.Constants.MassConcentrationConst ctGlb(k(displayUnit="kg/m3")=
+             2.93)
+        annotation (Placement(transformation(extent={{106,-54},{96,-46}})));
+      Physiolibrary.Types.Constants.PressureConst pCO(k=2.6664477483)
+        annotation (Placement(transformation(extent={{118,-48},{108,-38}})));
+    Physiolibrary.Types.Constants.FractionConst FHbF(k=0.005)
+      annotation (Placement(transformation(extent={{114,-36},{102,-28}})));
+    Physiolibrary.Types.Constants.FractionConst FMetHb(k=0.005)
+      annotation (Placement(transformation(extent={{112,-24},{100,-16}})));
+    Physiolibrary.Types.Constants.ConcentrationConst DPG(k=5.4)
+      annotation (Placement(transformation(extent={{110,-12},{100,-4}})));
     equation
-      connect(pO2.y, testToolVenousBlood.PaO2) annotation (Line(points={{-73,
-              -30},{-52,-30},{-52,-48.4},{-46.6,-48.4}}, color={0,0,127}));
-      connect(pCO2.y, testToolVenousBlood.PaCO2) annotation (Line(points={{-61,
-              -38},{-54,-38},{-54,-53.2},{-46.6,-53.2}}, color={0,0,127}));
-      connect(BEox.y, testToolVenousBlood.BEox) annotation (Line(points={{-73,
-              -46},{-60,-46},{-60,-58},{-46.6,-58}}, color={0,0,127}));
-      connect(testToolVenousBlood.QCO, QCO.y) annotation (Line(points={{-46.6,
-              -62.8},{-63.3,-62.8},{-63.3,-56},{-65,-56}}, color={0,0,127}));
-      connect(RQ.y, testToolVenousBlood.RQ) annotation (Line(points={{-69,-70},
-              {-52,-70},{-52,-72.4},{-46.6,-72.4}}, color={0,0,127}));
-      connect(temp.y, testToolVenousBlood.bloodTemp) annotation (Line(points={{-97,-25},
-              {-89.5,-25},{-89.5,-77.2},{-46.6,-77.2}},          color={0,0,127}));
-      connect(testToolVenousBlood.VO2, VO2.y) annotation (Line(points={{-46.6,
-              -67.6},{-66,-67.6},{-66,-64},{-79,-64}}, color={0,0,127}));
-      connect(ctHb.y, testToolVenousBlood.cHb) annotation (Line(points={{-79,-84},
-              {-62,-84},{-62,-82},{-46.6,-82}},
-                                             color={0,0,127}));
-      connect(ctAlb.y, testToolVenousBlood.cAlb) annotation (Line(points={{-58.75,
-              -89},{-53.375,-89},{-53.375,-86.8},{-46.6,-86.8}},        color={
-              0,0,127}));
-      connect(ctPi.y, testToolVenousBlood.cPi) annotation (Line(points={{-72.75,
-              -95},{-56,-95},{-56,-91.6},{-46.6,-91.6}}, color={0,0,127}));
+
+      connect(pO2.y, VenousBlood.PaO2) annotation (Line(points={{-73,-30},{-52,-30},
+              {-52,-48.4},{-46.6,-48.4}}, color={0,0,127}));
+      connect(pCO2.y, VenousBlood.PaCO2) annotation (Line(points={{-61,-38},{-54,-38},
+              {-54,-53.2},{-46.6,-53.2}}, color={0,0,127}));
+      connect(BEox.y, VenousBlood.BEox) annotation (Line(points={{-73,-46},{-60,-46},
+              {-60,-58},{-46.6,-58}}, color={0,0,127}));
+      connect(VenousBlood.QCO, QCO.y) annotation (Line(points={{-46.6,-62.8},{-63.3,
+              -62.8},{-63.3,-56},{-65,-56}}, color={0,0,127}));
+      connect(RQ.y, VenousBlood.RQ) annotation (Line(points={{-69,-70},{-52,-70},{-52,
+              -72.4},{-46.6,-72.4}}, color={0,0,127}));
+      connect(temp.y, VenousBlood.bloodTemp) annotation (Line(points={{-97,-25},{-89.5,
+              -25},{-89.5,-77.2},{-46.6,-77.2}}, color={0,0,127}));
+      connect(VenousBlood.VO2, VO2.y) annotation (Line(points={{-46.6,-67.6},{-66,-67.6},
+              {-66,-64},{-79,-64}}, color={0,0,127}));
+      connect(ctHb.y, VenousBlood.cHb) annotation (Line(points={{-93,-80},{-62,-80},
+              {-62,-82},{-46.6,-82}}, color={0,0,127}));
+      connect(ctAlb.y, VenousBlood.cAlb) annotation (Line(points={{90.75,7.77156e-016},
+              {-109.375,7.77156e-016},{-109.375,-86.8},{-46.6,-86.8}}, color={0,0,127}));
+      connect(ctPi.y, VenousBlood.cPi) annotation (Line(points={{-72.75,-95},{-56,-95},
+              {-56,-91.6},{-46.6,-91.6}}, color={0,0,127}));
+      connect(pulmVenousBlood.ctGlb, ctGlb.y) annotation (Line(points={{79.12,-50.02},
+              {94.75,-50.02},{94.75,-50}}, color={0,0,127}));
+      connect(pulmVenousBlood.pCO, pCO.y) annotation (Line(points={{79.12,-44.22},{93.56,
+              -44.22},{93.56,-43},{106.75,-43}}, color={0,0,127}));
+      connect(FHbF.y, pulmVenousBlood.FHbF) annotation (Line(points={{100.5,-32},{92,
+              -32},{92,-38.42},{79.12,-38.42}}, color={0,0,127}));
+      connect(pulmVenousBlood.FMetHb, FMetHb.y) annotation (Line(points={{79.12,-32.62},
+              {90,-32.62},{90,-20},{98.5,-20}}, color={0,0,127}));
+      connect(pulmVenousBlood.cDPG, DPG.y) annotation (Line(points={{79.12,-26.82},{
+              88,-26.82},{88,-8},{98.75,-8}}, color={0,0,127}));
+      connect(pulmVenousBlood.ctPO4, VenousBlood.cPi) annotation (Line(points={{79.12,
+              -21.02},{86,-21.02},{86,-100},{-56,-100},{-56,-91.6},{-46.6,-91.6}},
+            color={0,0,127}));
+      connect(pulmVenousBlood.ctAlb, VenousBlood.cAlb) annotation (Line(points={{79.12,
+              -15.22},{84,-15.22},{84,0},{-109.375,7.77156e-016},{-109.375,-86.8},{-46.6,
+              -86.8}}, color={0,0,127}));
+      connect(pulmVenousBlood.T, VenousBlood.bloodTemp) annotation (Line(points={{21.92,
+              -14.06},{-90,-14.06},{-90,-26},{-89.5,-25},{-89.5,-77.2},{-46.6,-77.2}},
+            color={0,0,127}));
+      connect(ctHb.y, pulmVenousBlood.ctHb) annotation (Line(points={{-93,-80},{-92,
+              -80},{-92,-8},{16,-8},{16,-54.66},{21.4,-54.66}}, color={0,0,127}));
+      connect(BEox.y, pulmVenousBlood.BEox) annotation (Line(points={{-73,-46},{-58,
+              -46},{-58,-40},{14,-40},{14,-78},{49.48,-78},{49.48,-68}}, color={0,0,
+              127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}})));
     end testVenousBloodEquilibration;
