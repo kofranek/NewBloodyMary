@@ -4622,6 +4622,10 @@ Test Tool")}));
             extent={{-11,-11},{11,11}},
             rotation=0,
             origin={-113,43})));
+    initial equation
+      Blood.bloodPO2PCO2_.pO2=13332;
+      Blood.bloodPO2PCO2_.pCO2=5332;
+
     equation
 
       BloodO2in.q + O2alv.q + BloodO2out.q = 0;
@@ -5187,8 +5191,6 @@ parameters")}));
                 -100},{100,100}})));
     end VenousBlood;
 
-
-
     model testVentilation
 
       Parts.Ventilation ventilation
@@ -5408,8 +5410,8 @@ parameters")}));
         annotation (Placement(transformation(extent={{34,-68},{94,-16}})));
       Parts.BloodParameters bloodParameters
         annotation (Placement(transformation(extent={{-82,-6},{-62,14}})));
-    equation
 
+    equation
       connect(pO2.y, VenousBlood.PaO2) annotation (Line(points={{-79,-30},{-52,
               -30},{-52,-48.4},{-46.6,-48.4}},
                                           color={0,0,127}));
