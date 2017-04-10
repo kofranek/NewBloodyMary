@@ -4604,7 +4604,6 @@ Test Tool")}));
               preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
     end Ventilation;
 
-
     model BloodParameters
       Physiolibrary.Types.BusConnector bloodParameters annotation (Placement(
             transformation(extent={{-66,2},{-26,42}}),iconTransformation(extent={{-26,-74},
@@ -5003,6 +5002,320 @@ parameters")}));
               textString="%name")}), Diagram(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
     end BloodO2CO2measured;
+
+    model BloodyMary_version01
+      Physiolibrary.Types.Constants.PressureConst barometricPressure(k=
+            99991.79056125)
+        annotation (Placement(transformation(extent={{-54,92},{-42,96}})));
+      Physiolibrary.Types.Constants.FractionConst airHumidity(k=0.58)
+        annotation (Placement(transformation(extent={{-32,88},{-20,92}})));
+      Physiolibrary.Types.Constants.FractionConst FiO2(k=0.21)
+        annotation (Placement(transformation(extent={{-68,82},{-56,86}})));
+      Physiolibrary.Types.Constants.FractionConst FiCO2(k=0.00038)
+        annotation (Placement(transformation(extent={{-30,80},{-20,84}})));
+      Physiolibrary.Types.Constants.TemperatureConst atmosphericTemperature(k=
+            298.15)
+        annotation (Placement(transformation(extent={{-48,74},{-38,78}})));
+      Physiolibrary.Types.Constants.TemperatureConst bodyTemperature(k=310.15)
+        annotation (Placement(transformation(extent={{-48,66},{-38,70}})));
+      Physiolibrary.Types.Constants.VolumeConst inspiredTidalVolume(k=0.0005)
+        annotation (Placement(transformation(extent={{-80,94},{-72,98}})));
+      Physiolibrary.Types.Constants.VolumeConst deadVolume(k=0.00015)
+        annotation (Placement(transformation(extent={{-4,-2},{4,2}},
+            rotation=180,
+            origin={36,97})));
+      Physiolibrary.Types.Constants.FrequencyConst breathingFrequency(k=
+            0.29333333333333)
+        annotation (Placement(transformation(extent={{-4,-2},{4,2}},
+            rotation=180,
+            origin={36,84})));
+      Ventilation       ventilation
+        annotation (Placement(transformation(extent={{-10,66},{32,94}})));
+      BloodO2CO2Equilibrium       AlvCapillary(
+        BloodO2in(q(start=10)),
+        BloodO2out(conc(start=7.9475)),
+        BloodCO2out(conc(start=21.6349)),
+        Blood(bloodPO2PCO2_(totalO2(
+              sO2CO(start=0.977),
+              a(start=-0.1),
+              cO2Hb(start=8.16),
+              tO2(start=8.161),
+              pCO2(start=5700),
+              pO2(start=13870)), totalCO2(tCO2_P(start=24.9), pCO2(start=5160)))),
+        BloodCO2in(q(start=115.472)))
+        annotation (Placement(transformation(extent={{-12,20},{28,60}})));
+      BloodO2CO2measured       VeinsBlood(Blood(bloodPO2PCO2_(totalO2(
+      pO2(                            start=6140),
+      cO2Hb(                            start=6.52),
+      a(                            start=0.076),
+      pCO2(                            start=6400)), totalCO2(
+      tCO2_P(                             start=27.4),
+      pCO2(                             start=6240)))))
+        annotation (Placement(transformation(extent={{-50,20},{-90,60}})));
+      BloodO2CO2measured       ArtBlood(Blood(bloodPO2PCO2_(totalO2(
+        pO2(                            start=13459),
+        cO2Hb(                            start=7.82305),
+        pCO2(                            start=4428.03),
+        a(                            start=-0.1)), totalCO2(
+        tCO2_P(                             start=26),
+        pCO2(                             start=5330)))))
+        annotation (Placement(transformation(extent={{62,20},{102,60}})));
+      BloodO2CO2Equilibrium       TissueCapillary
+        annotation (Placement(transformation(extent={{22,-26},{-20,-68}})));
+    Physiolibrary.Chemical.Components.Stream O2pulmShortCircuit(
+          useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-4,14},{12,-2}})));
+    Physiolibrary.Chemical.Components.Stream CO2pulmShortCircuit(
+          useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-4,-6},{12,-22}})));
+    Physiolibrary.Chemical.Sources.UnlimitedSolutePump CO2met(
+          useSoluteFlowInput=true) annotation (Placement(transformation(
+            extent={{-8,7},{8,-7}},
+            rotation=180,
+            origin={10,-91})));
+    Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut O2met(
+          useSoluteFlowInput=true) annotation (Placement(transformation(
+            extent={{-8,-8},{8,8}},
+            rotation=0,
+            origin={24,-78})));
+      Physiolibrary.Chemical.Components.Substance veinsCO2(
+        stateName="CO2Veins.Mass[mMol]",
+        useNormalizedVolume=false,
+        Simulation=Physiolibrary.Types.SimulationType.NoInit,
+        solute_start=0.0869)
+        annotation (Placement(transformation(extent={{-44,-38},{-24,-18}})));
+      Physiolibrary.Chemical.Components.Substance veinsO2(
+        stateName="O2Veins.Mass[mMol]",
+        useNormalizedVolume=false,
+        Simulation=Physiolibrary.Types.SimulationType.NoInit,
+        solute_start=0.0247781)
+        annotation (Placement(transformation(extent={{-46,-78},{-26,-58}})));
+      Physiolibrary.Chemical.Components.Substance artysCO2(
+        stateName="CO2Artys.Mass[mMol]",
+        useNormalizedVolume=false,
+        Simulation=Physiolibrary.Types.SimulationType.NoInit,
+        solute_start=0.0343)
+        annotation (Placement(transformation(extent={{84,-22},{64,-2}})));
+      Physiolibrary.Chemical.Components.Substance artysO2(
+        stateName="O2Artys.Mass[mMol]",
+        useNormalizedVolume=false,
+        Simulation=Physiolibrary.Types.SimulationType.NoInit,
+        solute_start=0.0130979)
+        annotation (Placement(transformation(extent={{68,-82},{88,-62}})));
+      BloodParameters       bloodParameters
+        annotation (Placement(transformation(extent={{-98,66},{-74,82}})));
+      Physiolibrary.Types.Constants.MolarFlowRateConst VCO2(k=0.000145717)
+        annotation (Placement(transformation(extent={{40,-88},{30,-82}})));
+      Physiolibrary.Types.Constants.MolarFlowRateConst VO2(k=0.00018309)
+        annotation (Placement(transformation(extent={{42,-74},{32,-68}})));
+      Physiolibrary.Types.Constants.VolumeConst ArtBloodVolume(k=0.001621)
+        annotation (Placement(transformation(extent={{46,-58},{54,-52}})));
+      Physiolibrary.Types.Constants.VolumeConst VenBloodVolume(k=0.00360844)
+        annotation (Placement(transformation(extent={{-82,-60},{-74,-54}})));
+      PulmonaryShunts       pulmonaryShunts
+        annotation (Placement(transformation(extent={{-72,-15},{-50,12}})));
+      Physiolibrary.Types.Constants.FractionConst ShuntSraction(k=0.02)
+        annotation (Placement(transformation(extent={{-85,4},{-77,10}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst CardiacOutput(k=
+            8.3333333333333e-05)
+        annotation (Placement(transformation(extent={{-85,-8},{-77,-2}})));
+      Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0) annotation (
+          Placement(transformation(
+            extent={{4,-3},{-4,3}},
+            rotation=180,
+            origin={-34,17})));
+    equation
+      connect(FiO2.y,ventilation. FiO2) annotation (Line(points={{-54.5,84},{
+              -44,84},{-44,86.44},{-7.9,86.44}},
+                                              color={0,0,127}));
+      connect(inspiredTidalVolume.y,ventilation. tidalVolume) annotation (Line(
+            points={{-71,96},{0.5,96},{0.5,92.6}},     color={0,0,127}));
+      connect(deadVolume.y,ventilation. deadSpace) annotation (Line(points={{31,97},
+              {8.9,97},{8.9,92.6}},           color={0,0,127}));
+      connect(breathingFrequency.y, ventilation.respiratoryRate) annotation (
+          Line(points={{31,84},{17.3,84},{17.3,92.6}}, color={0,0,127}));
+      connect(airHumidity.y, ventilation.airHumidity) annotation (Line(points={
+              {-18.5,90},{-7.9,90},{-7.9,89.52}}, color={0,0,127}));
+      connect(bodyTemperature.y, ventilation.bodyTemperature) annotation (Line(
+            points={{-36.75,68},{-24,68},{-24,75.24},{-7.9,75.24}}, color={0,0,
+              127}));
+      connect(atmosphericTemperature.y, ventilation.atmosphericTemperature)
+        annotation (Line(points={{-36.75,76},{-18,76},{-18,78.88},{-7.9,78.88}},
+            color={0,0,127}));
+      connect(barometricPressure.y, ventilation.barometricPressure) annotation
+        (Line(points={{-40.5,94},{-22,94},{-22,92.6},{-7.9,92.6}}, color={0,0,
+              127}));
+      connect(AlvCapillary.O2equil, ventilation.O2) annotation (Line(
+          points={{2.4,56},{2.4,63.1},{-1.6,63.1},{-1.6,68.24}},
+          color={107,45,134},
+          thickness=1));
+      connect(AlvCapillary.CO2equil, ventilation.CO2) annotation (Line(
+          points={{12,55.6},{12,62.91},{17.3,62.91},{17.3,67.4}},
+          color={107,45,134},
+          thickness=1));
+      connect(FiCO2.y, ventilation.FiCO2) annotation (Line(points={{-18.75,82},
+              {-14,82},{-14,82.8},{-7.9,82.8}}, color={0,0,127}));
+      connect(TissueCapillary.BloodO2out, veinsO2.q_out) annotation (Line(
+          points={{-16.64,-50.36},{-36,-50.36},{-36,-68}},
+          color={107,45,134},
+          thickness=1));
+      connect(TissueCapillary.BloodCO2out, veinsCO2.q_out) annotation (Line(
+          points={{-16.64,-41.96},{-34,-41.96},{-34,-28}},
+          color={107,45,134},
+          thickness=1));
+      connect(TissueCapillary.BloodCO2out, VeinsBlood.BloodCO2in) annotation (
+          Line(
+          points={{-16.64,-41.96},{-94,-41.96},{-94,38},{-53.6,38},{-53.6,34.4}},
+
+          color={107,45,134},
+          thickness=1));
+      connect(TissueCapillary.BloodO2out, VeinsBlood.BloodO2in) annotation (
+          Line(
+          points={{-16.64,-50.36},{-96,-50.36},{-96,48},{-53.2,48},{-53.2,43.6}},
+
+          color={107,45,134},
+          thickness=1));
+      connect(VeinsBlood.BloodO2in, AlvCapillary.BloodO2in) annotation (Line(
+          points={{-53.2,43.6},{-30.6,43.6},{-30.6,43.6},{-8.4,43.6}},
+          color={107,45,134},
+          thickness=1));
+      connect(VeinsBlood.BloodCO2in, AlvCapillary.BloodCO2in) annotation (Line(
+          points={{-53.6,34.4},{-30.8,34.4},{-30.8,34.4},{-8.4,34.4}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2pulmShortCircuit.q_in, VeinsBlood.BloodO2in) annotation (Line(
+          points={{-4,6},{-18,6},{-44,6},{-44,43.6},{-53.2,43.6}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2pulmShortCircuit.q_in, AlvCapillary.BloodCO2in) annotation (
+          Line(
+          points={{-4,-14},{-48,-14},{-48,34},{-30.8,34.4},{-8.4,34.4}},
+          color={107,45,134},
+          thickness=1));
+      connect(AlvCapillary.BloodO2out, ArtBlood.BloodO2in) annotation (Line(
+          points={{24.8,43.2},{44.4,43.2},{44.4,43.6},{65.2,43.6}},
+          color={107,45,134},
+          thickness=1));
+      connect(AlvCapillary.BloodCO2out, ArtBlood.BloodCO2in) annotation (Line(
+          points={{24.8,35.2},{44.4,35.2},{44.4,34.4},{65.6,34.4}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2pulmShortCircuit.q_out, ArtBlood.BloodCO2in) annotation (Line(
+          points={{12,-14},{12,-16},{54,-16},{54,26},{65.6,26},{65.6,34.4}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2pulmShortCircuit.q_out, ArtBlood.BloodO2in) annotation (Line(
+          points={{12,6},{50,6},{50,38},{65.2,38},{65.2,43.6}},
+          color={107,45,134},
+          thickness=1));
+      connect(ArtBlood.BloodCO2in, TissueCapillary.BloodCO2in) annotation (Line(
+          points={{65.6,34.4},{96,34.4},{96,-41.12},{18.22,-41.12}},
+          color={107,45,134},
+          thickness=1));
+      connect(TissueCapillary.BloodO2in, ArtBlood.BloodO2in) annotation (Line(
+          points={{18.22,-50.78},{98,-50.78},{98,43.6},{65.2,43.6}},
+          color={107,45,134},
+          thickness=1));
+      connect(artysCO2.q_out, TissueCapillary.BloodCO2in) annotation (Line(
+          points={{74,-12},{76,-12},{76,-41.12},{18.22,-41.12}},
+          color={107,45,134},
+          thickness=1));
+      connect(artysO2.q_out, ArtBlood.BloodO2in) annotation (Line(
+          points={{78,-72},{78,-58},{98,-58},{98,43.6},{65.2,43.6}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodParameters.bloodParameters, VeinsBlood.bloodParameters)
+        annotation (Line(
+          points={{-85.88,70.24},{-85.88,62},{-54,62},{-54,57.2}},
+          color={0,0,255},
+          thickness=0.5));
+      connect(bloodParameters.bloodParameters, TissueCapillary.bloodParameters)
+        annotation (Line(
+          points={{-85.88,70.24},{-85.88,70},{-88,70},{-88,-98},{46,-98},{46,
+              -76},{46,-66},{17.8,-66},{17.8,-65.06}},
+          color={0,0,255},
+          thickness=0.5));
+      connect(bloodParameters.bloodParameters, AlvCapillary.bloodParameters)
+        annotation (Line(
+          points={{-85.88,70.24},{-85.88,62},{-8,62},{-8,57.2}},
+          color={0,0,255},
+          thickness=0.5));
+      connect(bloodParameters.bloodParameters, ArtBlood.bloodParameters)
+        annotation (Line(
+          points={{-85.88,70.24},{-85.88,62},{66,62},{66,57.2}},
+          color={0,0,255},
+          thickness=0.5));
+      connect(TissueCapillary.O2equil, O2met.q_in) annotation (Line(
+          points={{6.88,-63.8},{6.88,-78},{16,-78}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2met.q_out, TissueCapillary.CO2equil) annotation (Line(
+          points={{2,-91},{-4,-91},{-4,-63.38},{-3.2,-63.38}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2met.soluteFlow, VO2.y) annotation (Line(points={{27.2,-74.8},{
+              28,-74.8},{28,-71},{30.75,-71}}, color={0,0,127}));
+      connect(VCO2.y, CO2met.soluteFlow) annotation (Line(points={{28.75,-85},{
+              6.8,-85},{6.8,-88.2}}, color={0,0,127}));
+      connect(VenBloodVolume.y, veinsO2.solutionVolume) annotation (Line(points
+            ={{-73,-57},{-40,-57},{-40,-64}}, color={0,0,127}));
+      connect(VenBloodVolume.y, veinsCO2.solutionVolume) annotation (Line(
+            points={{-73,-57},{-52,-57},{-52,-16},{-38,-16},{-38,-24}}, color={
+              0,0,127}));
+      connect(ArtBloodVolume.y, artysO2.solutionVolume) annotation (Line(points
+            ={{55,-55},{74,-55},{74,-68}}, color={0,0,127}));
+      connect(artysCO2.solutionVolume, artysO2.solutionVolume) annotation (Line(
+            points={{78,-8},{78,0},{88,0},{88,-54},{74,-54},{74,-68}}, color={0,
+              0,127}));
+      connect(ShuntSraction.y, pulmonaryShunts.FractionShunts) annotation (Line(
+            points={{-76,7},{-73.5,7},{-73.5,2.55},{-70.9,2.55}}, color={0,0,
+              127}));
+      connect(pulmonaryShunts.PulmonaryPerfusion, AlvCapillary.bloodFlowRate)
+        annotation (Line(points={{-59.02,-4.47},{-20,-4.47},{-20,53.8},{-14.6,
+              53.8}}, color={0,0,127}));
+      connect(CardiacOutput.y, pulmonaryShunts.CardiacOutput) annotation (Line(
+            points={{-76,-5},{-73.5,-5},{-73.5,-8.655},{-70.35,-8.655}}, color=
+              {0,0,127}));
+      connect(pulmonaryShunts.ShuntFlow, O2pulmShortCircuit.solutionFlow)
+        annotation (Line(points={{-59.02,-7.44},{-14,-7.44},{-14,-4},{4,-4},{4,
+              0.4}}, color={0,0,127}));
+      connect(pulmonaryShunts.ShuntFlow, CO2pulmShortCircuit.solutionFlow)
+        annotation (Line(points={{-59.02,-7.44},{-14,-7.44},{-14,-24},{4,-24},{
+              4,-19.6}}, color={0,0,127}));
+      connect(TissueCapillary.bloodFlowRate, pulmonaryShunts.CardiacOutput)
+        annotation (Line(points={{24.73,-61.49},{54,-61.49},{54,-100},{-84,-100},
+              {-84,-16},{-74,-16},{-74,-8},{-73.5,-8.655},{-70.35,-8.655}},
+            color={0,0,127}));
+      connect(VeinsBlood.bloodFlowRate, pulmonaryShunts.CardiacOutput)
+        annotation (Line(points={{-47.4,53.8},{-38,53.8},{-38,64},{-100,64},{
+              -100,-16},{-74,-16},{-74,-8},{-73.5,-8.655},{-70.35,-8.655}},
+            color={0,0,127}));
+      connect(ArtBlood.bloodFlowRate, pulmonaryShunts.CardiacOutput)
+        annotation (Line(points={{59.4,53.8},{54,53.8},{54,64},{-100,64},{-100,
+              -16},{-74,-16},{-74,-8},{-73.5,-8.655},{-70.35,-8.655}}, color={0,
+              0,127}));
+      connect(BEox.y, AlvCapillary.BEox) annotation (Line(points={{-29,17},{-20,
+              17},{-20,48.6},{-14.6,48.6}}, color={0,0,127}));
+      connect(VeinsBlood.BEox, AlvCapillary.BEox)
+        annotation (Line(points={{-47.4,48.6},{-14.6,48.6}}, color={0,0,127}));
+      connect(ArtBlood.BEox, BEox.y) annotation (Line(points={{59.4,48.6},{38,
+              48.6},{38,17},{-29,17}}, color={0,0,127}));
+      connect(TissueCapillary.BEox, BEox.y) annotation (Line(points={{24.73,
+              -56.03},{38,-56.03},{38,17},{-29,17}}, color={0,0,127}));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
+                -100,-100},{100,100}})), Icon(coordinateSystem(
+              preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
+            graphics={Rectangle(
+              extent={{-100,100},{100,-100}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid), Text(
+              extent={{-98,68},{88,2}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="Bloody Mary")}));
+    end BloodyMary_version01;
   end Parts;
 
   package tests
@@ -5479,7 +5792,7 @@ parameters")}));
                 -100},{100,100}})));
     end testVenousBloodTestTool;
 
-    model testBloodyMary
+    model oldtestBloodyMary
 
       Physiolibrary.Types.Constants.VolumeFlowRateConst QCO(k=8.3333333333333e-05)
         annotation (Placement(transformation(extent={{-184,-126},{-174,-116}})));
@@ -5548,7 +5861,7 @@ parameters")}));
         a(                            start=-0.1)), totalCO2(
         tCO2_P(                             start=26),
         pCO2(                             start=5330)))))
-        annotation (Placement(transformation(extent={{112,-86},{206,-8}})));
+        annotation (Placement(transformation(extent={{112,-88},{206,-10}})));
 
         /*
     Blood.bloodPO2PCO2_.totalO2.pO2(start=13459),
@@ -5679,7 +5992,7 @@ parameters")}));
 
       connect(ArtBlood.bloodParameters, bloodParameters.bloodParameters)
         annotation (Line(
-          points={{121.4,-13.46},{121.4,-0.7},{-71.9,-0.7}},
+          points={{121.4,-15.46},{121.4,-0.7},{-71.9,-0.7}},
           color={0,0,255},
           thickness=0.5));
       connect(BEox.y, AlvCapillary.BEox) annotation (Line(points={{-81,-30},{
@@ -5690,25 +6003,25 @@ parameters")}));
               -193.77}},
             color={0,0,127}));
       connect(ArtBlood.BEox, AlvCapillary.BEox) annotation (Line(points={{105.89,
-              -30.23},{94,-30.23},{94,-86},{-12,-86},{-12,-35.38},{-1.33,-35.38}},
+              -32.23},{94,-32.23},{94,-86},{-12,-86},{-12,-35.38},{-1.33,-35.38}},
                                                                         color={0,0,127}));
 
       connect(AlvCapillary.BloodO2out, ArtBlood.BloodO2in) annotation (Line(
-          points={{79.44,-44.56},{99.72,-44.56},{99.72,-39.98},{119.52,-39.98}},
+          points={{79.44,-44.56},{99.72,-44.56},{99.72,-41.98},{119.52,-41.98}},
           color={107,45,134},
           thickness=1));
 
       connect(AlvCapillary.BloodCO2out, ArtBlood.BloodCO2in) annotation (Line(
-          points={{79.44,-58.16},{99.72,-58.16},{99.72,-57.92},{120.46,-57.92}},
+          points={{79.44,-58.16},{99.72,-58.16},{99.72,-59.92},{120.46,-59.92}},
           color={107,45,134},
           thickness=1));
 
       connect(ArtBlood.BloodCO2in, TissueCapillary.BloodCO2in) annotation (Line(
-          points={{120.46,-57.92},{120.46,-166.08},{56.62,-166.08}},
+          points={{120.46,-59.92},{120.46,-166.08},{56.62,-166.08}},
           color={107,45,134},
           thickness=1));
       connect(ArtBlood.BloodO2in, TissueCapillary.BloodO2in) annotation (Line(
-          points={{119.52,-39.98},{138,-39.98},{138,-184.02},{56.62,-184.02}},
+          points={{119.52,-41.98},{138,-41.98},{138,-184.02},{56.62,-184.02}},
           color={107,45,134},
           thickness=1));
 
@@ -5797,7 +6110,7 @@ parameters")}));
           color={107,45,134},
           thickness=1));
       connect(O2pulmShortCircuit.q_out, ArtBlood.BloodO2in) annotation (Line(
-          points={{32,-100},{104,-100},{104,-39.98},{119.52,-39.98}},
+          points={{32,-100},{104,-100},{104,-41.98},{119.52,-41.98}},
           color={107,45,134},
           thickness=1));
       connect(CO2pulmShortCircuit.solutionFlow, pulmonaryShunts.ShuntFlow)
@@ -5813,15 +6126,15 @@ parameters")}));
           color={107,45,134},
           thickness=1));
       connect(CO2pulmShortCircuit.q_out, ArtBlood.BloodCO2in) annotation (Line(
-          points={{30,-122},{68,-122},{112,-122},{112,-57.92},{120.46,-57.92}},
-
+          points={{30,-122},{68,-122},{112,-122},{112,-59.92},{120.46,-59.92}},
           color={107,45,134},
           thickness=1));
+
       connect(TissueCapillary.bloodFlowRate, QCO.y) annotation (Line(points={{
               69.33,-203.91},{92,-203.91},{92,-136},{-152,-136},{-152,-121},{
               -172.75,-121}}, color={0,0,127}));
       connect(ArtBlood.bloodFlowRate, QCO.y) annotation (Line(points={{105.89,
-              -20.09},{92,-20.09},{92,-136},{-152,-136},{-152,-121},{-172.75,
+              -22.09},{92,-22.09},{92,-136},{-152,-136},{-152,-121},{-172.75,
               -121}}, color={0,0,127}));
       connect(TissueCapillary.bloodParameters, bloodParameters.bloodParameters)
         annotation (Line(
@@ -5831,7 +6144,13 @@ parameters")}));
           thickness=0.5));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}})));
-    end testBloodyMary;
+    end oldtestBloodyMary;
+
+    model BloodyMary
+
+      Parts.BloodyMary_version01 testBloodyMary
+        annotation (Placement(transformation(extent={{-58,-36},{46,70}})));
+    end BloodyMary;
   end tests;
 
   package Icons
@@ -5904,7 +6223,6 @@ parameters")}));
                   "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"
                    +
                   "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",
-
               fileName="modelica://NewBloodyMary/../../ikony/Shunts1.png")}));
 
     end Shunts;
