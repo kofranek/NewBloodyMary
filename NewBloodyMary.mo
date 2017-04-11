@@ -1,5 +1,5 @@
 within ;
-package NewBloodyMary
+package NewBloodyMary_testing
 
   package Parts
 
@@ -3367,7 +3367,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
     end ctHb_to_Htc;
 
     model VenousO2CO2
-      import NewBloodyMary;
+      import NewBloodyMary = NewBloodyMary_testing;
 
       Physiolibrary.Types.RealIO.MolarFlowRateInput VO2
         "oxygen comsumption in mmol/sec" annotation (Placement(transformation(
@@ -7083,10 +7083,6 @@ parameters")}));
       Physiolibrary.Types.Constants.pHConst constTissues_pH(k=7.37)
         "here as in interstitial - which one should it be?"
         annotation (Placement(transformation(extent={{-86,-102},{-78,-98}})));
-      Physiolibrary.Types.Constants.VolumeConst constVCO2(k=0.0002)
-        annotation (Placement(transformation(extent={{-34,66},{-26,70}})));
-      Physiolibrary.Types.Constants.VolumeConst constVO2(k=0.0002)
-        annotation (Placement(transformation(extent={{-34,56},{-26,60}})));
       Physiolibrary.Types.Constants.VolumeConst constVeinsVol(k=0.00361)
         annotation (Placement(transformation(extent={{-34,44},{-26,48}})));
       Physiolibrary.Types.Constants.ConcentrationConst constcDPG(k(displayUnit="mol/m3")=
@@ -7114,6 +7110,12 @@ parameters")}));
         annotation (Placement(transformation(extent={{-34,-80},{-26,-76}})));
       Physiolibrary.Types.Constants.FractionConst constsO2(k=0.0085)
         annotation (Placement(transformation(extent={{-34,-94},{-26,-90}})));
+      Physiolibrary.Types.Constants.MolarFlowRateConst VCO2(k=0.000145717)
+        "metabolic CO2 production rate"
+        annotation (Placement(transformation(extent={{-40,70},{-30,74}})));
+      Physiolibrary.Types.Constants.MolarFlowRateConst VO2(k=0.00018309)
+        "metabolic O2 consumption rate"
+        annotation (Placement(transformation(extent={{-40,62},{-30,66}})));
     equation
       connect(constAlveolarVentilated_BloodFlow.y, busConnector.AlveolarVentilated_BloodFlow)
         annotation (Line(points={{-81,96},{4,96},{4,0},{74,0}}, color={0,0,127}),
@@ -7203,16 +7205,6 @@ parameters")}));
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(constVCO2.y, busConnector.VCO2) annotation (Line(points={{-25,68},{4,68},
-              {4,0},{74,0}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(constVO2.y, busConnector.VO2) annotation (Line(points={{-25,58},{4,58},
-              {4,0},{74,0}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
       connect(constVeinsVol.y, busConnector.VeinsVol) annotation (Line(points={{-25,
               46},{4,46},{4,0},{74,0}}, color={0,0,127}), Text(
           string="%second",
@@ -7269,6 +7261,16 @@ parameters")}));
           index=1,
           extent={{6,3},{6,3}}));
 
+      connect(VO2.y, busConnector.VO2) annotation (Line(points={{-28.75,64},{
+              -12,64},{4,64},{4,0},{74,0}}, color={0,0,127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      connect(VCO2.y, busConnector.VCO2) annotation (Line(points={{-28.75,72},{
+              -12,72},{4,72},{4,0},{74,0}}, color={0,0,127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}})));
     end TestInputs;
@@ -8179,6 +8181,8 @@ parameters")}));
           points={{61,35.8},{20,35.8},{20,36},{-22.6,36}},
           color={0,0,255},
           thickness=0.5));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
+                -100,-100},{100,100}})));
     end testBM2;
   end tests;
 
@@ -8258,4 +8262,4 @@ parameters")}));
   end Icons;
   annotation (uses(Modelica(version="3.2.1"), Physiolibrary(version="2.3.1"),
       Physiomodel(version="1.0.0")));
-end NewBloodyMary;
+end NewBloodyMary_testing;
