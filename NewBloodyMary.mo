@@ -5501,7 +5501,7 @@ parameters")}));
     model TissuesO2
      extends Physiolibrary.Icons.Tissues;
     Physiolibrary.Chemical.Interfaces.ChemicalPort_a arty annotation (
-        Placement(transformation(extent={{80,-18},{120,22}}),
+        Placement(transformation(extent={{80,-20},{120,20}}),
           iconTransformation(extent={{100,-20},{140,20}})));
     Physiolibrary.Chemical.Interfaces.ChemicalPort_b vein annotation (Placement(
             transformation(extent={{-120,-20},{-80,20}}), iconTransformation(extent=
@@ -5512,7 +5512,7 @@ parameters")}));
     // Real O2ToTissues3(displayUnit="ml/min");
 
       BloodO2_Siggaard O2Tissue
-        annotation (Placement(transformation(extent={{2,6},{-18,-14}})));
+        annotation (Placement(transformation(extent={{2,1},{-18,-19}})));
     Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
                                                   Metabolism_O2Use(
           useSoluteFlowInput=true) annotation (Placement(transformation(
@@ -5536,57 +5536,20 @@ parameters")}));
     O2ToTissues = vein.q + arty.q;
 
       connect(O2Tissue.sO2,sO2)           annotation (Line(
-          points={{-8,8},{-8,19},{11,19}},
+          points={{-8,3},{-8,19},{11,19}},
           color={0,0,127},
           smooth=Smooth.None));
       connect(O2Tissue.pO2,pO2)  annotation (Line(
-          points={{-12,8},{-12,14},{14,14}},
+          points={{-12,3},{-12,14},{14,14}},
           color={0,0,127},
           smooth=Smooth.None));
     connect(O2Tissue.alveolar,Metabolism_O2Use. q_in) annotation (Line(
-        points={{-7.6,-12.2},{-7.6,-42.1},{-8,-42.1},{-8,-72}},
+        points={{-7.6,-17.2},{-7.6,-42.1},{-8,-42.1},{-8,-72}},
         color={107,45,134},
         thickness=1,
         smooth=Smooth.None));
-      connect(O2Tissue.pCO, busConnector.pCO) annotation (Line(points={{-17,2},{26,2},
-              {26,74},{-82,74}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(O2Tissue.FHbF, busConnector.FHbF) annotation (Line(points={{-17,-2},{26,
-              -2},{26,74},{-82,74}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(O2Tissue.FMetHb, busConnector.FMetHb) annotation (Line(points={{-17,-6},
-              {-17,-6},{26,-6},{26,74},{-82,74}},color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(O2Tissue.cDPG, busConnector.cDPG) annotation (Line(points={{-17,-10},{
-              26,-10},{26,74},{-82,74}},
-                                      color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(O2Tissue.ctHb, busConnector.ctHb) annotation (Line(points={{-17,-14},{
-              -17,-14},{26,-14},{26,74},{-82,74}},
-                                               color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(O2Tissue.pCO2, busConnector.Tissues_pCO2) annotation (Line(points={{1,-10},
-              {1,-10},{-46,-10},{-46,74},{-82,74}},        color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(O2Tissue.pH, busConnector.Tissues_pH) annotation (Line(points={{1,-14},
-              {1,-14},{-46,-14},{-46,74},{-82,74}},   color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
       connect(O2Tissue.BloodFlow, busConnector.CardiacOutput) annotation (Line(
-            points={{2,-0.6},{-46,-0.6},{-46,74},{-82,74}},   color={0,0,127}),
+            points={{2,-5.6},{32,-5.6},{32,74},{-82,74}},     color={0,0,127}),
           Text(
           string="%second",
           index=1,
@@ -5598,19 +5561,69 @@ parameters")}));
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(O2Tissue.T, busConnector.core_T) annotation (Line(points={{1,-6},{1,-6},
-              {-46,-6},{-46,74},{-82,74}},          color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
       connect(O2Tissue.q_in, arty) annotation (Line(
-          points={{1,5},{52.5,5},{52.5,2},{100,2}},
+          points={{1,0},{52.5,0},{100,0}},
           color={107,45,134},
           thickness=1));
       connect(O2Tissue.q_out, vein) annotation (Line(
-          points={{-17,5},{-58.5,5},{-58.5,0},{-100,0}},
+          points={{-17,0},{-58.5,0},{-100,0}},
           color={107,45,134},
           thickness=1));
+      connect(O2Tissue.sO2, busConnector.tissueVein_sO2) annotation (Line(
+            points={{-8,3},{-8,3},{-8,74},{-82,74}}, color={0,0,127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      connect(busConnector.pCO, O2Tissue.pCO) annotation (Line(
+          points={{-82,74},{-64,74},{-46,74},{-46,-3},{-17,-3}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(busConnector.FHbF, O2Tissue.FHbF) annotation (Line(
+          points={{-82,74},{-46,74},{-46,-7},{-17,-7}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(busConnector.FMetHb, O2Tissue.FMetHb) annotation (Line(
+          points={{-82,74},{-64,74},{-46,74},{-46,-11},{-17,-11}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(busConnector.cDPG, O2Tissue.cDPG) annotation (Line(
+          points={{-82,74},{-64,74},{-46,74},{-46,-15},{-17,-15}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(busConnector.ctHb, O2Tissue.ctHb) annotation (Line(
+          points={{-82,74},{-46,74},{-46,-19},{-17,-19}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(O2Tissue.T, busConnector.core_T) annotation (Line(points={{1,-11},
+              {32,-11},{32,74},{-82,74}}, color={0,0,127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      connect(O2Tissue.pCO2, busConnector.tissueVein_pCO2) annotation (Line(
+            points={{1,-15},{32,-15},{32,74},{-82,74}}, color={0,0,127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      connect(O2Tissue.pH, busConnector.tissueVein_pH) annotation (Line(points=
+              {{1,-19},{32,-19},{32,74},{-82,74}}, color={0,0,127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}),
                        graphics={Rectangle(extent={{-120,100},{120,-100}},
@@ -5705,29 +5718,9 @@ parameters")}));
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(tissueVeinsCO2.pH_ery, busConnector.pH_ery) annotation (Line(points={{
-              -25,12},{-12,12},{6,12},{6,92},{-88,92}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(tissueVeinsCO2.pH, busConnector.pH) annotation (Line(points={{-25,16},
-              {-10,16},{6,16},{6,92},{-88,92}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
       connect(tissueFlow.solutionFlow, busConnector.CardiacOutput) annotation (Line(
             points={{22,7},{22,7},{22,10},{22,10},{6,10},{6,92},{-88,92}}, color={0,
               0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(tissueVeinsCO2.Hct, busConnector.Hct) annotation (Line(points={{-43,12},
-              {-50,12},{-58,12},{-58,92},{-88,92}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(tissueVeinsCO2.sO2, busConnector.sO2) annotation (Line(points={{-43,8},
-              {-50,8},{-58,8},{-58,92},{-88,92}}, color={0,0,127}), Text(
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
@@ -5738,6 +5731,32 @@ parameters")}));
           extent={{6,3},{6,3}}));
       connect(tissueVeinsCO2.T, busConnector.core_T) annotation (Line(points={{
               -43,16},{-50,16},{-58,16},{-58,92},{-88,92}}, color={0,0,127}),
+          Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      connect(tissueVeinsCO2.pCO2, busConnector.tissueVein_pCO2) annotation (
+          Line(points={{-38,-4},{-38,-4},{-38,-18},{6,-18},{6,92},{-88,92}},
+            color={0,0,127}));
+      connect(tissueVeinsCO2.cHCO3, busConnector.tissueVein_cHCO3) annotation (
+          Line(points={{-42,-4},{-42,-4},{-42,-28},{6,-28},{6,92},{-88,92}},
+            color={0,0,127}));
+      connect(tissueVeinsCO2.sO2, busConnector.tissueVein_sO2) annotation (Line(
+            points={{-43,8},{-58,8},{-58,92},{-88,92}}, color={0,0,127}));
+      connect(tissueVeinsCO2.pH, busConnector.tissueVein_pH) annotation (Line(
+            points={{-25,16},{-10,16},{6,16},{6,92},{-88,92}}, color={0,0,127}),
+          Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      connect(tissueVeinsCO2.pH_ery, busConnector.tissueVein_pH_ery)
+        annotation (Line(points={{-25,12},{6,12},{6,92},{-88,92}}, color={0,0,
+              127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      connect(tissueVeinsCO2.Hct, busConnector.BloodVol_Hct) annotation (Line(
+            points={{-43,12},{-58,12},{-58,92},{-88,92}}, color={0,0,127}),
           Text(
           string="%second",
           index=1,
@@ -5811,6 +5830,9 @@ parameters")}));
       annotation (Placement(transformation(extent={{-18,-90},{2,-70}})));
       GasPartialPressure PO2
         annotation (Placement(transformation(extent={{-66,77},{-54,87}})));
+    Physiolibrary.Chemical.Components.Stream pulmShortCircuit(
+        useSolutionFlowInput=true)
+      annotation (Placement(transformation(extent={{-18,-22},{2,-42}})));
     equation
       connect(pulmShortCircuitFlow.u1,busConnector. CardiacOutput)
         annotation (Line(
@@ -6174,6 +6196,16 @@ parameters")}));
           points={{-20,-80},{-50,-80},{-50,-78},{-82,-78},{-82,-36}},
           color={107,45,134},
           thickness=1));
+      connect(pulmShortCircuitFlow.y, pulmShortCircuit.solutionFlow)
+        annotation (Line(points={{3,-46},{-8,-46},{-8,-39}}, color={0,0,127}));
+      connect(veinsO2.q_in, pulmShortCircuit.q_in) annotation (Line(
+          points={{-80,-8},{-50,-8},{-50,-32},{-18,-32}},
+          color={107,45,134},
+          thickness=1));
+      connect(pulmShortCircuit.q_out, artysO2.q_in) annotation (Line(
+          points={{2,-32},{36,-32},{36,-10},{70,-10}},
+          color={107,45,134},
+          thickness=1));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
                 -100,-100},{100,100}}),
                        graphics={
@@ -6262,7 +6294,7 @@ parameters")}));
           smooth=Smooth.None));
     connect(pulmShortCircuit.solutionFlow, pulmShortCircuitFlow.y)
       annotation (Line(
-        points={{-12,-3},{-12,-3},{-12,-1},{-12,-1}},
+        points={{-12,-3},{-12,-1}},
         color={0,0,127},
         smooth=Smooth.None));
       connect(pulmShortCircuitFlow.u1, busConnector.CardiacOutput)
@@ -6608,6 +6640,8 @@ parameters")}));
 
     BloodPhMeassure lungsPH
         annotation (Placement(transformation(extent={{28,28},{0,56}})));
+    BloodPhMeassure tissueVeinPH(pH(start=7.4), cHb=43)
+        annotation (Placement(transformation(extent={{28,-52},{0,-24}})));
     equation
       connect(busConnector.O2Artys_sO2,artysPH. sO2)        annotation (Line(
           points={{-24,92},{-24,74},{44,74},{44,60},{64,60},{64,57.4},{63.6,
@@ -6833,6 +6867,63 @@ parameters")}));
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
+      connect(busConnector.ctHb, tissueVeinPH.ctHb) annotation (Line(
+          points={{-24,92},{-24,92},{-24,-32.4},{1.4,-32.4}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(busConnector.tissueVein_cHCO3, tissueVeinPH.cHCO3) annotation (
+          Line(
+          points={{-24,92},{-24,92},{-24,-26.8},{1.4,-26.8}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(busConnector.ctAlb, tissueVeinPH.ctAlb) annotation (Line(
+          points={{-24,92},{-24,92},{-24,-38},{1.4,-38}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(busConnector.ctGlb, tissueVeinPH.ctGlb) annotation (Line(
+          points={{-24,92},{-24,92},{-24,-43.6},{1.4,-43.6}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(busConnector.ctPO4, tissueVeinPH.ctPO4) annotation (Line(
+          points={{-24,92},{-24,92},{-24,-48},{-24,-49.2},{1.4,-49.2}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(busConnector.tissueVein_sO2, tissueVeinPH.sO2) annotation (Line(
+          points={{-24,92},{-24,92},{-24,-14},{-24,-16},{5.6,-16},{5.6,-22.6}},
+
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(busConnector.BEox, tissueVeinPH.BEox) annotation (Line(
+          points={{-24,92},{-24,92},{-24,-8},{26.6,-8},{26.6,-22.6}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(tissueVeinPH.pH, busConnector.tissueVein_pH) annotation (Line(
+            points={{16.8,-54.8},{16.8,-60},{34,-60},{34,92},{-24,92}}, color={
+              0,0,127}));
+      connect(tissueVeinPH.pH_ery, busConnector.tissueVein_pH_ery) annotation (
+          Line(points={{11.2,-54.8},{11.2,-64},{34,-64},{34,92},{-24,92}},
+            color={0,0,127}));
       annotation ( Icon(coordinateSystem(
               preserveAspectRatio=true, extent={{-100,-100},{100,100}}),
             graphics={                 Text(
@@ -6870,8 +6961,8 @@ parameters")}));
 <br/><p>Copyright &copy; 2014 Marek Matejak, Charles University in Prague.</p><br/>
 
 </html>"),
-        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-                100}})));
+        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                {100,100}})));
     end AcidBase;
 
     model Ventilation
@@ -7022,61 +7113,54 @@ parameters")}));
       Physiolibrary.Types.BusConnector busConnector
         annotation (Placement(transformation(extent={{54,-20},{94,20}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst
-        constAlveolarVentilated_BloodFlow(k=8.3333333333333e-05)
+        constAlveolarVentilated_BloodFlow(k=9.0294166666667e-05)
         annotation (Placement(transformation(extent={{-88,94},{-80,98}})));
-      Physiolibrary.Types.Constants.TemperatureConst constAmbientTemperature(k=296.15)
+      Physiolibrary.Types.Constants.TemperatureConst constAmbientTemperature(k=
+            295.37222)
         annotation (Placement(transformation(extent={{-88,86},{-80,90}})));
-      Physiolibrary.Types.Constants.VolumeConst constArtysVol(k=0.00166)
+      Physiolibrary.Types.Constants.VolumeConst constArtysVol(k=0.00162155)
         annotation (Placement(transformation(extent={{-88,76},{-80,80}})));
       Modelica.Blocks.Sources.Constant                  constBEox(k=0)
                 annotation (Placement(transformation(extent={{-88,58},{-80,62}})));
       Physiolibrary.Types.Constants.PressureConst constBarometerPressure(k(
-            displayUnit="Pa") = 101325)
+            displayUnit="mmHg") = 101325.0144354)
         annotation (Placement(transformation(extent={{-88,46},{-80,50}})));
-      Physiolibrary.Types.Constants.FractionConst constBloodVol_Hct(k=0.464)
-        annotation (Placement(transformation(extent={{-88,36},{-80,40}})));
-      Physiolibrary.Types.Constants.VolumeFlowRateConst constCardiacOutput(k=9.0283333333333e-05)
-        annotation (Placement(transformation(extent={{-88,26},{-80,30}})));
-      Physiolibrary.Types.Constants.VolumeConst constDeadSpace(k=0.00017)
+      Physiolibrary.Types.Constants.VolumeFlowRateConst constCardiacOutput(k=
+            9.0294166666667e-05)
+        annotation (Placement(transformation(extent={{-86,38},{-78,42}})));
+      Physiolibrary.Types.Constants.VolumeConst constDeadSpace(k=0.000171674)
         annotation (Placement(transformation(extent={{-88,14},{-80,18}})));
 
       Physiolibrary.Types.Constants.FractionConst constEnvironmentRelativeHumidity(
           k=0.5) "Just a tip"
-                             annotation (Placement(transformation(extent={{-88,2},{-80,6}})));
+                             annotation (Placement(transformation(extent={{-88,4},
+                {-80,8}})));
       Physiolibrary.Types.Constants.FractionConst constFHbF(k=0.005)
         annotation (Placement(transformation(extent={{-86,-6},{-78,-2}})));
       Physiolibrary.Types.Constants.FractionConst constFMetHb(k=0.005)
         annotation (Placement(transformation(extent={{-86,-16},{-78,-12}})));
-      Physiolibrary.Types.Constants.FractionConst constFiO2(k=0.2)
+      Physiolibrary.Types.Constants.FractionConst constFiO2(k=0.21)
         "Not in physiomodel"
         annotation (Placement(transformation(extent={{-86,-28},{-78,-24}})));
-      Physiolibrary.Types.Constants.FractionConst constHct(k=0.464)
-        "same as bloodVol_Hct, not in physiomodel"
-        annotation (Placement(transformation(extent={{-86,-40},{-78,-36}})));
-      Physiolibrary.Types.Constants.FrequencyConst constRespRate(k=0.20166666666667)
+      Physiolibrary.Types.Constants.FrequencyConst constRespRate(k=
+            0.20166666666667)
         annotation (Placement(transformation(extent={{-88,-56},{-80,-52}})));
       Physiolibrary.Types.Constants.VolumeConst constTidalVolume(k=0.0005)
         "Not Known"
         annotation (Placement(transformation(extent={{-86,-78},{-78,-74}})));
-      Physiolibrary.Types.Constants.PressureConst constTissues_pCO2(k(displayUnit="Pa")=
-             6400)
-        annotation (Placement(transformation(extent={{-86,-90},{-78,-86}})));
-      Physiolibrary.Types.Constants.pHConst constTissues_pH(k=7.37)
-        "here as in interstitial - which one should it be?"
-        annotation (Placement(transformation(extent={{-86,-102},{-78,-98}})));
       Physiolibrary.Types.Constants.VolumeConst constVeinsVol(k=0.00361)
-        annotation (Placement(transformation(extent={{-34,44},{-26,48}})));
+        annotation (Placement(transformation(extent={{-58,82},{-50,86}})));
       Physiolibrary.Types.Constants.ConcentrationConst constcDPG(k(displayUnit="mol/m3")=
              5.4)
         annotation (Placement(transformation(extent={{-36,22},{-28,26}})));
-      Physiolibrary.Types.Constants.TemperatureConst constcore_T(k(displayUnit="K")=
-             310.22)
+      Physiolibrary.Types.Constants.TemperatureConst constcore_T(k(displayUnit=
+              "degC") = 310.22)
         annotation (Placement(transformation(extent={{-34,10},{-26,14}})));
-      Physiolibrary.Types.Constants.ConcentrationConst constctAlb(k(displayUnit="mol/m3")=
-             0.629)
+      Physiolibrary.Types.Constants.ConcentrationConst constctAlb(k(displayUnit
+            ="mmol/l") = 0.629267)
         annotation (Placement(transformation(extent={{-34,0},{-26,4}})));
       Physiolibrary.Types.Constants.MassConcentrationConst
-                                                       constctGlb(k=28)
+                                                       constctGlb(k=27.9924)
         annotation (Placement(transformation(extent={{-34,-10},{-26,-6}})));
       Physiolibrary.Types.Constants.ConcentrationConst constctHb(k(displayUnit="mol/m3")=
              9.79719)
@@ -7087,16 +7171,15 @@ parameters")}));
         annotation (Placement(transformation(extent={{-34,-44},{-26,-40}})));
       Physiolibrary.Types.Constants.pHConst constpH(k=7.39) "OF WHAT?"
         annotation (Placement(transformation(extent={{-34,-60},{-26,-56}})));
-      Physiolibrary.Types.Constants.pHConst constpH_ery(k=7.19)
-        annotation (Placement(transformation(extent={{-34,-80},{-26,-76}})));
-      Physiolibrary.Types.Constants.FractionConst constsO2(k=0.0085)
-        annotation (Placement(transformation(extent={{-34,-94},{-26,-90}})));
       Physiolibrary.Types.Constants.MolarFlowRateConst VCO2(k=0.000145717)
         "metabolic CO2 production rate"
         annotation (Placement(transformation(extent={{-40,70},{-30,74}})));
       Physiolibrary.Types.Constants.MolarFlowRateConst VO2(k=0.00018309)
         "metabolic O2 consumption rate"
         annotation (Placement(transformation(extent={{-40,62},{-30,66}})));
+      Physiolibrary.Types.Constants.FractionConst bloofVol_Hct(k=0.464)
+        "hematocrit"
+        annotation (Placement(transformation(extent={{-82,26},{-74,30}})));
     equation
       connect(constAlveolarVentilated_BloodFlow.y, busConnector.AlveolarVentilated_BloodFlow)
         annotation (Line(points={{-79,96},{4,96},{4,0},{74,0}}, color={0,0,127}),
@@ -7126,13 +7209,8 @@ parameters")}));
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(constBloodVol_Hct.y, busConnector.BloodVol_Hct) annotation (Line(
-            points={{-79,38},{4,38},{4,0},{74,0}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
       connect(constCardiacOutput.y, busConnector.CardiacOutput) annotation (Line(
-            points={{-79,28},{4,28},{4,0},{74,0}}, color={0,0,127}), Text(
+            points={{-77,40},{4,40},{4,0},{74,0}}, color={0,0,127}), Text(
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
@@ -7142,7 +7220,7 @@ parameters")}));
           index=1,
           extent={{6,3},{6,3}}));
       connect(constEnvironmentRelativeHumidity.y, busConnector.EnvironmentRelativeHumidity)
-        annotation (Line(points={{-79,4},{4,4},{4,0},{74,0}}, color={0,0,127}),
+        annotation (Line(points={{-79,6},{4,6},{4,0},{74,0}}, color={0,0,127}),
           Text(
           string="%second",
           index=1,
@@ -7162,11 +7240,6 @@ parameters")}));
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(constHct.y, busConnector.Hct) annotation (Line(points={{-77,-38},{4,-38},
-              {4,0},{74,0}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
       connect(constRespRate.y, busConnector.RespRate) annotation (Line(points={{-79,-54},
               {4,-54},{4,0},{74,0}},      color={0,0,127}), Text(
           string="%second",
@@ -7177,18 +7250,8 @@ parameters")}));
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(constTissues_pCO2.y, busConnector.Tissues_pCO2) annotation (Line(
-            points={{-77,-88},{4,-88},{4,0},{74,0}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(constTissues_pH.y, busConnector.Tissues_pH) annotation (Line(points={{
-              -77,-100},{4,-100},{4,0},{74,0}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(constVeinsVol.y, busConnector.VeinsVol) annotation (Line(points={{-25,
-              46},{4,46},{4,0},{74,0}}, color={0,0,127}), Text(
+      connect(constVeinsVol.y, busConnector.VeinsVol) annotation (Line(points={{-49,84},
+              {4,84},{4,0},{74,0}},     color={0,0,127}), Text(
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
@@ -7232,16 +7295,6 @@ parameters")}));
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(constpH_ery.y, busConnector.pH_ery) annotation (Line(points={{-25,-78},
-              {4,-78},{4,0},{74,0}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(constsO2.y, busConnector.sO2) annotation (Line(points={{-25,-92},{4,-92},
-              {4,0},{74,0}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
 
       connect(VO2.y, busConnector.VO2) annotation (Line(points={{-28.75,64},{
               -12,64},{4,64},{4,0},{74,0}}, color={0,0,127}), Text(
@@ -7250,6 +7303,12 @@ parameters")}));
           extent={{6,3},{6,3}}));
       connect(VCO2.y, busConnector.VCO2) annotation (Line(points={{-28.75,72},{
               -12,72},{4,72},{4,0},{74,0}}, color={0,0,127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      connect(bloofVol_Hct.y, busConnector.BloodVol_Hct) annotation (Line(
+            points={{-73,28},{-34,28},{-34,30},{4,30},{4,0},{74,0}}, color={0,0,
+              127}), Text(
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
@@ -7301,8 +7360,8 @@ parameters")}));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
         unlimitedSolutionStorage(Conc=13)
         annotation (Placement(transformation(extent={{-98,-18},{-78,2}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
-        unlimitedSolutionStorage1(Conc=24)
+      Physiolibrary.Chemical.Components.Substance
+        unlimitedSolutionStorage1(solute_start=0.024)
         annotation (Placement(transformation(extent={{70,-22},{50,-2}})));
     equation
       connect(busConnector.CO2Lung_pCO2,O2Lung. pCO2)               annotation (
@@ -7463,7 +7522,7 @@ parameters")}));
           color={107,45,134},
           thickness=1));
       connect(O2Lung.q_out, unlimitedSolutionStorage1.q_out) annotation (Line(
-          points={{-1,-9},{24.5,-9},{24.5,-12},{50,-12}},
+          points={{-1,-9},{24.5,-9},{24.5,-12},{60,-12}},
           color={107,45,134},
           thickness=1));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
@@ -7641,7 +7700,6 @@ parameters")}));
                                                   /*(
     solventFlowPump(q_out(conc(start=0.05))))*/
     //1000 * 1.977/40.01
-
 
       Physiolibrary.Types.Constants.PressureConst constVeinspCO2(k(displayUnit="Pa")=
              6329)
@@ -8636,15 +8694,15 @@ parameters")}));
       Parts.BloodyMary_Physiomodel bloodyMary_Physiomodel
         annotation (Placement(transformation(extent={{44,20},{64,40}})));
       Parts.TestInputs testInputs
-        annotation (Placement(transformation(extent={{-40,26},{-20,46}})));
+        annotation (Placement(transformation(extent={{-54,24},{-34,44}})));
     equation
-      connect(bloodyMary_Physiomodel.busConnector, testInputs.busConnector)
+      connect(testInputs.busConnector, bloodyMary_Physiomodel.busConnector)
         annotation (Line(
-          points={{61,35.8},{20,35.8},{20,36},{-22.6,36}},
+          points={{-36.6,34},{61,34},{61,35.8}},
           color={0,0,255},
           thickness=0.5));
-      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
-                -100,-100},{100,100}})));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}})), experiment(StopTime=6000));
     end testBM2;
 
     model testO2
