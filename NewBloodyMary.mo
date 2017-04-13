@@ -1002,8 +1002,7 @@ package NewBloodyMary_testing
                 100,100}}), graphics={Text(
               extent={{-100,-100},{76,-70}},
               textString="%name",
-              lineColor={0,0,255})}), Diagram(coordinateSystem(
-              preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
+              lineColor={0,0,255})}));
     end AlveolarVentilation_BTPS;
 
     model GasEquation
@@ -2411,7 +2410,7 @@ package NewBloodyMary_testing
   Real ey0;
   Real tnh;
 */
-  //  Physiolibrary.Types.Fraction FCOHb(start=0);
+    Physiolibrary.Types.Fraction FCOHb(start=0);
 
   //  Real pCO;
   //  Real pCO2;
@@ -2507,10 +2506,6 @@ package NewBloodyMary_testing
 
    //constant Real PaTOmmHg = 1/133;
 
-    constant Real HbTheoretical(unit = "ml/g") = 1.39
-        "Theoretical value of maximal hemoglobin saturation in mililiters of O2 per g of hemoglobin";
-    constant Real HbMeasured(unit = "ml/g") = 1.34
-        "Measured value of maximal hemoglobin saturation in mililiters of O2 per g of hemoglobin";
   equation
   //   PO2 = PaTOmmHg*1000 * pO2;
 
@@ -2518,12 +2513,11 @@ package NewBloodyMary_testing
   //  pCO2mmHg = PaTOmmHg*1000 * pCO2;
 
   //oxygen:
-  //  ceHb = ctHb * (1-FCOHb-FMetHb); //effective haemoglobin
-
-    ceHb = ctHb * HbMeasured / HbTheoretical "effective haemoglobin";
+    ceHb = ctHb * (1-FCOHb-FMetHb); //effective haemoglobin
 
     assert(tO2 <= ceHb*(1.06), "Model does not support this high level of oxygen in blood. Maximum of oxygen concentration should be connected with efective hemoglobin concentration!");
-
+      //pO2,pCO,pCO2 .. Pa
+    //TODO: check units of solubility
     aO2 = exp(log(0.0105)+(-0.0115*(T-T0))+0.5*0.00042*(T-T0)^2)/1000; //solubility
     cdO2 = aO2*pO2;
   /*  if (isSaturated) then
@@ -2569,8 +2563,8 @@ package NewBloodyMary_testing
     sO2CO = (cO2Hb + ctHb*FCOHb)/(ctHb*(1-FMetHb));
     sCO = ctHb*FCOHb/(ctHb*(1-FMetHb));*/
 
-      {pCO,pO2CO,sO2CO}=homotopy({sCO*pO2CO/ 218*sO2CO,pO2 + 218*pCO,(cO2Hb)/(ctHb*(1-FMetHb))},
-      {0,pO2,sO2});
+      {pCO,FCOHb,pO2CO,sO2CO}=homotopy({sCO*pO2CO/ 218*sO2CO,sCO*(1-FMetHb),pO2 + 218*pCO,(cO2Hb + ctHb*FCOHb)/(ctHb*(1-FMetHb))},
+      {0,0,pO2,sO2});
   //  end if;
 
   /*  ceHb = ctHb * (1-FCOHb-FMetHb); //effective haemoglobin
@@ -6977,12 +6971,12 @@ parameters")}));
           extent={{-6,3},{-6,3}}));
       connect(busConnector.tissueVein_sO2, tissueVeinPH.sO2) annotation (Line(
           points={{-24,92},{-24,92},{-24,-14},{-24,-16},{5.6,-16},{5.6,-22.6}},
+
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-
       connect(busConnector.BEox, tissueVeinPH.BEox) annotation (Line(
           points={{-24,92},{-24,92},{-24,-8},{26.6,-8},{26.6,-22.6}},
           color={0,0,255},
@@ -7228,8 +7222,8 @@ parameters")}));
       Physiolibrary.Types.Constants.TemperatureConst constcore_T(k(displayUnit=
               "degC") = 310.22)
         annotation (Placement(transformation(extent={{-34,10},{-26,14}})));
-      Physiolibrary.Types.Constants.ConcentrationConst constctAlb(k(displayUnit=
-             "mmol/l") = 0.629267)
+      Physiolibrary.Types.Constants.ConcentrationConst constctAlb(k(displayUnit
+            ="mmol/l") = 0.629267)
         annotation (Placement(transformation(extent={{-34,0},{-26,4}})));
       Physiolibrary.Types.Constants.MassConcentrationConst
                                                        constctGlb(k=27.9924)
