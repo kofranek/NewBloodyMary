@@ -1002,7 +1002,8 @@ package NewBloodyMary_testing
                 100,100}}), graphics={Text(
               extent={{-100,-100},{76,-70}},
               textString="%name",
-              lineColor={0,0,255})}));
+              lineColor={0,0,255})}), Diagram(coordinateSystem(
+              preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
     end AlveolarVentilation_BTPS;
 
     model GasEquation
@@ -2410,7 +2411,7 @@ package NewBloodyMary_testing
   Real ey0;
   Real tnh;
 */
-    Physiolibrary.Types.Fraction FCOHb(start=0);
+  //  Physiolibrary.Types.Fraction FCOHb(start=0);
 
   //  Real pCO;
   //  Real pCO2;
@@ -2506,6 +2507,10 @@ package NewBloodyMary_testing
 
    //constant Real PaTOmmHg = 1/133;
 
+    constant Real HbTheoretical(unit = "ml/g") = 1.39
+        "Theoretical value of maximal hemoglobin saturation in mililiters of O2 per g of hemoglobin";
+    constant Real HbMeasured(unit = "ml/g") = 1.34
+        "Measured value of maximal hemoglobin saturation in mililiters of O2 per g of hemoglobin";
   equation
   //   PO2 = PaTOmmHg*1000 * pO2;
 
@@ -2513,11 +2518,12 @@ package NewBloodyMary_testing
   //  pCO2mmHg = PaTOmmHg*1000 * pCO2;
 
   //oxygen:
-    ceHb = ctHb * (1-FCOHb-FMetHb); //effective haemoglobin
+  //  ceHb = ctHb * (1-FCOHb-FMetHb); //effective haemoglobin
+
+    ceHb = ctHb * HbMeasured / HbTheoretical "effective haemoglobin";
 
     assert(tO2 <= ceHb*(1.06), "Model does not support this high level of oxygen in blood. Maximum of oxygen concentration should be connected with efective hemoglobin concentration!");
-      //pO2,pCO,pCO2 .. Pa
-    //TODO: check units of solubility
+
     aO2 = exp(log(0.0105)+(-0.0115*(T-T0))+0.5*0.00042*(T-T0)^2)/1000; //solubility
     cdO2 = aO2*pO2;
   /*  if (isSaturated) then
@@ -2563,8 +2569,8 @@ package NewBloodyMary_testing
     sO2CO = (cO2Hb + ctHb*FCOHb)/(ctHb*(1-FMetHb));
     sCO = ctHb*FCOHb/(ctHb*(1-FMetHb));*/
 
-      {pCO,FCOHb,pO2CO,sO2CO}=homotopy({sCO*pO2CO/ 218*sO2CO,sCO*(1-FMetHb),pO2 + 218*pCO,(cO2Hb + ctHb*FCOHb)/(ctHb*(1-FMetHb))},
-      {0,0,pO2,sO2});
+      {pCO,pO2CO,sO2CO}=homotopy({sCO*pO2CO/ 218*sO2CO,pO2 + 218*pCO,(cO2Hb)/(ctHb*(1-FMetHb))},
+      {0,pO2,sO2});
   //  end if;
 
   /*  ceHb = ctHb * (1-FCOHb-FMetHb); //effective haemoglobin
