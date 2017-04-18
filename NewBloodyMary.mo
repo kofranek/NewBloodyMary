@@ -5674,7 +5674,7 @@ parameters")}));
             rotation=270,
             origin={20,-110})));
       Interstitium interstitium(volume(displayUnit="l") = 0.012,
-          initialHCO3Conc=25)
+          initialHCO3Conc=26.8)
         annotation (Placement(transformation(extent={{114,-52},{134,-32}})));
       Physiolibrary.Chemical.Components.Substance BloodBE(useNormalizedVolume=
             false, solute_start=0)
@@ -5697,8 +5697,8 @@ parameters")}));
             extent={{-10,-10},{10,10}},
             rotation=270,
             origin={122,92})));
-      Physiolibrary.Types.Constants.ConcentrationConst bloodHCO3Concentration(k
-          =25)
+      Physiolibrary.Types.Constants.ConcentrationConst bloodHCO3Concentration(k=
+           25)
         annotation (Placement(transformation(extent={{10,-60},{18,-52}})));
     equation
       CO2FromTissues = -( q_out.q + q_in.q);
@@ -5814,8 +5814,8 @@ parameters")}));
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(bloodHCO3Concentration.y, add.u2) annotation (Line(points={{19,
-              -56},{30,-56},{30,-72},{40,-72}}, color={0,0,127}));
+      connect(cHCO3_interstitial, add.u2) annotation (Line(points={{-18,-72},{
+              12,-72},{40,-72}}, color={0,0,127}));
       annotation (Icon(graphics={Rectangle(extent={{-120,100},{120,-100}},
                 lineColor={0,0,0})}), Diagram(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
@@ -6971,12 +6971,12 @@ parameters")}));
           extent={{-6,3},{-6,3}}));
       connect(busConnector.tissueVein_sO2, tissueVeinPH.sO2) annotation (Line(
           points={{-24,92},{-24,92},{-24,-14},{-24,-16},{5.6,-16},{5.6,-22.6}},
-
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
+
       connect(busConnector.BEox, tissueVeinPH.BEox) annotation (Line(
           points={{-24,92},{-24,92},{-24,-8},{26.6,-8},{26.6,-22.6}},
           color={0,0,255},
@@ -7222,8 +7222,8 @@ parameters")}));
       Physiolibrary.Types.Constants.TemperatureConst constcore_T(k(displayUnit=
               "degC") = 310.22)
         annotation (Placement(transformation(extent={{-34,10},{-26,14}})));
-      Physiolibrary.Types.Constants.ConcentrationConst constctAlb(k(displayUnit
-            ="mmol/l") = 0.629267)
+      Physiolibrary.Types.Constants.ConcentrationConst constctAlb(k(displayUnit=
+             "mmol/l") = 0.629267)
         annotation (Placement(transformation(extent={{-34,0},{-26,4}})));
       Physiolibrary.Types.Constants.MassConcentrationConst
                                                        constctGlb(k=27.9924)
@@ -7249,7 +7249,8 @@ parameters")}));
       Physiolibrary.Types.Constants.FractionConst constFiCO2(k=0)
         "Not in physiomodel"
         annotation (Placement(transformation(extent={{-86,-42},{-78,-38}})));
-      Modelica.Blocks.Sources.Step stepFiCO2(height=0.05, startTime=4800)
+      Modelica.Blocks.Sources.Ramp stepFiCO2(height=0.05, startTime=4800,
+        duration=0)
         annotation (Placement(transformation(extent={{-72,-40},{-64,-32}})));
     equation
       connect(constAlveolarVentilated_BloodFlow.y, busConnector.AlveolarVentilated_BloodFlow)
@@ -8760,9 +8761,11 @@ parameters")}));
 
       model testBM2
 
-        Parts.BloodyMary_Physiomodel bloodyMary_Physiomodel
+        Parts.BloodyMary_Physiomodel bloodyMary_Physiomodel(CO2balance(veins(
+                solute_start=0.0812), artys(solute_start=0.0338)))
           annotation (Placement(transformation(extent={{44,20},{64,40}})));
-        Parts.TestInputs testInputs
+        Parts.TestInputs testInputs(constTidalVolume(k=0.00057), stepFiCO2(
+              duration=100000, height=0.08))
           annotation (Placement(transformation(extent={{-54,24},{-34,44}})));
       equation
         connect(testInputs.busConnector, bloodyMary_Physiomodel.busConnector)
@@ -8811,11 +8814,11 @@ parameters")}));
 
       model testICF
 
-        Interstitium interstitium(initialHCO3Conc=25, volume(displayUnit="l")
-             = 0.012)
+        Interstitium interstitium(initialHCO3Conc=25, volume(displayUnit="l")=
+               0.012)
           annotation (Placement(transformation(extent={{18,20},{38,40}})));
-        Physiolibrary.Chemical.Components.Substance BloodBE(useNormalizedVolume
-            =false, solute_start=0)
+        Physiolibrary.Chemical.Components.Substance BloodBE(useNormalizedVolume=
+             false, solute_start=0)
           annotation (Placement(transformation(extent={{20,60},{40,80}})));
         Physiolibrary.Types.Constants.VolumeConst bloodVolume(k=0.005)
           annotation (Placement(transformation(extent={{0,70},{8,78}})));
@@ -8855,8 +8858,8 @@ parameters")}));
                 -22},{-71,-22},{-60,-22}}, color={0,0,127}));
         connect(add.y, gain.u) annotation (Line(points={{-37,-16},{-34,-16},{
                 -30,-16}}, color={0,0,127}));
-        connect(gain.y, unlimitedSolutePump.soluteFlow) annotation (Line(points
-              ={{-7,-16},{12,-16},{14,-16}}, color={0,0,127}));
+        connect(gain.y, unlimitedSolutePump.soluteFlow) annotation (Line(points=
+               {{-7,-16},{12,-16},{14,-16}}, color={0,0,127}));
         connect(interstitium.HCO3, unlimitedSolutePump.q_out) annotation (Line(
             points={{19,30},{18,30},{18,-10}},
             color={107,45,134},
@@ -8864,6 +8867,19 @@ parameters")}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent=
                   {{-100,-100},{100,100}})));
       end testICF;
+
+      model testKidneyCompensation
+
+        kidneyABRcompensation kidneyABRcompensation1
+          annotation (Placement(transformation(extent={{-8,-10},{12,10}})));
+        Modelica.Blocks.Sources.Constant const(k=7.2)
+          annotation (Placement(transformation(extent={{-58,-14},{-38,6}})));
+      equation
+        connect(const.y, kidneyABRcompensation1.pH) annotation (Line(points={{
+                -37,-4},{-20,-4},{-20,0},{-6,0}}, color={0,0,127}));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent=
+                  {{-100,-100},{100,100}})));
+      end testKidneyCompensation;
     end tests;
 
     model Interstitium
@@ -8891,8 +8907,31 @@ parameters")}));
       cdCO2 * 10^(pH-pK) = cHCO3;
 
     end Interstitium;
-  end Parts;
 
+    model kidneyABRcompensation
+
+      Physiolibrary.Types.RealIO.pHInput pH
+        annotation (Placement(transformation(extent={{-100,-20},{-60,20}})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput molarflowrate=action* actionSize
+      annotation (Placement(transformation(extent={{80,-10},{100,10}})));
+
+      Real action;
+      parameter Real actionSize=1e-8;
+      parameter Real actionTimeConst=3600*12;
+      parameter Real actionLimit=1;
+      constant Real referencepH=7.4;
+    equation
+
+      // hard anti-windup limiter
+      if action > actionLimit and pH > referencepH or action < -actionLimit and pH <
+          referencepH then
+        der(action) = 0;
+      else
+        der(action)*actionTimeConst = pH - referencepH;
+      end if;
+
+    end kidneyABRcompensation;
+  end Parts;
 
   package Icons
 
