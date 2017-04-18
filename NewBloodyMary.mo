@@ -5675,11 +5675,6 @@ parameters")}));
       Interstitium interstitium(volume(displayUnit="l") = 0.012,
           initialHCO3Conc=26.8)
         annotation (Placement(transformation(extent={{114,-52},{134,-32}})));
-      Physiolibrary.Chemical.Components.Substance BloodBE(useNormalizedVolume=
-            false, solute_start=0)
-        annotation (Placement(transformation(extent={{112,-28},{132,-8}})));
-      Physiolibrary.Types.Constants.VolumeConst bloodVolume(k=0.005)
-        annotation (Placement(transformation(extent={{96,-18},{104,-10}})));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure
         annotation (Placement(transformation(extent={{30,-52},{50,-32}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump(
@@ -5691,11 +5686,6 @@ parameters")}));
         annotation (Placement(transformation(extent={{42,-76},{62,-56}})));
       Modelica.Blocks.Math.Gain gain(k=2e-5)
         annotation (Placement(transformation(extent={{68,-76},{88,-56}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
-        annotation (Placement(transformation(
-            extent={{-10,-10},{10,10}},
-            rotation=270,
-            origin={122,92})));
       Physiolibrary.Types.Constants.ConcentrationConst bloodHCO3Concentration(k=
            25)
         annotation (Placement(transformation(extent={{10,-60},{18,-52}})));
@@ -5781,12 +5771,6 @@ parameters")}));
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(interstitium.BE, BloodBE.q_out) annotation (Line(
-          points={{124,-33},{124,-33},{124,-18},{122,-18}},
-          color={107,45,134},
-          thickness=1));
-      connect(BloodBE.solutionVolume, bloodVolume.y) annotation (Line(points={{
-              118,-14},{118,-14},{105,-14}}, color={0,0,127}));
       connect(interstitium.HCO3, concentrationMeasure.q_in) annotation (Line(
           points={{115,-42},{115,-42},{40,-42}},
           color={107,45,134},
@@ -5803,18 +5787,14 @@ parameters")}));
           thickness=1));
       connect(pCO2, interstitium.pCO2) annotation (Line(points={{46,-18},{82,
               -18},{82,-34},{116,-34}}, color={0,0,127}));
-      connect(BloodBE.q_out, concentrationMeasure1.q_in) annotation (Line(
-          points={{122,-18},{122,38},{122,92}},
-          color={107,45,134},
-          thickness=1));
-      connect(concentrationMeasure1.concentration, busConnector.BEox)
-        annotation (Line(points={{114,92},{-88,92},{-88,92}}, color={0,0,127}),
-          Text(
+      connect(cHCO3_interstitial, add.u2) annotation (Line(points={{-18,-72},{
+              12,-72},{40,-72}}, color={0,0,127}));
+      connect(interstitium.BE, busConnector.interstitiumBEoxFlow) annotation (
+          Line(points={{124,-33},{124,-33},{124,-18},{124,92},{-88,92}}, color=
+              {0,0,127}), Text(
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      connect(cHCO3_interstitial, add.u2) annotation (Line(points={{-18,-72},{
-              12,-72},{40,-72}}, color={0,0,127}));
       annotation (Icon(graphics={Rectangle(extent={{-120,100},{120,-100}},
                 lineColor={0,0,0})}), Diagram(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
@@ -7127,6 +7107,10 @@ parameters")}));
         annotation (Placement(transformation(extent={{-60,52},{-32,80}})));
       Physiolibrary.Types.BusConnector busConnector
         annotation (Placement(transformation(extent={{50,38},{90,78}})));
+      BodyBEox bodyBEox
+        annotation (Placement(transformation(extent={{80,80},{100,100}})));
+      kidney kidney1
+        annotation (Placement(transformation(extent={{80,20},{100,40}})));
     equation
       connect(O2Balance.busConnector, busConnector) annotation (Line(
           points={{-45.2,-1.8},{-45.2,34},{70,34},{70,58}},
@@ -7157,8 +7141,22 @@ parameters")}));
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
-      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
-                -100,-100},{100,100}})), Icon(coordinateSystem(
+      connect(busConnector, bodyBEox.busConnector) annotation (Line(
+          points={{70,58},{76,58},{76,98},{82,98}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      connect(busConnector, kidney1.busConnector) annotation (Line(
+          points={{70,58},{76,58},{76,38.2},{82,38.2}},
+          color={0,0,255},
+          thickness=0.5), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}})),      Icon(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
             graphics={Rectangle(
               extent={{-100,100},{100,-100}},
@@ -7865,12 +7863,11 @@ parameters")}));
                 {100,100}})));
     end CO2PhysiomodelInputs;
 
-
     model Interstitium
       constant Real T = 310.15;
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a HCO3
         annotation (Placement(transformation(extent={{-100,-10},{-80,10}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a BE
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput   BE
         annotation (Placement(transformation(extent={{-10,80},{10,100}})));
       Physiolibrary.Types.RealIO.PressureInput pCO2
         annotation (Placement(transformation(extent={{-100,60},{-60,100}})));
@@ -7884,7 +7881,7 @@ parameters")}));
        Real cHCO3( start = initialHCO3Conc, fixed = true) = HCO3.conc;
        Real tHCO3;
     equation
-      BE.q = HCO3.q;
+      BE = -HCO3.q;
       der(tHCO3) = HCO3.q;
       tHCO3/volume = HCO3.conc;
 
@@ -8788,10 +8785,11 @@ parameters")}));
       model testBM2
 
         Parts.BloodyMary_Physiomodel bloodyMary_Physiomodel(CO2balance(veins(
-                solute_start=0.0812), artys(solute_start=0.0338)))
+                solute_start=0.0812), artys(solute_start=0.0338)), kidney1(
+              kidneyABRcompensation1(actionSize=1E-005)))
           annotation (Placement(transformation(extent={{44,20},{64,40}})));
-        Parts.TestInputs testInputs(constTidalVolume(k=0.00057), stepFiCO2(
-              duration=100000, height=0.08))
+        Parts.TestInputs testInputs(constTidalVolume(k=0.00057), stepFiCO2(height=
+                0.05, duration=1000000))
           annotation (Placement(transformation(extent={{-54,24},{-34,44}})));
       equation
         connect(testInputs.busConnector, bloodyMary_Physiomodel.busConnector)
@@ -8960,15 +8958,15 @@ parameters")}));
           annotation (Placement(transformation(extent={{-32,-32},{54,54}})));
         Physiolibrary.Types.Constants.ConcentrationConst cDPG(k=5)
           annotation (Placement(transformation(extent={{78,24},{68,32}})));
-        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="kPa") =
+        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="kPa")=
             5000)
           annotation (Placement(transformation(extent={{-58,-6},{-50,2}})));
         Physiolibrary.Types.Constants.pHConst pH(k=7.410)
           annotation (Placement(transformation(extent={{-56,38},{-48,46}})));
         Physiolibrary.Types.Constants.FractionConst FCOHb(k=0.005)
           annotation (Placement(transformation(extent={{80,-28},{72,-20}})));
-        Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit="kPa")
-             = 5140)
+        Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit="kPa")=
+               5140)
           annotation (Placement(transformation(extent={{-60,20},{-52,28}})));
         Physiolibrary.Types.Constants.TemperatureConst temperature(k(
               displayUnit="K") = 310.15)
@@ -9007,7 +9005,7 @@ parameters")}));
 
       Physiolibrary.Types.RealIO.pHInput pH
         annotation (Placement(transformation(extent={{-100,-20},{-60,20}})));
-      Physiolibrary.Types.RealIO.MolarFlowRateOutput molarflowrate=action* actionSize
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput molarflowrate=-action* actionSize
       annotation (Placement(transformation(extent={{80,-10},{100,10}})));
 
       Real action;
@@ -9022,10 +9020,92 @@ parameters")}));
           referencepH then
         der(action) = 0;
       else
-        der(action)*actionTimeConst = pH - referencepH;
+        der(action)*actionTimeConst = (pH - referencepH) - action;
       end if;
 
     end kidneyABRcompensation;
+
+    model BodyBEox
+
+      Physiolibrary.Types.BusConnector busConnector
+        annotation (Placement(transformation(extent={{-100,60},{-60,100}})));
+      Physiolibrary.Chemical.Components.Substance BloodBE(useNormalizedVolume=
+            false, solute_start=0)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
+      Physiolibrary.Types.Constants.VolumeConst bloodVolume(k=0.005)
+        annotation (Placement(transformation(extent={{-18,14},{-10,22}})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
+        annotation (Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={0,80})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{-84,-10},{-64,10}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump1(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{-84,-36},{-64,-16}})));
+    equation
+      connect(BloodBE.solutionVolume,bloodVolume. y) annotation (Line(points={{-4,4},{
+              -4,18},{-9,18}},               color={0,0,127}));
+      connect(BloodBE.q_out,concentrationMeasure1. q_in) annotation (Line(
+          points={{0,0},{0,18},{0,80}},
+          color={107,45,134},
+          thickness=1));
+      connect(concentrationMeasure1.concentration, busConnector.BEox)
+        annotation (Line(points={{-8,80},{-80,80}},           color={0,0,127}),
+          Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      connect(unlimitedSolutePump.q_out, BloodBE.q_out) annotation (Line(
+          points={{-64,0},{-30,0},{0,0}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePump.soluteFlow, busConnector.interstitiumBEoxFlow)
+        annotation (Line(points={{-70,4},{-70,4},{-70,52},{-70,80},{-80,80}},
+            color={0,0,127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      connect(unlimitedSolutePump1.q_out, BloodBE.q_out) annotation (Line(
+          points={{-64,-26},{0,-26},{0,0}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePump1.soluteFlow, busConnector.kidneyBEoxFlow)
+        annotation (Line(points={{-70,-22},{-70,-22},{-70,80},{-80,80}}, color=
+              {0,0,127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
+                -100,-100},{100,100}})));
+    end BodyBEox;
+
+    model kidney
+
+      Physiolibrary.Types.BusConnector busConnector
+        annotation (Placement(transformation(extent={{-100,62},{-60,102}})));
+      kidneyABRcompensation kidneyABRcompensation1
+        annotation (Placement(transformation(extent={{-40,8},{-20,28}})));
+    equation
+      connect(kidneyABRcompensation1.molarflowrate, busConnector.kidneyBEoxFlow)
+        annotation (Line(points={{-21,18},{-6,18},{-6,82},{-80,82}}, color={0,0,
+              127}), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+      connect(kidneyABRcompensation1.pH, busConnector.Artys_pH) annotation (
+          Line(points={{-38,18},{-38,18},{-80,18},{-80,82}}, color={0,0,127}),
+          Text(
+          string="%second",
+          index=1,
+          extent={{-3,-3},{-3,-3}}));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
+                -100,-100},{100,100}})), Icon(graphics={Ellipse(extent={{-56,90},
+                  {24,-82}}, lineColor={28,108,200}), Line(points={{32,88},{24,
+                  -4},{52,-86}}, color={28,108,200})}));
+    end kidney;
   end Parts;
 
   package Icons
@@ -9104,7 +9184,8 @@ parameters")}));
   annotation (uses(Modelica(version="3.2.1"), Physiolibrary(version="2.3.1"),
       Physiomodel(version="1.0.0")));
 
-	end Icons;
+  end Icons;
+
   package OSA
     function HbFromGramDlToMmolL
       "recalculation of hemoglobin concentration form g/dl to mmol/l"
@@ -9454,16 +9535,6 @@ parameters")}));
             extent={{-19,-19},{19,19}},
             rotation=270,
             origin={-81,-119})));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-                {100,100}}), graphics={Rectangle(
-              extent={{-100,100},{100,-100}},
-              lineColor={28,108,200},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid), Text(
-              extent={{-60,66},{64,-34}},
-              lineColor={28,108,200},
-              textString="O2 total")}),         Diagram(coordinateSystem(
-              preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
 
     algorithm
       (totalO2,sO2, cdO2p,ceHb) :=O2total(
@@ -9477,6 +9548,17 @@ parameters")}));
         FHbF,
         T-273.15);
 
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                {100,100}}), graphics={Rectangle(
+              extent={{-100,100},{100,-100}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid), Text(
+              extent={{-60,66},{64,-34}},
+              lineColor={28,108,200},
+              textString="O2 total")}),         Diagram(coordinateSystem(
+              preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
     end ctO2content;
   end OSA;
+  annotation (uses(Physiolibrary(version="2.3.1"), Modelica(version="3.2.1")));
 end NewBloodyMary_testing;
