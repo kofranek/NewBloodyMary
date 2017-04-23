@@ -9185,7 +9185,7 @@ parameters")}));
       Physiomodel(version="1.0.0")));
 
   end Icons;
-  
+
   package OSA
     function HbFromGramDlToMmolL
       "recalculation of hemoglobin concentration form g/dl to mmol/l"
@@ -9746,6 +9746,71 @@ parameters")}));
       phiEB :=  ctHb/ctHbE; // !! !! it is hematokrit!!!!!!!
       ctCO2B :=  ctCO2E*phiEB + ctCO2Pof( pHT0, pCO2T0, T0)*(1 - phiEB);
     end ctCO2Bof;
+
+    function cBaseOf "Van Slyke equation"
+      input Real pH;
+      input Real pCO2;
+      input Real cHb;
+      input Real T;
+      input Real cAlb;
+      output Real result_cBase;
+    protected
+      Real cAlbN = 0.66;
+      Real T0 = 37;
+      Real ctHbb = 43.0;
+      Real betaHb= 2.3;
+      Real betaP= 7.7;
+      Real pH0 = 7.40;
+      Real pCO20 = 5.33;
+      Real pHT0;
+      Real pCO2T0;
+    algorithm
+        //pCO2T0 := pCO22of(pCO2, T, T0, ctHb);
+        pCO2T0 := pCO22of(pCO2, T, T0, cHb, cAlb, pH);
+        //pHT0   := pH2of(pH, T, T0, ctHb);
+        pHT0 := pH2of(pH, T, T0, cHb, cAlb, pCO2);
+        result_cBase := (1-cHb/ctHbb)
+                   *(cHCO3of(pHT0,pCO2T0,T0) - cHCO3of(pH0, pCO20, T0)
+                   + (betaHb*cHb + betaP+8*(cAlb-cAlbN))*(pHT0-pH0));
+    end cBaseOf;
+
+    function pHfr "Conversion to 37 C, calculation, conversion to T"
+      input Real pCO2;
+      input Real cBase;
+      input Real cHb;
+      input Real T;
+      input Real cAlb;
+      output Real result_pH;
+    protected
+      Real pCO237;
+      Real pH37Guess;
+      Real cBaseGuess;
+      Real pH0 = 37;
+      Real T0 = 37;
+      Real cAlbN = 0.66;
+      Real betaHb = 7.7;
+      Real betaP = 2.3;
+      Real ctHbb = 43.0;
+      Boolean doit;
+      Real epsilon = 0.000001;
+    algorithm
+       //pCO237:=pCO22of(pCO2, T, T0, cHb);
+       pCO237:= pCO22of(pCO2, T, T0, cHb, cAlb, pH37Guess);
+
+       cBaseGuess:=cBaseOf(pH37Guess, pCO237, cHb, T0, cAlb);
+       // Newton Raphson: We know cBase as a function of pH at constant pCO2,
+       //   but cannot express pH as a function of cBase}
+       doit := false;
+       while not doit loop
+          pH37Guess:=pH37Guess + (cBase - cBaseGuess)/((1-cHb/ctHbb)*
+                 (betaP+8*(cAlb-cAlbN) + betaHb*cHb)
+                 + log(10.0)*cHCO3of(pH37Guess, pCO237, T0));
+          cBaseGuess:=cBaseOf(pH37Guess, pCO237, cHb, T0,cAlb);
+          doit := abs(cBase - cBaseGuess) < epsilon;
+       end while;
+        //Result:= pH2of(pH37Guess, T0, T, cHb);
+        result_pH:=pH2of(pH37Guess, T0, T, cHb, cAlb, pCO237);
+    end pHfr;
   end OSA;
   annotation (uses(Modelica(version="3.2.1"), Physiolibrary(version="2.3.1"),
       Physiomodel(version="1.0.0")));
