@@ -8999,6 +8999,54 @@ parameters")}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent=
                   {{-100,-100},{100,100}})));
       end TestOSA;
+
+      model TestOSA1
+
+        OSA.ctO2content ctO2content
+          annotation (Placement(transformation(extent={{-32,-32},{54,54}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cDPG(k=5)
+          annotation (Placement(transformation(extent={{78,24},{68,32}})));
+        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="kPa")=
+            5000)
+          annotation (Placement(transformation(extent={{-58,-6},{-50,2}})));
+        Physiolibrary.Types.Constants.pHConst pH(k=7.410)
+          annotation (Placement(transformation(extent={{-56,38},{-48,46}})));
+        Physiolibrary.Types.Constants.FractionConst FCOHb(k=0.005)
+          annotation (Placement(transformation(extent={{80,-28},{72,-20}})));
+        Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit="kPa")=
+               5140)
+          annotation (Placement(transformation(extent={{-60,20},{-52,28}})));
+        Physiolibrary.Types.Constants.TemperatureConst temperature(k(
+              displayUnit="K") = 310.15)
+          annotation (Placement(transformation(extent={{-74,6},{-66,14}})));
+        Physiolibrary.Types.Constants.FractionConst FHbF(k=0.005)
+          annotation (Placement(transformation(extent={{82,-12},{74,-4}})));
+        Physiolibrary.Types.Constants.FractionConst FMetHb(k=0.005)
+          annotation (Placement(transformation(extent={{74,8},{66,16}})));
+        Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=9)
+          annotation (Placement(transformation(extent={{82,42},{72,50}})));
+      equation
+        connect(pH.y, ctO2content.pH) annotation (Line(points={{-47,42},{-31.14,
+                42},{-31.14,42.82}}, color={0,0,127}));
+        connect(pO2.y, ctO2content.pO2) annotation (Line(points={{-49,-2},{
+                -31.57,-2},{-31.57,-2.33}}, color={0,0,127}));
+        connect(pCO2.y, ctO2content.pCO2) annotation (Line(points={{-51,24},{
+                -42,24},{-42,25.62},{-31.14,25.62}}, color={0,0,127}));
+        connect(temperature.y, ctO2content.T) annotation (Line(points={{-65,10},
+                {-31.14,10},{-31.14,8.42}}, color={0,0,127}));
+        connect(FCOHb.y, ctO2content.FCOHb) annotation (Line(points={{71,-24},{
+                51.42,-24},{51.42,-23.4}}, color={0,0,127}));
+        connect(FHbF.y, ctO2content.FHbF) annotation (Line(points={{73,-8},{62,
+                -8},{62,-6.2},{51.42,-6.2}}, color={0,0,127}));
+        connect(FMetHb.y, ctO2content.FMetHb) annotation (Line(points={{65,12},
+                {51.42,12},{51.42,11}}, color={0,0,127}));
+        connect(cDPG.y, ctO2content.cDPG) annotation (Line(points={{66.75,28},{
+                51.42,28},{51.42,28.2}}, color={0,0,127}));
+        connect(ctHb.y, ctO2content.ctHb) annotation (Line(points={{70.75,46},{
+                51.42,46},{51.42,45.4}}, color={0,0,127}));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent=
+                  {{-100,-100},{100,100}})));
+      end TestOSA1;
     end tests;
 
     model kidneyABRcompensation
@@ -9758,9 +9806,9 @@ parameters")}));
       Real cAlbN = 0.66;
       Real T0 = 37;
       Real ctHbb = 43.0;
-      Real betaHb= 2.3;
-      Real betaP= 7.7;
-      Real pH0 = 7.40;
+      Real betaHb = 2.3;
+      Real betaP = 7.7;
+      Real pH0 =  7.40;
       Real pCO20 = 5.33;
       Real pHT0;
       Real pCO2T0;
@@ -9783,9 +9831,9 @@ parameters")}));
       output Real result_pH;
     protected
       Real pCO237;
-      Real pH37Guess;
+      Real pH37Guess=7.4;
       Real cBaseGuess;
-      Real pH0 = 37;
+      Real pH0 = 7.4;
       Real T0 = 37;
       Real cAlbN = 0.66;
       Real betaHb = 7.7;
@@ -9811,6 +9859,26 @@ parameters")}));
         //Result:= pH2of(pH37Guess, T0, T, cHb);
         result_pH:=pH2of(pH37Guess, T0, T, cHb, cAlb, pCO237);
     end pHfr;
+
+    model testcBaseOf
+
+      Real cte;
+    algorithm
+     cte:=cBaseOf(
+            7.4,
+            5.3,
+            8.0,
+            37,
+            66);
+
+    end testcBaseOf;
+
+    model testpHfr
+
+      Real pH;
+    equation
+      pH = pHfr(1.0,0,8,37,66);
+    end testpHfr;
   end OSA;
   annotation (uses(Modelica(version="3.2.1"), Physiolibrary(version="2.3.1"),
       Physiomodel(version="1.0.0")));
