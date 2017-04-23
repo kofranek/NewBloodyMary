@@ -9801,7 +9801,7 @@ parameters")}));
       input Real cHb;
       input Real T;
       input Real cAlb;
-      output Real result_cBase;
+      output Real result_cBEox;
     protected
       Real cAlbN = 0.66;
       Real T0 = 37;
@@ -9817,14 +9817,14 @@ parameters")}));
         pCO2T0 := pCO22of(pCO2, T, T0, cHb, cAlb, pH);
         //pHT0   := pH2of(pH, T, T0, ctHb);
         pHT0 := pH2of(pH, T, T0, cHb, cAlb, pCO2);
-        result_cBase := (1-cHb/ctHbb)
+        result_cBEox := (1-cHb/ctHbb)
                    *(cHCO3of(pHT0,pCO2T0,T0) - cHCO3of(pH0, pCO20, T0)
                    + (betaHb*cHb + betaP+8*(cAlb-cAlbN))*(pHT0-pH0));
     end cBaseOf;
 
     function pHfr "Conversion to 37 C, calculation, conversion to T"
       input Real pCO2;
-      input Real cBase;
+      input Real cBEox;
       input Real cHb;
       input Real T;
       input Real cAlb;
@@ -9832,7 +9832,7 @@ parameters")}));
     protected
       Real pCO237;
       Real pH37Guess=7.4;
-      Real cBaseGuess;
+      Real cBEoxGuess;
       Real pH0 = 7.4;
       Real T0 = 37;
       Real cAlbN = 0.66;
@@ -9845,40 +9845,44 @@ parameters")}));
        //pCO237:=pCO22of(pCO2, T, T0, cHb);
        pCO237:= pCO22of(pCO2, T, T0, cHb, cAlb, pH37Guess);
 
-       cBaseGuess:=cBaseOf(pH37Guess, pCO237, cHb, T0, cAlb);
+       cBEoxGuess:=cBaseOf(pH37Guess, pCO237, cHb, T0, cAlb);
        // Newton Raphson: We know cBase as a function of pH at constant pCO2,
        //   but cannot express pH as a function of cBase}
        doit := false;
        while not doit loop
-          pH37Guess:=pH37Guess + (cBase - cBaseGuess)/((1-cHb/ctHbb)*
+          pH37Guess:=pH37Guess + (cBEox - cBEoxGuess)/((1-cHb/ctHbb)*
                  (betaP+8*(cAlb-cAlbN) + betaHb*cHb)
                  + log(10.0)*cHCO3of(pH37Guess, pCO237, T0));
-          cBaseGuess:=cBaseOf(pH37Guess, pCO237, cHb, T0,cAlb);
-          doit := abs(cBase - cBaseGuess) < epsilon;
+          cBEoxGuess:=cBaseOf(pH37Guess, pCO237, cHb, T0,cAlb);
+          doit := abs(cBEox - cBEoxGuess) < epsilon;
        end while;
         //Result:= pH2of(pH37Guess, T0, T, cHb);
         result_pH:=pH2of(pH37Guess, T0, T, cHb, cAlb, pCO237);
     end pHfr;
 
-    model testcBaseOf
 
-      Real cte;
-    algorithm
-     cte:=cBaseOf(
-            7.4,
-            5.3,
-            8.0,
-            37,
-            66);
+    package testOSA
 
-    end testcBaseOf;
+      model testpHfr
 
-    model testpHfr
+        Real pH;
+      equation
+        pH = pHfr(5.3,-19,8*0.33,39,0.66);
+      end testpHfr;
 
-      Real pH;
-    equation
-      pH = pHfr(1.0,0,8,37,66);
-    end testpHfr;
+      model testcBaseOf
+
+        Real cte;
+      algorithm
+       cte:=cBaseOf(
+          7.0,
+          5.3,
+          8.0*0.33,
+          39,
+          0.66);
+
+      end testcBaseOf;
+    end testOSA;
   end OSA;
   annotation (uses(Modelica(version="3.2.1"), Physiolibrary(version="2.3.1"),
       Physiomodel(version="1.0.0")));
