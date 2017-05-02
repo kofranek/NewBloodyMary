@@ -184,7 +184,7 @@ package NewBloodyMary_testing
       input Real FCOHb "substance fraction of carboxyhemoglobin";
       input Real FMetHb "substance fraction of hemiglobin";
       input Real FHbF "substance fraction of fetal hemoglobin";
-      input Real TPt "temperature in Â°C";
+      input Real TPt "temperature in°C";
       output Real returnValue "oxygen hemoglobin saturation";
     protected
       Real MpCOa;
@@ -243,7 +243,7 @@ package NewBloodyMary_testing
       input Real FCOHb "substance fraction of carboxyhemoglobin";
       input Real FMetHb "substance fraction of hemiglobin";
       input Real FHbF "substance fraction of fetal hemogobin";
-      input Real temp "temperature in Â°C";
+      input Real temp "temperature in °C";
       output Real ctO2
         "concentration of total blood oxygen concentration in mmol/l";
       output Real sO2t "oxygen saturation of hemoglobin at given temperature";
@@ -588,14 +588,13 @@ package NewBloodyMary_testing
         result_pH:=pH2of(pH37Guess, T0, T, cHb, cAlb, pCO237);
     end pHfr;
 
-
     function cBaseEcfOf "Van Slyke equation"
-      input Real pH;
-      input Real pCO2;
-      input Real cHb;
-      input Real T;
-      input Real cAlb;
-      output Real result_cBEcf;
+      input Real pH "pH at given temperature";
+      input Real pCO2 "pCO2 at given temperature in kPa";
+      input Real cHb "hemoglobin concentration in mmol/l";
+      input Real T "temperature in °C";
+      input Real cAlb "concentration of albumin in mmol/l";
+      output Real result_cBEcf "Extracellular fluid BE - mmo/l";
     protected
       Real cAlbN = 0.66;
       Real T0 = 37;
@@ -622,14 +621,15 @@ package NewBloodyMary_testing
     end cBaseEcfOf;
 
     function cBEoxOf "Van Slyke equation"
-      input Real pH;
-      input Real pCO2;
-      input Real cHb;
-      input Real T;
-      input Real cAlb;
-      input Real cPi;
-      input Real sO2;
-      output Real result_cBEox;
+      input Real pH "pH at given temperature";
+      input Real pCO2 "pCO2 in kPA at given temperature";
+      input Real cHb "hemoglobin concentration in mmol/l";
+      input Real T "temperature in °C";
+      input Real cAlb "albumin concentration in mmol/l";
+      input Real cPi "phosphate concentration in mmol/l";
+      input Real sO2 "O2 hemoglobin saturation (as fraction)";
+      output Real result_cBEox
+        "BE on virtually fully oxygenated blood in mmol/l";
     protected
       Real cAlbN = 0.66;
       Real T0 = 37;
@@ -652,6 +652,84 @@ package NewBloodyMary_testing
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
                 -100,-100},{100,100}})));
     end cBEoxOf;
+
+    function BEINVof
+      input Real BEox "Base excess in virtually oxygenated blood in mmol/l";
+      input Real pCO2 "pCO2 in kPa";
+      input Real cHb "hemoglobin concentration in mmol/l";
+      input Real cAlb "albumin concentration in plasma in mmol/l";
+      input Real cPi "plasma phosphate concentration in mmol/l";
+      input Real sO2 "O2 hemoglobin saturation";
+      input Real temp "temperature in °C";
+      output Real pH "plasma pH";
+    protected
+      Real epsilon = 0.000001;
+      Real pHx = 7.4;
+      Real xBEox;
+      Real dBEox;
+      Real dpH;
+      Real pHlow = 0;
+      Real pHhigh = 0;
+      Real pHmean;
+      Boolean done=false;
+    algorithm
+      dpH:=0.1;
+      while (not done) loop
+        xBEox := cBEoxOf(pHx,pCO2,cHb,temp,cAlb,cPi,sO2);
+        dBEox:=BEox-xBEox;
+        if (dBEox>0) then
+          pHlow := pHx;
+          pHx := pHx+dpH;
+        else
+          pHhigh := pHx;
+          pHx := pHx - dpH;
+        end if;
+        done := (pHlow<>0 and pHhigh<>0);
+      end while;
+
+      while abs(pHhigh-pHlow)<epsilon loop
+        pHmean := (pHlow + pHhigh)/2;
+
+        if ((BEox - cBEoxOf(pHlow,pCO2,cHb,temp,cAlb,cPi,sO2))*
+        (BEox - cBEoxOf(pHmean,pCO2,cHb,temp,cAlb,cPi,sO2))>0) then
+          pHlow := pHmean;
+        else
+          pHhigh := pHmean;
+        end if;
+      end while;
+
+      pH := (pHlow + pHhigh)/2;
+
+    end BEINVof;
+
+    function O2CO2of
+      input Real tO2 "blood total O2 concantration in mmol/l";
+      input Real tCO2 "blood total CO2 concentration in mmol/l";
+      input Real BEox "Base Excess in virtually oxyganated blood in mmol/l";
+      input Real cHb "conentration of hemoglobin in mmol/l";
+      input Real alb "albumin consntration in plasma in mmol/l";
+      input Real Pi "phospahate concentration in plasma in mmol/l";
+      input Real cDPG "concentration of 2,3 diphosphoglycerate in mmol/l";
+      input Real FCOHb "substance fraction of carboxyhemoglobin";
+      input Real FMetHb "substance fraction of hemiglobin";
+      input Real FHbF "substance fraction of fetal hemogobin";
+      input Real temp "temperature in °C";
+      output Real pO2 "pO2 in kPa";
+      output Real pCO2 "pCO2 in kPa";
+      output Real pH "plasma pH";
+      output Real sO2 "O2 hemoglobin saturation";
+    protected
+      Real EpsPO2 = 0.000001;
+      Real DPO2 = 2;
+
+    algorithm
+      //main iteration loop
+      while (abs(DPO2)> EpsPO2) loop
+        //pCO2 iteration calculation
+
+      end while;
+
+    end O2CO2of;
 
     model ctO2content
 
@@ -1416,7 +1494,7 @@ package NewBloodyMary_testing
       Physiolibrary.Types.RealIO.ConcentrationInput ctCO2 annotation (Placement(
             transformation(extent={{-32,68},{-16,84}}), iconTransformation(extent={{-120,50},
                 {-100,70}})));
-      Physiolibrary.Types.RealIO.PressureOutput pO2( start = 13.3) annotation (Placement(
+      Physiolibrary.Types.RealIO.PressureOutput pO2 annotation (Placement(
             transformation(extent={{36,41},{50,55}}), iconTransformation(extent={{100,
                 70},{120,90}})));
       Physiolibrary.Types.RealIO.PressureOutput pCO2 annotation (Placement(
@@ -1793,7 +1871,7 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-24,-16},{26,36}})));
         Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit="kPa")=
                5330)
-          annotation (Placement(transformation(extent={{-46,16},{-38,24}})));
+          annotation (Placement(transformation(extent={{-44,16},{-36,24}})));
         Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=8)
           annotation (Placement(transformation(extent={{-86,8},{-78,16}})));
         Physiolibrary.Types.Constants.ConcentrationConst cAlb(k=0.66)
@@ -1802,14 +1880,14 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-60,-30},{-52,-22}})));
         Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
           annotation (Placement(transformation(extent={{-52,28},{-44,36}})));
-        Physiolibrary.Types.Constants.ConcentrationConst cAlb1(k=1.15)
+        Physiolibrary.Types.Constants.ConcentrationConst cPi(k=1.15)
           annotation (Placement(transformation(extent={{-68,-10},{-60,-2}})));
         Physiolibrary.Types.Constants.FractionConst sO2(k=0.5)
           annotation (Placement(transformation(extent={{-56,-16},{-48,-8}})));
       equation
         connect(BEox.y, bEINV.BEox) annotation (Line(points={{-43,32},{-36,32},
                 {-36,30.8},{-26.5,30.8}}, color={0,0,127}));
-        connect(pCO2.y, bEINV.pCO2) annotation (Line(points={{-37,20},{-26.5,20},
+        connect(pCO2.y, bEINV.pCO2) annotation (Line(points={{-35,20},{-26.5,20},
                 {-26.5,20.4}}, color={0,0,127}));
         connect(ctHb.y, bEINV.ctHb)
           annotation (Line(points={{-77,12},{-38,12},{-38,10},{-26.5,10}},
@@ -1819,8 +1897,8 @@ package NewBloodyMary_testing
         connect(temperature.y, bEINV.temp) annotation (Line(points={{-51,-26},{
                 -34,-26},{-34,-15.48},{-26.5,-15.48}},
                                                      color={0,0,127}));
-        connect(cAlb1.y, bEINV.cPi) annotation (Line(points={{-59,-6},{-44,-6},
-                {-44,-3},{-26.5,-3}}, color={0,0,127}));
+        connect(cPi.y, bEINV.cPi) annotation (Line(points={{-59,-6},{-44,-6},{-44,
+                -3},{-26.5,-3}}, color={0,0,127}));
         connect(sO2.y, bEINV.sO2) annotation (Line(points={{-47,-12},{-38,-12},
                 {-38,-9.24},{-26.5,-9.24}}, color={0,0,127}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
@@ -1892,8 +1970,8 @@ package NewBloodyMary_testing
 
         PO2PCO2 pO2PCO2_1
           annotation (Placement(transformation(extent={{-4,8},{66,76}})));
-        Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit="kPa")=
-               5330)
+        Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit="kPa")
+             = 7999.3432449)
           annotation (Placement(transformation(extent={{-36,56},{-28,64}})));
         Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=8)
           annotation (Placement(transformation(extent={{-84,50},{-76,58}})));
@@ -1903,8 +1981,8 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-62,6},{-54,14}})));
         Physiolibrary.Types.Constants.ConcentrationConst BEox(k=-19)
           annotation (Placement(transformation(extent={{-96,68},{-88,76}})));
-        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="kPa")=
-            13300)
+        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="mmHg")
+             = 10665.7909932)
           annotation (Placement(transformation(extent={{-54,62},{-46,70}})));
         Physiolibrary.Types.Constants.ConcentrationConst cDPG(k=5)
           annotation (Placement(transformation(extent={{-100,32},{-92,40}})));
@@ -1916,10 +1994,6 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-44,14},{-36,22}})));
         O2CO2 o2CO2_1
           annotation (Placement(transformation(extent={{12,-64},{78,0}})));
-        Physiolibrary.Types.Constants.ConcentrationConst ctO2(k=7.6354)
-          annotation (Placement(transformation(extent={{-8,-14},{0,-6}})));
-        Physiolibrary.Types.Constants.ConcentrationConst ctCO2(k=10.3922)
-          annotation (Placement(transformation(extent={{-20,-20},{-12,-12}})));
         Physiolibrary.Types.Constants.ConcentrationConst cPi(k=1.15)
           annotation (Placement(transformation(extent={{-54,38},{-46,46}})));
       equation
@@ -1972,16 +2046,17 @@ package NewBloodyMary_testing
         connect(o2CO2_1.T, pO2PCO2_1.T) annotation (Line(points={{8.7,-62.72},{
                 -40,-62.72},{-40,10},{-32,10},{-32,8},{-7.5,8}},      color={0,
                 0,127}));
-        connect(ctO2.y, o2CO2_1.ctO2) annotation (Line(points={{1,-10},{8.7,-10},
-                {8.7,-6.4}}, color={0,0,127}));
-        connect(ctCO2.y, o2CO2_1.ctCO2) annotation (Line(points={{-11,-16},{8.7,
-                -16},{8.7,-12.8}},
-                                 color={0,0,127}));
         connect(cPi.y, pO2PCO2_1.ctPi) annotation (Line(points={{-45,42},{-7.5,
                 42},{-7.5,41.32}}, color={0,0,127}));
         connect(o2CO2_1.ctPi, pO2PCO2_1.ctPi) annotation (Line(points={{8.7,
                 -31.36},{-78,-31.36},{-78,24},{-36,24},{-36,42},{-7.5,42},{-7.5,
                 41.32}}, color={0,0,127}));
+        connect(o2CO2_1.ctO2, pO2PCO2_1.ctO2) annotation (Line(points={{8.7,
+                -6.4},{2,-6.4},{2,4},{80,4},{80,69.2},{69.5,69.2}}, color={0,0,
+                127}));
+        connect(o2CO2_1.ctCO2, pO2PCO2_1.ctCO2) annotation (Line(points={{8.7,
+                -12.8},{-2,-12.8},{-2,6},{78,6},{78,62.4},{69.5,62.4}}, color={
+                0,0,127}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                   -100},{100,100}})));
       end testO2CO2;
@@ -2038,6 +2113,23 @@ package NewBloodyMary_testing
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent=
                   {{-100,-100},{100,100}})));
       end testO2CO2_1;
+
+      model testBEINVof
+        Real pH=7.2;
+        Real newpH;
+        Real BEox;
+        Real newBEox;
+        Real pCO2 = 8.33;
+        Real cHb=8.5;
+        Real cAlb = 0.66;
+        Real cPi=1.15;
+        Real sO2=0.5;
+        Real temp = 37;
+      algorithm
+        BEox:= cBEoxOf(pH,pCO2,cHb,temp, cAlb, cPi, sO2);
+        newpH :=BEINVof(BEox,pCO2,cHb,cAlb,cPi,sO2,temp);
+        newBEox:= cBEoxOf(newpH,pCO2,cHb,temp, cAlb, cPi, sO2);
+      end testBEINVof;
     end testOSA;
   end OSA;
 
