@@ -687,7 +687,7 @@ package NewBloodyMary_testing
         done := (pHlow<>0 and pHhigh<>0);
       end while;
 
-      while abs(pHhigh-pHlow)<epsilon loop
+      while abs(pHhigh-pHlow)>epsilon loop
         pHmean := (pHlow + pHhigh)/2;
 
         if ((BEox - cBEoxOf(pHlow,pCO2,cHb,temp,cAlb,cPi,sO2))*
@@ -707,8 +707,8 @@ package NewBloodyMary_testing
       input Real tCO2 "blood total CO2 concentration in mmol/l";
       input Real BEox "Base Excess in virtually oxyganated blood in mmol/l";
       input Real cHb "conentration of hemoglobin in mmol/l";
-      input Real alb "albumin consntration in plasma in mmol/l";
-      input Real Pi "phospahate concentration in plasma in mmol/l";
+      input Real cAlb "albumin consntration in plasma in mmol/l";
+      input Real cPi "phospahate concentration in plasma in mmol/l";
       input Real cDPG "concentration of 2,3 diphosphoglycerate in mmol/l";
       input Real FCOHb "substance fraction of carboxyhemoglobin";
       input Real FMetHb "substance fraction of hemiglobin";
@@ -719,14 +719,106 @@ package NewBloodyMary_testing
       output Real pH "plasma pH";
       output Real sO2 "O2 hemoglobin saturation";
     protected
-      Real EpsPO2 = 0.000001;
+      Real epsPO2 = 0.00001;
+      Real epsPCO2 = 0.00001;
+      Real epsCO2= 0.000001;
+      Real epsO2 =  0.000001;
       Real DPO2 = 2;
+      Real AO2;
+      Real CO2;
+      Real O2;
+      Real DCO2;
+      Real DO2;
+      Real DPCO2;
+      Real K;
 
     algorithm
-      //main iteration loop
-      while (abs(DPO2)> EpsPO2) loop
-        //pCO2 iteration calculation
+      //initialisation
+      pCO2:=5.33;
+      pO2:=13.3;
+      sO2:=0.975;
 
+      //main iteration loop
+      while (abs(DPO2)> epsPO2) loop
+        //pCO2 iteration calculation
+        AO2:=pO2;
+
+        //iteration of pCO2 and pH
+        pH := BEINVof(BEox,pCO2,cHb,cAlb,cPi,sO2,temp);
+        CO2 := ctCO2Bof(pH,pCO2,temp,cHb,sO2);
+        DCO2:=tCO2-CO2;
+        DPCO2:=1;
+
+        if (DCO2>0) then
+          while (DCO2>0) loop
+            pCO2 := pCO2 + DPCO2;
+            pH := BEINVof(BEox,pCO2,cHb,cAlb,cPi,sO2,temp);
+            CO2 := ctCO2Bof(pH,pCO2,temp,cHb,sO2);
+            DCO2:=tCO2-CO2;
+          end while;
+        else
+          while (DCO2<0) loop
+            pCO2 := pCO2 + DPCO2;
+            pH := BEINVof(BEox,pCO2,cHb,cAlb,cPi,sO2,temp);
+            CO2 := ctCO2Bof(pH,pCO2,temp,cHb,sO2);
+            DCO2:=tCO2-CO2;
+          end while;
+        end if;
+        while ( (abs(DCO2)>epsCO2) or (abs(DPCO2)>epsPCO2)) loop
+          if (DO2>0) then
+            K:=1;
+          else
+            K:=-1;
+          end if;
+          DPCO2 := DPCO2/2;
+          pCO2 := pCO2 + K*DPCO2;
+          pH := BEINVof(BEox,pCO2,cHb,cAlb,cPi,sO2,temp);
+          CO2 := ctCO2Bof(pH,pCO2,temp,cHb,sO2);
+          DCO2:=tCO2-CO2;
+        end while;
+
+        //iteration of PO2 and SO2
+        if O2>0 then
+          sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+          O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+          DO2 := tO2-O2;
+          if (DO2>0) then
+            while DO2>0 loop
+              pO2 := pO2 + DPO2;
+          sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+          O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+          DO2 := tO2-O2;
+           end while;
+          else
+            while DO2<0 loop
+              pO2 := pO2 - DPO2;
+              if pO2<0.001 then
+                pO2 := 0.001;
+              end if;
+              sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+              O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+              DO2 := tO2-O2;
+            end while;
+          end if;
+          while ((abs(DO2)>epsO2) or (abs(DPO2)>epsPO2)) loop
+            if (DO2>0) then
+              K:=1;
+            else
+              K:= -1;
+            end if;
+            DPO2 := DPO2/2;
+            pO2:= pO2 + K*DPO2;
+            sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+            O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+            DO2 := tO2-O2;
+          end while;
+        else
+          pO2:=0;
+          sO2:=0;
+        end if;
+
+        //connection of pCO2 and pO2 iteration loops
+        DPO2 :=abs(pO2 - AO2);
       end while;
 
     end O2CO2of;
@@ -2130,6 +2222,34 @@ package NewBloodyMary_testing
         newpH :=BEINVof(BEox,pCO2,cHb,cAlb,cPi,sO2,temp);
         newBEox:= cBEoxOf(newpH,pCO2,cHb,temp, cAlb, cPi, sO2);
       end testBEINVof;
+
+      model testO2CO2of
+        Real pH=7.2;
+        Real BEox= 0;
+        Real pCO2 = 8.33;
+        Real pO2 = 13.3;
+        Real cHb=8.5;
+        Real cAlb = 0.66;
+        Real cPi=1.15;
+        Real temp = 37;
+        Real FCOHb = 0.005;
+        Real FMetHb =  0.005;
+        Real FHbF = 0.005;
+        Real cDPG =  5.3;
+        Real CO2;
+        Real O2;
+        Real sO2;
+        Real PO2calc;
+        Real PCO2calc;
+        Real pHcalc;
+        Real sO2calc;
+      equation
+        sO2 =  sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+        O2 =  O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+        CO2 =  ctCO2Bof(pH,pCO2,temp,cHb,sO2);
+        (PCO2calc,PO2calc,pHcalc,sO2calc)= O2CO2of(O2,CO2,BEox,cHb,cAlb,cPi,cDPG,FCOHb,FMetHb,FHbF,temp);
+
+      end testO2CO2of;
     end testOSA;
   end OSA;
 

@@ -1,6 +1,6 @@
 ﻿package {
 	import flash.display.MovieClip;
-	
+
 	public class BloodyMary extends MovieClip {
 		public function BloodyMary() {
 			// constructor code
@@ -257,6 +257,35 @@
 			//end ceHbof;	
 		}
 
+
+		function ctO2Bof(ctHb: Number, pO2: Number, pHp: Number, pCO2: Number, cDPG: Number,
+			FCOHb: Number, FMetHb: Number, FHbF: Number, temp: Number): Number {
+			//input Real ctHb "conentration of hemoglobin in mmol/l";
+			//input Real pO2 "pO2 at givent temperature in kPa";
+			//input Real pHp "pH in plasma at given temperature";
+			//input Real pCO2 "pCO2 at given temperature in kPa";
+			//input Real cDPG "concentration of 2,3 diphosphoglycerate in mmol/l";
+			//input Real FCOHb "substance fraction of carboxyhemoglobin";
+			//input Real FMetHb "substance fraction of hemiglobin";
+			//input Real FHbF "substance fraction of fetal hemogobin";
+			//input Real temp "temperature in °C";
+			//output Real ctO2 "concentration of total blood oxygen concentration in mmol/l";
+
+			var sO2t: Number; //"oxygen saturation of hemoglobin at given temperature";
+			var dissO2t: Number; //"koncentration of dissolved oxygen in blood in mmol/l";
+			var ceHb: Number; //"effective hemoglobin concentration in mmol/l";
+			var ctO2:Number //"concentration of total blood oxygen concentration in mmol/l";
+
+			sO2t = sO2of(pO2, pHp, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+			ceHb = ceHbof(ctHb, FCOHb, FMetHb);
+
+			dissO2t = dissO2(pO2, temp);
+			ctO2 = dissO2t + sO2t * ceHb;
+			return ctO2;
+		    //end ctO2Bof;
+		}
+
+
 		function O2total(ctHb: Number, pO2: Number, pHp: Number, pCO2: Number, cDPG: Number, FCOHb: Number, FMetHb: Number, FHbF: Number, temp: Number): Object {
 			//"Calculation of concentration of total oxygen"
 			//input Real ctHb "conentration of hemoglobin in mmol/l";
@@ -374,7 +403,7 @@
 			//end ctCO2Pof;		
 		}
 
-		function cHCO3of(pH:Number, pCO2: Number, T: Number): Number {
+		function cHCO3of(pH: Number, pCO2: Number, T: Number): Number {
 			//"calculation of plasma bicarbonate concentration"
 			//input Real pH "plasma pH at given temperature in mmol/l";
 			//input Real pCO2 "pCO2 in kPa";
@@ -760,8 +789,8 @@
 				done = ((pHlow != 0) && (pHhigh != 0));
 				//end while;	  
 			}
-			
-			trace ("pHlow="+pHlow+" pHhigh="+pHhigh);
+
+			trace("pHlow=" + pHlow + " pHhigh=" + pHhigh);
 
 			while (Math.abs(pHhigh - pHlow) > epsilon) {
 				//loop
@@ -780,6 +809,164 @@
 			//end BEINVof;
 		}
 
+
+		function O2CO2of(tO2: Number, tCO2: Number, BEox: Number, cHb: Number, cAlb: Number,
+			cPi: Number, cDPG: Number, FCOHb: Number, FMetHb: Number, FHbF: Number, temp: Number): Object {
+			//input Real tO2 "blood total O2 concantration in mmol/l";
+			//input Real tCO2 "blood total CO2 concentration in mmol/l";
+			//input Real BEox "Base Excess in virtually oxyganated blood in mmol/l";
+			//input Real cHb "conentration of hemoglobin in mmol/l";
+			//input Real cAlb "albumin consntration in plasma in mmol/l";
+			//input Real cPi "phospahate concentration in plasma in mmol/l";
+			//input Real cDPG "concentration of 2,3 diphosphoglycerate in mmol/l";
+			//input Real FCOHb "substance fraction of carboxyhemoglobin";
+			//input Real FMetHb "substance fraction of hemiglobin";
+			//input Real FHbF "substance fraction of fetal hemogobin";
+			//input Real temp "temperature in °C";
+			//output Real pO2 "pO2 in kPa";
+			//output Real pCO2 "pCO2 in kPa";
+			//output Real pH "plasma pH";
+			//output Real sO2 "O2 hemoglobin saturation";
+			var returnValue: Object = new Object();
+			var pO2: Number;
+			var pCO2: Number;
+			var pH: Number;
+			var sO2: Number;
+
+
+			var epsPO2: Number = 0.00001;
+			var epsPCO2: Number = 0.00001;
+			var epsCO2: Number = 0.000001;
+			var epsO2: Number = 0.000001;
+			var DPO2: Number = 2;
+			var AO2: Number;
+			var CO2: Number;
+			var O2: Number;
+			var DCO2: Number;
+			var DO2: Number;
+			var DPCO2: Number;
+			var K: Number;
+
+			//algorithm 
+			//initialisation
+			pCO2 = 5.33;
+			pO2 = 13.3;
+			sO2 = 0.975;
+
+			//main iteration loop
+			while (Math.abs(DPO2) > epsPO2) {
+				//loop
+				//pCO2 iteration calculation
+				AO2 = pO2;
+
+				//iteration of pCO2 and pH
+				pH = BEINVof(BEox, pCO2, cHb, cAlb, cPi, sO2, temp);
+				CO2 = ctCO2Bof(pH, pCO2, temp, cHb, sO2);
+				DCO2 = tCO2 - CO2;
+				DPCO2 = 1;
+
+				if (DCO2 > 0) {
+					while (DCO2 > 0) {
+						pCO2 = pCO2 + DPCO2;
+						pH = BEINVof(BEox, pCO2, cHb, cAlb, cPi, sO2, temp);
+						CO2 = ctCO2Bof(pH, pCO2, temp, cHb, sO2);
+						DCO2 = tCO2 - CO2;
+					}
+					//end while;		
+				} else {
+					while (DCO2 < 0) {
+						pCO2 = pCO2 + DPCO2;
+						pH = BEINVof(BEox, pCO2, cHb, cAlb, cPi, sO2, temp);
+						CO2 = ctCO2Bof(pH, pCO2, temp, cHb, sO2);
+						DCO2 = tCO2 - CO2;
+					};
+					// end while;
+				};
+				//end if;
+				while ((Math.abs(DCO2) > epsCO2) || (Math.abs(DPCO2) > epsPCO2)) {
+					if (DO2 > 0) {
+						K = 1;
+					} else {
+						K = -1;
+					};
+					//end if;
+					DPCO2 = DPCO2 / 2;
+					pCO2 = pCO2 + K * DPCO2;
+					pH = BEINVof(BEox, pCO2, cHb, cAlb, cPi, sO2, temp);
+					CO2 = ctCO2Bof(pH, pCO2, temp, cHb, sO2);
+					DCO2 = tCO2 - CO2;
+				}
+				//end while;
+
+				//iteration of PO2 and SO2
+
+				if (O2 > 0) {
+					sO2 = sO2of(pO2, pH, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+					O2 = ctO2Bof(cHb, pO2, pH, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+					DO2 = tO2 - O2;
+					if (DO2 > 0) {
+						while (DO2 > 0) {
+							pO2 = pO2 + DPO2;
+							sO2 = sO2of(pO2, pH, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+							O2 = ctO2Bof(cHb, pO2, pH, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+							DO2 = tO2 - O2;
+						}
+						//end while;
+					} else {
+						while (DO2 < 0) {
+							pO2 = pO2 - DPO2;
+							if (pO2 < 0.001) {
+								pO2 = 0.001;
+							}
+							//end if;
+							sO2 = sO2of(pO2, pH, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+							O2 = ctO2Bof(cHb, pO2, pH, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+							DO2 = tO2 - O2;
+						}
+						//end while;
+					}
+					//end if;
+					while ((Math.abs(DO2) > epsO2) || (Math.abs(DPO2) > epsPO2)) {
+						if (DO2 > 0) {
+							K = 1;
+						} else {
+							K = -1;
+						}
+						//end if;
+						DPO2 = DPO2 / 2;
+						pO2 = pO2 + K * DPO2;
+						sO2 = sO2of(pO2, pH, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+						O2 = ctO2Bof(cHb, pO2, pH, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+						DO2 = tO2 - O2;
+					}
+					//end while;
+				} else {
+					pO2 = 0;
+					sO2 = 0;
+				}
+				//end if;
+
+
+
+				//connection of pCO2 and pO2 iteration loops
+				DPO2 = Math.abs(pO2 - AO2);
+
+
+			}
+			//end while;
+			returnValue.pCO2 = pCO2;
+			returnValue.pO2 = pO2;
+			returnValue.pH = pH;
+			returnValue.sO2 = sO2;
+
+			return returnValue;
+
+			//end O2CO2of;
+		}
+
+
+
+		//*** testing ****
 		public function testBEINVof(): void {
 			var pH: Number = 7.2;
 			var newpH: Number;
@@ -795,15 +982,57 @@
 			BEox = cBEoxOf(pH, pCO2, cHb, temp, cAlb, cPi, sO2);
 			trace("pH=" + pH + " BEox =" + BEox);
 			newpH = BEINVof(BEox, pCO2, cHb, cAlb, cPi, sO2, temp);
-			
+
 			trace("newpH=" + newpH + " BEox =" + BEox);
-			
+
 			/*
 			newBEox = cBEoxOf(newpH, pCO2, cHb, temp, cAlb, cPi, sO2);
 			trace("newpH=" + newpH + " newBEox =" + newBEox);
 			*/
 			//end testBEINVof;
 		}
+
+
+		public function testO2CO2of(): void {
+			var pH: Number = 7.2;
+			var BEox: Number = 0;
+			var pCO2: Number = 8.33;
+			var pO2: Number = 13.3;
+			var cHb: Number = 8.5;
+			var cAlb: Number = 0.66;
+			var cPi: Number = 1.15;
+			var temp: Number = 37;
+			var FCOHb: Number = 0.005;
+			var FMetHb: Number = 0.005;
+			var FHbF: Number = 0.005;
+			var cDPG: Number = 5.3;
+			var CO2: Number;
+			var O2: Number;
+			var sO2: Number;
+			var PO2calc: Number;
+			var PCO2calc: Number;
+			var pHcalc: Number;
+			var sO2calc: Number;
+			var result: Object = new Object();
+			sO2 = sO2of(pO2, pH, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+			O2 = ctO2Bof(cHb, pO2, pH, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+			CO2 = ctCO2Bof(pH, pCO2, temp, cHb, sO2);
+			//(PCO2calc,PO2calc,pHcalc,sO2calc) 
+			result = O2CO2of(O2, CO2, BEox, cHb, cAlb, cPi, cDPG, FCOHb, FMetHb, FHbF, temp);
+			PCO2calc = result.pCO2;
+			PO2calc = result.pO2;
+			pHcalc = result.pH;
+			sO2calc = result.sO2;
+			trace("input pCO2 =" + pCO2 + " calculated pCO2 = " + PCO2calc);
+			trace("input pO2 = " + pO2 + " calculated pO2 = " + PO2calc);
+			trace("input pH = " + pH + " calculated pH = " + pHcalc);
+			trace("input sO2 = " + sO2 + " calculated sO2 = " + sO2calc);
+
+			//end testO2CO2of;			
+		}
+
+
+
 
 
 	}
