@@ -1,6 +1,5 @@
 within ;
 package NewBloodyMary_testing
-
   package OSA
     function HbFromGramDlToMmolL
       "recalculation of hemoglobin concentration form g/dl to mmol/l"
@@ -233,6 +232,31 @@ package NewBloodyMary_testing
     algorithm
        returnValue := ctHb*(1 - FCOHb - FMetHb);
     end ceHbof;
+
+    function ctO2Bof "Calculation of concentration of total oxygen"
+      input Real ctHb "conentration of hemoglobin in mmol/l";
+      input Real pO2 "pO2 at givent temperature in kPa";
+      input Real pHp "pH in plasma at given temperature";
+      input Real pCO2 "pCO2 at given temperature in kPa";
+      input Real cDPG "concentration of 2,3 diphosphoglycerate in mmol/l";
+      input Real FCOHb "substance fraction of carboxyhemoglobin";
+      input Real FMetHb "substance fraction of hemiglobin";
+      input Real FHbF "substance fraction of fetal hemogobin";
+      input Real temp "temperature in °C";
+      output Real ctO2
+        "concentration of total blood oxygen concentration in mmol/l";
+    protected
+       Real sO2t "oxygen saturation of hemoglobin at given temperature";
+       Real dissO2t "koncentration of dissolved oxygen in blood in mmol/l";
+       Real ceHb "effective hemoglobin concentration in mmol/l";
+    algorithm
+
+      sO2t := sO2of( pO2, pHp, pCO2, cDPG, FCOHb, FMetHb, FHbF, temp);
+      ceHb := ceHbof(ctHb, FCOHb, FMetHb);
+
+      dissO2t := dissO2(pO2, temp);
+      ctO2 := dissO2t + sO2t * ceHb;
+    end ctO2Bof;
 
     function O2total "Calculation of concentration of total oxygen"
       input Real ctHb "conentration of hemoglobin in mmol/l";
@@ -702,6 +726,43 @@ package NewBloodyMary_testing
 
     end BEINVof;
 
+    function PO2PCO2of
+      input Real pO2 "pO2 in kPa";
+      input Real pCO2 "pCO2 in kPa";
+      input Real BEox "Base Excess in virtually oxyganated blood in mmol/l";
+      input Real cHb "conentration of hemoglobin in mmol/l";
+      input Real cAlb "albumin consntration in plasma in mmol/l";
+      input Real cPi "phospahate concentration in plasma in mmol/l";
+      input Real cDPG "concentration of 2,3 diphosphoglycerate in mmol/l";
+      input Real FCOHb "substance fraction of carboxyhemoglobin";
+      input Real FMetHb "substance fraction of hemiglobin";
+      input Real FHbF "substance fraction of fetal hemogobin";
+      input Real temp "temperature in °C";
+      output Real ctO2 "blood total O2 concantration in mmol/l";
+      output Real ctCO2 "blood total CO2 concentration in mmol/l";
+      output Real pH "plasma pH";
+      output Real sO2 "O2 hemoglobin saturation";
+    protected
+      Real EpsSO2 = 0.000001;
+      Real Sx;
+      Boolean done;
+      Real ceHb;
+      Real dissO2t;
+    algorithm
+      sO2:=1;
+      done := false;
+      while (not done) loop
+        Sx := sO2;
+        pH := BEINVof(BEox,pCO2,cHb,cAlb,cPi,sO2,temp);
+        sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+        done := abs(sO2-Sx)<EpsSO2;
+      end while;
+        ceHb := ceHbof(cHb, FCOHb, FMetHb);
+        dissO2t := dissO2(pO2, temp);
+        ctO2 := dissO2t + sO2 * ceHb;
+        ctCO2 := ctCO2Bof(pH,pCO2,temp,cHb,sO2);
+    end PO2PCO2of;
+
     function O2CO2of
       input Real tO2 "blood total O2 concantration in mmol/l";
       input Real tCO2 "blood total CO2 concentration in mmol/l";
@@ -758,7 +819,7 @@ package NewBloodyMary_testing
           end while;
         else
           while (DCO2<0) loop
-            pCO2 := pCO2 + DPCO2;
+            pCO2 := pCO2 - DPCO2;
             pH := BEINVof(BEox,pCO2,cHb,cAlb,cPi,sO2,temp);
             CO2 := ctCO2Bof(pH,pCO2,temp,cHb,sO2);
             DCO2:=tCO2-CO2;
@@ -780,13 +841,13 @@ package NewBloodyMary_testing
         //iteration of PO2 and SO2
         if O2>0 then
           sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-          O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+          O2 := ctO2Bof(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
           DO2 := tO2-O2;
           if (DO2>0) then
             while DO2>0 loop
               pO2 := pO2 + DPO2;
           sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-          O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+          O2 := ctO2Bof(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
           DO2 := tO2-O2;
            end while;
           else
@@ -796,7 +857,7 @@ package NewBloodyMary_testing
                 pO2 := 0.001;
               end if;
               sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-              O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+              O2 := ctO2Bof(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
               DO2 := tO2-O2;
             end while;
           end if;
@@ -809,7 +870,7 @@ package NewBloodyMary_testing
             DPO2 := DPO2/2;
             pO2:= pO2 + K*DPO2;
             sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-            O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+            O2 := ctO2Bof(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
             DO2 := tO2-O2;
           end while;
         else
@@ -2223,8 +2284,38 @@ package NewBloodyMary_testing
         newBEox:= cBEoxOf(newpH,pCO2,cHb,temp, cAlb, cPi, sO2);
       end testBEINVof;
 
+      model testPO2PCO2of
+        Real BEox= -10;
+        Real pCO2 = 8.33;
+        Real pO2 = 13.3;
+        Real cHb=8.5;
+        Real cAlb = 0.66;
+        Real cPi=1.15;
+        Real temp = 37;
+        Real FCOHb = 0.005;
+        Real FMetHb =  0.005;
+        Real FHbF = 0.005;
+        Real cDPG =  5.3;
+        Real ctO2;
+        Real ctCO2;
+        Real sO2;
+        Real dissO2;
+        Real ceHb;
+        Real ctO2calc;
+        Real ctCO2calc;
+        Real pHcalc;
+        Real sO2calc;
+        Real BEoxcalc;
+      algorithm
+
+        (ctO2calc,ctCO2calc,pHcalc,sO2calc):= PO2PCO2of(pO2,pCO2,BEox,cHb,cAlb,cPi,cDPG,FCOHb,FMetHb,FHbF,temp);
+
+        (ctO2,sO2,dissO2,ceHb):=O2total(cHb,pO2,pHcalc,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+        ctCO2:= ctCO2Bof(pHcalc,pCO2,temp,cHb,sO2);
+        BEoxcalc :=cBEoxOf(pHcalc,pCO2,cHb,temp,cAlb,cPi,sO2calc);
+      end testPO2PCO2of;
+
       model testO2CO2of
-        Real pH=7.2;
         Real BEox= 0;
         Real pCO2 = 8.33;
         Real pO2 = 13.3;
@@ -2239,19 +2330,29 @@ package NewBloodyMary_testing
         Real CO2;
         Real O2;
         Real sO2;
+        Real pH;
         Real PO2calc;
         Real PCO2calc;
         Real pHcalc;
         Real sO2calc;
-      equation
-        sO2 =  sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-        O2 =  O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-        CO2 =  ctCO2Bof(pH,pCO2,temp,cHb,sO2);
-        (PCO2calc,PO2calc,pHcalc,sO2calc)= O2CO2of(O2,CO2,BEox,cHb,cAlb,cPi,cDPG,FCOHb,FMetHb,FHbF,temp);
-
+      algorithm
+        (O2,CO2,pH,sO2) := PO2PCO2of(pO2,pCO2,BEox,cHb,cAlb,cPi,cDPG,FCOHb,FMetHb,FHbF,temp);
+        (PCO2calc,PO2calc,pHcalc,sO2calc):=O2CO2of(
+          O2,
+          CO2,
+          BEox,
+          cHb,
+          cAlb,
+          cPi,
+          cDPG,
+          FCOHb,
+          FMetHb,
+          FHbF,
+          temp);
       end testO2CO2of;
     end testOSA;
   end OSA;
+
 
   package Parts
 
