@@ -714,15 +714,15 @@ package NewBloodyMary_testing
       input Real FMetHb "substance fraction of hemiglobin";
       input Real FHbF "substance fraction of fetal hemogobin";
       input Real temp "temperature in °C";
-      output Real pCO2 "pO2 in kPa";
-      output Real pO2 "pCO2 in kPa";
+      output Real pO2 "pO2 in kPa";
+      output Real pCO2 "pCO2 in kPa";
       output Real pH "plasma pH";
       output Real sO2 "O2 hemoglobin saturation";
     protected
-      Real epsPO2 = 0.0001;
-      Real epsPCO2 = 0.0001;
-      Real epsCO2= 0.001;
-      Real epsO2 =  0.001;
+      Real epsPO2 = 0.00001;
+      Real epsPCO2 = 0.00001;
+      Real epsCO2= 0.000001;
+      Real epsO2 =  0.000001;
       Real DPO2 = 2;
       Real AO2;
       Real CO2;
@@ -758,14 +758,14 @@ package NewBloodyMary_testing
           end while;
         else
           while (DCO2<0) loop
-            pCO2 := pCO2 - DPCO2;
+            pCO2 := pCO2 + DPCO2;
             pH := BEINVof(BEox,pCO2,cHb,cAlb,cPi,sO2,temp);
             CO2 := ctCO2Bof(pH,pCO2,temp,cHb,sO2);
             DCO2:=tCO2-CO2;
           end while;
         end if;
         while ( (abs(DCO2)>epsCO2) or (abs(DPCO2)>epsPCO2)) loop
-          if (DCO2>0) then
+          if (DO2>0) then
             K:=1;
           else
             K:=-1;
@@ -776,48 +776,47 @@ package NewBloodyMary_testing
           CO2 := ctCO2Bof(pH,pCO2,temp,cHb,sO2);
           DCO2:=tCO2-CO2;
         end while;
-    /*
-    //iteration of PO2 and SO2
-    if O2>0 then
-      sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-      O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-      DO2 := tO2-O2;
-      if (DO2>0) then
-        while DO2>0 loop
-          pO2 := pO2 + DPO2;
+
+        //iteration of PO2 and SO2
+        if O2>0 then
           sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
           O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
           DO2 := tO2-O2;
-        end while;
-      else
-        while DO2<0 loop
-          pO2 := pO2 - DPO2;
-          if pO2<0.001 then
-            pO2 := 0.001;
+          if (DO2>0) then
+            while DO2>0 loop
+              pO2 := pO2 + DPO2;
+          sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+          O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+          DO2 := tO2-O2;
+           end while;
+          else
+            while DO2<0 loop
+              pO2 := pO2 - DPO2;
+              if pO2<0.001 then
+                pO2 := 0.001;
+              end if;
+              sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+              O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+              DO2 := tO2-O2;
+            end while;
           end if;
-          sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-          O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-          DO2 := tO2-O2;
-        end while;
-      end if;
-      while ((abs(DO2)>epsO2) or (abs(DPO2)>epsPO2)) loop
-        if (DO2>0) then
-          K:=1;
+          while ((abs(DO2)>epsO2) or (abs(DPO2)>epsPO2)) loop
+            if (DO2>0) then
+              K:=1;
+            else
+              K:= -1;
+            end if;
+            DPO2 := DPO2/2;
+            pO2:= pO2 + K*DPO2;
+            sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+            O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
+            DO2 := tO2-O2;
+          end while;
         else
-          K:= -1;
+          pO2:=0;
+          sO2:=0;
         end if;
-        DPO2 := DPO2/2;
-        pO2:= pO2 + K*DPO2;
-        sO2 := sO2of(pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-        O2 := O2total(cHb,pO2,pH,pCO2,cDPG,FCOHb,FMetHb,FHbF,temp);
-        DO2 := tO2-O2;
-      end while;
-    else
-      pO2:=0;
-      sO2:=0;
-    end if;
-    */
-        AO2:=pO2;
+
         //connection of pCO2 and pO2 iteration loops
         DPO2 :=abs(pO2 - AO2);
       end while;
@@ -2063,8 +2062,8 @@ package NewBloodyMary_testing
 
         PO2PCO2 pO2PCO2_1
           annotation (Placement(transformation(extent={{-4,8},{66,76}})));
-        Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit="kPa")=
-               7999.3432449)
+        Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit="kPa")
+             = 7999.3432449)
           annotation (Placement(transformation(extent={{-36,56},{-28,64}})));
         Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=8)
           annotation (Placement(transformation(extent={{-84,50},{-76,58}})));
@@ -2074,8 +2073,8 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-62,6},{-54,14}})));
         Physiolibrary.Types.Constants.ConcentrationConst BEox(k=-19)
           annotation (Placement(transformation(extent={{-96,68},{-88,76}})));
-        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="mmHg")=
-               10665.7909932)
+        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="mmHg")
+             = 10665.7909932)
           annotation (Placement(transformation(extent={{-54,62},{-46,70}})));
         Physiolibrary.Types.Constants.ConcentrationConst cDPG(k=5)
           annotation (Placement(transformation(extent={{-100,32},{-92,40}})));
