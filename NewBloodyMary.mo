@@ -2615,7 +2615,7 @@ package NewBloodyMary_testing
         Physiolibrary.Types.Constants.FractionConst fMetHb1(k=0.005)
           annotation (Placement(transformation(extent={{-60,28},{-52,36}})));
         Physiolibrary.Types.Constants.FractionConst fHbF(k=0.005)
-          annotation (Placement(transformation(extent={{-48,12},{-40,20}})));
+          annotation (Placement(transformation(extent={{-50,12},{-42,20}})));
         Physiolibrary.Types.Constants.ConcentrationConst cPi(k=1.15)
           annotation (Placement(transformation(extent={{-54,38},{-46,46}})));
         O2CO2algr o2CO2algr
@@ -2639,11 +2639,8 @@ package NewBloodyMary_testing
                 36},{-7.5,35.2}}, color={0,0,127}));
         connect(temperature.y, pO2PCO2_1.T) annotation (Line(points={{-47,8},{
                 -32,8},{-7.5,8}},                color={0,0,127}));
-        connect(fHbF.y, pO2PCO2_1.FHbF) annotation (Line(points={{-39,16},{-22,
+        connect(fHbF.y, pO2PCO2_1.FHbF) annotation (Line(points={{-41,16},{-22,
                 16},{-22,14.8},{-7.5,14.8}}, color={0,0,127}));
-        connect(fCOHb.y, pO2PCO2_1.FHbCO) annotation (Line(points={{-31,26},{
-                -12,26},{-12,21.6},{-7.5,21.6}},
-                                             color={0,0,127}));
         connect(fMetHb1.y, pO2PCO2_1.FMetHb) annotation (Line(points={{-51,32},
                 {-24,32},{-24,28.4},{-7.5,28.4}}, color={0,0,127}));
         connect(cPi.y, pO2PCO2_1.ctPi) annotation (Line(points={{-45,42},{-7.5,
@@ -2666,8 +2663,16 @@ package NewBloodyMary_testing
         connect(o2CO2algr.cDPG, pO2PCO2_1.cDPG) annotation (Line(points={{-8.2,
                 -57.92},{-90,-57.92},{-90,36},{-7.5,36},{-7.5,35.2}}, color={0,
                 0,127}));
-        connect(o2CO2algr.FMetHb, pO2PCO2_1.FMetHb) annotation (Line(points={{
-                -8.2,-65.84},{-22,-65.84},{-22,28},{-7.5,28.4}}, color={0,0,127}));
+        connect(fCOHb.y, o2CO2algr.FCOHb) annotation (Line(points={{-31,26},{
+                -28,26},{-28,-74.64},{-8.2,-74.64}}, color={0,0,127}));
+        connect(fCOHb.y, pO2PCO2_1.FCOHb) annotation (Line(points={{-31,26},{
+                -28,26},{-24,26},{-24,21.6},{-7.5,21.6}}, color={0,0,127}));
+        connect(fMetHb1.y, o2CO2algr.FMetHb) annotation (Line(points={{-51,32},
+                {-38,32},{-22,32},{-22,-65.84},{-8.2,-65.84}}, color={0,0,127}));
+        connect(fHbF.y, o2CO2algr.FHbF) annotation (Line(points={{-41,16},{-34,
+                16},{-34,-82},{-34,-83.44},{-8.2,-83.44}}, color={0,0,127}));
+        connect(temperature.y, o2CO2algr.T) annotation (Line(points={{-47,8},{
+                -40,8},{-40,-92.24},{-8.2,-92.24}}, color={0,0,127}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                   -100},{100,100}})));
       end testO2CO2algr;
@@ -2864,7 +2869,7 @@ package NewBloodyMary_testing
             origin={70,-96})));
 
       parameter Physiolibrary.Types.RealIO.MassConcentrationInput initConcentration;
-      FFSA.Parts.MassInflowConnector massInflowConnector annotation (Placement(
+      Parts.MassInflowConnector massInflowConnector annotation (Placement(
             transformation(extent={{-10,-40},{10,-20}}), iconTransformation(extent={
                 {-10,-40},{10,-20}})));
 
@@ -8068,9 +8073,6 @@ parameters")}));
       connect(bodyTemperature.y, ventilation.bodyTemperature) annotation (Line(
             points={{-36.75,68},{-24,68},{-24,75.24},{-7.9,75.24}}, color={0,0,
               127}));
-      connect(atmosphericTemperature.y, ventilation.atmosphericTemperature)
-        annotation (Line(points={{-36.75,76},{-18,76},{-18,78.88},{-7.9,78.88}},
-            color={0,0,127}));
       connect(barometricPressure.y, ventilation.barometricPressure) annotation (
          Line(points={{-40.5,94},{-22,94},{-22,92.6},{-7.9,92.6}}, color={0,0,
               127}));
@@ -8231,8 +8233,11 @@ parameters")}));
               48.6},{38,17},{-29,17}}, color={0,0,127}));
       connect(TissueCapillary.BEox, BEox.y) annotation (Line(points={{24.73,
               -56.03},{38,-56.03},{38,17},{-29,17}}, color={0,0,127}));
-      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
-                -100,-100},{100,100}})), Icon(coordinateSystem(
+      connect(atmosphericTemperature.y, ventilation.ambientTemperature)
+        annotation (Line(points={{-36.75,76},{-22,76},{-22,78.88},{-7.9,78.88}},
+            color={0,0,127}));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}})),      Icon(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
             graphics={Rectangle(
               extent={{-100,100},{100,-100}},
@@ -10892,13 +10897,10 @@ parameters")}));
           annotation (Placement(transformation(extent={{-28,14},{-18,24}})));
         Physiolibrary.Types.Constants.PressureConst pCO2(k=5332.8954966)
           annotation (Placement(transformation(extent={{4,18},{14,28}})));
-        Physiolibrary.Types.Constants.VolumeDensityOfChargeConst
-          volumeDensityOfCharge(k=0)
-          annotation (Placement(transformation(extent={{-90,14},{-76,24}})));
         Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=8.4)
           annotation (Placement(transformation(extent={{5,-4},{-5,4}},
               rotation=180,
-              origin={-81,46})));
+              origin={-81,42})));
         Physiolibrary.Types.Constants.TemperatureConst temp(k=310.15)
           annotation (Placement(transformation(extent={{-94,84},{-84,92}})));
         Physiolibrary.Types.Constants.MassConcentrationConst ctGlb(k(displayUnit=
@@ -10925,13 +10927,16 @@ parameters")}));
         Physiolibrary.Types.Constants.VolumeFlowRateConst volumeFlowRate(k=
               8.3333333333333e-05)
           annotation (Placement(transformation(extent={{-84,-32},{-76,-24}})));
+        Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0) annotation (
+            Placement(transformation(
+              extent={{5,-4},{-5,4}},
+              rotation=180,
+              origin={-83,22})));
       equation
         connect(temp.y, ArterialBlood.T) annotation (Line(points={{-82.75,88},{-62.48,
                 88},{-62.48,87.4}}, color={0,0,127}));
         connect(ctHb.y, ArterialBlood.ctHb)
-          annotation (Line(points={{-74.75,46},{-63.1,46}}, color={0,0,127}));
-        connect(volumeDensityOfCharge.y, ArterialBlood.BEox) annotation (Line(
-              points={{-74.25,19},{-24.35,19},{-24.35,33.7}},
+          annotation (Line(points={{-74.75,42},{-68,42},{-68,46},{-63.1,46}},
                                                             color={0,0,127}));
         connect(pO2.y, ArterialBlood.pO2) annotation (Line(points={{-16.75,19},{
                 -6,19},{-6,26},{-17.84,26},{-17.84,34}},color={0,0,127}));
@@ -10976,11 +10981,9 @@ parameters")}));
         connect(ArterialBlood.ctCO2, VenousBlood.ctCO2a) annotation (Line(points={{-33.96,
                 31.6},{-33.96,10},{-56,10},{-56,-29.39},{-37.85,-29.39}},
               color={0,0,127}));
-        connect(volumeDensityOfCharge.y, VenousBlood.BEox) annotation (Line(
-              points={{-74.25,19},{-62,19},{-62,-36.8},{-37.48,-36.8}}, color={0,
-                0,127}));
-        connect(ctHb.y, VenousBlood.ctHb) annotation (Line(points={{-74.75,46},{-64,
-                46},{-64,-43.04},{-37.48,-43.04}}, color={0,0,127}));
+        connect(ctHb.y, VenousBlood.ctHb) annotation (Line(points={{-74.75,42},
+                {-64,42},{-64,-43.04},{-37.48,-43.04}},
+                                                   color={0,0,127}));
         connect(temp.y, VenousBlood.T) annotation (Line(points={{-82.75,88},{-76,
                 88},{-76,50},{-94,50},{-94,-46},{-94,-51.23},{-37.11,-51.23}},
               color={0,0,127}));
@@ -10990,6 +10993,10 @@ parameters")}));
                 -12},{-68,-3.65},{-37.85,-3.65}}, color={0,0,127}));
         connect(volumeFlowRate.y, VenousBlood.Q) annotation (Line(points={{-75,-28},
                 {-58,-28},{-58,-9.89},{-37.85,-9.89}}, color={0,0,127}));
+        connect(BEox.y, VenousBlood.BEox) annotation (Line(points={{-76.75,22},
+                {-48,22},{-48,-36.8},{-37.48,-36.8}}, color={0,0,127}));
+        connect(BEox.y, ArterialBlood.BEox) annotation (Line(points={{-76.75,22},
+                {-52,22},{-52,26},{-24.35,26},{-24.35,33.7}}, color={0,0,127}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                   -100},{100,100}})));
       end VenousBlood;
@@ -11029,9 +11036,6 @@ parameters")}));
                 48},{-60,52.02},{-33.9,52.02}}, color={0,0,127}));
         connect(FiCO2.y, ventilation.FiCO2) annotation (Line(points={{-63,42},{
                 -33.9,42},{-33.9,42.4}}, color={0,0,127}));
-        connect(atmosphericTemperature.y, ventilation.atmosphericTemperature)
-          annotation (Line(points={{-53,32},{-33.9,32},{-33.9,32.04}}, color={0,0,
-                127}));
         connect(bodyTemperature.y, ventilation.bodyTemperature) annotation (Line(
               points={{-67,18},{-52,18},{-52,22.42},{-33.9,22.42}}, color={0,0,
                 127}));
@@ -11041,8 +11045,11 @@ parameters")}));
                 -15,90},{-1.1,90},{-1.1,68.3}}, color={0,0,127}));
         connect(breathingFrequency.y, ventilation.respiratoryRate) annotation (
             Line(points={{9,92},{15.3,92},{15.3,68.3}}, color={0,0,127}));
-        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
-                  -100,-100},{100,100}})));
+        connect(atmosphericTemperature.y, ventilation.ambientTemperature)
+          annotation (Line(points={{-53,32},{-33.9,32},{-33.9,32.04}}, color={0,
+                0,127}));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}})));
       end testVentilation;
 
       model testVenousBloodTestTool
@@ -11281,9 +11288,6 @@ parameters")}));
                 58},{-50,62.02},{-23.9,62.02}}, color={0,0,127}));
         connect(FiCO2.y,ventilation. FiCO2) annotation (Line(points={{-53,52},{
                 -23.9,52},{-23.9,52.4}}, color={0,0,127}));
-        connect(atmosphericTemperature.y,ventilation. atmosphericTemperature)
-          annotation (Line(points={{-43,42},{-23.9,42},{-23.9,42.04}}, color={0,0,
-                127}));
         connect(bodyTemperature.y,ventilation. bodyTemperature) annotation (Line(
               points={{-57,28},{-42,28},{-42,32.42},{-23.9,32.42}}, color={0,0,
                 127}));
@@ -11460,6 +11464,9 @@ parameters")}));
                 121.4,-0.7},{-71.9,-0.7}},
             color={0,0,255},
             thickness=0.5));
+        connect(atmosphericTemperature.y, ventilation.ambientTemperature)
+          annotation (Line(points={{-43,42},{-23.9,42},{-23.9,42.04}}, color={0,
+                0,127}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                   -100},{100,100}})));
       end oldtestBloodyMary;
@@ -11619,10 +11626,6 @@ parameters")}));
           annotation (Line(points={{26,74},{9,74}}, color={0,0,127}));
         connect(interstitium.pCO2, pCO2.y) annotation (Line(points={{20,38},{20,
                 38},{-11,38}}, color={0,0,127}));
-        connect(interstitium.HCO3, concentrationMeasure.q_in) annotation (Line(
-            points={{19,30},{19,30},{-56,30}},
-            color={107,45,134},
-            thickness=1));
         connect(concentrationMeasure.concentration, add.u1) annotation (Line(
               points={{-56,22},{-60,22},{-60,-10}}, color={0,0,127}));
         connect(bloodHCO3Concentration.y, add.u2) annotation (Line(points={{-71,
@@ -11631,12 +11634,12 @@ parameters")}));
                 -30,-16}}, color={0,0,127}));
         connect(gain.y, unlimitedSolutePump.soluteFlow) annotation (Line(points=
                {{-7,-16},{12,-16},{14,-16}}, color={0,0,127}));
-        connect(interstitium.HCO3, unlimitedSolutePump.q_out) annotation (Line(
-            points={{19,30},{18,30},{18,-10}},
+        connect(unlimitedSolutePump.q_out, interstitium.HCO3) annotation (Line(
+            points={{18,-10},{19,-10},{19,30}},
             color={107,45,134},
             thickness=1));
-        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent=
-                  {{-100,-100},{100,100}})));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}})));
       end testICF;
 
       model testKidneyCompensation
