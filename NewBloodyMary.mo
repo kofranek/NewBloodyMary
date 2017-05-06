@@ -5389,8 +5389,7 @@ package NewBloodyMary_testing
             extent={{-20,-20},{20,20}},
             rotation=270,
             origin={-20,-120})));
-      Physiolibrary.Types.RealIO.pHOutput pH_ery "intracellular erytrocytes pH"
-                                                                                  annotation (Placement(
+      Physiolibrary.Types.RealIO.pHOutput pH_ery "intracellular erytrocytes pH"   annotation (Placement(
             transformation(extent={{-14,-98},{26,-58}}),iconTransformation(
             extent={{-20,-20},{20,20}},
             rotation=270,
@@ -11647,10 +11646,38 @@ parameters")}));
         kidneyABRcompensation kidneyABRcompensation1
           annotation (Placement(transformation(extent={{-8,-10},{12,10}})));
         Modelica.Blocks.Sources.Constant const(k=7.2)
-          annotation (Placement(transformation(extent={{-58,-14},{-38,6}})));
+          annotation (Placement(transformation(extent={{-60,0},{-40,20}})));
+        Physiolibrary.Chemical.Components.Substance BloodBE(useNormalizedVolume=
+              false, solute_start=0)
+          annotation (Placement(transformation(extent={{52,-38},{72,-18}})));
+        Physiolibrary.Types.Constants.VolumeConst bloodVolume(k=0.005)
+          annotation (Placement(transformation(extent={{44,-14},{52,-6}})));
+        Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
+          annotation (Placement(transformation(
+              extent={{-10,-10},{10,10}},
+              rotation=270,
+              origin={62,52})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump1(
+            useSoluteFlowInput=true)
+          annotation (Placement(transformation(extent={{12,-62},{32,-42}})));
       equation
-        connect(const.y, kidneyABRcompensation1.pH) annotation (Line(points={{
-                -37,-4},{-20,-4},{-20,0},{-6,0}}, color={0,0,127}));
+        connect(const.y, kidneyABRcompensation1.pH) annotation (Line(points={{-39,10},
+                {-20,10},{-20,0},{-6,0}},         color={0,0,127}));
+        connect(BloodBE.solutionVolume,bloodVolume. y) annotation (Line(points={{58,-24},
+                {58,-10},{53,-10}},            color={0,0,127}));
+        connect(BloodBE.q_out,concentrationMeasure1. q_in) annotation (Line(
+            points={{62,-28},{62,-10},{62,52}},
+            color={107,45,134},
+            thickness=1));
+        connect(unlimitedSolutePump1.q_out,BloodBE. q_out) annotation (Line(
+            points={{32,-52},{62,-52},{62,-28}},
+            color={107,45,134},
+            thickness=1));
+        connect(concentrationMeasure1.concentration, kidneyABRcompensation1.BE)
+          annotation (Line(points={{54,52},{-80,52},{-80,-9},{-6,-9}}, color={0,
+                0,127}));
+        connect(kidneyABRcompensation1.molarflowrate, unlimitedSolutePump1.soluteFlow)
+          annotation (Line(points={{11,0},{26,0},{26,-48}}, color={0,0,127}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent=
                   {{-100,-100},{100,100}})));
       end testKidneyCompensation;
@@ -11807,20 +11834,29 @@ parameters")}));
       annotation (Placement(transformation(extent={{80,-10},{100,10}})));
 
       Real action;
-      parameter Real actionSize=1e-8;
-      parameter Real actionTimeConst=3600*12;
-      parameter Real actionLimit=1;
-      constant Real referencepH=7.4;
+      parameter Real actionSize=1;
+    //   parameter Real actionTimeConst=3600*12;
+    //   parameter Real actionLimit=1;
+    //   constant Real referencepH=7.4;
+
+      Real targetBE =  -35.36421 + (12.97681 + 35.36421)/(1 + (pH/7.443465)^179.8756) "Fit of the SA comepnsation diagram";
+      parameter Real timeConst = 1;
+      Physiolibrary.Types.RealIO.ConcentrationInput BE
+        annotation (Placement(transformation(extent={{-100,-110},{-60,-70}})));
     equation
 
-      // hard anti-windup limiter
-      if action > actionLimit and pH > referencepH or action < -actionLimit and pH <
-          referencepH then
-        der(action) = 0;
-      else
-        der(action)*actionTimeConst = (pH - referencepH) - action;
-      end if;
+      action = BE - targetBE;
 
+
+
+      // hard anti-windup limiter
+    //   if action > actionLimit and pH > referencepH or action < -actionLimit and pH <
+    //       referencepH then
+    //     der(action) = 0;
+    //   else
+    //     der(action)*actionTimeConst = (pH - referencepH) - action;
+    //   end if;
+    //
     end kidneyABRcompensation;
 
     model BodyBEox
@@ -11885,20 +11921,28 @@ parameters")}));
       Physiolibrary.Types.BusConnector busConnector
         annotation (Placement(transformation(extent={{-100,62},{-60,102}})));
       kidneyABRcompensation kidneyABRcompensation1
-        annotation (Placement(transformation(extent={{-40,8},{-20,28}})));
+        annotation (Placement(transformation(extent={{-40,8},{-16,32}})));
     equation
       connect(kidneyABRcompensation1.molarflowrate, busConnector.kidneyBEoxFlow)
-        annotation (Line(points={{-21,18},{-6,18},{-6,82},{-80,82}}, color={0,0,
+        annotation (Line(points={{-17.2,20},{-6,20},{-6,82},{-80,82}},
+                                                                     color={0,0,
               127}), Text(
           string="%second",
           index=1,
           extent={{6,3},{6,3}}));
       connect(kidneyABRcompensation1.pH, busConnector.Artys_pH) annotation (
-          Line(points={{-38,18},{-38,18},{-80,18},{-80,82}}, color={0,0,127}),
+          Line(points={{-37.6,20},{-37.6,20},{-80,20},{-80,82}},
+                                                             color={0,0,127}),
           Text(
           string="%second",
           index=1,
           extent={{-3,-3},{-3,-3}}));
+      connect(kidneyABRcompensation1.BE, busConnector.BEox) annotation (Line(
+            points={{-37.6,9.2},{-80,9.2},{-80,12},{-80,82}}, color={0,0,127}),
+          Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{
                 -100,-100},{100,100}})), Icon(graphics={Ellipse(extent={{-56,90},
                   {24,-82}}, lineColor={28,108,200}), Line(points={{32,88},{24,
@@ -11985,5 +12029,6 @@ parameters")}));
   end Icons;
 
   annotation (uses(Modelica(version="3.2.1"), Physiolibrary(version="2.3.1"),
-      Physiomodel(version="1.0.0")));
+      Physiomodel(version="1.0.0"),
+      Complex(version="3.2.2")));
 end NewBloodyMary_testing;
