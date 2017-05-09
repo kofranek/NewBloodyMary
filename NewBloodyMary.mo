@@ -3148,11 +3148,11 @@ package NewBloodyMary_testing
             origin={-68,-65}),        iconTransformation(extent={{-112,-104},{
                 -92,-84}})));
       Physiolibrary.Types.RealIO.PressureOutput PAO2 annotation (Placement(
-            transformation(extent={{36,41},{50,55}}), iconTransformation(extent
-              ={{100,76},{120,96}})));
+            transformation(extent={{36,41},{50,55}}), iconTransformation(extent=
+               {{100,76},{120,96}})));
       Physiolibrary.Types.RealIO.PressureOutput PACO2 annotation (Placement(
-            transformation(extent={{36,70},{48,82}}), iconTransformation(extent
-              ={{100,58},{120,78}})));
+            transformation(extent={{36,70},{48,82}}), iconTransformation(extent=
+               {{100,58},{120,78}})));
       Physiolibrary.Types.RealIO.pHOutput pHpc annotation (Placement(
             transformation(
             extent={{-8,-8},{8,8}},
@@ -6017,7 +6017,8 @@ package NewBloodyMary_testing
             extent={{-20,-20},{20,20}},
             rotation=270,
             origin={-20,-120})));
-      Physiolibrary.Types.RealIO.pHOutput pH_ery "intracellular erytrocytes pH"   annotation (Placement(
+      Physiolibrary.Types.RealIO.pHOutput pH_ery "intracellular erytrocytes pH"
+                                                                                  annotation (Placement(
             transformation(extent={{-14,-98},{26,-58}}),iconTransformation(
             extent={{-20,-20},{20,20}},
             rotation=270,
@@ -12274,9 +12275,7 @@ parameters")}));
       model testKidneyCompensation
 
         kidneyABRcompensation kidneyABRcompensation1
-          annotation (Placement(transformation(extent={{-8,-10},{12,10}})));
-        Modelica.Blocks.Sources.Constant const(k=7.2)
-          annotation (Placement(transformation(extent={{-60,0},{-40,20}})));
+          annotation (Placement(transformation(extent={{2,-42},{22,-22}})));
         Physiolibrary.Chemical.Components.Substance BloodBE(useNormalizedVolume=
               false, solute_start=0)
           annotation (Placement(transformation(extent={{52,-38},{72,-18}})));
@@ -12286,30 +12285,70 @@ parameters")}));
           annotation (Placement(transformation(
               extent={{-10,-10},{10,10}},
               rotation=270,
-              origin={62,52})));
+              origin={62,94})));
         Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump1(
             useSoluteFlowInput=true)
           annotation (Placement(transformation(extent={{12,-62},{32,-42}})));
+        OSA.BEINV
+              bEINV
+          annotation (Placement(transformation(extent={{-26,32},{24,84}})));
+        Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit="kPa")=
+               5330)
+          annotation (Placement(transformation(extent={{-60,-10},{-52,-2}})));
+        Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=8)
+          annotation (Placement(transformation(extent={{-88,56},{-80,64}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cAlb(k=0.66)
+          annotation (Placement(transformation(extent={{-86,46},{-78,54}})));
+        Physiolibrary.Types.Constants.TemperatureConst temperature(k=310.15)
+          annotation (Placement(transformation(extent={{-62,18},{-54,26}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cPi(k=1.15)
+          annotation (Placement(transformation(extent={{-70,38},{-62,46}})));
+        Physiolibrary.Types.Constants.FractionConst sO2(k=0.5)
+          annotation (Placement(transformation(extent={{-58,32},{-50,40}})));
+        Modelica.Blocks.Sources.Ramp ramp(
+          height=7000,
+          duration=1e6,
+          offset=5320)
+          annotation (Placement(transformation(extent={{-72,66},{-62,76}})));
       equation
-        connect(const.y, kidneyABRcompensation1.pH) annotation (Line(points={{-39,10},
-                {-20,10},{-20,0},{-6,0}},         color={0,0,127}));
         connect(BloodBE.solutionVolume,bloodVolume. y) annotation (Line(points={{58,-24},
                 {58,-10},{53,-10}},            color={0,0,127}));
         connect(BloodBE.q_out,concentrationMeasure1. q_in) annotation (Line(
-            points={{62,-28},{62,-10},{62,52}},
+            points={{62,-28},{62,94}},
             color={107,45,134},
             thickness=1));
         connect(unlimitedSolutePump1.q_out,BloodBE. q_out) annotation (Line(
             points={{32,-52},{62,-52},{62,-28}},
             color={107,45,134},
             thickness=1));
-        connect(concentrationMeasure1.concentration, kidneyABRcompensation1.BE)
-          annotation (Line(points={{54,52},{-80,52},{-80,-9},{-6,-9}}, color={0,
-                0,127}));
         connect(kidneyABRcompensation1.molarflowrate, unlimitedSolutePump1.soluteFlow)
-          annotation (Line(points={{11,0},{26,0},{26,-48}}, color={0,0,127}));
-        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent=
-                  {{-100,-100},{100,100}})));
+          annotation (Line(points={{21,-32},{26,-32},{26,-48}},
+                                                            color={0,0,127}));
+        connect(ctHb.y,bEINV. ctHb)
+          annotation (Line(points={{-79,60},{-40,60},{-40,58},{-28.5,58}},
+                                                         color={0,0,127}));
+        connect(cAlb.y,bEINV. cAlb) annotation (Line(points={{-77,50},{-28.5,50},
+                {-28.5,51.24}},color={0,0,127}));
+        connect(temperature.y,bEINV. temp) annotation (Line(points={{-53,22},{
+                -36,22},{-36,32.52},{-28.5,32.52}},  color={0,0,127}));
+        connect(cPi.y,bEINV. cPi) annotation (Line(points={{-61,42},{-46,42},{
+                -46,45},{-28.5,45}},
+                                 color={0,0,127}));
+        connect(sO2.y,bEINV. sO2) annotation (Line(points={{-49,36},{-40,36},{
+                -40,38.76},{-28.5,38.76}},  color={0,0,127}));
+        connect(concentrationMeasure1.concentration, bEINV.BEox) annotation (
+            Line(points={{54,94},{0,94},{-48,94},{-48,78.8},{-28.5,78.8}},
+              color={0,0,127}));
+        connect(bEINV.pH, kidneyABRcompensation1.pH) annotation (Line(points={{
+                26.5,58},{34,58},{34,-16},{-16,-16},{-16,-32},{-10,-32},{-10,
+                -32},{4,-32}}, color={0,0,127}));
+        connect(concentrationMeasure1.concentration, kidneyABRcompensation1.BE)
+          annotation (Line(points={{54,94},{-20,94},{-94,94},{-94,-36},{4,-36},
+                {4,-41}}, color={0,0,127}));
+        connect(ramp.y, bEINV.pCO2) annotation (Line(points={{-61.5,71},{-45.75,
+                71},{-45.75,68.4},{-28.5,68.4}}, color={0,0,127}));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}})));
       end testKidneyCompensation;
 
       model testSO2
@@ -12469,15 +12508,14 @@ parameters")}));
     //   parameter Real actionLimit=1;
     //   constant Real referencepH=7.4;
 
-      Real targetBE =  -35.36421 + (12.97681 + 35.36421)/(1 + (pH/7.443465)^179.8756) "Fit of the SA comepnsation diagram";
+      Real targetBE =  -35.36421 + (12.97681 + 35.36421)/(1 + (pH/7.443465)^179.8756)
+        "Fit of the SA comepnsation diagram";
       parameter Real timeConst = 1;
       Physiolibrary.Types.RealIO.ConcentrationInput BE
         annotation (Placement(transformation(extent={{-100,-110},{-60,-70}})));
     equation
 
       action = BE - targetBE;
-
-
 
       // hard anti-windup limiter
     //   if action > actionLimit and pH > referencepH or action < -actionLimit and pH <
