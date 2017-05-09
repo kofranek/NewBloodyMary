@@ -861,6 +861,8 @@
 		}
 
 
+
+
 		function O2CO2of(tO2: Number, tCO2: Number, BEox: Number, cHb: Number, cAlb: Number,
 			cPi: Number, cDPG: Number, FCOHb: Number, FMetHb: Number, FHbF: Number, temp: Number): Object {
 			//input Real tO2 "blood total O2 concantration in mmol/l";
@@ -999,7 +1001,7 @@
 					DO2mean = tO2 - O2;
 					if (DO2low * DO2mean > 0) {
 						pO2low = pO2mean;
-						
+
 					} else {
 						pO2high = pO2mean;
 					}
@@ -1020,6 +1022,345 @@
 			//end O2CO2of;
 		}
 
+		function VaporPressureSI(T: Number): Number {
+			//input T:temperature in Kelvin
+			//output vapor presssure in Pa
+			return pH2Oof(T - 273.15) * 133.32239;
+			/*
+			if (T < 273.15) {
+				return 0
+			} else {
+				if (T > 373.15) {
+					return 101325
+				} else {
+					return (101325 / 760) * Math.exp(18.6686 - (4030.183 / (T - 273.15 + 235)))
+				}
+
+			}
+			*/
+		}
+
+
+		function pH2Oof(temp: Number): Number {
+			//input temp - temperature in °c
+			//output vapor pressure in mmHg
+			if (temp < 0) {
+				return 0
+			} else {
+				if (temp > 100) {
+					return 760
+				} else {
+					return Math.exp(18.6686 - (4030.183 / (temp + 235)))
+				}
+
+			}
+		}
+
+
+		function BTPS_to_STPD(PB: Number, temp: Number): Number {
+			//calculatiou of conversion coefficient volume from BTPS to STPD
+			//input PB - barometric pressure in mmHg	
+			//temp - temperature in °C	
+			//output from BTPS to STPD conversion coefficient	
+			// STPD_volume = BTPS_volume * BTPS_to_STPD(PB,temp)
+			//(P*V)/T = (760*V_STPD)/273.15 = (PB-pH2O)*V_BTPS/(273.15+temp)	
+			//V_STPD = V_BTPS * (PB-pH2O)*273.15/(760*(273.15+temp)= V_BTPS * BTPS_to_STPD(PB,temp)	
+			var pH2O: Number;
+			pH2O = pH2Oof(temp);
+			return (PB - pH2O) * 273.15 / (760 * (273.15 + temp));
+		}
+
+		function ATPS_to_BTPS(PB: Number, tempEnv: Number, tempBody): Number {
+			//calculatiou of conversion coefficient volume from ATPS to BTPS
+			//input PB - barometric pressure in mmHg	
+			//tempEnv - environment temperature in °C	
+			//tempBody - body temperature in °C
+			//output from ATPS to BTPS conversion coefficient	
+			// BTPS_volume = ATPS_volume * ATPS_to_BTPS(PB,tempEnv,tempBody)
+			//(P*V)/T = (PB-pH2OEnv)*V_ATPS/(273.15+tempEnv) = (PB-pH2OBody)*V_BTPS/(273.15+tempBody)
+			//V_BTPS = V_ATPS * (PB-pH2OEnv)*(273.15+tempBody)/((PB-pH2OBody)*(273.15+trmpEnv) = V_ATPS * ATPS_to_BTPS(PB,tempEnv,tempBody)	
+			var pH2OEnv: Number;
+			var pH2OBody: Number;
+			pH2OEnv = pH2Oof(tempEnv);
+			pH2OBody = pH2Oof(tempBody);
+			return (PB - pH2OEnv) * (273.15 + tempBody) / ((PB - pH2OBody) * (273.15 + tempEnv));
+		}
+
+
+		function AlvEquil(VAi: Number, FiO2: Number, FiCO2: Number, temp: Number, PB: Number, Q: Number, CvO2: Number, CvCO2: Number, BEox: Number,
+			Hb: Number, cAlb: Number, cPi: Number, cDPG: Number, FCOHb: Number, FMetHb: Number, FHbF: Number): Object {
+			//input VAiBTPS alveolar ventilation in l BTPS/min;
+			//input FiO2 fraction concentration of O2 in dry nspired gas
+			//input FiCO2 fraction concentationo of CO2 in dry inspired gas
+			//temp body temperature in °C
+			//PB barometric pressure
+			//input Q blood perfusion
+			//input CvO2 total concentration of oxygen in inflowing venous blood in l/min
+			//input CaO2 total concentration of carbon dioxide in inflowinf venous blood in l/min
+			//input BEox base excess in virtually fully oxygenated blood in mmol/l
+			//input Hb - hemoglobin concentration in mmol/l
+			// input cAlb - plasma albumin concentration in mmol/l
+			// input cPi plasma phosphate concentration in mmol/l
+			// cDPG 2,3 DPG - concentration in mmol/l
+			//input FCOHb - "substance fraction of carboxyhemoglobin";
+			//input FMetHb - "substance fraction of hemiglobin";
+			//input FHbF - "substance fraction of fetal hemogobin";
+			// output VA - expired alveolar ventilation in l/min
+			// output VO2 - rate of oxygen comsumption [mmol/min]
+			// output VCO2  - rate of carbon dioxide production [mmol/min]
+			// output CpcO2  - O2 content in end pulmonary capillary blood [l STPD/l of blood]
+			// output CpcCO2 - CO2 content in pulmonary capillary blood [l STPD/l of blood]
+			// output PAO2  - alveolar pO2 [kPa]
+			// output PACO2 - alveolar PCO2 [kPA]
+			// output PpcO2 in end pulmonary capillary blood [kPa]
+			// output PpcCO2 - pCO2 in end pulmonary capillary blood  PCO2 [kPA]
+			// output SO2pc - oxyhemoglobin saturation in end pulmonary capillary blood [ratio form 0 to 1]
+			// output pHpc  - pH in end pulmonary capillary blood 
+			// output HCO3pc - actual bicarbonate concentration in end pulmonary capillary blood [mmol/l]
+
+
+			var resultValue: Object = new Object;
+
+			var VO2: Number; // rate of oxygen comsumption [l STPD/min]
+			var VCO2: Number; // rate of carbon dioxide production [l STPD/min]
+			var CpcO2: Number; //O2 content in end pulmonary capillary blood [l STPD/l of blood]
+			var CpcCO2: Number; // CO2 content in pulmonary capillary blood [l STPD/l of blood]
+			var VA: Number; //expired alveolar ventilation in l/min
+			var HCO3pc: Number // actual bicarbonate concentration in end pulmonary capillary blood [mmol/l]
+			var PAO2: Number; //alveolar partial pressure of O2 (in kPa)
+			var PACO2: Number; //alveoral partial pressure of CO2 (in kPa)
+			var PpcO2: Number; //PCO2 in en pulmonary capillary blood (in kPA)
+			var PpcCO2: Number; //CO2 in en pulmonary capillary blood (in kPa)
+			var FAO2: Number; //fraction concentration of O2 in alveoli;
+			var FACO2: Number; //fraction concentration of CO2 in alveoli;
+
+			var cx1: Number;
+			var done: Boolean;
+			var doneCO2: Boolean;
+			var doneO2: Boolean;
+			var kBTPS_to_STPD: Number;
+			var inflowCO2: Number; //inflow CO2 in alveolo-cappillary unit in mmol/min
+			var inflowO2: Number; //inflow CO2 in alveolo-cappillary unit in mmol/min
+			var outflowCO2: Number; //outflow CO2 in alveolo-capllary unit in mmol/min
+			var outflowO2: Number; //outflow CO2 in alveolo-cappillary unit in mmol/min
+			var ViCO2: Number; //inflow CO2 in alveoli in l STPD/min
+			var ViO2: Number; ////inflow O2 in alveoli in l STPD/min
+			var VeCO2: Number; // outflow CO2 from alveoli in l STPD/min
+			var VeO2: Number; //outflow O2 from alveoli in lSTPD/min
+			var VCO2_STPD: Number; //CO2 excretion rate in l STPD/min
+			var VO2_STPD: Number; //O2 consuption rate in l STPD/min
+			var PACO2max: Number;
+			var PACO2min: Number;
+			var PAO2max: Number;
+			var PAO2min: Number;
+
+
+
+			var PAO2old: Number;
+			var dPCO2: Number = 2;
+			var dPO2: Number = 2;
+
+			var EpsCO2: Number;
+			var EpsO2: Number;
+			var EpsP = 0.000001;
+
+			var pHpc: Number;
+			var sO2pc: Number;
+			var obj: Object;
+
+
+			// algorithm
+			//initialisation
+			EpsCO2 = 0.000001;
+			EpsO2 = 0.000001;
+			PAO2min = 0;
+			PACO2min = 0;
+			PAO2max = 260;
+			PACO2max = 260;
+
+
+
+			cx1 = (PB - pH2Oof(temp)) * 0.133322368; //cx1 = PB - pH2O_BTPS
+			kBTPS_to_STPD = BTPS_to_STPD(PB, temp);
+
+			if (Q == 0) { //shunt blood flow
+				VO2 = 0;
+				VCO2 = 0;
+				PAO2 = FiO2 * cx1; //cx1 = PB - pH2O_BTPS
+				PACO2 = FiCO2 * cx1; //cx1 = PB - pH2O_BTPS
+				CpcO2 = CvO2;
+				CpcCO2 = CvCO2;
+				VA = VAi;
+				obj = O2CO2of(CpcO2, CpcCO2, BEox, Hb, cAlb, cPi, cDPG, FCOHb, FMetHb, FHbF, temp);
+				sO2pc = obj.sO2;
+				PpcO2 = obj.pO2;
+				PpcCO2 = obj.pCO2;
+				pHpc = obj.pH;
+
+			} else { //iteration calculation of pAO2 and pACO2
+				//init
+				PAO2 = 13.99;
+				PACO2 = 5.33;
+				kBTPS_to_STPD = BTPS_to_STPD(PB, temp);
+				ViO2 = FiO2 * VAi * kBTPS_to_STPD; //l STPD/min
+				ViCO2 = FiCO2 * VAi * kBTPS_to_STPD; //l STPD/min
+				inflowCO2 = ViCO2 / 0.022414 + CvCO2 * Q; //in mmol/min
+				inflowO2 = ViO2 / 0.022414 + CvO2 * Q; //in mmol,/min
+				done = false;
+				PAO2old = 0;
+				//main iteration loop of PACO2 and PAO2;											
+				while (!done) {
+					doneCO2 = false;
+				
+					while (!doneCO2) {
+						obj = PO2PCO2of(PAO2, PACO2, BEox, Hb, cAlb, cPi, cDPG, FCOHb, FMetHb, FHbF, temp);
+						CpcCO2 = obj.ctCO2;
+						CpcO2 = obj.ctO2;
+						pHpc = obj.pH;
+						sO2pc = obj.sO2;
+						VCO2 = (CvCO2 - CpcCO2) * Q; // in mmol min
+						VO2 = (CpcO2 - CvO2) * Q; //in mmol/min
+						VCO2_STPD = VCO2 * 0.022414; //l STPD
+						VO2_STPD = VO2 * 0.022414; //l STPD
+						VA = VAi + (VCO2_STPD - VO2_STPD) / kBTPS_to_STPD; //VA in l BTPS
+						if (VA < 0) {
+							VA = 0.0;
+						}
+						FACO2 = PACO2 / cx1; // cx1=PB-PH2O_BTPS
+						VeCO2 = VA * FACO2 * kBTPS_to_STPD; // l/min STPD
+						outflowCO2 = VeCO2 / 0.022414 + CpcCO2 * Q; //in mmol/min
+						doneCO2 = (Math.abs(inflowCO2 - outflowCO2) < EpsCO2);
+						if (!doneCO2) {
+							if (outflowCO2 > inflowCO2) {
+								PACO2max = PACO2;
+							} else {
+								PACO2min = PACO2;
+							}
+							PACO2 = (PACO2max + PACO2min) / 2;
+						} //end if not doneCO2
+					} // end while not DoneCO2 
+
+					FAO2 = PAO2 / cx1; // cx1=PB-PH2O_BTPS
+					outflowO2 = FAO2 * VA * kBTPS_to_STPD / 0.022414 + CpcO2 * Q; //in mmol/min
+					doneO2 = (Math.abs(outflowO2 - inflowO2) < EpsO2);
+					if (doneO2) {
+						done = true; //all is done
+					} else {
+						if (outflowO2 > inflowO2) {
+							PAO2max = PAO2;
+						} else {
+							PAO2min = PAO2;
+						}
+						PAO2 = (PAO2max + PAO2min) / 2;
+						doneO2 = false;
+						// iteration of PAO2
+						while (!doneO2) {
+							obj = PO2PCO2of(PAO2, PACO2, BEox, Hb, cAlb, cPi, cDPG, FCOHb, FMetHb, FHbF, temp);
+							CpcO2 = obj.ctO2;
+							CpcCO2 = obj.ctCO2;
+							CpcO2 = obj.ctO2;
+							pHpc = obj.pH;
+							sO2pc = obj.sO2;
+							VCO2 = (CvCO2 - CpcCO2) * Q; // in mmol min
+							VO2 = (CpcO2 - CvO2) * Q; //in mmol/min
+							VCO2_STPD = VCO2 * 0.022414
+							VO2_STPD = VO2 * 0.022414;
+							//trace("VO2_STPD =" + VO2_STPD + " l/min");
+							VA = VAi + (VCO2_STPD - VO2_STPD) / kBTPS_to_STPD; //VA in l BTPS
+							if (VA < 0) {
+								VA = 0.0;
+							}
+							FAO2 = PAO2 / cx1; // cx1=PB-PH2O_BTPS
+							VeO2 = FAO2 * VA * kBTPS_to_STPD //l stpd/min
+							outflowO2 = VeO2 / 0.022414 + CpcO2 * Q; //in mmol/min
+							doneO2 = (Math.abs(outflowO2 - inflowO2) < EpsO2);
+							if (!doneO2) {
+								if (outflowO2 > inflowO2) {
+									PAO2max = PAO2;
+								} else {
+									PAO2min = PAO2;
+								}
+								PAO2 = (PAO2max + PAO2min) / 2;
+							}
+						} //end while not doneO2
+					} //end else
+					if (!done) {
+						PAO2old = PAO2;
+						PAO2min = PAO2 - dPO2;
+						if (PAO2min < 0) {
+							PAO2min = 0;
+						}
+						PACO2min = PACO2 - dPO2;
+						if (PACO2min < 0) {
+							PACO2min = 0;
+						}
+						PACO2max = PACO2 + dPCO2;
+						PAO2max = PAO2 + dPO2;
+					} //end if
+				} //end while
+
+
+			} //end else
+			//iteration of PAO2 and PACO2 done
+			HCO3pc = cHCO3of(pHpc, PACO2, temp);
+			PpcO2 = PAO2;
+			PpcCO2 = PACO2;
+			resultValue.VA = VA; //expired alveolar ventilation in l/min
+			resultValue.VO2 = VO2; //rate of oxygen comsumption [mmol/min]
+			resultValue.VCO2 = VCO2; //rate of carbon dioxide production [mmol/min]
+			resultValue.CpcO2 = CpcO2; //O2 content in end pulmonary capillary blood [l STPD/l of blood]
+			resultValue.CpcCO2 = CpcCO2; //CO2 content in pulmonary capillary blood [l STPD/l of blood]
+			resultValue.PAO2 = PAO2; // alveolar pO2 [kPa]
+			resultValue.PACO2 = PACO2; // alveolar PCO2 [kPA]
+			resultValue.PpcO2 = PpcO2; //  pO2 in end pulmonary capillary blood [kPa]
+			resultValue.PpcCO2 = PpcCO2; // pCO2 in end pulmonary capillary blood  PCO2 [kPA]
+			resultValue.sO2pc = sO2pc; //oxyhemoglobin saturation in end pulmonary capillary blood [ratio form 0 to 1]
+			resultValue.pHpc = pHpc; // pH in end pulmonary capillary blood 
+			resultValue.HCO3pc = HCO3pc; // actual bicarbonate concentration in end pulmonary capillary blood [mmol/l]
+
+			return resultValue;
+		}; // end function ALVEQUIL
+
+		public function testAlvEquil(): void {
+			var result: Object = new Object();
+
+			var VAi: Number =4;
+			var FiO2: Number = 0.21;
+			var FiCO2: Number = 0.004;
+			var temp: Number = 37;
+			var PB: Number = 760;
+			var Q: Number = 5;
+			var CvO2: Number = 6.18;
+			var CvCO2: Number = 26.3;
+			var BEox: Number = 0;
+			var Hb: Number = 8.40;
+			var cAlb: Number = 0.66;
+			var cPi: Number = 1.15;
+			var cDPG: Number = 5.3;
+			var FCOHb: Number = 0.005;
+			var FMetHb: Number = 0.005
+			var FHbF: Number = 0.005;
+
+
+
+			result = AlvEquil(VAi, FiO2, FiCO2, temp, PB, Q, CvO2, CvCO2, BEox, Hb, cAlb, cPi, cDPG, FCOHb, FMetHb, FHbF);
+
+			var VO2: Number = result.VO2;
+			var VCO2: Number = result.VCO2;
+			var PACO2: Number = result.PACO2;
+			var PAO2: Number = result.PAO2;
+			var pH: Number = result.pHpc;
+			var CpcO2: Number = result.CpcO2;
+			var CpcCO2: Number = result.CpcCO2;
+			var sO2: Number = result.sO2pc;
+			var HCO3: Number = result.HCO3pc;
+			var VA: Number = result.VA;
+			trace("VAi=" + VAi + " VA=" + VA);
+			trace("VO2 = " + VO2 + " mmol/min = " + VO2 * 22.414 + " ml/min VCO2 = " + VCO2 + " mmol/min = " + VCO2 * 22.414 + " ml/min");
+
+			trace("PACO2 = " + PACO2 + " PAO2 = " + PAO2 + " sO2 = " + sO2 + " pH = " + pH + " HCO3 = " + HCO3 + " CpcO2 = " + CpcO2 + " CpcCO2 = " + CpcCO2);
+
+		}
 
 
 		//*** testing ****
@@ -1100,6 +1441,15 @@
 		}
 
 
+		function testVaporPressureSI(): void {
+			var temp: Number = 38;
+			var pH2O: Number;
+			pH2O = VaporPressureSI(temp + 273.15) / 133.322;
+			trace("temp = " + temp + "°C pH2O = " + pH2O + " mmHg =" + pH2Oof(temp));
+		}
+
+
+
 		public function testO2CO2of(): void {
 
 			var BEox: Number = -10;
@@ -1140,12 +1490,12 @@
 			PO2calc = result.pO2;
 			pHcalc = result.pH;
 			sO2calc = result.sO2;
-			
+
 			trace("input pCO2 =" + pCO2 + " calculated pCO2 = " + PCO2calc);
 			trace("input pO2 = " + pO2 + " calculated pO2 = " + PO2calc);
 			trace("input pH = " + pH + " calculated pH = " + pHcalc);
-			trace("input sO2 = " + sO2*100 + "% calculated sO2 = " + sO2calc*100+"%");
-			
+			trace("input sO2 = " + sO2 * 100 + "% calculated sO2 = " + sO2calc * 100 + "%");
+
 			//end testO2CO2of;			
 		}
 
