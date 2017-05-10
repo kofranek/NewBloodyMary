@@ -2594,6 +2594,37 @@ package NewBloodyMary_testing
       Real VAi_l_per_min;
 
     algorithm
+      /*
+  
+  (VA_l_per_min,
+  VO2_l_per_min,
+  VCO2_l_per_min,
+  CpcO2, CpcCO2,
+  PAO2_kPa,
+  PACO2_kPA,
+  PpcO2_kPA,
+  PpcCO2_kPA,
+  sO2pc,
+  pHpc,
+  HCO3pc)
+ :=AlvEquil(
+    VA_l_per_min,
+    FiO2,
+    FiCO2,
+    temp_cels,
+    PB_mmHg,
+    Q_l_per_min,
+    CvO2,
+    CvCO2,
+    BEox,
+    cHb,
+    cAlb,
+    cPi,
+    cDPG,
+    FCOHb,
+    FMetHb,
+    FHbF);
+ */
       (VA_l_per_min,
       VO2_l_per_min,
       VCO2_l_per_min,
@@ -2606,12 +2637,12 @@ package NewBloodyMary_testing
       pHpc,
       HCO3pc)
      :=AlvEquil(
-        VA_l_per_min,
+        VAi_l_per_min,
         FiO2,
         FiCO2,
         temp_cels,
         PB_mmHg,
-        Q_l_per_min,
+        5,
         CvO2,
         CvCO2,
         BEox,
@@ -2624,15 +2655,17 @@ package NewBloodyMary_testing
         FHbF);
 
     equation
+
       temp_cels =  T-273.15; //from °C to K conversion
       PB_mmHg=PB/133.322365;// from mmHg to Pa conversion
       VAi_l_per_min=VAi*60000;// from m^3/sec to l/min conversion
       Q_l_per_min=Q*60000;// from m^3/sec to l/min conversion
-      VA*60000 = VA_l_per_min;  //from l/min to m^3/sec conversion
+      VA = VA_l_per_min/60000;  //from l/min to m^3/sec conversion
       VO2 = VO2_l_per_min/60/1000;  //from mmol/min to mol/sec conversion
       VCO2 = VCO2_l_per_min/60/1000;  //from mmol/min to mol/sec conversion
       PAO2 = PAO2_kPa*1000; //from kPa to Pa conversion
       PACO2 = PACO2_kPA*1000; //from kPa to Pa conversion
+
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}),            graphics={
             Rectangle(
@@ -3134,6 +3167,8 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{12,-64},{78,0}})));
         Physiolibrary.Types.Constants.ConcentrationConst cPi(k=1.15)
           annotation (Placement(transformation(extent={{-54,38},{-46,46}})));
+        Modelica.Blocks.Sources.Sine sine(freqHz=0.1, amplitude=1)
+          annotation (Placement(transformation(extent={{-68,80},{-48,100}})));
       equation
         connect(pCO2.y, pO2PCO2_1.pCO2) annotation (Line(points={{-27,60},{-7.5,
                 60},{-7.5,61.72}},
@@ -3270,7 +3305,7 @@ package NewBloodyMary_testing
         Physiolibrary.Types.Constants.TemperatureConst temperature(k=310.15)
           annotation (Placement(transformation(extent={{-62,6},{-54,14}})));
         Physiolibrary.Types.Constants.ConcentrationConst BEox(k=-19)
-          annotation (Placement(transformation(extent={{-98,68},{-90,76}})));
+          annotation (Placement(transformation(extent={{-98,88},{-90,96}})));
         Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="mmHg")=
                10665.7909932)
           annotation (Placement(transformation(extent={{-56,62},{-48,70}})));
@@ -3286,13 +3321,12 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-56,38},{-48,46}})));
         O2CO2algr o2CO2algr
           annotation (Placement(transformation(extent={{-2,-70},{68,-8}})));
+        Modelica.Blocks.Sources.Sine sine(freqHz=0.1, amplitude=1)
+          annotation (Placement(transformation(extent={{-74,74},{-54,94}})));
       equation
         connect(pCO2.y, pO2PCO2_1.pCO2) annotation (Line(points={{-29,60},{-7.5,
                 60},{-7.5,61.72}},
                                 color={0,0,127}));
-        connect(BEox.y, pO2PCO2_1.BEox) annotation (Line(points={{-89,72},{-32,
-                72},{-32,75.32},{-7.5,75.32}},
-                                             color={0,0,127}));
         connect(pO2.y, pO2PCO2_1.pO2) annotation (Line(points={{-47,66},{-24,66},
                 {-24,68.52},{-7.5,68.52}},
                                          color={0,0,127}));
@@ -3314,17 +3348,12 @@ package NewBloodyMary_testing
                 {-24,32},{-24,28.4},{-7.5,28.4}}, color={0,0,127}));
         connect(cPi.y, pO2PCO2_1.ctPi) annotation (Line(points={{-47,42},{-7.5,
                 42},{-7.5,41.32}}, color={0,0,127}));
-        connect(o2CO2algr.BEox, pO2PCO2_1.BEox) annotation (Line(points={{-6.2,
-                -8.62},{-86,-8.62},{-86,72},{-32,72},{-32,75.32},{-7.5,75.32}},
-              color={0,0,127}));
         connect(o2CO2algr.ctO2, pO2PCO2_1.ctO2) annotation (Line(points={{-6.2,
                 -14.2},{-18,-14.2},{-18,-2},{86,-2},{86,69.2},{69.5,69.2}},
               color={0,0,127}));
         connect(o2CO2algr.ctCO2, pO2PCO2_1.ctCO2) annotation (Line(points={{-6.2,
                 -20.4},{-22,-20.4},{-22,4},{82,4},{82,62.4},{69.5,62.4}},
               color={0,0,127}));
-        connect(o2CO2algr.ctHb, ctHb.y) annotation (Line(points={{-6.2,-26.6},{
-                -75,-26.6},{-77,54}}, color={0,0,127}));
         connect(o2CO2algr.ctAlb, cAlb.y) annotation (Line(points={{-6.2,-32.8},
                 {-63,-32.8},{-65,46}}, color={0,0,127}));
         connect(o2CO2algr.ctPi, pO2PCO2_1.ctPi) annotation (Line(points={{-6.2,
@@ -3342,6 +3371,13 @@ package NewBloodyMary_testing
         connect(o2CO2algr.T, pO2PCO2_1.T) annotation (Line(points={{-6.2,-69.38},
                 {-42,-69.38},{-42,10},{-32,10},{-32,8},{-7.5,8}}, color={0,0,
                 127}));
+        connect(o2CO2algr.BEox, BEox.y) annotation (Line(points={{-6.2,-8.62},{
+                -89,-8.62},{-89,92}}, color={0,0,127}));
+        connect(sine.y, pO2PCO2_1.BEox) annotation (Line(points={{-53,84},{-32,
+                84},{-32,75.32},{-7.5,75.32}}, color={0,0,127}));
+        connect(o2CO2algr.ctHb, pO2PCO2_1.BEox) annotation (Line(points={{-6.2,
+                -26.6},{-42,-26.6},{-42,84},{-32,84},{-32,75.32},{-7.5,75.32}},
+              color={0,0,127}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                   -100},{100,100}})));
       end testO2CO2algr;
@@ -3493,12 +3529,17 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-88,8},{-80,16}})));
         Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
                 "l/min") = 6.6666666666667e-05)
-          annotation (Placement(transformation(extent={{-88,38},{-80,46}})));
+          annotation (Placement(transformation(extent={{-90,38},{-82,46}})));
         Physiolibrary.Types.Constants.VolumeFlowRateConst Q(k(displayUnit=
                 "m3/s") = 8.3333333333333e-05)
           annotation (Placement(transformation(extent={{-78,32},{-70,40}})));
         Physiolibrary.Types.Constants.PressureConst PB(k=101325.0144354)
           annotation (Placement(transformation(extent={{-94,68},{-86,76}})));
+        Modelica.Blocks.Sources.Sine sine(
+          amplitude=5E-5,
+          freqHz=0.02,
+          offset=7E-5)
+          annotation (Placement(transformation(extent={{-10,68},{14,92}})));
       equation
         connect(temperature.y, alvEq.T) annotation (Line(points={{-53,-40},{-26,
                 -40},{-26,-4.52},{-17.98,-4.52}}, color={0,0,127}));
@@ -3522,8 +3563,6 @@ package NewBloodyMary_testing
                 {-44,20},{-44,28.96},{-17.98,28.96}}, color={0,0,127}));
         connect(BEox.y, alvEq.BEox) annotation (Line(points={{-59,28},{-46,28},
                 {-46,32.68},{-17.98,32.68}}, color={0,0,127}));
-        connect(VAi.y, alvEq.VAi) annotation (Line(points={{-79,42},{-66,42},{
-                -50,42},{-50,40.12},{-17.98,40.12}}, color={0,0,127}));
         connect(FiCO2.y, alvEq.FiCO2) annotation (Line(points={{-57,50},{-34,50},
                 {-34,43.84},{-17.98,43.84}}, color={0,0,127}));
         connect(FiO2.y, alvEq.FiO2) annotation (Line(points={{-69,56},{-30,56},
@@ -3532,8 +3571,10 @@ package NewBloodyMary_testing
                 -17.98,36.4}}, color={0,0,127}));
         connect(PB.y, alvEq.PB) annotation (Line(points={{-85,72},{-56,72},{-24,
                 72},{-24,51.28},{-17.98,51.28}}, color={0,0,127}));
-        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent=
-                  {{-100,-100},{100,100}})));
+        connect(sine.y, alvEq.VAi) annotation (Line(points={{15.2,80},{16,80},{
+                16,104},{-42,104},{-42,40.12},{-17.98,40.12}}, color={0,0,127}));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}})));
       end testAlvEq;
     end testOSA;
 
