@@ -2416,6 +2416,402 @@ package NewBloodyMary_testing
                        extent={{-100,-100},{100,100}})));
     end O2CO2algr;
 
+    model AlvEq
+
+      Physiolibrary.Types.RealIO.ConcentrationInput
+                                         BEox
+                                      annotation (Placement(transformation(extent={{-70,29},
+                {-54,45}}),           iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,28})));
+      Physiolibrary.Types.RealIO.ConcentrationInput CvO2 annotation (Placement(
+            transformation(extent={{-34,39},{-16,57}}), iconTransformation(extent={{-112,10},
+                {-100,22}})));
+      Physiolibrary.Types.RealIO.ConcentrationInput CvCO2 annotation (Placement(
+            transformation(extent={{-32,68},{-16,84}}), iconTransformation(extent={{-112,-2},
+                {-100,10}})));
+      Physiolibrary.Types.RealIO.ConcentrationInput cHb(displayUnit="mmol/l")
+        "concentration of total haemoglobin in whole blood (8.4)" annotation (
+          Placement(transformation(
+            extent={{8,8},{-8,-8}},
+            rotation=180,
+            origin={-78,4}), iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,-8})));
+      Physiolibrary.Types.RealIO.ConcentrationInput cAlb(displayUnit="mmol/l")
+        "concentration of total haemoglobin in whole blood (8.4)" annotation (
+          Placement(transformation(
+            extent={{7,7},{-7,-7}},
+            rotation=180,
+            origin={-73,-7}), iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,-20})));
+      Physiolibrary.Types.RealIO.ConcentrationInput cPi(displayUnit="mmol/l")
+        "concentration of total haemoglobin in whole blood (8.4)" annotation (
+          Placement(transformation(
+            extent={{7,7},{-7,-7}},
+            rotation=180,
+            origin={-85,-13}), iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,-32})));
+      Physiolibrary.Types.RealIO.ConcentrationInput cDPG
+                                       annotation (Placement(transformation(extent={{-7,-7},
+                {7,7}},
+            rotation=0,
+            origin={-65,-25}),        iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,-44})));
+      Physiolibrary.Types.RealIO.FractionInput FMetHb
+                                       annotation (Placement(transformation(extent={{-8,-8},
+                {8,8}},
+            rotation=0,
+            origin={-72,-34}),        iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,-56})));
+      Physiolibrary.Types.RealIO.FractionInput FCOHb annotation (Placement(
+            transformation(
+            extent={{-7,-7},{7,7}},
+            rotation=0,
+            origin={-75,-46}),
+                             iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,-68})));
+      Physiolibrary.Types.RealIO.FractionInput FHbF
+                                       annotation (Placement(transformation(extent={{-8,-8},
+                {8,8}},
+            rotation=0,
+            origin={-78,-56}),        iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,-80})));
+      Physiolibrary.Types.RealIO.TemperatureInput T(start=310.15)  annotation (Placement(transformation(extent={{-7,-7},
+                {7,7}},
+            rotation=0,
+            origin={-68,-65}),        iconTransformation(extent={{-112,-98},{-100,-86}})));
+      Physiolibrary.Types.RealIO.PressureOutput PAO2 annotation (Placement(
+            transformation(extent={{36,41},{50,55}}), iconTransformation(extent=
+               {{100,76},{120,96}})));
+      Physiolibrary.Types.RealIO.PressureOutput PACO2 annotation (Placement(
+            transformation(extent={{36,70},{48,82}}), iconTransformation(extent=
+               {{100,58},{120,78}})));
+      Physiolibrary.Types.RealIO.pHOutput pHpc annotation (Placement(
+            transformation(
+            extent={{-8,-8},{8,8}},
+            rotation=0,
+            origin={88,3}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=0,
+            origin={110,52})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput HCO3pc(displayUnit=
+            "mmol/l") "outgoing concentration of HCO3" annotation (Placement(
+            transformation(
+            extent={{-7,-7.5},{7,7.5}},
+            rotation=0,
+            origin={87,-6.5}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=0,
+            origin={110,34})));
+      Physiolibrary.Types.RealIO.FractionOutput sO2pc annotation (Placement(
+            transformation(
+            extent={{-8,-8},{8,8}},
+            rotation=0,
+            origin={88,-16}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=0,
+            origin={110,18})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput CpcCO2 annotation (
+          Placement(transformation(
+            extent={{-7,-6.5},{7,6.5}},
+            rotation=0,
+            origin={87,-53.5}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=0,
+            origin={110,-66})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput CpcO2 annotation (
+          Placement(transformation(
+            extent={{-7,-7},{7,7}},
+            rotation=0,
+            origin={87,-44}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=0,
+            origin={110,-46})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput Q annotation (Placement(
+            transformation(extent={{-28,-78},{12,-38}}), iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,40})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput VAi annotation (Placement(
+            transformation(extent={{-28,-78},{12,-38}}), iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,52})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateOutput VA annotation (Placement(
+            transformation(extent={{100,-96},{120,-76}}), iconTransformation(
+              extent={{100,-96},{120,-76}})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput VO2 annotation (Placement(
+            transformation(extent={{100,-8},{120,12}}), iconTransformation(
+              extent={{100,-8},{120,12}})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput VCO2 annotation (Placement(
+            transformation(extent={{100,-20},{120,0}}), iconTransformation(
+              extent={{100,-26},{120,-6}})));
+      Physiolibrary.Types.RealIO.FractionInput FiO2 annotation (Placement(
+            transformation(
+            extent={{-8,-8},{8,8}},
+            rotation=0,
+            origin={-72,-34}), iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,76})));
+      Physiolibrary.Types.RealIO.FractionInput FiCO2 annotation (Placement(
+            transformation(
+            extent={{-8,-8},{8,8}},
+            rotation=0,
+            origin={-72,-34}), iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-106,64})));
+      Physiolibrary.Types.RealIO.PressureInput PB annotation (Placement(
+            transformation(extent={{-148,66},{-108,106}}), iconTransformation(
+              extent={{-112,82},{-100,94}})));
+
+      Real VA_l_per_min;
+      Real VO2_l_per_min;
+      Real VCO2_l_per_min;
+      Real PAO2_kPa;
+      Real PACO2_kPA;
+      Real PpcO2_kPA;
+      Real PpcCO2_kPA;
+      Real Q_l_per_min;
+      Real PB_mmHg;
+      Real temp_cels;
+      Real VAi_l_per_min;
+
+    algorithm
+      (VA_l_per_min,
+      VO2_l_per_min,
+      VCO2_l_per_min,
+      CpcO2, CpcCO2,
+      PAO2_kPa,
+      PACO2_kPA,
+      PpcO2_kPA,
+      PpcCO2_kPA,
+      sO2pc,
+      pHpc,
+      HCO3pc)
+     :=AlvEquil(
+        VA_l_per_min,
+        FiO2,
+        FiCO2,
+        temp_cels,
+        PB_mmHg,
+        Q_l_per_min,
+        CvO2,
+        CvCO2,
+        BEox,
+        cHb,
+        cAlb,
+        cPi,
+        cDPG,
+        FCOHb,
+        FMetHb,
+        FHbF);
+
+    equation
+      temp_cels =  T-273.15; //from °C to K conversion
+      PB_mmHg=PB/133.322365;// from mmHg to Pa conversion
+      VAi_l_per_min=VAi*60000;// from m^3/sec to l/min conversion
+      Q_l_per_min=Q*60000;// from m^3/sec to l/min conversion
+      VA*60000 = VA_l_per_min;  //from l/min to m^3/sec conversion
+      VO2 = VO2_l_per_min/60/1000;  //from mmol/min to mol/sec conversion
+      VCO2 = VCO2_l_per_min/60/1000;  //from mmol/min to mol/sec conversion
+      PAO2 = PAO2_kPa*1000; //from kPa to Pa conversion
+      PACO2 = PACO2_kPA*1000; //from kPa to Pa conversion
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                {100,100}}),            graphics={
+            Rectangle(
+              extent={{-100,100},{100,-100}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid),
+            Text(
+              extent={{-68,36},{64,-12}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="AlvEq"),
+            Text(
+              extent={{-96,34},{-78,24}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="BEox"),
+            Text(
+              extent={{-10,6},{10,-6}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              origin={-86,18},
+              rotation=180,
+              textString="CvO2"),
+            Text(
+              extent={{-13,7},{13,-7}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              origin={-83,5},
+              rotation=180,
+              textString="CvCO2"),
+            Text(
+              extent={{-98,-2},{-80,-12}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="cHb"),
+            Text(
+              extent={{-98,-14},{-78,-24}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="cAlb"),
+            Text(
+              extent={{-100,-24},{-82,-34}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="cPi"),
+            Text(
+              extent={{-96,-38},{-76,-48}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="cDPG"),
+            Text(
+              extent={{-96,-48},{-68,-66}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="FMetHb"),
+            Text(
+              extent={{-96,-60},{-72,-76}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="FHbCO"),
+            Text(
+              extent={{-96,-76},{-78,-84}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="FHbF"),
+            Text(
+              extent={{-102,-86},{-84,-96}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="T"),
+            Text(
+              extent={{-12,6},{12,-6}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              origin={78,-42},
+              rotation=180,
+              textString="CpcO2"),
+            Text(
+              extent={{-15.5,19.5},{15.5,-19.5}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              origin={76.5,-63.5},
+              rotation=180,
+              textString="CpcCO2"),
+            Text(
+              extent={{66,24},{90,10}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="sO2pc"),
+            Text(
+              extent={{64,44},{90,20}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="HCO3pc"),
+            Text(
+              extent={{72,58},{92,46}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="pHpc"),
+            Text(
+              extent={{72,80},{94,62}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="PACO2"),
+            Text(
+              extent={{74,94},{92,84}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="PAO2"),
+            Text(
+              extent={{-100,46},{-84,36}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="Q"),
+            Text(
+              extent={{-98,58},{-82,48}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="VAi"),
+            Text(
+              extent={{70,-78},{90,-92}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="VA"),
+            Text(
+              extent={{68,6},{90,-4}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="VO2"),
+            Text(
+              extent={{70,-22},{92,-32}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="VCO2"),
+            Text(
+              extent={{-96,80},{-80,70}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="FiO2"),
+            Text(
+              extent={{-96,70},{-76,58}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="FiCO2"),
+            Text(
+              extent={{-99,92},{-81,82}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              textString="PB")}));
+    end AlvEq;
+
     model AlveolocapillaryUnit
     extends Icons.Alveolus;
       Parts.MolarInflowConnector CO2ven annotation (Placement(transformation(
@@ -2866,20 +3262,20 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-4,8},{66,76}})));
         Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit="kPa")=
                7999.3432449)
-          annotation (Placement(transformation(extent={{-36,56},{-28,64}})));
+          annotation (Placement(transformation(extent={{-38,56},{-30,64}})));
         Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=8)
-          annotation (Placement(transformation(extent={{-84,50},{-76,58}})));
+          annotation (Placement(transformation(extent={{-86,50},{-78,58}})));
         Physiolibrary.Types.Constants.ConcentrationConst cAlb(k=0.66)
-          annotation (Placement(transformation(extent={{-72,42},{-64,50}})));
+          annotation (Placement(transformation(extent={{-74,42},{-66,50}})));
         Physiolibrary.Types.Constants.TemperatureConst temperature(k=310.15)
           annotation (Placement(transformation(extent={{-62,6},{-54,14}})));
         Physiolibrary.Types.Constants.ConcentrationConst BEox(k=-19)
-          annotation (Placement(transformation(extent={{-96,68},{-88,76}})));
+          annotation (Placement(transformation(extent={{-98,68},{-90,76}})));
         Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="mmHg")=
                10665.7909932)
-          annotation (Placement(transformation(extent={{-54,62},{-46,70}})));
+          annotation (Placement(transformation(extent={{-56,62},{-48,70}})));
         Physiolibrary.Types.Constants.ConcentrationConst cDPG(k=5)
-          annotation (Placement(transformation(extent={{-100,32},{-92,40}})));
+          annotation (Placement(transformation(extent={{-102,32},{-94,40}})));
         Physiolibrary.Types.Constants.FractionConst fCOHb(k=0.005)
           annotation (Placement(transformation(extent={{-36,22},{-28,30}})));
         Physiolibrary.Types.Constants.FractionConst fMetHb1(k=0.005)
@@ -2887,25 +3283,25 @@ package NewBloodyMary_testing
         Physiolibrary.Types.Constants.FractionConst fHbF(k=0.005)
           annotation (Placement(transformation(extent={{-44,14},{-36,22}})));
         Physiolibrary.Types.Constants.ConcentrationConst cPi(k=1.15)
-          annotation (Placement(transformation(extent={{-54,38},{-46,46}})));
+          annotation (Placement(transformation(extent={{-56,38},{-48,46}})));
         O2CO2algr o2CO2algr
           annotation (Placement(transformation(extent={{-2,-70},{68,-8}})));
       equation
-        connect(pCO2.y, pO2PCO2_1.pCO2) annotation (Line(points={{-27,60},{-7.5,
+        connect(pCO2.y, pO2PCO2_1.pCO2) annotation (Line(points={{-29,60},{-7.5,
                 60},{-7.5,61.72}},
                                 color={0,0,127}));
-        connect(BEox.y, pO2PCO2_1.BEox) annotation (Line(points={{-87,72},{-32,
+        connect(BEox.y, pO2PCO2_1.BEox) annotation (Line(points={{-89,72},{-32,
                 72},{-32,75.32},{-7.5,75.32}},
                                              color={0,0,127}));
-        connect(pO2.y, pO2PCO2_1.pO2) annotation (Line(points={{-45,66},{-24,66},
+        connect(pO2.y, pO2PCO2_1.pO2) annotation (Line(points={{-47,66},{-24,66},
                 {-24,68.52},{-7.5,68.52}},
                                          color={0,0,127}));
         connect(pO2PCO2_1.ctHb, ctHb.y) annotation (Line(points={{-7.5,54.92},{
-                -12,54.92},{-12,54},{-75,54}},color={0,0,127}));
-        connect(cAlb.y, pO2PCO2_1.ctAlb) annotation (Line(points={{-63,46},{-22,
+                -12,54.92},{-12,54},{-77,54}},color={0,0,127}));
+        connect(cAlb.y, pO2PCO2_1.ctAlb) annotation (Line(points={{-65,46},{-22,
                 46},{-22,48.12},{-7.5,48.12}},
                                              color={0,0,127}));
-        connect(cDPG.y, pO2PCO2_1.cDPG) annotation (Line(points={{-91,36},{-7.5,
+        connect(cDPG.y, pO2PCO2_1.cDPG) annotation (Line(points={{-93,36},{-7.5,
                 36},{-7.5,35.2}}, color={0,0,127}));
         connect(temperature.y, pO2PCO2_1.T) annotation (Line(points={{-53,10},{
                 -32,10},{-32,8},{-7.5,8}},       color={0,0,127}));
@@ -2916,35 +3312,35 @@ package NewBloodyMary_testing
                                              color={0,0,127}));
         connect(fMetHb1.y, pO2PCO2_1.FMetHb) annotation (Line(points={{-51,32},
                 {-24,32},{-24,28.4},{-7.5,28.4}}, color={0,0,127}));
-        connect(cPi.y, pO2PCO2_1.ctPi) annotation (Line(points={{-45,42},{-7.5,
+        connect(cPi.y, pO2PCO2_1.ctPi) annotation (Line(points={{-47,42},{-7.5,
                 42},{-7.5,41.32}}, color={0,0,127}));
-        connect(o2CO2algr.BEox, pO2PCO2_1.BEox) annotation (Line(points={{-5.5,
+        connect(o2CO2algr.BEox, pO2PCO2_1.BEox) annotation (Line(points={{-6.2,
                 -8.62},{-86,-8.62},{-86,72},{-32,72},{-32,75.32},{-7.5,75.32}},
               color={0,0,127}));
-        connect(o2CO2algr.ctO2, pO2PCO2_1.ctO2) annotation (Line(points={{-5.5,
+        connect(o2CO2algr.ctO2, pO2PCO2_1.ctO2) annotation (Line(points={{-6.2,
                 -14.2},{-18,-14.2},{-18,-2},{86,-2},{86,69.2},{69.5,69.2}},
               color={0,0,127}));
-        connect(o2CO2algr.ctCO2, pO2PCO2_1.ctCO2) annotation (Line(points={{
-                -5.5,-20.4},{-22,-20.4},{-22,4},{82,4},{82,62.4},{69.5,62.4}},
+        connect(o2CO2algr.ctCO2, pO2PCO2_1.ctCO2) annotation (Line(points={{-6.2,
+                -20.4},{-22,-20.4},{-22,4},{82,4},{82,62.4},{69.5,62.4}},
               color={0,0,127}));
-        connect(o2CO2algr.ctHb, ctHb.y) annotation (Line(points={{-5.5,-26.6},{
-                -75,-26.6},{-75,54}}, color={0,0,127}));
-        connect(o2CO2algr.ctAlb, cAlb.y) annotation (Line(points={{-5.5,-32.8},
-                {-63,-32.8},{-63,46}}, color={0,0,127}));
-        connect(o2CO2algr.ctPi, pO2PCO2_1.ctPi) annotation (Line(points={{-5.5,
+        connect(o2CO2algr.ctHb, ctHb.y) annotation (Line(points={{-6.2,-26.6},{
+                -75,-26.6},{-77,54}}, color={0,0,127}));
+        connect(o2CO2algr.ctAlb, cAlb.y) annotation (Line(points={{-6.2,-32.8},
+                {-63,-32.8},{-65,46}}, color={0,0,127}));
+        connect(o2CO2algr.ctPi, pO2PCO2_1.ctPi) annotation (Line(points={{-6.2,
                 -38.38},{-46,-38.38},{-46,34},{-40,34},{-40,42},{-7.5,42},{-7.5,
                 41.32}}, color={0,0,127}));
-        connect(o2CO2algr.cDPG, cDPG.y) annotation (Line(points={{-5.5,-44.58},
-                {-91,-44.58},{-91,36}}, color={0,0,127}));
-        connect(o2CO2algr.FMetHb, fMetHb1.y) annotation (Line(points={{-5.5,
+        connect(o2CO2algr.cDPG, cDPG.y) annotation (Line(points={{-6.2,-44.58},
+                {-91,-44.58},{-93,36}}, color={0,0,127}));
+        connect(o2CO2algr.FMetHb, fMetHb1.y) annotation (Line(points={{-6.2,
                 -50.16},{-51,-50.16},{-51,32}}, color={0,0,127}));
-        connect(o2CO2algr.FCOHb, pO2PCO2_1.FHbCO) annotation (Line(points={{
-                -5.5,-56.36},{-26,-56.36},{-26,26},{-12,26},{-12,21.6},{-7.5,
-                21.6}}, color={0,0,127}));
-        connect(o2CO2algr.FHbF, fHbF.y) annotation (Line(points={{-5.5,-62.56},
-                {-35,-62.56},{-35,18}}, color={0,0,127}));
-        connect(o2CO2algr.T, pO2PCO2_1.T) annotation (Line(points={{-5.5,-68.76},
-                {-42,-68.76},{-42,10},{-32,10},{-32,8},{-7.5,8}}, color={0,0,
+        connect(o2CO2algr.FCOHb, pO2PCO2_1.FHbCO) annotation (Line(points={{-6.2,
+                -56.98},{-26,-56.98},{-26,26},{-12,26},{-12,21.6},{-7.5,21.6}},
+                        color={0,0,127}));
+        connect(o2CO2algr.FHbF, fHbF.y) annotation (Line(points={{-6.2,-63.18},
+                {-35,-63.18},{-35,18}}, color={0,0,127}));
+        connect(o2CO2algr.T, pO2PCO2_1.T) annotation (Line(points={{-6.2,-69.38},
+                {-42,-69.38},{-42,10},{-32,10},{-32,8},{-7.5,8}}, color={0,0,
                 127}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                   -100},{100,100}})));
@@ -3064,320 +3460,83 @@ package NewBloodyMary_testing
           VCO2ml:=VCO2*22.414;
           VO2ml :=VO2*22.414;
       end testAlvEquil;
+
+      model testAlvEq
+
+        AlvEq alvEq
+          annotation (Placement(transformation(extent={{-16,-7},{50,55}})));
+        Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
+          annotation (Placement(transformation(extent={{-68,24},{-60,32}})));
+        Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=8)
+          annotation (Placement(transformation(extent={{-78,0},{-70,8}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cAlb(k=0.66)
+          annotation (Placement(transformation(extent={{-68,-6},{-60,2}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cPi(k=1.15)
+          annotation (Placement(transformation(extent={{-58,-12},{-50,-4}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cDPG(k=5)
+          annotation (Placement(transformation(extent={{-46,-18},{-38,-10}})));
+        Physiolibrary.Types.Constants.FractionConst fMetHb1(k=0.005)
+          annotation (Placement(transformation(extent={{-98,-26},{-90,-18}})));
+        Physiolibrary.Types.Constants.FractionConst fCOHb(k=0.005)
+          annotation (Placement(transformation(extent={{-88,-32},{-80,-24}})));
+        Physiolibrary.Types.Constants.FractionConst fHbF(k=0.005)
+          annotation (Placement(transformation(extent={{-76,-38},{-68,-30}})));
+        Physiolibrary.Types.Constants.TemperatureConst temperature(k=310.15)
+          annotation (Placement(transformation(extent={{-62,-44},{-54,-36}})));
+        Physiolibrary.Types.Constants.FractionConst FiO2(k=0.21)
+          annotation (Placement(transformation(extent={{-78,52},{-70,60}})));
+        Physiolibrary.Types.Constants.FractionConst FiCO2(k=0.0004)
+          annotation (Placement(transformation(extent={{-66,46},{-58,54}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cvO2(k=8.18)
+          annotation (Placement(transformation(extent={{-98,16},{-90,24}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cvCO2(k=24)
+          annotation (Placement(transformation(extent={{-88,8},{-80,16}})));
+        Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
+                "l/min") = 6.6666666666667e-05)
+          annotation (Placement(transformation(extent={{-88,38},{-80,46}})));
+        Physiolibrary.Types.Constants.VolumeFlowRateConst Q(k(displayUnit=
+                "m3/s") = 8.3333333333333e-05)
+          annotation (Placement(transformation(extent={{-78,32},{-70,40}})));
+        Physiolibrary.Types.Constants.PressureConst PB(k=101325.0144354)
+          annotation (Placement(transformation(extent={{-94,68},{-86,76}})));
+      equation
+        connect(temperature.y, alvEq.T) annotation (Line(points={{-53,-40},{-26,
+                -40},{-26,-4.52},{-17.98,-4.52}}, color={0,0,127}));
+        connect(fHbF.y, alvEq.FHbF) annotation (Line(points={{-67,-34},{-50,-34},
+                {-28,-34},{-28,-0.8},{-17.98,-0.8}}, color={0,0,127}));
+        connect(fCOHb.y, alvEq.FCOHb) annotation (Line(points={{-79,-28},{-30,
+                -28},{-30,2.92},{-17.98,2.92}}, color={0,0,127}));
+        connect(fMetHb1.y, alvEq.FMetHb) annotation (Line(points={{-89,-22},{
+                -60,-22},{-32,-22},{-32,6.64},{-17.98,6.64}}, color={0,0,127}));
+        connect(cDPG.y, alvEq.cDPG) annotation (Line(points={{-37,-14},{-34,-14},
+                {-34,10.36},{-17.98,10.36}}, color={0,0,127}));
+        connect(cPi.y, alvEq.cPi) annotation (Line(points={{-49,-8},{-44,-8},{
+                -36,-8},{-36,14.08},{-17.98,14.08}}, color={0,0,127}));
+        connect(cAlb.y, alvEq.cAlb) annotation (Line(points={{-59,-2},{-48,-2},
+                {-38,-2},{-38,17.8},{-17.98,17.8}}, color={0,0,127}));
+        connect(ctHb.y, alvEq.cHb) annotation (Line(points={{-69,4},{-40,4},{
+                -40,21.52},{-17.98,21.52}}, color={0,0,127}));
+        connect(cvCO2.y, alvEq.CvCO2) annotation (Line(points={{-79,12},{-42,12},
+                {-42,25.24},{-17.98,25.24}}, color={0,0,127}));
+        connect(cvO2.y, alvEq.CvO2) annotation (Line(points={{-89,20},{-89,20},
+                {-44,20},{-44,28.96},{-17.98,28.96}}, color={0,0,127}));
+        connect(BEox.y, alvEq.BEox) annotation (Line(points={{-59,28},{-46,28},
+                {-46,32.68},{-17.98,32.68}}, color={0,0,127}));
+        connect(VAi.y, alvEq.VAi) annotation (Line(points={{-79,42},{-66,42},{
+                -50,42},{-50,40.12},{-17.98,40.12}}, color={0,0,127}));
+        connect(FiCO2.y, alvEq.FiCO2) annotation (Line(points={{-57,50},{-34,50},
+                {-34,43.84},{-17.98,43.84}}, color={0,0,127}));
+        connect(FiO2.y, alvEq.FiO2) annotation (Line(points={{-69,56},{-30,56},
+                {-30,47.56},{-17.98,47.56}}, color={0,0,127}));
+        connect(Q.y, alvEq.Q) annotation (Line(points={{-69,36},{-17.98,36},{
+                -17.98,36.4}}, color={0,0,127}));
+        connect(PB.y, alvEq.PB) annotation (Line(points={{-85,72},{-56,72},{-24,
+                72},{-24,51.28},{-17.98,51.28}}, color={0,0,127}));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent=
+                  {{-100,-100},{100,100}})));
+      end testAlvEq;
     end testOSA;
 
-    model AlvEq
-      Physiolibrary.Types.RealIO.ConcentrationInput
-                                         BEox
-                                      annotation (Placement(transformation(extent={{-70,29},
-                {-54,45}}),           iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={-102,96})));
-      Physiolibrary.Types.RealIO.ConcentrationInput ctO2 annotation (Placement(
-            transformation(extent={{-34,39},{-16,57}}), iconTransformation(extent={{-112,68},
-                {-92,88}})));
-      Physiolibrary.Types.RealIO.ConcentrationInput ctCO2 annotation (Placement(
-            transformation(extent={{-32,68},{-16,84}}), iconTransformation(extent={{-112,48},
-                {-92,68}})));
-      Physiolibrary.Types.RealIO.ConcentrationInput ctHb(
-                                              displayUnit="mmol/l")
-        "concentration of total haemoglobin in whole blood (8.4)"
-                                       annotation (Placement(transformation(extent={{8,8},{
-                -8,-8}},
-            rotation=180,
-            origin={-78,4}),          iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={-102,38})));
-      Physiolibrary.Types.RealIO.ConcentrationInput ctAlb(
-                                              displayUnit="mmol/l")
-        "concentration of total haemoglobin in whole blood (8.4)"
-                                       annotation (Placement(transformation(extent={{7,7},{
-                -7,-7}},
-            rotation=180,
-            origin={-73,-7}),         iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={-102,18})));
-      Physiolibrary.Types.RealIO.ConcentrationInput ctPi(displayUnit="mmol/l")
-        "concentration of total haemoglobin in whole blood (8.4)" annotation (
-          Placement(transformation(
-            extent={{7,7},{-7,-7}},
-            rotation=180,
-            origin={-85,-13}), iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={-102,0})));
-      Physiolibrary.Types.RealIO.ConcentrationInput cDPG
-                                       annotation (Placement(transformation(extent={{-7,-7},
-                {7,7}},
-            rotation=0,
-            origin={-65,-25}),        iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={-102,-20})));
-      Physiolibrary.Types.RealIO.FractionInput FMetHb
-                                       annotation (Placement(transformation(extent={{-8,-8},
-                {8,8}},
-            rotation=0,
-            origin={-72,-34}),        iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={-102,-38})));
-      Physiolibrary.Types.RealIO.FractionInput FCOHb annotation (Placement(
-            transformation(
-            extent={{-7,-7},{7,7}},
-            rotation=0,
-            origin={-75,-46}),
-                             iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={-102,-56})));
-      Physiolibrary.Types.RealIO.FractionInput FHbF
-                                       annotation (Placement(transformation(extent={{-8,-8},
-                {8,8}},
-            rotation=0,
-            origin={-78,-56}),        iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={-102,-76})));
-      Physiolibrary.Types.RealIO.TemperatureInput T(start=310.15)  annotation (Placement(transformation(extent={{-7,-7},
-                {7,7}},
-            rotation=0,
-            origin={-68,-65}),        iconTransformation(extent={{-112,-104},{
-                -92,-84}})));
-      Physiolibrary.Types.RealIO.PressureOutput PAO2 annotation (Placement(
-            transformation(extent={{36,41},{50,55}}), iconTransformation(extent
-              ={{100,76},{120,96}})));
-      Physiolibrary.Types.RealIO.PressureOutput PACO2 annotation (Placement(
-            transformation(extent={{36,70},{48,82}}), iconTransformation(extent
-              ={{100,58},{120,78}})));
-      Physiolibrary.Types.RealIO.pHOutput pHpc annotation (Placement(
-            transformation(
-            extent={{-8,-8},{8,8}},
-            rotation=0,
-            origin={88,3}), iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={110,52})));
-      Physiolibrary.Types.RealIO.ConcentrationOutput HCO3pc(displayUnit=
-            "mmol/l") "outgoing concentration of HCO3" annotation (Placement(
-            transformation(
-            extent={{-7,-7.5},{7,7.5}},
-            rotation=0,
-            origin={87,-6.5}), iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={110,34})));
-      Physiolibrary.Types.RealIO.FractionOutput sO2pc annotation (Placement(
-            transformation(
-            extent={{-8,-8},{8,8}},
-            rotation=0,
-            origin={88,-16}), iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={110,18})));
-      Physiolibrary.Types.RealIO.ConcentrationOutput CpcCO2 annotation (
-          Placement(transformation(
-            extent={{-7,-6.5},{7,6.5}},
-            rotation=0,
-            origin={87,-53.5}), iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={110,-66})));
-      Physiolibrary.Types.RealIO.ConcentrationOutput CpcO2 annotation (
-          Placement(transformation(
-            extent={{-7,-7},{7,7}},
-            rotation=0,
-            origin={87,-44}), iconTransformation(
-            extent={{-10,-10},{10,10}},
-            rotation=0,
-            origin={110,-46})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateInput Q annotation (Placement(
-            transformation(extent={{-28,-78},{12,-38}}), iconTransformation(
-            extent={{-9,-9},{9,9}},
-            rotation=90,
-            origin={-35,-101})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateInput VAi annotation (Placement(
-            transformation(extent={{-28,-78},{12,-38}}), iconTransformation(
-            extent={{-9,-9},{9,9}},
-            rotation=90,
-            origin={-7,-99})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateOutput VA annotation (Placement(
-            transformation(extent={{100,-96},{120,-76}}), iconTransformation(
-              extent={{100,-96},{120,-76}})));
-      Physiolibrary.Types.RealIO.MolarFlowRateOutput VO2 annotation (Placement(
-            transformation(extent={{100,-8},{120,12}}), iconTransformation(
-              extent={{100,-8},{120,12}})));
-      Physiolibrary.Types.RealIO.MolarFlowRateOutput VCO2 annotation (Placement(
-            transformation(extent={{100,-20},{120,0}}), iconTransformation(
-              extent={{100,-26},{120,-6}})));
-    equation
-      connect(PAO2, PAO2) annotation (Line(
-          points={{43,48},{26,48},{26,6},{7,6},{7,48},{43,48}},
-          color={0,0,127},
-          smooth=Smooth.None));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
-                -100,-100},{100,100}}), graphics={
-            Rectangle(
-              extent={{-100,100},{100,-100}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid),
-            Text(
-              extent={{-68,36},{64,-12}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="AlvEq"),
-            Text(
-              extent={{-88,100},{-70,90}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="BEox"),
-            Text(
-              extent={{-10,6},{10,-6}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="ctO2",
-              origin={-78,78},
-              rotation=180),
-            Text(
-              extent={{-13,7},{13,-7}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="ctCO2",
-              origin={-75,59},
-              rotation=180),
-            Text(
-              extent={{-88,48},{-70,38}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="ctHb"),
-            Text(
-              extent={{-88,32},{-68,20}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="ctAlb"),
-            Text(
-              extent={{-88,14},{-70,4}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="ctPi"),
-            Text(
-              extent={{-82,-8},{-62,-18}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="cDPG"),
-            Text(
-              extent={{-82,-22},{-54,-40}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="FMetHb"),
-            Text(
-              extent={{-80,-46},{-56,-62}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="FHbCO"),
-            Text(
-              extent={{-78,-68},{-60,-76}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="FHbF"),
-            Text(
-              extent={{-84,-90},{-66,-100}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="T"),
-            Text(
-              extent={{-12,6},{12,-6}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              origin={78,-42},
-              rotation=180,
-              textString="CpcO2"),
-            Text(
-              extent={{-15.5,19.5},{15.5,-19.5}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              origin={76.5,-63.5},
-              rotation=180,
-              textString="CpcCO2"),
-            Text(
-              extent={{66,24},{90,10}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="sO2pc"),
-            Text(
-              extent={{64,44},{90,20}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="HCO3pc"),
-            Text(
-              extent={{72,58},{92,46}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="pHpc"),
-            Text(
-              extent={{72,80},{94,62}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="PACO2"),
-            Text(
-              extent={{74,94},{92,84}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="PAO2"),
-            Text(
-              extent={{-46,-76},{-26,-90}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="Q"),
-            Text(
-              extent={{-16,-74},{4,-88}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="VAi"),
-            Text(
-              extent={{70,-78},{90,-92}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="VA"),
-            Text(
-              extent={{68,6},{90,-4}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="VO2"),
-            Text(
-              extent={{70,-22},{92,-32}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="VCO2")}));
-    end AlvEq;
   end OSA;
 
   package Parts
