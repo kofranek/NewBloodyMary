@@ -3125,12 +3125,14 @@ initial algorithm
               {-54.6,25},{-69,25}}, color={0,0,127}));
       connect(venous.FMetHb, FMetHb) annotation (Line(points={{-43.2,20},{-56,20},{-56,
               21},{-75,21}}, color={0,0,127}));
-      connect(venous.FHbCO, FCOHb) annotation (Line(points={{-43.2,15},{-51.6,15},{-51.6,
-              14.5},{-65,14.5}}, color={0,0,127}));
       connect(venous.FHbF, FHbF)
         annotation (Line(points={{-43.2,10},{-72,10}}, color={0,0,127}));
       connect(venous.T, T)
         annotation (Line(points={{-43.2,5},{-57.6,5},{-76.5,5}}, color={0,0,127}));
+      connect(FCOHb, venous.FCOHb) annotation (Line(
+          points={{-65,14.5},{-54.5,14.5},{-54.5,15},{-43.2,15}},
+          color={0,0,127},
+          smooth=Smooth.None));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}),
                        graphics={
@@ -3202,7 +3204,7 @@ initial algorithm
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="FHbCO"),
+              textString="FCOHb"),
             Text(
               extent={{-96,-76},{-78,-84}},
               lineColor={0,0,255},
@@ -3309,7 +3311,7 @@ initial algorithm
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
               textString="PB")}), Diagram(coordinateSystem(preserveAspectRatio=false,
-              extent={{-100,-100},{100,100}})));
+              extent={{-100,-100},{100,100}}), graphics));
     end AlvEq;
 
     model AlveolocapillaryUnit
