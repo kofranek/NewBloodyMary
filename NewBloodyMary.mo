@@ -1151,6 +1151,32 @@ package NewBloodyMary_testing
 
     end AlvEquil;
 
+    function Vambient_BTPS "Convert volume from ambient volume to BTPS"
+      input Real V "ambient volume in l";
+     // input Real PB "barometric pressure";
+      input Real tempAmb "environment temperature in °C";
+      input Real tempBody "body temperature in °C";
+     // input Real fH2O "ambient humidity (<=1, unitless)";
+      output Real VBTPS "BTPS volume in l";
+    algorithm
+      VBTPS :=V*(tempBody + 273.15)/(tempAmb + 273.15);
+    end Vambient_BTPS;
+
+    function AlveolarGases "Calculation of partial pressures of O2 and CO2"
+      input Real VAiBTPS "inspired alveolar ventilation in l BTPS/min";
+      input Real FiO2 "fraction concentration of O2 in dry nspired gas";
+      input Real FiCO2 "fraction concentationo of CO2 in dry inspired gas";
+      input Real temp "°core body temperature in °C";
+      input Real PB "barometric pressure";
+      input Real VO2 "rate of oxygen comsumption [l STPD/min]";
+      input Real VCO2 "rate of carbon dioxide production [l STPD/min]";
+      output Real PAO2 "alveolar pO2 [kPa]";
+      output Real PACO2 "alveolar PCO2 [kPA]";
+      output Real VAeBTPS "expired alveolar ventilation in l BTPS/min";
+    algorithm
+
+    end AlveolarGases;
+
     model ctO2content
 
       Physiolibrary.Types.RealIO.pHInput pH
