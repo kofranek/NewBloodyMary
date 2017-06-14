@@ -1321,6 +1321,88 @@
 			return resultValue;
 		}; // end function ALVEQUIL
 
+		
+	    function AlveolarGases(VAi_BTPS:Number, FiO2:Number, FiCO2:Number, temp:Number, PB:Number, VO2:Number, VCO2:Number):Object{
+			// "Calculation of partial pressures of O2 and CO2"
+			//input Real VAi_BTPS "inspired alveolar ventilation in l BTPS/min";
+			//input Real FiO2 "fraction concentration of O2 in dry inspired gas";
+			//input Real FiCO2 "fraction concentationo of CO2 in dry inspired gas";
+			//input Real temp "°core body temperature in °C";
+			//input Real PB "barometric pressure";
+			//input Real VO2 "rate of oxygen comsumption [mmol/min]";
+			//input Real VCO2 "rate of carbon dioxide production [mmol/min]";
+			//output Real PAO2 "alveolar pO2 [kPa]";
+			//output Real PACO2 "alveolar PCO2 [kPA]";
+			//output Real VAe_BTPS "expired alveolar ventilation in l BTPS/min";
+
+			var resultValue: Object = new Object;
+
+			var VCO2_STPD: Number // "rate of carbon dioxide production in l STPD/min";
+			var VO2_STPD: Number //  "rate of oxygen consumtion in l STPD/min";
+			var kBTPS_to_STPD: Number //  "conversion factor form BTPS to STPD";
+			var VAi_STPD: Number //  "inspired alveolar ventilation in l/min STPD";
+			var VO2i_STPD: Number //  "inspired O2 in l STPD/min";
+			var VCO2i_STPD: Number //  "inspired CO2 in l STPD/min";
+			var VAe_STPD: Number //  "expired alveolar ventilation in l/min STPD";
+			var VO2e_STPD: Number //  "exspired O2 in l STPD/min";
+			var VCO2e_STPD: Number //  "exspired CO2 in l STPD/min";
+			var FeO2_D: Number //  "fraction concentationo of O2 in dry expired gas";
+			var FeCO2_D: Number //  "fraction concentationo of CO2 in dry expired gas";
+
+			var PAO2: Number //"alveolar pO2 [kPa]";
+			var PACO2: Number //output "alveolar PCO2 [kPA]";
+			var VAe_BTPS: Number //output "expired alveolar ventilation in l BTPS/min";
+
+			
+			//algorithm 
+			//conversion of metabolic gases flow from mmol/min to l STPD/min
+			VCO2_STPD = VCO2 * 0.022414;
+			VO2_STPD = VO2 *  0.022414;
+			//calculation of VAi_STPD
+			kBTPS_to_STPD = BTPS_to_STPD(PB, temp);
+			VAi_STPD = VAi_BTPS * kBTPS_to_STPD; //l STPD/min
+			// calculation of inspired gases flow in l STPD/min
+			VO2i_STPD = VAi_STPD * FiO2;
+			VCO2i_STPD = VAi_STPD * FiCO2;
+			//calculation of expired alveolar ventilation in l STPD/min
+			VAe_STPD = VAi_STPD + (VCO2_STPD - VO2_STPD);
+			//calculation of expired gases flow in STPD
+			VO2e_STPD = VO2i_STPD - VO2_STPD;
+			VCO2e_STPD = VCO2i_STPD + VCO2_STPD;
+			//calculation of FeO2 and FeCO2 in dry expired gas
+			FeO2_D = VO2e_STPD/VAe_STPD;
+			FeCO2_D = VCO2e_STPD/VAe_STPD;
+			//calculation of expired alveolar ventilation in l BTPS/min (VAe_BTPS)
+			VAe_BTPS = VAe_STPD/kBTPS_to_STPD;
+			//calculation of PAO2 and PACO2 (at BTPS)
+			PAO2 = FeO2_D*(PB - pH2Oof(temp));
+			PACO2 = FeCO2_D*(PB - pH2Oof(temp));
+			//outouts
+			resultValue.PAO2 = PAO2;
+			resultValue.PACO2 = PACO2;
+			resultValue.VAe_BTPS = VAe_BTPS;
+			
+			
+			return resultValue;
+
+		} //end AlveolarGases;
+		
+
+		public function testAlveolarGases():void{
+			var result: Object = new Object();
+			var VAi_BTPS = 4 ; //0.1267;
+			var FiO2 =0.21;
+			var FiCO2 = 0.004;
+			var temp = 37;
+			var PB = 760;
+			var VO2 = 10.105231440769042;
+			var VCO2 = 10.557651713977041;
+			result = AlveolarGases (VAi_BTPS,FiO2,FiCO2,temp,PB,VO2,VCO2);
+			trace("PAO2 = "+result.PAO2+" mmHg "+"PACO2 = "+result.PACO2+" mmHg "+result.VAe_BTPS+" l BTPS/min");
+			//PACO2 = 7.164554439759813 PAO2 = 13.404438168406486
+			
+		}
+		
 		public function testAlvEquil(): void {
 			var result: Object = new Object();
 

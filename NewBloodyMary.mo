@@ -1172,7 +1172,7 @@ package NewBloodyMary_testing
       input Real VCO2 "rate of carbon dioxide production [mmol/min]";
       output Real PAO2 "alveolar pO2 [kPa]";
       output Real PACO2 "alveolar PCO2 [kPA]";
-      output Real VAeBTPS "expired alveolar ventilation in l BTPS/min";
+      output Real VAe_BTPS "expired alveolar ventilation in l BTPS/min";
     protected
       Real VCO2_STPD "rate of carbon dioxide production in l STPD/min";
       Real VO2_STPD "rate of oxygen consumtion in l STPD/min";
@@ -1203,6 +1203,8 @@ package NewBloodyMary_testing
       //calculation of FeO2 and FeCO2 in dry expired gas
       FeO2_D := VO2e_STPD/VAe_STPD;
       FeCO2_D := VCO2e_STPD/VAe_STPD;
+      //calculation of expired alveolar ventilation in l BTPS/min (VAe_BTPS)
+      VAe_BTPS := VAe_STPD/kBTPS_to_STPD;
       //calculation of PAO2 and PACO2 (at BTPS)
       PAO2 := FeO2_D*(PB - pH2Oof(temp));
       PACO2 := FeCO2_D*(PB - pH2Oof(temp));
@@ -3374,32 +3376,30 @@ initial algorithm
     model AlveolocapillaryUnit
     extends Icons.Alveolus;
       Parts.MolarInflowConnector CO2ven annotation (Placement(transformation(
-              extent={{-106,-4},{-86,16}}), iconTransformation(extent={{-106,-4},
-                {-86,16}})));
+              extent={{-100,0},{-80,20}}),  iconTransformation(extent={{-100,0},{-80,
+                20}})));
       Parts.MolarInflowConnector O2ven annotation (Placement(transformation(
-              extent={{-102,-52},{-82,-32}}), iconTransformation(extent={{-102,
-                -52},{-82,-32}})));
+              extent={{-100,-40},{-80,-20}}), iconTransformation(extent={{-100,-40},
+                {-80,-20}})));
       Parts.MolarOutflowConnector CO2pc annotation (Placement(transformation(
-              extent={{76,-10},{96,10}}), iconTransformation(extent={{76,-10},{
-                96,10}})));
+              extent={{80,0},{100,20}}),  iconTransformation(extent={{80,0},{100,20}})));
       Parts.MolarOutflowConnector O2pc annotation (Placement(transformation(
-              extent={{78,-50},{98,-30}}), iconTransformation(extent={{78,-50},
-                {98,-30}})));
+              extent={{80,-40},{100,-20}}),iconTransformation(extent={{80,-40},{100,
+                -20}})));
       Parts.MolarInflowConnector O2alv annotation (Placement(transformation(
               extent={{10,80},{30,100}}), iconTransformation(extent={{10,80},{
                 30,100}})));
       Parts.MolarOutflowConnector CO2alv annotation (Placement(transformation(
-              extent={{-48,82},{-28,102}}), iconTransformation(extent={{-48,82},
-                {-28,102}})));
+              extent={{-34,80},{-14,100}}), iconTransformation(extent={{-34,80},
+                {-14,100}})));
     Physiolibrary.Types.BusConnector busConnector annotation (Placement(
           transformation(extent={{82,24},{102,44}}), iconTransformation(
             extent={{62,70},{102,110}})));
     equation
 
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
-                -100,-100},{100,100}}), graphics), Diagram(coordinateSystem(
-              preserveAspectRatio=false, extent={{-100,-100},{100,100}}),
-            graphics));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}})),                Diagram(coordinateSystem(
+              preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
     end AlveolocapillaryUnit;
 
     package testOSA
