@@ -12513,9 +12513,16 @@ parameters")}));
       parameter Real timeConst = 1;
       Physiolibrary.Types.RealIO.ConcentrationInput BE
         annotation (Placement(transformation(extent={{-100,-110},{-60,-70}})));
-    equation
 
-      action = BE - targetBE;
+      Real cKC
+        "slow change of concentration of BE in kidney cells creates second order dynamics";
+      parameter Real kKC = 1
+        "speed of change of concentration in kideny cells, e.g. membrane dynamics";
+
+    equation
+      der(cKC) = kKC* (cKC - targetBE);
+
+      action = BE - cKC;
 
       // hard anti-windup limiter
     //   if action > actionLimit and pH > referencepH or action < -actionLimit and pH <
