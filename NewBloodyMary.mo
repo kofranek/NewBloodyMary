@@ -12308,8 +12308,16 @@ parameters")}));
         Modelica.Blocks.Sources.Ramp ramp(
           height=7000,
           duration=1e6,
-          offset=5320)
+          offset=5320,
+          startTime(displayUnit="d") = 2592000)
           annotation (Placement(transformation(extent={{-72,66},{-62,76}})));
+        Scenarios.AddingAcidBase addingAcidBase(addAcid(
+            period=15,
+            nperiod=1,
+            startTime(displayUnit="s") = 20000,
+            amplitude=1e-3), unlimitedSolutePump(SoluteFlow(displayUnit="mol/s")
+               = 1, useSoluteFlowInput=true))
+          annotation (Placement(transformation(extent={{80,0},{100,20}})));
       equation
         connect(BloodBE.solutionVolume,bloodVolume. y) annotation (Line(points={{58,-24},
                 {58,-10},{53,-10}},            color={0,0,127}));
@@ -12347,6 +12355,10 @@ parameters")}));
                 {4,-41}}, color={0,0,127}));
         connect(ramp.y, bEINV.pCO2) annotation (Line(points={{-61.5,71},{-45.75,
                 71},{-45.75,68.4},{-28.5,68.4}}, color={0,0,127}));
+        connect(BloodBE.q_out, addingAcidBase.q_out) annotation (Line(
+            points={{62,-28},{98,-28},{98,1},{90,1}},
+            color={107,45,134},
+            thickness=1));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                   -100},{100,100}})));
       end testKidneyCompensation;
@@ -12503,26 +12515,25 @@ parameters")}));
       annotation (Placement(transformation(extent={{80,-10},{100,10}})));
 
       Real action;
-      parameter Real actionSize=1;
+      parameter Real actionSize=5e-4;
     //   parameter Real actionTimeConst=3600*12;
     //   parameter Real actionLimit=1;
     //   constant Real referencepH=7.4;
 
       Real targetBE =  -35.36421 + (12.97681 + 35.36421)/(1 + (pH/7.443465)^179.8756)
         "Fit of the SA comepnsation diagram";
-      parameter Real timeConst = 1;
       Physiolibrary.Types.RealIO.ConcentrationInput BE
         annotation (Placement(transformation(extent={{-100,-110},{-60,-70}})));
 
       Real cKC
         "slow change of concentration of BE in kidney cells creates second order dynamics";
-      parameter Real kKC = 1
+      parameter Real kKC = 1e-2
         "speed of change of concentration in kideny cells, e.g. membrane dynamics";
 
     equation
-      der(cKC) = kKC* (cKC - targetBE);
+      der(cKC) = kKC* (targetBE - cKC);
 
-      action = BE - cKC;
+      action = actionSize*(BE - cKC);
 
       // hard anti-windup limiter
     //   if action > actionLimit and pH > referencepH or action < -actionLimit and pH <
@@ -12623,6 +12634,77 @@ parameters")}));
                   {24,-82}}, lineColor={28,108,200}), Line(points={{32,88},{24,
                   -4},{52,-86}}, color={28,108,200})}));
     end kidney;
+
+    package Scenarios
+
+      model AddingAcidBase
+
+        Physiolibrary.Chemical.Interfaces.ChemicalPort_b
+                                  q_out
+          "Concentration and molar flow from/to compartment"
+          annotation (Placement(transformation(extent={{-10,-100},{10,-80}}),
+              iconTransformation(extent={{-10,-100},{10,-80}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump(
+            useSoluteFlowInput=true)
+          annotation (Placement(transformation(extent={{-40,-10},{-20,10}})));
+        Modelica.Blocks.Sources.Pulse addAcid(
+          amplitude=1,
+          width=100,
+          startTime(displayUnit="d") = 0,
+          period=1,
+          nperiod=0)
+          annotation (Placement(transformation(extent={{-100,58},{-80,78}})));
+        Modelica.Blocks.Sources.Pulse addBase(
+          amplitude=1,
+          width=100,
+          startTime(displayUnit="d") = 0,
+          period=1,
+          nperiod=0)
+          annotation (Placement(transformation(extent={{-100,20},{-80,40}})));
+        Modelica.Blocks.Math.Add add(k2=-1)
+          annotation (Placement(transformation(extent={{-60,40},{-40,60}})));
+      equation
+        connect(unlimitedSolutePump.q_out, q_out) annotation (Line(
+            points={{-20,0},{-20,-90},{0,-90}},
+            color={107,45,134},
+            thickness=1));
+        connect(addAcid.y, add.u1) annotation (Line(points={{-79,68},{-72,68},{
+                -72,56},{-62,56}},
+                           color={0,0,127}));
+        connect(add.u2, addBase.y) annotation (Line(points={{-62,44},{-72,44},{-72,30},
+                {-79,30}}, color={0,0,127}));
+        connect(add.y, unlimitedSolutePump.soluteFlow)
+          annotation (Line(points={{-39,50},{-26,50},{-26,4}}, color={0,0,127}));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}})), Icon(coordinateSystem(preserveAspectRatio=false,
+                extent={{-100,-100},{100,100}}), graphics={
+              Rectangle(
+                extent={{-20,2},{20,62}},
+                lineColor={0,0,0},
+                fillColor={127,0,127},
+                fillPattern=FillPattern.Solid),
+              Rectangle(
+                extent={{-6,72},{6,62}},
+                lineColor={0,0,0},
+                fillColor={215,215,215},
+                fillPattern=FillPattern.Solid),
+              Rectangle(
+                extent={{-20,80},{20,72}},
+                lineColor={0,0,0},
+                fillColor={215,215,215},
+                fillPattern=FillPattern.Solid),
+              Rectangle(
+                extent={{-4,2},{4,-68}},
+                lineColor={0,0,0},
+                fillColor={215,215,215},
+                fillPattern=FillPattern.Solid),
+              Line(points={{-20,52},{-6,52}}, color={0,0,0}),
+              Line(points={{-20,32},{-6,32}}, color={0,0,0}),
+              Line(points={{-20,12},{-6,12}}, color={0,0,0}),
+              Line(points={{-20,22},{-12,22}}, color={0,0,0}),
+              Line(points={{-20,42},{-12,42}}, color={0,0,0})}));
+      end AddingAcidBase;
+    end Scenarios;
   end Parts;
 
   package Icons
