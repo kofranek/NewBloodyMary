@@ -2075,8 +2075,8 @@ package NewBloodyMary_testing
               -40.9,-64}},    color={0,0,127}));
       connect(pO2PCO2.ctPi, ctPi) annotation (Line(points={{-40.9,-16.96},{-60.45,-16.96},
               {-60.45,-13},{-85,-13}}, color={0,0,127}));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-                {100,100}}),       graphics={
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}), graphics={
             Rectangle(
               extent={{-100,100},{100,-100}},
               lineColor={0,0,255},
@@ -2211,7 +2211,11 @@ package NewBloodyMary_testing
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="ctPi")}), Diagram(coordinateSystem(preserveAspectRatio=false,
+              textString="ctPi"),
+            Text(
+              extent={{-60,92},{70,62}},
+              lineColor={28,108,200},
+              textString="%name")}),Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
     end O2CO2;
 
@@ -5303,213 +5307,216 @@ initial algorithm
       model testAlvEq
 
         Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
-          annotation (Placement(transformation(extent={{-66,66},{-58,72}})));
+          annotation (Placement(transformation(extent={{-31,70},{-23,76}})));
         Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=8.4)
-          annotation (Placement(transformation(extent={{-66,50},{-60,58}})));
+          annotation (Placement(transformation(extent={{-31,54},{-25,62}})));
         Physiolibrary.Types.Constants.ConcentrationConst cAlb(k=0.66)
-          annotation (Placement(transformation(extent={{-50,42},{-44,50}})));
+          annotation (Placement(transformation(extent={{-15,46},{-9,54}})));
         Physiolibrary.Types.Constants.ConcentrationConst cPi(k=1.15)
-          annotation (Placement(transformation(extent={{-72,35},{-64,40}})));
+          annotation (Placement(transformation(extent={{-37,39},{-29,44}})));
         Physiolibrary.Types.Constants.ConcentrationConst cDPG(k=5)
-          annotation (Placement(transformation(extent={{-50,28},{-42,34}})));
+          annotation (Placement(transformation(extent={{-15,32},{-7,38}})));
         Physiolibrary.Types.Constants.FractionConst fMetHb1(k=0.005)
-          annotation (Placement(transformation(extent={{-66,18},{-58,26}})));
+          annotation (Placement(transformation(extent={{-31,22},{-23,30}})));
         Physiolibrary.Types.Constants.FractionConst fCOHb(k=0.005)
-          annotation (Placement(transformation(extent={{-44,12},{-38,18}})));
+          annotation (Placement(transformation(extent={{-9,16},{-3,22}})));
         Physiolibrary.Types.Constants.FractionConst fHbF(k=0.005)
-          annotation (Placement(transformation(extent={{-68,2},{-60,8}})));
+          annotation (Placement(transformation(extent={{-33,6},{-25,12}})));
         Physiolibrary.Types.Constants.TemperatureConst temperature(k=310.15)
-          annotation (Placement(transformation(extent={{-70,-14},{-64,-6}})));
+          annotation (Placement(transformation(extent={{-35,-10},{-29,-2}})));
         Physiolibrary.Types.Constants.FractionConst FiO2(k=0.21)
-          annotation (Placement(transformation(extent={{-78,88},{-70,94}})));
+          annotation (Placement(transformation(extent={{-43,88},{-35,94}})));
         Physiolibrary.Types.Constants.FractionConst FiCO2(k=0.0004)
-          annotation (Placement(transformation(extent={{-48,82},{-40,88}})));
+          annotation (Placement(transformation(extent={{-13,86},{-5,92}})));
 
         Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
                 "m3/s") = 8.19588e-05)
-          annotation (Placement(transformation(extent={{-34,78},{-26,84}})));
+          annotation (Placement(transformation(extent={{1,82},{9,88}})));
         Physiolibrary.Types.Constants.VolumeFlowRateConst Q(k(displayUnit=
                 "l/min") = 8.3333333333333e-05)
-          annotation (Placement(transformation(extent={{-62,-34},{-54,-26}})));
+          annotation (Placement(transformation(extent={{-27,-30},{-19,-22}})));
         Physiolibrary.Types.Constants.PressureConst PB(k=101325.0144354)
-          annotation (Placement(transformation(extent={{-96,92},{-88,98}})));
-        AlvEq alvEq annotation (Placement(transformation(extent={{0,14},{64,100}})));
+          annotation (Placement(transformation(extent={{-61,92},{-53,98}})));
+        AlvEq alvEq annotation (Placement(transformation(extent={{35,14},{99,
+                  100}})));
         VenousO2CO2 venousO2CO2_1
-          annotation (Placement(transformation(extent={{-16,-94},{-78,-60}})));
+          annotation (Placement(transformation(extent={{19,-90},{-43,-56}})));
         Physiolibrary.Types.Constants.MolarFlowRateConst VO2(k=
               0.00018333333333333)
-          annotation (Placement(transformation(extent={{12,-52},{4,-46}})));
+          annotation (Placement(transformation(extent={{47,-48},{39,-42}})));
         Physiolibrary.Types.Constants.MolarFlowRateConst VCO2(k=
               0.00016666666666667)
-          annotation (Placement(transformation(extent={{12,-64},{6,-58}})));
+          annotation (Placement(transformation(extent={{47,-60},{41,-54}})));
         ShuntPerfusin shuntPerfusin
-          annotation (Placement(transformation(extent={{-12,-42},{46,-22}})));
+          annotation (Placement(transformation(extent={{23,-38},{81,-18}})));
         ShuntMixing shuntMixing
-          annotation (Placement(transformation(extent={{80,-94},{16,-52}})));
+          annotation (Placement(transformation(extent={{115,-90},{51,-48}})));
         Physiolibrary.Types.Constants.FractionConst ShFract(k=0.02)
-          annotation (Placement(transformation(extent={{-38,-42},{-30,-34}})));
+          annotation (Placement(transformation(extent={{-3,-38},{5,-30}})));
         O2CO2 arterialBlood
-          annotation (Placement(transformation(extent={{-120,8},{-178,82}})));
-        O2CO2 venousBlood annotation (Placement(transformation(extent={{-122,
-                  -96},{-174,-16}})));
+          annotation (Placement(transformation(extent={{-85,12},{-143,86}})));
+        O2CO2 venousBlood annotation (Placement(transformation(extent={{-87,-92},
+                  {-139,-12}})));
       equation
 
        // alvEq.CvO2 = alvEq.CpcO2 - alvEq.VO2/Q;
        // alvEq.CvCO2 = alvEq.CpcCO2 + alvEq.VCO2/Q;
         connect(alvEq.PB, PB.y) annotation (Line(
-            points={{-1.92,94.84},{-32,94.84},{-32,95},{-87,95}},
+            points={{33.08,94.84},{3,94.84},{3,95},{-52,95}},
             color={0,0,127},
             smooth=Smooth.None));
         connect(FiO2.y, alvEq.FiO2) annotation (Line(
-            points={{-69,91},{-36,91},{-36,89.68},{-1.92,89.68}},
+            points={{-34,91},{-1,91},{-1,89.68},{33.08,89.68}},
             color={0,0,127},
             smooth=Smooth.None));
         connect(ctHb.y, alvEq.cHb) annotation (Line(
-            points={{-59.25,54},{-36,54},{-36,53.56},{-1.92,53.56}},
+            points={{-24.25,58},{-1,58},{-1,53.56},{33.08,53.56}},
             color={0,0,127},
             smooth=Smooth.None));
         connect(cAlb.y, alvEq.cAlb) annotation (Line(
-            points={{-43.25,46},{-16,46},{-16,48.4},{-1.92,48.4}},
+            points={{-8.25,50},{19,50},{19,48.4},{33.08,48.4}},
             color={0,0,127},
             smooth=Smooth.None));
         connect(cPi.y, alvEq.cPi) annotation (Line(
-            points={{-63,37.5},{-36,37.5},{-36,43.24},{-1.92,43.24}},
+            points={{-28,41.5},{-1,41.5},{-1,43.24},{33.08,43.24}},
             color={0,0,127},
             smooth=Smooth.None));
         connect(cDPG.y, alvEq.cDPG) annotation (Line(
-            points={{-41,31},{-32,31},{-32,38.08},{-1.92,38.08}},
+            points={{-6,35},{3,35},{3,38.08},{33.08,38.08}},
             color={0,0,127},
             smooth=Smooth.None));
         connect(alvEq.FMetHb, fMetHb1.y) annotation (Line(
-            points={{-1.92,32.92},{-28,32.92},{-28,22},{-57,22}},
+            points={{33.08,32.92},{7,32.92},{7,26},{-22,26}},
             color={0,0,127},
             smooth=Smooth.None));
         connect(fCOHb.y, alvEq.FCOHb) annotation (Line(
-            points={{-37.25,15},{-22,15},{-22,27.76},{-1.92,27.76}},
+            points={{-2.25,19},{13,19},{13,27.76},{33.08,27.76}},
             color={0,0,127},
             smooth=Smooth.None));
         connect(fHbF.y, alvEq.FHbF) annotation (Line(
-            points={{-59,5},{-22,5},{-22,22.6},{-1.92,22.6}},
+            points={{-24,9},{13,9},{13,22.6},{33.08,22.6}},
             color={0,0,127},
             smooth=Smooth.None));
         connect(temperature.y, alvEq.T) annotation (Line(
-            points={{-63.25,-10},{-20,-10},{-20,17.44},{-1.92,17.44}},
+            points={{-28.25,-6},{15,-6},{15,17.44},{33.08,17.44}},
             color={0,0,127},
             smooth=Smooth.None));
 
-        connect(venousO2CO2_1.VO2, VO2.y) annotation (Line(points={{-13.21,
-                -72.75},{0,-72.75},{0,-49},{3,-49}},
+        connect(venousO2CO2_1.VO2, VO2.y) annotation (Line(points={{21.79,
+                -68.75},{35,-68.75},{35,-45},{38,-45}},
                                                 color={0,0,127}));
-        connect(VCO2.y, venousO2CO2_1.VCO2) annotation (Line(points={{5.25,-61},
-                {2,-61},{2,-76.49},{-13.21,-76.49}},color={0,0,127}));
-        connect(BEox.y, alvEq.BEox) annotation (Line(points={{-57,69},{-1.92,69},
-                {-1.92,69.04}},      color={0,0,127}));
-        connect(shuntPerfusin.ShuntFract, ShFract.y) annotation (Line(points={{-14.9,
-                -34.6},{-24,-34.6},{-24,-38},{-29,-38}},       color={0,0,127}));
-        connect(shuntMixing.Qpulm, shuntPerfusin.Qpulm) annotation (Line(points=
-               {{83.2,-61.66},{90,-61.66},{90,-35},{48.9,-35}}, color={0,0,127}));
-        connect(shuntMixing.Qsh, shuntPerfusin.Qsh) annotation (Line(points={{
-                83.2,-68.38},{92,-68.38},{92,-31},{48.9,-31}}, color={0,0,127}));
-        connect(venousO2CO2_1.CaO2, shuntMixing.CaO2) annotation (Line(points={{-12.9,
-                -81.42},{4,-81.42},{4,-69.22},{12.8,-69.22}},          color={0,
+        connect(VCO2.y, venousO2CO2_1.VCO2) annotation (Line(points={{40.25,-57},
+                {37,-57},{37,-72.49},{21.79,-72.49}},
+                                                    color={0,0,127}));
+        connect(BEox.y, alvEq.BEox) annotation (Line(points={{-22,73},{33.08,73},
+                {33.08,69.04}},      color={0,0,127}));
+        connect(shuntPerfusin.ShuntFract, ShFract.y) annotation (Line(points={{20.1,
+                -30.6},{11,-30.6},{11,-34},{6,-34}},           color={0,0,127}));
+        connect(shuntMixing.Qpulm, shuntPerfusin.Qpulm) annotation (Line(points={{118.2,
+                -57.66},{125,-57.66},{125,-31},{83.9,-31}},     color={0,0,127}));
+        connect(shuntMixing.Qsh, shuntPerfusin.Qsh) annotation (Line(points={{118.2,
+                -64.38},{127,-64.38},{127,-27},{83.9,-27}},    color={0,0,127}));
+        connect(venousO2CO2_1.CaO2, shuntMixing.CaO2) annotation (Line(points={{22.1,
+                -77.42},{39,-77.42},{39,-65.22},{47.8,-65.22}},        color={0,
                 0,127}));
-        connect(shuntMixing.CaCO2, venousO2CO2_1.CaCO2) annotation (Line(points={{12.8,
-                -75.94},{6,-75.94},{6,-85.5},{-12.9,-85.5}},         color={0,0,
+        connect(shuntMixing.CaCO2, venousO2CO2_1.CaCO2) annotation (Line(points={{47.8,
+                -71.94},{41,-71.94},{41,-81.5},{22.1,-81.5}},        color={0,0,
                 127}));
-        connect(shuntMixing.CpcO2, alvEq.CpcO2) annotation (Line(points={{83.2,
-                -85.18},{96,-85.18},{96,36.36},{66.56,36.36}}, color={0,0,127}));
-        connect(shuntMixing.CpcCO2, alvEq.CpcCO2) annotation (Line(points={{83.2,
-                -90.64},{98,-90.64},{98,27.76},{66.56,27.76}},    color={0,0,
+        connect(shuntMixing.CpcO2, alvEq.CpcO2) annotation (Line(points={{118.2,
+                -81.18},{131,-81.18},{131,36.36},{101.56,36.36}},
+                                                               color={0,0,127}));
+        connect(shuntMixing.CpcCO2, alvEq.CpcCO2) annotation (Line(points={{118.2,
+                -86.64},{133,-86.64},{133,27.76},{101.56,27.76}}, color={0,0,
                 127}));
-        connect(venousO2CO2_1.CvO2, alvEq.CvO2) annotation (Line(points={{-81.1,
-                -73.94},{-84,-73.94},{-84,63.88},{-1.92,63.88}},  color={0,0,
+        connect(venousO2CO2_1.CvO2, alvEq.CvO2) annotation (Line(points={{-46.1,
+                -69.94},{-49,-69.94},{-49,63.88},{33.08,63.88}},  color={0,0,
                 127}));
-        connect(shuntMixing.CvO2, venousO2CO2_1.CvO2) annotation (Line(points={{83.2,
-                -75.1},{98,-75.1},{98,-98},{-88,-98},{-88,-73.94},{-81.1,-73.94}},
-                          color={0,0,127}));
-        connect(venousO2CO2_1.CvCO2, alvEq.CvCO2) annotation (Line(points={{-81.1,
-                -79.38},{-86,-79.38},{-86,58.72},{-1.92,58.72}},        color={
+        connect(shuntMixing.CvO2, venousO2CO2_1.CvO2) annotation (Line(points={{118.2,
+                -71.1},{133,-71.1},{133,-94},{-53,-94},{-53,-69.94},{-46.1,
+                -69.94}}, color={0,0,127}));
+        connect(venousO2CO2_1.CvCO2, alvEq.CvCO2) annotation (Line(points={{-46.1,
+                -75.38},{-51,-75.38},{-51,58.72},{33.08,58.72}},        color={
                 0,0,127}));
-        connect(shuntMixing.CvCO2, venousO2CO2_1.CvCO2) annotation (Line(points={{83.2,
-                -80.56},{86,-80.56},{86,-80},{90,-80},{90,-96},{-86,-96},{-86,
-                -86},{-86,-82},{-86,-79.38},{-81.1,-79.38}},
+        connect(shuntMixing.CvCO2, venousO2CO2_1.CvCO2) annotation (Line(points={{118.2,
+                -76.56},{121,-76.56},{121,-76},{125,-76},{125,-92},{-51,-92},{
+                -51,-82},{-51,-78},{-51,-75.38},{-46.1,-75.38}},
                                               color={0,0,127}));
         connect(Q.y, shuntPerfusin.Q)
-          annotation (Line(points={{-53,-30},{-14.9,-30}}, color={0,0,127}));
-        connect(venousO2CO2_1.Q, shuntPerfusin.Q) annotation (Line(points={{-12.9,
-                -67.82},{-6,-67.82},{-6,-54},{-46,-54},{-46,-30},{-14.9,-30}},
+          annotation (Line(points={{-18,-26},{20.1,-26}},  color={0,0,127}));
+        connect(venousO2CO2_1.Q, shuntPerfusin.Q) annotation (Line(points={{22.1,
+                -63.82},{29,-63.82},{29,-50},{-11,-50},{-11,-26},{20.1,-26}},
                        color={0,0,127}));
-        connect(shuntPerfusin.Qpulm, alvEq.Q) annotation (Line(points={{48.9,
-                -35},{54,-35},{54,-20},{-74,-20},{-74,74.2},{-1.92,74.2}},
+        connect(shuntPerfusin.Qpulm, alvEq.Q) annotation (Line(points={{83.9,
+                -31},{89,-31},{89,-16},{-39,-16},{-39,74.2},{33.08,74.2}},
               color={0,0,127}));
-        connect(venousBlood.ctO2, alvEq.CvO2) annotation (Line(points={{-119.4,
-                -24},{-84,-24},{-84,63.88},{-1.92,63.88}}, color={0,0,127}));
-        connect(venousBlood.ctCO2, alvEq.CvCO2) annotation (Line(points={{
-                -119.4,-32},{-86,-32},{-86,58.72},{-1.92,58.72}}, color={0,0,
+        connect(venousBlood.ctO2, alvEq.CvO2) annotation (Line(points={{-84.4,
+                -20},{-49,-20},{-49,63.88},{33.08,63.88}}, color={0,0,127}));
+        connect(venousBlood.ctCO2, alvEq.CvCO2) annotation (Line(points={{-84.4,
+                -28},{-51,-28},{-51,58.72},{33.08,58.72}},        color={0,0,
                 127}));
-        connect(BEox.y, arterialBlood.BEox) annotation (Line(points={{-57,69},{
-                -52,69},{-52,81.26},{-117.1,81.26}}, color={0,0,127}));
-        connect(alvEq.VAi, VAi.y) annotation (Line(points={{-1.92,79.36},{
-                -12.96,79.36},{-12.96,81},{-25,81}}, color={0,0,127}));
-        connect(venousBlood.BEox, arterialBlood.BEox) annotation (Line(points={
-                {-119.4,-16.8},{-94,-16.8},{-94,81.26},{-117.1,81.26}}, color={
+        connect(BEox.y, arterialBlood.BEox) annotation (Line(points={{-22,73},{
+                -17,73},{-17,85.26},{-82.1,85.26}},  color={0,0,127}));
+        connect(alvEq.VAi, VAi.y) annotation (Line(points={{33.08,79.36},{22.04,
+                79.36},{22.04,85},{10,85}},          color={0,0,127}));
+        connect(venousBlood.BEox, arterialBlood.BEox) annotation (Line(points={{-84.4,
+                -12.8},{-59,-12.8},{-59,85.26},{-82.1,85.26}},          color={
                 0,0,127}));
-        connect(alvEq.FiCO2, FiCO2.y) annotation (Line(points={{-1.92,84.52},{
-                -22,84.52},{-22,85},{-39,85}}, color={0,0,127}));
-        connect(arterialBlood.ctHb, alvEq.cHb) annotation (Line(points={{-117.1,
-                59.8},{-96,59.8},{-96,46},{-54,46},{-54,54},{-36,54},{-36,53.56},
-                {-1.92,53.56}}, color={0,0,127}));
-        connect(venousBlood.ctHb, alvEq.cHb) annotation (Line(points={{-119.4,
-                -40},{-96,-40},{-96,46},{-54,46},{-54,54},{-36,54},{-36,53.56},
-                {-1.92,53.56}}, color={0,0,127}));
-        connect(cAlb.y, arterialBlood.ctAlb) annotation (Line(points={{-43.25,
-                46},{-36,46},{-36,52},{-52,52},{-52,44},{-98,44},{-98,52.4},{
-                -117.1,52.4}}, color={0,0,127}));
-        connect(venousBlood.ctAlb, arterialBlood.ctAlb) annotation (Line(points
-              ={{-119.4,-48},{-98,-48},{-98,52.4},{-117.1,52.4}}, color={0,0,
+        connect(alvEq.FiCO2, FiCO2.y) annotation (Line(points={{33.08,84.52},{
+                13,84.52},{13,89},{-4,89}},    color={0,0,127}));
+        connect(arterialBlood.ctHb, alvEq.cHb) annotation (Line(points={{-82.1,
+                63.8},{-61,63.8},{-61,50},{-19,50},{-19,58},{-1,58},{-1,53.56},
+                {33.08,53.56}}, color={0,0,127}));
+        connect(venousBlood.ctHb, alvEq.cHb) annotation (Line(points={{-84.4,
+                -36},{-61,-36},{-61,50},{-19,50},{-19,58},{-1,58},{-1,53.56},{
+                33.08,53.56}},  color={0,0,127}));
+        connect(cAlb.y, arterialBlood.ctAlb) annotation (Line(points={{-8.25,50},
+                {-1,50},{-1,56},{-17,56},{-17,48},{-63,48},{-63,56.4},{-82.1,
+                56.4}},        color={0,0,127}));
+        connect(venousBlood.ctAlb, arterialBlood.ctAlb) annotation (Line(points={{-84.4,
+                -44},{-63,-44},{-63,56.4},{-82.1,56.4}},          color={0,0,
                 127}));
-        connect(cPi.y, arterialBlood.ctPi) annotation (Line(points={{-63,37.5},
-                {-58,37.5},{-58,42},{-102,42},{-102,45.74},{-117.1,45.74}},
+        connect(cPi.y, arterialBlood.ctPi) annotation (Line(points={{-28,41.5},
+                {-23,41.5},{-23,46},{-67,46},{-67,49.74},{-82.1,49.74}},
               color={0,0,127}));
-        connect(venousBlood.ctPi, arterialBlood.ctPi) annotation (Line(points={
-                {-119.4,-55.2},{-102,-55.2},{-102,45.74},{-117.1,45.74}}, color
-              ={0,0,127}));
-        connect(cDPG.y, arterialBlood.cDPG) annotation (Line(points={{-41,31},{
-                -38,31},{-38,36},{-56,36},{-56,30},{-104,30},{-104,38.34},{
-                -117.1,38.34}}, color={0,0,127}));
-        connect(venousBlood.cDPG, arterialBlood.cDPG) annotation (Line(points={
-                {-119.4,-63.2},{-104,-63.2},{-104,38.34},{-117.1,38.34}}, color
-              ={0,0,127}));
-        connect(fMetHb1.y, arterialBlood.FMetHb) annotation (Line(points={{-57,
-                22},{-52,22},{-52,28},{-106,28},{-106,31.68},{-117.1,31.68}},
+        connect(venousBlood.ctPi, arterialBlood.ctPi) annotation (Line(points={{-84.4,
+                -51.2},{-67,-51.2},{-67,49.74},{-82.1,49.74}},            color=
+               {0,0,127}));
+        connect(cDPG.y, arterialBlood.cDPG) annotation (Line(points={{-6,35},{
+                -3,35},{-3,40},{-21,40},{-21,34},{-69,34},{-69,42.34},{-82.1,
+                42.34}},        color={0,0,127}));
+        connect(venousBlood.cDPG, arterialBlood.cDPG) annotation (Line(points={{-84.4,
+                -59.2},{-69,-59.2},{-69,42.34},{-82.1,42.34}},            color=
+               {0,0,127}));
+        connect(fMetHb1.y, arterialBlood.FMetHb) annotation (Line(points={{-22,26},
+                {-17,26},{-17,32},{-71,32},{-71,35.68},{-82.1,35.68}},
               color={0,0,127}));
         connect(venousBlood.FMetHb, arterialBlood.FMetHb) annotation (Line(
-              points={{-119.4,-70.4},{-106,-70.4},{-106,31.68},{-117.1,31.68}},
+              points={{-84.4,-66.4},{-71,-66.4},{-71,35.68},{-82.1,35.68}},
               color={0,0,127}));
-        connect(fCOHb.y, arterialBlood.FCOHb) annotation (Line(points={{-37.25,
-                15},{-30,15},{-30,8},{-52,8},{-52,12},{-108,12},{-108,24.28},{
-                -117.1,24.28}}, color={0,0,127}));
-        connect(venousBlood.FCOHb, arterialBlood.FCOHb) annotation (Line(points
-              ={{-119.4,-78.4},{-108,-78.4},{-108,24.28},{-117.1,24.28}}, color
-              ={0,0,127}));
-        connect(fHbF.y, arterialBlood.FHbF) annotation (Line(points={{-59,5},{
-                -54,5},{-54,10},{-110,10},{-110,16.88},{-117.1,16.88}}, color={
+        connect(fCOHb.y, arterialBlood.FCOHb) annotation (Line(points={{-2.25,
+                19},{5,19},{5,12},{-17,12},{-17,16},{-73,16},{-73,28.28},{-82.1,
+                28.28}},        color={0,0,127}));
+        connect(venousBlood.FCOHb, arterialBlood.FCOHb) annotation (Line(points={{-84.4,
+                -74.4},{-73,-74.4},{-73,28.28},{-82.1,28.28}},            color=
+               {0,0,127}));
+        connect(fHbF.y, arterialBlood.FHbF) annotation (Line(points={{-24,9},{
+                -19,9},{-19,14},{-75,14},{-75,20.88},{-82.1,20.88}},    color={
                 0,0,127}));
-        connect(venousBlood.FHbF, arterialBlood.FHbF) annotation (Line(points={
-                {-119.4,-86.4},{-110,-86.4},{-110,16.88},{-117.1,16.88}}, color
-              ={0,0,127}));
-        connect(temperature.y, arterialBlood.T) annotation (Line(points={{
-                -63.25,-10},{-56,-10},{-56,-2},{-112,-2},{-112,9.48},{-117.1,
-                9.48}}, color={0,0,127}));
-        connect(venousBlood.T, arterialBlood.T) annotation (Line(points={{
-                -119.4,-94.4},{-112,-94.4},{-112,9.48},{-117.1,9.48}}, color={0,
+        connect(venousBlood.FHbF, arterialBlood.FHbF) annotation (Line(points={{-84.4,
+                -82.4},{-75,-82.4},{-75,20.88},{-82.1,20.88}},            color=
+               {0,0,127}));
+        connect(temperature.y, arterialBlood.T) annotation (Line(points={{-28.25,
+                -6},{-21,-6},{-21,2},{-77,2},{-77,13.48},{-82.1,13.48}},
+                        color={0,0,127}));
+        connect(venousBlood.T, arterialBlood.T) annotation (Line(points={{-84.4,
+                -90.4},{-77,-90.4},{-77,13.48},{-82.1,13.48}},         color={0,
                 0,127}));
-        connect(shuntMixing.CaO2, arterialBlood.ctO2) annotation (Line(points={
-                {12.8,-69.22},{4,-69.22},{4,-100},{-90,-100},{-90,74.6},{-117.1,
-                74.6}}, color={0,0,127}));
-        connect(shuntMixing.CaCO2, arterialBlood.ctCO2) annotation (Line(points
-              ={{12.8,-75.94},{6,-75.94},{6,-102},{6,-102},{-92,-102},{-92,67.2},
-                {-117.1,67.2}}, color={0,0,127}));
+        connect(shuntMixing.CaO2, arterialBlood.ctO2) annotation (Line(points={{47.8,
+                -65.22},{39,-65.22},{39,-96},{-55,-96},{-55,78.6},{-82.1,78.6}},
+                        color={0,0,127}));
+        connect(shuntMixing.CaCO2, arterialBlood.ctCO2) annotation (Line(points={{47.8,
+                -71.94},{41,-71.94},{41,-98},{-57,-98},{-57,71.2},{-82.1,71.2}},
+                                color={0,0,127}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                   -100},{100,100}})));
       end testAlvEq;
