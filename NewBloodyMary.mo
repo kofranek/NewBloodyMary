@@ -4389,174 +4389,229 @@ initial algorithm
     model AlveolocapillaryUnit
     extends Icons.Alveolus;
       Parts.MolarInflowConnector CO2ven annotation (Placement(transformation(
-              extent={{-92,18},{-72,38}}),  iconTransformation(extent={{-92,18},{-72,
-                38}})));
+              extent={{-96,76},{-84,88}}),  iconTransformation(extent={{-76,-8},
+                {-56,12}})));
       Parts.MolarInflowConnector O2ven annotation (Placement(transformation(
-              extent={{-92,-10},{-72,10}}),   iconTransformation(extent={{-92,-10},{
-                -72,10}})));
+              extent={{-96,34},{-84,46}}),    iconTransformation(extent={{-76,-58},
+                {-56,-38}})));
       Parts.MolarOutflowConnector CO2pc annotation (Placement(transformation(
-              extent={{64,18},{84,38}}),  iconTransformation(extent={{64,18},{84,38}})));
+              extent={{72,74},{84,86}}),  iconTransformation(extent={{54,-2},{
+                74,18}})));
       Parts.MolarOutflowConnector O2pc annotation (Placement(transformation(
-              extent={{62,-10},{82,10}}),  iconTransformation(extent={{62,-10},{82,10}})));
-      Parts.MolarInflowConnector O2alv annotation (Placement(transformation(
-              extent={{10,80},{30,100}}), iconTransformation(extent={{10,80},{
-                30,100}})));
-      Parts.MolarOutflowConnector CO2alv annotation (Placement(transformation(
-              extent={{-38,80},{-18,100}}), iconTransformation(extent={{-38,80},
-                {-18,100}})));
+              extent={{74,34},{86,46}}),   iconTransformation(extent={{52,-60},
+                {72,-40}})));
     Physiolibrary.Types.BusConnector busConnector annotation (Placement(
           transformation(extent={{-100,-80},{-80,-60}}),
                                                      iconTransformation(
-            extent={{62,70},{102,110}})));
+            extent={{58,-102},{98,-62}})));
       AlvEq alvEq
-        annotation (Placement(transformation(extent={{-34,-88},{52,-16}})));
+        annotation (Placement(transformation(extent={{-52,-88},{50,18}})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput VAi annotation (Placement(
+            transformation(extent={{-74,-14},{-62,-2}}), iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-52,30})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput Q annotation (Placement(
+            transformation(extent={{-100,14},{-88,26}}), iconTransformation(
+            extent={{-6,-6},{6,6}},
+            rotation=0,
+            origin={-36,66})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput VO2 annotation (Placement(
+            transformation(extent={{78,-46},{90,-34}}), iconTransformation(
+              extent={{-8,-8},{8,8}},
+            rotation=90,
+            origin={10,108})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput VCO2 annotation (Placement(
+            transformation(extent={{86,-62},{96,-52}}), iconTransformation(
+              extent={{8,-8},{-8,8}},
+            rotation=270,
+            origin={-12,108})));
+      Modelica.Blocks.Math.Product O2FlowCalc
+        annotation (Placement(transformation(extent={{-58,22},{-48,32}})));
+      Physiolibrary.Chemical.Components.SolutePump O2BlodFlow(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{-56,48},{-40,32}})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure
+        annotation (Placement(transformation(extent={{-76,34},{-60,46}})));
+      Physiolibrary.Chemical.Components.SolutePump O2AirFLow(useSoluteFlowInput
+          =true)
+        annotation (Placement(transformation(extent={{-12,36},{4,20}})));
+      Modelica.Blocks.Math.Product CO2FlowCalc
+        annotation (Placement(transformation(extent={{-60,60},{-50,70}})));
+      Physiolibrary.Chemical.Components.SolutePump CO2BlodFlow(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{-58,88},{-42,72}})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
+        annotation (Placement(transformation(extent={{-78,74},{-62,86}})));
+      Physiolibrary.Chemical.Components.SolutePump CO2AirFLow(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{-14,70},{2,54}})));
+      Parts.MolarInflowConnector O2Alv annotation (Placement(transformation(
+              extent={{-34,22},{-22,34}}), iconTransformation(extent={{8,74},{
+                28,94}})));
+      Parts.MolarOutflowConnector CO2Alv
+                                        annotation (Placement(transformation(
+              extent={{10,56},{22,68}}),  iconTransformation(extent={{-34,76},{
+                -14,96}})));
     equation
 
-      connect(busConnector, alvEq.PB) annotation (Line(
-          points={{-90,-70},{-90,-70},{-60,-70},{-60,-20.32},{-36.58,-20.32}},
+      connect(busConnector.PB, alvEq.PB) annotation (Line(
+          points={{-90,-70},{-86,-70},{-78,-70},{-78,11.64},{-55.06,11.64}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(busConnector, alvEq.FiCO2) annotation (Line(
-          points={{-90,-70},{-60,-70},{-60,-28.96},{-36.58,-28.96}},
+      connect(busConnector.FiO2, alvEq.FiO2) annotation (Line(
+          points={{-90,-70},{-78,-70},{-78,5.28},{-55.06,5.28}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(busConnector, alvEq.FiO2) annotation (Line(
-          points={{-90,-70},{-60,-70},{-60,-24},{-36.58,-24},{-36.58,-24.64}},
+      connect(busConnector.FiCO2, alvEq.FiCO2) annotation (Line(
+          points={{-90,-70},{-78,-70},{-78,-1.08},{-55.06,-1.08}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(busConnector, alvEq.BEox) annotation (Line(
-          points={{-90,-70},{-60,-70},{-60,-41.92},{-36.58,-41.92}},
+      connect(VAi, alvEq.VAi) annotation (Line(points={{-68,-8},{-55.06,-8},{
+              -55.06,-7.44}}, color={0,0,127}));
+      connect(busConnector.BEox, alvEq.BEox) annotation (Line(
+          points={{-90,-70},{-90,-70},{-78,-70},{-78,-20.16},{-55.06,-20.16}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(busConnector, alvEq.cHb) annotation (Line(
-          points={{-90,-70},{-60,-70},{-60,-54.88},{-36.58,-54.88}},
+      connect(busConnector.cHb, alvEq.cHb) annotation (Line(
+          points={{-90,-70},{-84,-70},{-78,-70},{-78,-39.24},{-55.06,-39.24}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(busConnector, alvEq.cAlb) annotation (Line(
-          points={{-90,-70},{-60,-70},{-60,-59.2},{-36.58,-59.2}},
+      connect(busConnector.cAlb, alvEq.cAlb) annotation (Line(
+          points={{-90,-70},{-78,-70},{-78,-45.6},{-55.06,-45.6}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(busConnector, alvEq.cPi) annotation (Line(
-          points={{-90,-70},{-60,-70},{-60,-63.52},{-36.58,-63.52}},
+      connect(busConnector.cPi, alvEq.cPi) annotation (Line(
+          points={{-90,-70},{-78,-70},{-78,-51.96},{-55.06,-51.96}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(busConnector, alvEq.cDPG) annotation (Line(
-          points={{-90,-70},{-60,-70},{-60,-67.84},{-36.58,-67.84}},
+      connect(busConnector.cDPG, alvEq.cDPG) annotation (Line(
+          points={{-90,-70},{-78,-70},{-78,-58.32},{-55.06,-58.32}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(busConnector, alvEq.FMetHb) annotation (Line(
-          points={{-90,-70},{-60,-70},{-60,-72},{-36.58,-72},{-36.58,-72.16}},
+      connect(busConnector.FMetHb, alvEq.FMetHb) annotation (Line(
+          points={{-90,-70},{-78,-70},{-78,-64.68},{-55.06,-64.68}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(busConnector, alvEq.FCOHb) annotation (Line(
-          points={{-90,-70},{-60,-70},{-60,-76.48},{-36.58,-76.48}},
+      connect(busConnector.FCOHb, alvEq.FCOHb) annotation (Line(
+          points={{-90,-70},{-64,-70},{-64,-71.04},{-55.06,-71.04}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(busConnector, alvEq.FHbF) annotation (Line(
-          points={{-90,-70},{-90,-70},{-60,-70},{-60,-80.8},{-36.58,-80.8}},
+      connect(busConnector.FHbF, alvEq.FHbF) annotation (Line(
+          points={{-90,-70},{-78,-70},{-78,-77.4},{-55.06,-77.4}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(busConnector, alvEq.T) annotation (Line(
-          points={{-90,-70},{-60,-70},{-60,-85.12},{-36.58,-85.12}},
+      connect(busConnector.T, alvEq.T) annotation (Line(
+          points={{-90,-70},{-84,-70},{-78,-70},{-78,-83.76},{-55.06,-83.76}},
           color={0,0,255},
           thickness=0.5), Text(
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      connect(alvEq.PAO2, busConnector) annotation (Line(points={{55.01,-22.12},
-              {96,-22.12},{96,-100},{-90,-100},{-90,-70}}, color={0,0,127}),
-          Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(alvEq.PACO2, busConnector) annotation (Line(points={{55.01,-28.6},
-              {96,-28.6},{96,-100},{-90,-100},{-90,-70}}, color={0,0,127}),
-          Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(alvEq.pHpc, busConnector) annotation (Line(points={{55.01,-35.08},
-              {96,-35.08},{96,-100},{-90,-100},{-90,-70}}, color={0,0,127}),
-          Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(alvEq.HCO3pc, busConnector) annotation (Line(points={{55.44,
-              -41.92},{96,-41.92},{96,-100},{-90,-100},{-90,-70}}, color={0,0,
-              127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(alvEq.sO2pc, busConnector) annotation (Line(points={{55.44,-49.12},
-              {96,-49.12},{96,-100},{-90,-100},{-90,-70}}, color={0,0,127}),
-          Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(alvEq.VO2, busConnector) annotation (Line(points={{55.44,-55.6},{
-              96,-55.6},{96,-100},{-90,-100},{-90,-70}}, color={0,0,127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(alvEq.VCO2, busConnector) annotation (Line(points={{55.44,-62.08},
-              {96,-62.08},{96,-100},{-90,-100},{-90,-70}}, color={0,0,127}),
-          Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(alvEq.CpcO2, busConnector) annotation (Line(points={{55.44,-69.28},
-              {96,-69.28},{96,-100},{-90,-100},{-90,-70}}, color={0,0,127}),
-          Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(alvEq.CpcCO2, busConnector) annotation (Line(points={{55.44,
-              -76.48},{96,-76.48},{96,-100},{-90,-100},{-90,-70}}, color={0,0,
-              127}), Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      connect(alvEq.VAe, busConnector) annotation (Line(points={{55.44,-82.96},
-              {96,-82.96},{96,-100},{-90,-100},{-90,-70}}, color={0,0,127}),
-          Text(
-          string="%second",
-          index=1,
-          extent={{6,3},{6,3}}));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-                {100,100}})),                      Diagram(coordinateSystem(
+      connect(alvEq.VCO2, VCO2) annotation (Line(points={{54.08,-49.84},{80.04,
+              -49.84},{80.04,-57},{91,-57}}, color={0,0,127}));
+      connect(alvEq.VO2, VO2) annotation (Line(points={{54.08,-40.3},{77.04,
+              -40.3},{77.04,-40},{84,-40}}, color={0,0,127}));
+      connect(alvEq.Q, Q) annotation (Line(points={{-55.06,-13.8},{-82,-13.8},{
+              -82,20},{-94,20}}, color={0,0,127}));
+      connect(O2FlowCalc.u2, Q) annotation (Line(points={{-59,24},{-74,24},{-74,
+              20},{-94,20}}, color={0,0,127}));
+      connect(O2FlowCalc.u1, concentrationMeasure.concentration) annotation (
+          Line(points={{-59,30},{-68,30},{-68,35.2}}, color={0,0,127}));
+      connect(concentrationMeasure.q_in, O2ven) annotation (Line(
+          points={{-68,40},{-90,40}},
+          color={107,45,134},
+          thickness=1));
+      connect(concentrationMeasure.q_in, O2BlodFlow.q_in) annotation (Line(
+          points={{-68,40},{-62,40},{-56,40}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2AirFLow.q_out, O2pc) annotation (Line(
+          points={{4,28},{18,28},{18,40},{80,40}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2BlodFlow.q_out, O2pc) annotation (Line(
+          points={{-40,40},{80,40}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2AirFLow.soluteFlow, VO2) annotation (Line(points={{-0.8,24.8},{
+              -0.8,22},{76,22},{76,-40},{84,-40}}, color={0,0,127}));
+      connect(O2FlowCalc.y, O2BlodFlow.soluteFlow) annotation (Line(points={{
+              -47.5,27},{-44.8,27},{-44.8,36.8}}, color={0,0,127}));
+      connect(concentrationMeasure1.q_in, CO2ven) annotation (Line(
+          points={{-70,80},{-90,80},{-90,82}},
+          color={107,45,134},
+          thickness=1));
+      connect(concentrationMeasure1.q_in, CO2BlodFlow.q_in) annotation (Line(
+          points={{-70,80},{-64,80},{-58,80}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2FlowCalc.u1, concentrationMeasure1.concentration) annotation (
+          Line(points={{-61,68},{-70,68},{-70,75.2}}, color={0,0,127}));
+      connect(CO2FlowCalc.u2, Q) annotation (Line(points={{-61,62},{-82,62},{
+              -82,20},{-94,20}}, color={0,0,127}));
+      connect(CO2FlowCalc.y, CO2BlodFlow.soluteFlow) annotation (Line(points={{
+              -49.5,65},{-46.8,65},{-46.8,76.8}}, color={0,0,127}));
+      connect(CO2BlodFlow.q_out, CO2pc) annotation (Line(
+          points={{-42,80},{78,80}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2AirFLow.q_in, CO2pc) annotation (Line(
+          points={{-14,62},{-22,62},{-22,80},{78,80}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2AirFLow.soluteFlow, VCO2) annotation (Line(points={{-2.8,58.8},
+              {-2.8,50},{90,50},{90,-46},{80,-46},{80,-50},{80.04,-49.84},{
+              80.04,-57},{91,-57}}, color={0,0,127}));
+      connect(alvEq.CvO2, concentrationMeasure.concentration) annotation (Line(
+            points={{-55.06,-26.52},{-86,-26.52},{-86,16},{-68,16},{-68,35.2}},
+            color={0,0,127}));
+      connect(alvEq.CvCO2, concentrationMeasure1.concentration) annotation (
+          Line(points={{-55.06,-32.88},{-98,-32.88},{-98,68},{-70,68},{-70,75.2}},
+            color={0,0,127}));
+      connect(O2AirFLow.q_in, O2Alv) annotation (Line(
+          points={{-12,28},{-28,28},{-28,28}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2AirFLow.q_out, CO2Alv) annotation (Line(
+          points={{2,62},{16,62}},
+          color={107,45,134},
+          thickness=1));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}})),                Diagram(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
     end AlveolocapillaryUnit;
 
