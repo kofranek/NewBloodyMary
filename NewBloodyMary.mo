@@ -324,8 +324,8 @@ package NewBloodyMary_testing
       input Real T;
       output Real result;
     protected
-     Real aCO2T0 =   0.23;        //mM/kPa
-     Real dlgaCO2dT =   -0.0092;        // lg(mM/kPa)/K
+     Real aCO2T0 =   0.23;              //mM/kPa
+     Real dlgaCO2dT =   -0.0092;              // lg(mM/kPa)/K
      Real T0 =  37;
     algorithm
      result:= aCO2T0 * antilg(dlgaCO2dT*(T - T0));
@@ -1731,135 +1731,173 @@ package NewBloodyMary_testing
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{74,2},{92,-8}},
+              extent={{-66,4},{94,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="sO2"),
             Text(
-              extent={{70,30},{94,10}},
+              extent={{-66,26},{94,8}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="HCO3"),
             Text(
-              extent={{-98,-86},{-80,-96}},
+              extent={{-94,-88},{10,-96}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="T"),
             Text(
-              extent={{72,44},{92,32}},
+              extent={{-44,44},{92,34}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="pH"),
             Text(
-              extent={{-96,62},{-78,52}},
+              extent={{-96,44},{54,34}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="BEox"),
-            Text(
-              extent={{-96,42},{-78,32}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ctHb"),
             Text(
-              extent={{-10,6},{10,-6}},
+              extent={{-73,7},{73,-7}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="ctO2",
-              origin={82,84},
-              rotation=180),
+              origin={19,81},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="ctO2"),
             Text(
-              extent={{-13,7},{13,-7}},
+              extent={{-75,6},{75,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="ctCO2",
-              origin={81,59},
-              rotation=180),
+              origin={19,58},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="ctCO2"),
             Text(
-              extent={{-64,62},{58,-22}},
+              extent={{-44,32},{66,-56}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
               textString="PO2CO2"),
             Text(
-              extent={{-98,100},{-80,90}},
+              extent={{-94,98},{104,88}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="pO2"),
             Text(
-              extent={{-96,86},{-74,68}},
+              extent={{-94,86},{58,72}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="pCO2"),
             Text(
-              extent={{-92,-72},{-70,-82}},
+              extent={{-94,-74},{102,-82}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FHbF"),
             Text(
-              extent={{-92,-28},{-64,-46}},
+              extent={{-94,-34},{104,-48}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FMetHb"),
             Text(
-              extent={{-92,-12},{-72,-22}},
+              extent={{-92,-14},{102,-28}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="cDPG"),
             Text(
-              extent={{-94,24},{-74,12}},
+              extent={{-94,22},{68,12}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ctAlb"),
             Text(
-              extent={{-12,6},{12,-6}},
+              extent={{-74,8},{74,-8}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="cdO2",
-              origin={78,-54},
-              rotation=180),
+              origin={18,-56},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="cdO2"),
             Text(
-              extent={{-15.5,19.5},{15.5,-19.5}},
+              extent={{-80,11.5},{80,-11.5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="cdCO2",
-              origin={76.5,-77.5},
-              rotation=180),
+              origin={14,-79.5},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="cdCO2"),
             Text(
-              extent={{-92,-50},{-68,-66}},
+              extent={{-94,-54},{58,-64}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FCOHb"),
             Text(
-              extent={{-12,5},{12,-5}},
+              extent={{-78,7},{78,-7}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={78,-35},
+              origin={14,-37},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="ceHb"),
             Text(
-              extent={{-96,4},{-76,-8}},
+              extent={{-94,4},{52,-8}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="ctPi")}), Diagram(coordinateSystem(preserveAspectRatio=false,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
+              textString="ctPi"),
+            Text(
+              extent={{-96,66},{52,50}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
+              textString="BEox")}), Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
     end PO2PCO2;
 
@@ -2039,7 +2077,7 @@ package NewBloodyMary_testing
       connect(pO2PCO2.cdCO2, cdCO2) annotation (Line(points={{66.9,-53.44},{75.45,-53.44},
               {75.45,-53.5},{87,-53.5}}, color={0,0,127}));
       connect(BEox, pO2PCO2.BEox)
-        annotation (Line(points={{-62,37},{-40.9,31.04}},color={0,0,127}));
+        annotation (Line(points={{-62,37},{-40.9,11.84}},color={0,0,127}));
       connect(pO2PCO2.ctO2, inverseBlockConstraints1.u2) annotation (Line(points={{66.9,
               22.4},{76,22.4},{76,34},{16,34},{16,48},{-4,48}}, color={0,0,127}));
       connect(inverseBlockConstraints1.u1, ctO2)
@@ -2053,10 +2091,10 @@ package NewBloodyMary_testing
       connect(inverseBlockConstraints1.y1, pO2)
         annotation (Line(points={{33,48},{43,48},{43,48}}, color={0,0,127}));
       connect(pO2PCO2.pO2, inverseBlockConstraints1.y2) annotation (Line(points={{-40.9,
-              21.44},{-70,21.44},{-70,56},{22,56},{22,48},{29,48}},
+              31.04},{-70,31.04},{-70,56},{22,56},{22,48},{29,48}},
                                                                   color={0,0,127}));
       connect(pO2PCO2.pCO2, inverseBlockConstraints.y2) annotation (Line(points={{-40.9,
-              11.84},{-60,11.84},{-78,11.84},{-78,82},{20,82},{20,76},{29,76}},
+              21.44},{-60,21.44},{-78,21.44},{-78,82},{20,82},{20,76},{29,76}},
                                                                     color={0,0,127}));
       connect(ctHb, pO2PCO2.ctHb) annotation (Line(points={{-78,4},{-40.9,4},{-40.9,
               2.24}}, color={0,0,127}));
@@ -2083,57 +2121,73 @@ package NewBloodyMary_testing
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{74,2},{92,-8}},
+              extent={{74,4},{92,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="sO2"),
             Text(
               extent={{70,30},{94,10}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="HCO3"),
             Text(
-              extent={{-98,-92},{-80,-102}},
+              extent={{-96,-92},{-78,-102}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="T"),
             Text(
               extent={{72,44},{92,32}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="pH"),
             Text(
               extent={{-96,100},{-78,90}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="BEox"),
             Text(
               extent={{-96,44},{-78,34}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ctHb"),
             Text(
               extent={{-10,6},{10,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="ctO2",
               origin={-86,78},
-              rotation=180),
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
+              textString="ctO2"),
             Text(
               extent={{-13,7},{13,-7}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="ctCO2",
-              origin={-83,55},
-              rotation=180),
+              origin={-83,59},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
+              textString="ctCO2"),
             Text(
               extent={{-64,62},{58,-22}},
               lineColor={0,0,255},
@@ -2145,72 +2199,94 @@ package NewBloodyMary_testing
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              horizontalAlignment=TextAlignment.Right,
+              fontSize=12,
               textString="pO2"),
             Text(
-              extent={{68,70},{90,52}},
+              extent={{70,70},{92,52}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="pCO2"),
             Text(
-              extent={{-92,-70},{-74,-78}},
+              extent={{-96,-72},{-78,-80}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FHbF"),
             Text(
-              extent={{-92,-26},{-64,-44}},
+              extent={{-96,-28},{-68,-46}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FMetHb"),
             Text(
-              extent={{-92,-12},{-72,-22}},
+              extent={{-96,-12},{-76,-22}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="cDPG"),
             Text(
-              extent={{-96,24},{-76,12}},
+              extent={{-96,26},{-76,14}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ctAlb"),
             Text(
               extent={{-12,6},{12,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="cdO2",
-              origin={78,-54},
-              rotation=180),
+              origin={78,-58},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="cdO2"),
             Text(
               extent={{-15.5,19.5},{15.5,-19.5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="cdCO2",
               origin={76.5,-77.5},
-              rotation=180),
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="cdCO2"),
             Text(
-              extent={{-92,-48},{-68,-64}},
+              extent={{-96,-48},{-72,-64}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FHbCO"),
             Text(
               extent={{-12,5},{12,-5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={78,-35},
+              origin={78,-39},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="ceHb"),
             Text(
               extent={{-96,6},{-78,-4}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ctPi"),
             Text(
               extent={{-60,92},{70,62}},
@@ -2407,93 +2483,84 @@ package NewBloodyMary_testing
           string="%first",
           index=-1,
           extent={{-6,3},{-6,3}}));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-                -100},{100,100}}), graphics={
-            Rectangle(
-              extent={{-100,100},{100,-100}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid),
-            Text(
-              extent={{74,2},{92,-8}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="sO2"),
-            Text(
-              extent={{70,30},{94,10}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="HCO3"),
-            Text(
-              extent={{72,44},{92,32}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="pH"),
-            Text(
-              extent={{-10,6},{10,-6}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="ctO2",
-              origin={-86,44},
-              rotation=180),
-            Text(
-              extent={{-13,7},{13,-7}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="ctCO2",
-              origin={-83,-5},
-              rotation=180),
-            Text(
-              extent={{-64,62},{58,-22}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="O2CO2"),
-            Text(
-              extent={{74,88},{92,78}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="pO2"),
-            Text(
-              extent={{68,70},{90,52}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="pCO2"),
-            Text(
-              extent={{-12,6},{12,-6}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="cdO2",
-              origin={78,-54},
-              rotation=180),
-            Text(
-              extent={{-15.5,19.5},{15.5,-19.5}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="cdCO2",
-              origin={76.5,-77.5},
-              rotation=180),
-            Text(
-              extent={{-12,5},{12,-5}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              origin={78,-35},
-              rotation=180,
-              textString="ceHb"),
-            Text(
-              extent={{-60,92},{70,62}},
-              lineColor={28,108,200},
-              textString="%name")}),Diagram(coordinateSystem(preserveAspectRatio=false,
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, initialScale = 0.1), graphics={Rectangle(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, extent={{
+                  -100,100},{100,-100}}),                                                                                                    Text(lineColor=
+                  {0,0,255},                                                                                                    fillColor=
+                  {255,255,0},
+                fillPattern=FillPattern.Solid,                                                                                                    extent={{
+                  -14,2},{90,-6}},                                                                                                   fontSize=
+                  12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="sO2"),                                                                                                    Text(lineColor=
+                  {0,0,255},                                                                                                    fillColor=
+                  {255,255,0},
+                fillPattern=FillPattern.Solid,                                                                                                    extent={{
+                  -34,26},{92,10}},                                                                                                   fontSize=
+                  12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="HCO3"),                                                                                                    Text(lineColor=
+                  {0,0,255},                                                                                                    fillColor=
+                  {255,255,0},
+                fillPattern=FillPattern.Solid,                                                                                                    extent = {{72, 44}, {92, 32}},                    fontSize=
+                  12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="pH"),                                                                                                    Text(origin={
+                  -59,44},                                                                                                    rotation = 180, lineColor=
+                  {0,0,255},                                                                                                    fillColor=
+                  {255,255,0},
+                fillPattern=FillPattern.Solid,                                                                                                    extent={{
+                  -35,6},{35,-6}},                                                                                                    fontSize=
+                  12,
+              horizontalAlignment=TextAlignment.Left,
+              textString="ctO2"),                                                                                                    Text(origin={
+                  -60,-5},                                                                                                    rotation = 180, lineColor=
+                  {0,0,255},                                                                                                    fillColor=
+                  {255,255,0},
+                fillPattern=FillPattern.Solid,                                                                                                    extent={{
+                  -36,7},{36,-7}},                                                                                                    fontSize=
+                  12,
+              horizontalAlignment=TextAlignment.Left,
+              textString="ctCO2"),                                                                                                    Text(lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, extent = {{-64, 62}, {58, -22}}, textString = "O2CO2"), Text(lineColor=
+                  {0,0,255},                                                                                                    fillColor=
+                  {255,255,0},
+                fillPattern=FillPattern.Solid,                                                                                                    extent={{
+                  -4,86},{92,78}},                                                                                                    fontSize=
+                  12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="pO2"),                                                                                                    Text(lineColor=
+                  {0,0,255},                                                                                                    fillColor=
+                  {255,255,0},
+                fillPattern=FillPattern.Solid,                                                                                                    extent={{
+                  -12,64},{90,52}},                                                                                                   fontSize=
+                  12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="pCO2"),                                                                                                    Text(origin={34,
+                  -58},                                                                                                    rotation = 180, lineColor=
+                  {0,0,255},                                                                                                    fillColor=
+                  {255,255,0},
+                fillPattern=FillPattern.Solid,                                                                                                    extent={{
+                  -56,6},{56,-6}},                                                                                                    fontSize=
+                  12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="cdO2"),                                                                                                    Text(origin={49,
+                  -80.5},                                                                                                    rotation = 180, lineColor=
+                  {0,0,255},                                                                                                    fillColor=
+                  {255,255,0},
+                fillPattern=FillPattern.Solid,                                                                                                    extent={{
+                  -41,4.5},{41,-4.5}},                                                                                                    fontSize=
+                  12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="cdCO2"),                                                                                                    Text(origin={33,
+                  -37},                                                                                                    rotation = 180, lineColor=
+                  {0,0,255},                                                                                                    fillColor=
+                  {255,255,0},
+                fillPattern=FillPattern.Solid,                                                                                                    extent={{
+                  -57,5},{57,-5}},                                                                                                    fontSize=
+                  12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="ceHb"),                                                                                                    Text(lineColor = {28, 108, 200}, extent = {{-60, 92}, {70, 62}}, textString = "%name")}),Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
     end O2CO2measure;
 
@@ -2656,57 +2723,73 @@ package NewBloodyMary_testing
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{74,2},{92,-8}},
+              extent={{76,2},{94,-8}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="sO2"),
             Text(
               extent={{70,30},{94,10}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="HCO3"),
             Text(
-              extent={{-94,-92},{-76,-102}},
+              extent={{-92,-90},{-74,-100}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="T"),
             Text(
-              extent={{72,44},{92,32}},
+              extent={{74,44},{94,32}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="pH"),
             Text(
-              extent={{-98,102},{-80,92}},
+              extent={{-94,102},{-76,92}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="BEox"),
             Text(
-              extent={{-98,46},{-80,36}},
+              extent={{-92,46},{-74,36}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ctHb"),
             Text(
               extent={{-10,6},{10,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="ctO2",
-              origin={-88,80},
-              rotation=180),
+              origin={-84,80},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
+              textString="ctO2"),
             Text(
               extent={{-13,7},{13,-7}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="ctCO2",
-              origin={-85,57},
-              rotation=180),
+              origin={-81,61},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
+              textString="ctCO2"),
             Text(
               extent={{-64,62},{58,-22}},
               lineColor={0,0,255},
@@ -2714,76 +2797,98 @@ package NewBloodyMary_testing
               fillPattern=FillPattern.Solid,
               textString="O2CO2"),
             Text(
-              extent={{74,88},{92,78}},
+              extent={{76,88},{94,78}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="pO2"),
             Text(
-              extent={{68,70},{90,52}},
+              extent={{72,70},{94,52}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="pCO2"),
             Text(
-              extent={{-88,-70},{-70,-78}},
+              extent={{-92,-74},{-74,-82}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FHbF"),
             Text(
-              extent={{-92,-24},{-64,-42}},
+              extent={{-92,-26},{-64,-44}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FMetHb"),
             Text(
-              extent={{-92,-10},{-72,-20}},
+              extent={{-92,-12},{-72,-22}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="cDPG"),
             Text(
-              extent={{-98,30},{-78,18}},
+              extent={{-92,26},{-72,14}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ctAlb"),
             Text(
               extent={{-12,6},{12,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="cdO2",
-              origin={78,-54},
-              rotation=180),
+              origin={82,-58},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="cdO2"),
             Text(
               extent={{-15.5,19.5},{15.5,-19.5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="cdCO2",
-              origin={76.5,-77.5},
-              rotation=180),
+              origin={78.5,-79.5},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="cdCO2"),
             Text(
-              extent={{-90,-48},{-66,-64}},
+              extent={{-92,-48},{-68,-64}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FHbCO"),
             Text(
               extent={{-12,5},{12,-5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={78,-35},
+              origin={82,-39},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="ceHb"),
             Text(
-              extent={{-98,12},{-80,2}},
+              extent={{-92,8},{-74,-2}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ctPi")}), Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
     end O2CO2algr;
@@ -3028,671 +3133,222 @@ package NewBloodyMary_testing
               fillPattern=FillPattern.Solid,
               textString="AlvEqalgr"),
             Text(
-              extent={{-96,34},{-78,24}},
+              extent={{-96,32},{-56,24}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="BEox"),
             Text(
-              extent={{-10,6},{10,-6}},
+              extent={{-22,6},{22,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-86,18},
+              origin={-74,16},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CvO2"),
             Text(
-              extent={{-13,7},{13,-7}},
+              extent={{-28,6},{28,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-83,5},
+              origin={-68,4},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CvCO2"),
             Text(
-              extent={{-98,-2},{-80,-12}},
+              extent={{-96,-4},{-48,-14}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="cHb"),
             Text(
-              extent={{-98,-14},{-78,-24}},
+              extent={{-96,-18},{-56,-24}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="cAlb"),
             Text(
-              extent={{-100,-24},{-82,-34}},
+              extent={{-96,-29},{-48,-38}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="cPi"),
             Text(
-              extent={{-96,-38},{-76,-48}},
+              extent={{-96,-40},{-56,-48}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="cDPG"),
             Text(
-              extent={{-96,-48},{-68,-66}},
+              extent={{-96,-48},{-52,-64}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FMetHb"),
             Text(
-              extent={{-96,-60},{-72,-76}},
+              extent={{-96,-60},{-46,-76}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FHbCO"),
             Text(
-              extent={{-96,-76},{-78,-84}},
+              extent={{-96,-76},{-48,-82}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FHbF"),
             Text(
-              extent={{-102,-86},{-84,-96}},
+              extent={{-94,-88},{-60,-94}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="T"),
             Text(
-              extent={{-12,6},{12,-6}},
+              extent={{-28,7},{28,-7}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={78,-42},
+              origin={66,-45},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="CpcO2"),
             Text(
-              extent={{-15.5,19.5},{15.5,-19.5}},
+              extent={{-46,3.5},{46,-3.5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={76.5,-63.5},
+              origin={48,-67.5},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="CpcCO2"),
             Text(
-              extent={{66,24},{90,10}},
+              extent={{46,22},{94,10}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="sO2pc"),
             Text(
-              extent={{64,44},{90,20}},
+              extent={{36,36},{94,32}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="HCO3pc"),
             Text(
-              extent={{72,58},{92,46}},
+              extent={{44,56},{94,46}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="pHpc"),
             Text(
-              extent={{72,80},{94,62}},
+              extent={{40,74},{94,60}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="PACO2"),
             Text(
-              extent={{74,94},{92,84}},
+              extent={{48,88},{94,82}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="PAO2"),
             Text(
-              extent={{-100,46},{-84,36}},
+              extent={{-96,44},{-64,36}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="Q"),
             Text(
-              extent={{-98,58},{-82,48}},
+              extent={{-96,56},{-62,48}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="VAi"),
             Text(
-              extent={{70,-78},{90,-92}},
+              extent={{36,-82},{94,-96}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="VA"),
             Text(
-              extent={{68,6},{90,-4}},
+              extent={{52,6},{94,-4}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              horizontalAlignment=TextAlignment.Right,
+              fontSize=12,
               textString="VO2"),
             Text(
-              extent={{70,-22},{92,-32}},
+              extent={{50,-12},{94,-24}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="VCO2"),
             Text(
-              extent={{-96,80},{-80,70}},
+              extent={{-96,80},{-48,70}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FiO2"),
             Text(
-              extent={{-96,70},{-76,58}},
+              extent={{-96,70},{-56,60}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FiCO2"),
             Text(
-              extent={{-99,92},{-81,82}},
+              extent={{-95,92},{-54,84}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="PB")}));
     end AlvEqalgr;
-
-    model AlvEqold
-
-      Physiolibrary.Types.RealIO.ConcentrationInput
-                                         BEox
-                                      annotation (Placement(transformation(extent={{-64,50},
-                {-54,59}}),           iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,28})));
-      Physiolibrary.Types.RealIO.ConcentrationInput CvO2 annotation (Placement(
-            transformation(extent={{-68,45},{-58,56}}), iconTransformation(extent={{-112,10},
-                {-100,22}})));
-      Physiolibrary.Types.RealIO.ConcentrationInput CvCO2 annotation (Placement(
-            transformation(extent={{-74,40},{-64,50}}), iconTransformation(extent={{-112,-2},
-                {-100,10}})));
-      Physiolibrary.Types.RealIO.ConcentrationInput cHb(displayUnit="mmol/l")
-        "concentration of total haemoglobin in whole blood (8.4)" annotation (
-          Placement(transformation(
-            extent={{5,5},{-5,-5}},
-            rotation=180,
-            origin={-75,41}),iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,-8})));
-      Physiolibrary.Types.RealIO.ConcentrationInput cAlb(displayUnit="mmol/l")
-        "concentration of total haemoglobin in whole blood (8.4)" annotation (
-          Placement(transformation(
-            extent={{6,6},{-6,-6}},
-            rotation=180,
-            origin={-56,34}), iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,-20})));
-      Physiolibrary.Types.RealIO.ConcentrationInput cPi(displayUnit="mmol/l")
-        "concentration of total haemoglobin in whole blood (8.4)" annotation (
-          Placement(transformation(
-            extent={{5,5},{-5,-5}},
-            rotation=180,
-            origin={-63,29}),  iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,-32})));
-      Physiolibrary.Types.RealIO.ConcentrationInput cDPG
-                                       annotation (Placement(transformation(extent={{-5,-5},
-                {5,5}},
-            rotation=0,
-            origin={-69,25}),         iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,-44})));
-      Physiolibrary.Types.RealIO.FractionInput FMetHb
-                                       annotation (Placement(transformation(extent={{-5,-5},
-                {5,5}},
-            rotation=0,
-            origin={-75,21}),         iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,-56})));
-      Physiolibrary.Types.RealIO.FractionInput FCOHb annotation (Placement(
-            transformation(
-            extent={{-5,-5.5},{5,5.5}},
-            rotation=0,
-            origin={-65,14.5}),
-                             iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,-68})));
-      Physiolibrary.Types.RealIO.FractionInput FHbF
-                                       annotation (Placement(transformation(extent={{-6,-6},
-                {6,6}},
-            rotation=0,
-            origin={-72,10}),         iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,-80})));
-      Physiolibrary.Types.RealIO.TemperatureInput T(start=310.15)  annotation (Placement(transformation(extent={{-5.5,-5},
-                {5.5,5}},
-            rotation=0,
-            origin={-76.5,5}),        iconTransformation(extent={{-112,-98},{-100,-86}})));
-      Physiolibrary.Types.RealIO.PressureOutput PAO2 annotation (Placement(
-            transformation(extent={{80,52},{90,63}}), iconTransformation(extent={{100,76},
-                {114,90}})));
-      Physiolibrary.Types.RealIO.PressureOutput PACO2 annotation (Placement(
-            transformation(extent={{90,78},{100,88}}),iconTransformation(extent={{100,58},
-                {114,72}})));
-      Physiolibrary.Types.RealIO.pHOutput pHpc annotation (Placement(
-            transformation(
-            extent={{-6,-6.5},{6,6.5}},
-            rotation=0,
-            origin={84,10.5}),
-                            iconTransformation(
-            extent={{-7,-7},{7,7}},
-            rotation=0,
-            origin={107,47})));
-      Physiolibrary.Types.RealIO.ConcentrationOutput HCO3pc(displayUnit=
-            "mmol/l") "outgoing concentration of HCO3" annotation (Placement(
-            transformation(
-            extent={{-6,-6.5},{6,6.5}},
-            rotation=0,
-            origin={94,2.5}),  iconTransformation(
-            extent={{-8,-8},{8,8}},
-            rotation=0,
-            origin={108,28})));
-      Physiolibrary.Types.RealIO.FractionOutput sO2pc annotation (Placement(
-            transformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={90,-14}), iconTransformation(
-            extent={{-8,-8},{8,8}},
-            rotation=0,
-            origin={108,8})));
-      Physiolibrary.Types.RealIO.ConcentrationOutput CpcCO2 annotation (
-          Placement(transformation(
-            extent={{-7,-6.5},{7,6.5}},
-            rotation=0,
-            origin={87,-53.5}), iconTransformation(
-            extent={{-8,-8},{8,8}},
-            rotation=0,
-            origin={108,-68})));
-      Physiolibrary.Types.RealIO.ConcentrationOutput CpcO2 annotation (
-          Placement(transformation(
-            extent={{-7,-7},{7,7}},
-            rotation=0,
-            origin={87,-44}), iconTransformation(
-            extent={{-8,-8},{8,8}},
-            rotation=0,
-            origin={108,-48})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateInput Q annotation (Placement(
-            transformation(extent={{-82,-92},{-64,-74}}),iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,40})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateInput VAi annotation (Placement(
-            transformation(extent={{-96,-102},{-80,-86}}),
-                                                         iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,52})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateOutput VA annotation (Placement(
-            transformation(extent={{100,-96},{120,-76}}), iconTransformation(
-              extent={{100,-94},{116,-78}})));
-      Physiolibrary.Types.RealIO.MolarFlowRateOutput VO2 annotation (Placement(
-            transformation(extent={{108,-6},{120,6}}),  iconTransformation(
-              extent={{100,-18},{116,-2}})));
-      Physiolibrary.Types.RealIO.MolarFlowRateOutput VCO2 annotation (Placement(
-            transformation(extent={{88,18},{98,28}}),   iconTransformation(
-              extent={{100,-36},{116,-20}})));
-      Physiolibrary.Types.RealIO.FractionInput FiO2 annotation (Placement(
-            transformation(
-            extent={{-8,-8},{8,8}},
-            rotation=0,
-            origin={-90,-26}), iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,76})));
-      Physiolibrary.Types.RealIO.FractionInput FiCO2 annotation (Placement(
-            transformation(
-            extent={{-8,-8},{8,8}},
-            rotation=0,
-            origin={-92,-38}), iconTransformation(
-            extent={{-6,-6},{6,6}},
-            rotation=0,
-            origin={-106,64})));
-      Physiolibrary.Types.RealIO.PressureInput PB annotation (Placement(
-            transformation(extent={{-148,66},{-108,106}}), iconTransformation(
-              extent={{-112,82},{-100,94}})));
-      O2CO2 venous annotation (Placement(transformation(extent={{-40,4},{24,54}})));
-
-    Real PB_mmHg;
-    Real temp_Cels;
-    Real Q_l_per_min;
-    Real VO2_l_per_min;
-    Real VCO2_l_per_min;
-    Real VAi_l_per_min;
-    Real kBTPS_to_STPD;
-    Real ViO2_l_per_min;
-    Real ViCO2_l_per_min;
-    Real VeCO2_l_per_min;
-    Real VeO2_l_per_min;
-    Real inflowCO2_l_per_min;
-    Real inflowO2_l_per_min;
-    Real outflowCO2_l_per_min;
-    Real outflowO2_l_per_min;
-    Real VCO2_STPD_l_per_min;
-    Real VO2_STPD_l_per_min;
-    Real VA_l_per_min;
-    Real PAO2_kPa( start = 13.3);
-    Real PACO2_kPa( start = 5.33);
-    Real cx1;
-    Real FAO2;
-    Real FACO2;
-    Real PpcO2_kPa;
-    Real PpcCO2_kPa;
-     /*
-initial algorithm 
-  (VA_l_per_min,
-  VO2_l_per_min,
-  VCO2_l_per_min,
-  CpcO2, CpcCO2,
-  PAO2_kPa,
-  PACO2_kPa,
-  PpcO2_kPa,
-  PpcCO2_kPa,
-  sO2pc,
-  pHpc,
-  HCO3pc)
- :=AlvEquil(
-    VAi_l_per_min,
-    FiO2,
-    FiCO2,
-    temp_Cels,
-    PB_mmHg,
-    5,
-    CvO2,
-    CvCO2,
-    BEox,
-    cHb,
-    cAlb,
-    cPi,
-    cDPG,
-    FCOHb,
-    FMetHb,
-    FHbF);
-*/
-    equation
-      PpcO2_kPa = PAO2_kPa;
-      PpcCO2_kPa=PACO2_kPa;
-      PB_mmHg=PB/133.322365;
-      // from mmHg to Pa conversion
-      temp_Cels = T - 273.15;
-      //from �C to K conversion
-      PAO2 = PAO2_kPa * 1000;
-      //from kPa to Pa conversion
-      PACO2 = PACO2_kPa * 1000;
-      //from kPa to Pa conversion
-      Q_l_per_min = Q * 60000;
-      // from m^3/sec to l/min conversion
-      VO2 = VO2_l_per_min / 60 / 1000;
-      //from mmol/min to mol/sec conversion
-      VCO2 = VCO2_l_per_min / 60 / 1000;
-      //from mmol/min to mol/sec conversion
-      VAi_l_per_min = VAi * 60000;
-      // from m^3/sec to l/min conversion
-      VA = VA_l_per_min / 60000;
-      //from l/min to m^3/sec conversion
-      cx1 = (PB_mmHg - pH2Oof(temp_Cels)) * 0.133322368;
-      //cx1 = PB - pH2O_BTPS
-      kBTPS_to_STPD = BTPS_to_STPD(PB_mmHg, temp_Cels);
-
-      VCO2_l_per_min = (CvCO2 - CpcCO2) * Q_l_per_min;
-      // in mmol min
-      VO2_l_per_min = (CpcO2 - CvO2) * Q_l_per_min;
-      //in mmol/min
-      VCO2_STPD_l_per_min = VCO2_l_per_min * 0.022414;
-      //l STPD
-      VO2_STPD_l_per_min = VO2_l_per_min * 0.022414;
-      //l STPD
-      VA_l_per_min = VAi_l_per_min + (VCO2_STPD_l_per_min - VO2_STPD_l_per_min) / kBTPS_to_STPD;
-      //VA in l BTPS
-      FACO2 = PACO2_kPa / cx1;
-      // cx1=PB-PH2O_BTPS
-      FAO2 = PAO2_kPa / cx1;
-      // cx1=PB-PH2O_BTPS
-      ViCO2_l_per_min = FiCO2 * VAi_l_per_min * kBTPS_to_STPD;
-      //l STPD/min
-      VeCO2_l_per_min = VA_l_per_min * FACO2 * kBTPS_to_STPD;
-      //l STPD/min
-      ViO2_l_per_min = FiO2 * VAi_l_per_min * kBTPS_to_STPD;
-      //l STPD/min
-      VeO2_l_per_min = FAO2 * VA_l_per_min * kBTPS_to_STPD;
-      //l STPD/min
-      inflowCO2_l_per_min = ViCO2_l_per_min / 0.022414 + CvCO2 * Q_l_per_min;
-      //in mmol/min
-      outflowCO2_l_per_min = VeCO2_l_per_min / 0.022414 + CpcCO2;
-      //in mmol/min
-      inflowO2_l_per_min = ViO2_l_per_min / 0.022414 + CvO2 * Q_l_per_min;
-      //in mmol,/min
-      outflowO2_l_per_min = VeO2_l_per_min / 0.022414 + CpcO2 * Q_l_per_min;
-      //in mmol/min
-      inflowCO2_l_per_min = outflowCO2_l_per_min;
-      inflowO2_l_per_min=outflowO2_l_per_min;
-
-      (CpcO2,CpcCO2,pHpc,sO2pc)=PO2PCO2of(
-                PAO2_kPa,
-                PACO2_kPa,
-                BEox,
-                cHb,
-                cAlb,
-                cPi,
-                cDPG,
-                FCOHb,
-                FMetHb,
-                FHbF,
-                temp_Cels);
-          HCO3pc = cHCO3of(pHpc, PACO2_kPa, temp_Cels);
-
-      connect(venous.BEox, BEox) annotation (Line(points={{-43.2,53.5},{-49.6,53.5},
-              {-49.6,54.5},{-59,54.5}}, color={0,0,127}));
-      connect(venous.ctO2, CvO2) annotation (Line(points={{-43.2,49},{-51.6,49},{-51.6,
-              50.5},{-63,50.5}}, color={0,0,127}));
-      connect(venous.ctCO2, CvCO2) annotation (Line(points={{-43.2,44},{-54,44},{-54,
-              45},{-69,45}}, color={0,0,127}));
-      connect(venous.ctHb, cHb) annotation (Line(points={{-43.2,39},{-50.6,39},{-50.6,
-              41},{-75,41}}, color={0,0,127}));
-      connect(venous.ctAlb, cAlb)
-        annotation (Line(points={{-43.2,34},{-56,34}}, color={0,0,127}));
-      connect(venous.ctPi, cPi) annotation (Line(points={{-43.2,29.5},{-51.6,29.5},{
-              -51.6,29},{-63,29}}, color={0,0,127}));
-      connect(venous.cDPG, cDPG) annotation (Line(points={{-43.2,24.5},{-54.6,24.5},
-              {-54.6,25},{-69,25}}, color={0,0,127}));
-      connect(venous.FMetHb, FMetHb) annotation (Line(points={{-43.2,20},{-56,20},{-56,
-              21},{-75,21}}, color={0,0,127}));
-      connect(venous.FHbF, FHbF)
-        annotation (Line(points={{-43.2,10},{-72,10}}, color={0,0,127}));
-      connect(venous.T, T)
-        annotation (Line(points={{-43.2,5},{-57.6,5},{-76.5,5}}, color={0,0,127}));
-      connect(FCOHb, venous.FCOHb) annotation (Line(
-          points={{-65,14.5},{-54.5,14.5},{-54.5,15},{-43.2,15}},
-          color={0,0,127},
-          smooth=Smooth.None));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-                {100,100}}),
-                       graphics={
-            Rectangle(
-              extent={{-100,100},{100,-100}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid),
-            Text(
-              extent={{-68,36},{64,-12}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="AlvEq"),
-            Text(
-              extent={{-96,34},{-78,24}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="BEox"),
-            Text(
-              extent={{-10,6},{10,-6}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              origin={-86,18},
-              rotation=180,
-              textString="CvO2"),
-            Text(
-              extent={{-13,7},{13,-7}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              origin={-83,5},
-              rotation=180,
-              textString="CvCO2"),
-            Text(
-              extent={{-98,-2},{-80,-12}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="cHb"),
-            Text(
-              extent={{-98,-14},{-78,-24}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="cAlb"),
-            Text(
-              extent={{-100,-24},{-82,-34}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="cPi"),
-            Text(
-              extent={{-96,-38},{-76,-48}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="cDPG"),
-            Text(
-              extent={{-96,-48},{-68,-66}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="FMetHb"),
-            Text(
-              extent={{-96,-60},{-72,-76}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="FCOHb"),
-            Text(
-              extent={{-96,-76},{-78,-84}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="FHbF"),
-            Text(
-              extent={{-102,-86},{-84,-96}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="T"),
-            Text(
-              extent={{-12,6},{12,-6}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              origin={78,-46},
-              rotation=180,
-              textString="CpcO2"),
-            Text(
-              extent={{-15.5,19.5},{15.5,-19.5}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              origin={76.5,-65.5},
-              rotation=180,
-              textString="CpcCO2"),
-            Text(
-              extent={{66,16},{90,2}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="sO2pc"),
-            Text(
-              extent={{60,40},{90,16}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="HCO3pc"),
-            Text(
-              extent={{72,52},{92,40}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="pHpc"),
-            Text(
-              extent={{72,74},{94,56}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="PACO2"),
-            Text(
-              extent={{74,88},{92,78}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="PAO2"),
-            Text(
-              extent={{-100,46},{-84,36}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="Q"),
-            Text(
-              extent={{-98,58},{-82,48}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="VAi"),
-            Text(
-              extent={{70,-78},{90,-92}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="VA"),
-            Text(
-              extent={{68,-4},{90,-14}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="VO2"),
-            Text(
-              extent={{70,-24},{92,-34}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="VCO2"),
-            Text(
-              extent={{-96,80},{-80,70}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="FiO2"),
-            Text(
-              extent={{-96,70},{-76,58}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="FiCO2"),
-            Text(
-              extent={{-99,92},{-81,82}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="PB")}), Diagram(coordinateSystem(preserveAspectRatio=false,
-              extent={{-100,-100},{100,100}}), graphics));
-    end AlvEqold;
 
     model O2CO2Balance
 
@@ -3732,60 +3388,74 @@ initial algorithm
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{-10,6},{10,-6}},
+              extent={{-96,6},{96,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-88,44},
+              origin={2,44},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CvO2"),
             Text(
-              extent={{-13,7},{13,-7}},
+              extent={{-97,10},{97,-10}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-85,21},
+              origin={3,20},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CvCO2"),
             Text(
-              extent={{-58,42},{64,-42}},
+              extent={{-50,116},{74,38}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
               textString="O2CO2Balance"),
             Text(
-              extent={{68,10},{90,0}},
+              extent={{36,8},{94,-2}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="VO2"),
             Text(
-              extent={{70,-10},{92,-20}},
+              extent={{12,-12},{94,-20}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="VCO2"),
             Text(
-              extent={{-13,7},{13,-7}},
+              extent={{-90,13},{90,-13}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-85,-31},
+              origin={-4,-33},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CpcCO2"),
             Text(
-              extent={{-10,6},{10,-6}},
+              extent={{-81,8},{81,-8}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-88,-8},
+              origin={-13,-8},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CpcO2"),
             Text(
-              extent={{-100,76},{-84,66}},
+              extent={{-94,80},{98,64}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="Q")}),    Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
     end O2CO2Balance;
@@ -3827,20 +3497,24 @@ initial algorithm
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{-10,6},{10,-6}},
+              extent={{-24,5},{24,-5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={88,18},
+              origin={70,17},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="CvO2"),
             Text(
-              extent={{-13,7},{13,-7}},
+              extent={{-22,8},{22,-8}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={83,-13},
+              origin={72,-14},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="CvCO2"),
             Text(
               extent={{-72,124},{50,40}},
@@ -3849,38 +3523,48 @@ initial algorithm
               fillPattern=FillPattern.Solid,
               textString="VenousO2CO2"),
             Text(
-              extent={{-96,32},{-74,22}},
+              extent={{-94,30},{-50,20}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="VO2"),
             Text(
-              extent={{-94,10},{-72,0}},
+              extent={{-94,8},{-48,-4}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="VCO2"),
             Text(
-              extent={{-13,7},{13,-7}},
+              extent={{-22,4},{22,-4}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-85,-49},
+              origin={-72,-50},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CaCO2"),
             Text(
-              extent={{-10,6},{10,-6}},
+              extent={{-23,6},{23,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-88,-26},
+              origin={-71,-26},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CaO2"),
             Text(
-              extent={{-100,58},{-84,48}},
+              extent={{-94,60},{-58,48}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="Q")}),    Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
     end VenousO2CO2;
@@ -3919,28 +3603,36 @@ initial algorithm
               fillPattern=FillPattern.Solid,
               textString="ShuntPerfusion"),
             Text(
-              extent={{-110,36},{-46,4}},
+              extent={{-94,26},{-20,12}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="Q"),
             Text(
               extent={{-94,2},{4,-54}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ShuntFract"),
             Text(
-              extent={{32,-10},{98,-38}},
+              extent={{28,-10},{94,-38}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="Qsh"),
             Text(
-              extent={{34,34},{94,8}},
+              extent={{28,34},{92,8}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="Qpulm")}),Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
     end ShuntPerfusin;
@@ -3997,20 +3689,24 @@ initial algorithm
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{-10,6},{10,-6}},
+              extent={{-46,6},{46,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={88,18},
+              origin={48,18},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="CaO2"),
             Text(
-              extent={{-13,7},{13,-7}},
+              extent={{-39,7},{39,-7}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={83,-13},
+              origin={55,-15},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="CaCO2"),
             Text(
               extent={{-62,122},{60,38}},
@@ -4019,48 +3715,60 @@ initial algorithm
               fillPattern=FillPattern.Solid,
               textString="ShuntMixing"),
             Text(
-              extent={{-13,7},{13,-7}},
+              extent={{-49,5},{49,-5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-83,-37},
+              origin={-45,-37},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CvCO2"),
             Text(
-              extent={{-10,6},{10,-6}},
+              extent={{-49,5},{49,-5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-86,-10},
+              origin={-45,-9},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CvO2"),
             Text(
-              extent={{-98,62},{-78,48}},
+              extent={{-94,58},{4,48}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="Qpulm"),
             Text(
-              extent={{-96,28},{-82,18}},
+              extent={{-94,26},{-4,16}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="Qsh"),
             Text(
-              extent={{-14,8},{14,-8}},
+              extent={{-48,5},{48,-5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-80,-58},
+              origin={-46,-57},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CpcO2"),
             Text(
-              extent={{-16,8},{16,-8}},
+              extent={{-42,6},{42,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-78,-84},
+              origin={-52,-84},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CpcCO2")}),
                                     Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
@@ -4163,70 +3871,90 @@ initial algorithm
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{-68,52},{56,6}},
+              extent={{-42,-40},{82,-86}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
               textString="AlvGases"),
             Text(
-              extent={{-100,4},{-82,-6}},
+              extent={{-94,2},{6,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="T"),
             Text(
-              extent={{72,46},{94,28}},
+              extent={{-46,44},{94,24}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="PACO2"),
             Text(
-              extent={{74,64},{92,54}},
+              extent={{-80,62},{94,52}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="PAO2"),
             Text(
-              extent={{-98,18},{-82,8}},
+              extent={{-94,16},{0,6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="VAi"),
             Text(
-              extent={{70,20},{90,6}},
+              extent={{-46,20},{94,4}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="VAe"),
             Text(
-              extent={{-98,-14},{-76,-24}},
+              extent={{-94,-14},{52,-28}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="VO2"),
             Text(
-              extent={{-94,-34},{-72,-44}},
+              extent={{-94,-36},{66,-50}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="VCO2"),
             Text(
-              extent={{-96,56},{-80,46}},
+              extent={{-94,56},{14,46}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FiO2"),
             Text(
-              extent={{-96,42},{-76,30}},
+              extent={{-94,40},{4,28}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FiCO2"),
             Text(
-              extent={{-99,72},{-81,62}},
+              extent={{-93,72},{10,62}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="PB")}), Diagram(coordinateSystem(preserveAspectRatio=false,
               extent={{-100,-100},{100,100}})));
     end AlvGases;
@@ -4408,7 +4136,7 @@ initial algorithm
 
     equation
       connect(BEox, pO2PCO2_1.BEox) annotation (Line(points={{-61,94.5},{-43.5,
-              94.5},{-43.5,91.5},{-25.1,91.5}}, color={0,0,127}));
+              94.5},{-43.5,81.5},{-25.1,81.5}}, color={0,0,127}));
       connect(pO2PCO2_1.ctHb, ctHb) annotation (Line(points={{-25.1,76.5},{-32.55,
               76.5},{-32.55,77},{-43,77}}, color={0,0,127}));
       connect(pO2PCO2_1.ctAlb, ctAlb) annotation (Line(points={{-25.1,71.5},{-35.55,
@@ -4467,11 +4195,11 @@ initial algorithm
       connect(alvGases.VCO2, VCO2) annotation (Line(points={{-16.16,-74.4},{-22,
               -74.4},{-22,-94},{94,-94},{94,-16},{70,-16},{70,-4},{71.24,-4},{
               71.24,-1},{91,-1}}, color={0,0,127}));
-      connect(pO2PCO2_1.pO2, PAO2) annotation (Line(points={{-25.1,86.5},{-88,
-              86.5},{-88,-12},{-10,-12},{-10,-34},{66,-34},{66,-50},{68,-50},{
+      connect(pO2PCO2_1.pO2, PAO2) annotation (Line(points={{-25.1,91.5},{-88,
+              91.5},{-88,-12},{-10,-12},{-10,-34},{66,-34},{66,-50},{68,-50},{
               68,-48.5},{77,-48.5}}, color={0,0,127}));
-      connect(pO2PCO2_1.pCO2, PACO2) annotation (Line(points={{-25.1,81.5},{-74,
-              81.5},{-74,-10},{-8,-10},{-8,-26},{84,-26},{84,-55},{91,-55}},
+      connect(pO2PCO2_1.pCO2, PACO2) annotation (Line(points={{-25.1,86.5},{-74,
+              86.5},{-74,-10},{-8,-10},{-8,-26},{84,-26},{84,-55},{91,-55}},
             color={0,0,127}));
       connect(o2CO2Balance.CpcO2, CpcO2) annotation (Line(
           points={{-3.2,1.6},{-16,1.6},{-16,38},{52,38},{52,90},{67,90}},
@@ -4497,168 +4225,220 @@ initial algorithm
               fillPattern=FillPattern.Solid,
               textString="AlvEq"),
             Text(
-              extent={{-96,34},{-78,24}},
+              extent={{-94,32},{-56,22}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="BEox"),
             Text(
-              extent={{-10,6},{10,-6}},
+              extent={{-24,6},{24,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-86,18},
+              origin={-70,14},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CvO2"),
             Text(
-              extent={{-13,7},{13,-7}},
+              extent={{-36,6},{36,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={-83,5},
+              origin={-58,4},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="CvCO2"),
             Text(
-              extent={{-98,-2},{-80,-12}},
+              extent={{-94,-6},{-34,-12}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ctHb"),
             Text(
-              extent={{-98,-14},{-78,-24}},
+              extent={{-94,-16},{-30,-24}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ctAlb"),
             Text(
-              extent={{-100,-24},{-82,-34}},
+              extent={{-94,-26},{-20,-34}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ctPi"),
             Text(
-              extent={{-96,-38},{-76,-48}},
+              extent={{-94,-38},{-8,-48}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="cDPG"),
             Text(
-              extent={{-96,-48},{-68,-66}},
+              extent={{-94,-50},{-10,-64}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FMetHb"),
             Text(
-              extent={{-96,-60},{-72,-76}},
+              extent={{-94,-62},{18,-74}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FCOHb"),
             Text(
-              extent={{-96,-76},{-78,-84}},
+              extent={{-94,-78},{-30,-84}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FHbF"),
             Text(
-              extent={{-102,-86},{-84,-96}},
+              extent={{-94,-88},{-32,-98}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="T"),
             Text(
-              extent={{-12,6},{12,-6}},
+              extent={{-51,5},{51,-5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={78,-46},
+              origin={43,-49},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="CpcO2"),
             Text(
-              extent={{-15.5,19.5},{15.5,-19.5}},
+              extent={{-52,9.5},{52,-9.5}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              origin={76.5,-65.5},
+              origin={42,-69.5},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="CpcCO2"),
             Text(
-              extent={{66,16},{90,2}},
+              extent={{-4,14},{94,2}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="sO2pc"),
             Text(
-              extent={{60,40},{90,16}},
+              extent={{0,36},{94,16}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="HCO3pc"),
             Text(
-              extent={{72,52},{92,40}},
+              extent={{-22,52},{94,40}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="pHpc"),
             Text(
-              extent={{72,74},{94,56}},
+              extent={{2,72},{94,56}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="PACO2"),
             Text(
-              extent={{74,88},{92,78}},
+              extent={{-6,86},{94,78}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="PAO2"),
             Text(
-              extent={{-100,46},{-84,36}},
+              extent={{-94,42},{-58,36}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="Q"),
             Text(
-              extent={{-98,58},{-82,48}},
+              extent={{-94,54},{-48,48}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="VAi"),
             Text(
-              extent={{70,-78},{90,-92}},
+              extent={{28,-82},{94,-92}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="VA"),
             Text(
-              extent={{68,-4},{90,-14}},
+              extent={{-8,-6},{94,-16}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="VO2"),
             Text(
-              extent={{70,-24},{92,-34}},
+              extent={{-28,-24},{94,-34}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="VCO2"),
             Text(
-              extent={{-96,80},{-80,70}},
+              extent={{-94,80},{-42,72}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FiO2"),
             Text(
-              extent={{-96,70},{-76,58}},
+              extent={{-94,68},{-42,58}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="FiCO2"),
             Text(
-              extent={{-99,92},{-81,82}},
+              extent={{-93,92},{-38,84}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="PB")}), Diagram(coordinateSystem(preserveAspectRatio=false,
               extent={{-100,-100},{100,100}}), graphics));
     end AlvEq;
@@ -4672,8 +4452,8 @@ initial algorithm
               extent={{-96,34},{-84,46}}),    iconTransformation(extent={{-76,-58},
                 {-56,-38}})));
       Parts.MolarOutflowConnector CO2pc annotation (Placement(transformation(
-              extent={{60,74},{72,86}}),  iconTransformation(extent={{54,-2},{
-                74,18}})));
+              extent={{60,74},{72,86}}),  iconTransformation(extent={{54,-8},{
+                74,12}})));
       Parts.MolarOutflowConnector O2pc annotation (Placement(transformation(
               extent={{60,34},{72,46}}),   iconTransformation(extent={{52,-60},
                 {72,-40}})));
@@ -4881,7 +4661,39 @@ initial algorithm
           index=-1,
           extent={{-6,3},{-6,3}}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-                -100},{100,100}})),                Diagram(coordinateSystem(
+                -100},{100,100}}), graphics={
+            Text(
+              extent={{-55,10},{-14,-6}},
+              lineColor={0,0,0},
+              lineThickness=1,
+              fontSize=18,
+              textStyle={TextStyle.Bold},
+              horizontalAlignment=TextAlignment.Left,
+              textString="CO2"),
+            Text(
+              extent={{-55,-40},{-14,-56}},
+              lineColor={0,0,0},
+              lineThickness=1,
+              fontSize=18,
+              textStyle={TextStyle.Bold},
+              horizontalAlignment=TextAlignment.Left,
+              textString="O2"),
+            Text(
+              extent={{12,10},{53,-6}},
+              lineColor={0,0,0},
+              lineThickness=1,
+              fontSize=18,
+              textStyle={TextStyle.Bold},
+              horizontalAlignment=TextAlignment.Right,
+              textString="CO2"),
+            Text(
+              extent={{9,-40},{50,-56}},
+              lineColor={0,0,0},
+              lineThickness=1,
+              fontSize=18,
+              textStyle={TextStyle.Bold},
+              horizontalAlignment=TextAlignment.Right,
+              textString="O2")}),                  Diagram(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
     end AlveolocapillaryUnit;
 
@@ -5048,70 +4860,88 @@ initial algorithm
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{74,-12},{92,-22}},
+              extent={{-52,-12},{94,-22}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="sO2"),
             Text(
-              extent={{64,12},{94,-10}},
+              extent={{-86,10},{94,-10}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="cHCO3"),
             Text(
-              extent={{72,26},{92,14}},
+              extent={{-70,26},{94,14}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="pH"),
             Text(
-              extent={{74,70},{92,60}},
+              extent={{-48,66},{94,58}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="pO2"),
             Text(
-              extent={{68,52},{90,34}},
+              extent={{-44,50},{94,34}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="pCO2"),
             Text(
-              extent={{-12,6},{12,-6}},
+              extent={{-72,6},{72,-6}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="cdO2",
-              origin={78,-54},
-              rotation=180),
-            Text(
-              extent={{-15.5,19.5},{15.5,-19.5}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              textString="cdCO2",
-              origin={76.5,-77.5},
-              rotation=180),
-            Text(
-              extent={{-14,7},{14,-7}},
-              lineColor={0,0,255},
-              fillColor={255,255,0},
-              fillPattern=FillPattern.Solid,
-              origin={76,-35},
+              origin={22,-58},
               rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="cdO2"),
+            Text(
+              extent={{-60,6.5},{60,-6.5}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              origin={34,-80.5},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
+              textString="cdCO2"),
+            Text(
+              extent={{-95,8},{95,-8}},
+              lineColor={0,0,255},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid,
+              origin={-1,-38},
+              rotation=180,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right,
               textString="ceHb"),
             Text(
               extent={{-100,-102},{96,-138}},
               lineColor={28,108,200},
               textString="%name"),
             Text(
-              extent={{-84,54},{-52,38}},
-              lineColor={28,108,200},
+              extent={{-106,68},{-30,44}},
+              lineColor={0,0,0},
+              fontSize=24,
               textString="CO2"),
             Text(
-              extent={{-22,56},{12,38}},
-              lineColor={28,108,200},
+              extent={{-28,60},{16,52}},
+              lineColor={0,0,0},
+              fontSize=24,
               textString="O2")}),   Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
     end BloodO2CO2measure;
@@ -5161,11 +4991,38 @@ initial algorithm
       CO2a.q = - CO2a.conc*CardiacOutput;
       O2epc.q=O2epc.conc*PulmonaryPerfusion;
       CO2epc.q=CO2epc.conc*PulmonaryPerfusion;
-
-     // O2a.q = O2v.conc *ShuntFlow + O2epc.q;
-     // CO2a.q = CO2v.conc *ShuntFlow + CO2epc.q;
+      // O2a.q = O2v.conc *ShuntFlow + O2epc.q;
+      // CO2a.q = CO2v.conc *ShuntFlow + CO2epc.q;
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-                -100},{100,100}})),      Diagram(coordinateSystem(
+                -100},{100,100}}), graphics={
+            Text(
+              extent={{-82,-56},{-42,-80}},
+              lineColor={0,0,0},
+              fontSize=16,
+              textStyle={TextStyle.Bold},
+              horizontalAlignment=TextAlignment.Left,
+              textString="CO2"),
+            Text(
+              extent={{-82,-32},{-42,-56}},
+              lineColor={0,0,0},
+              fontSize=16,
+              textStyle={TextStyle.Bold},
+              horizontalAlignment=TextAlignment.Left,
+              textString="O2"),
+            Text(
+              extent={{18,-36},{66,-52}},
+              lineColor={0,0,0},
+              fontSize=16,
+              textStyle={TextStyle.Bold},
+              horizontalAlignment=TextAlignment.Right,
+              textString="O2"),
+            Text(
+              extent={{6,-60},{66,-72}},
+              lineColor={0,0,0},
+              fontSize=16,
+              textStyle={TextStyle.Bold},
+              horizontalAlignment=TextAlignment.Right,
+              textString="CO2")}),       Diagram(coordinateSystem(
               preserveAspectRatio=false, extent={{-100,-100},{100,100}})));
     end PulmonaryShunts;
 
@@ -5198,11 +5055,39 @@ initial algorithm
       (CO2v.conc - CO2a.conc) * CO2a.q/CO2a.conc = VCO2;
 
       CardiacOutput = O2a.q/O2a.conc;
-    //  (O2a.conc - O2v.conc) * CardiacOutput = VO2;
-    //  (CO2v.conc - CO2a.conc) * CardiacOutput = VCO2;
-
-       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
-                {100,100}})), Diagram(coordinateSystem(preserveAspectRatio=false,
+      //  (O2a.conc - O2v.conc) * CardiacOutput = VO2;
+      //  (CO2v.conc - CO2a.conc) * CardiacOutput = VCO2;
+       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}), graphics={
+            Text(
+              extent={{-78,-2},{-32,-22}},
+              lineColor={0,0,0},
+              fontSize=16,
+              horizontalAlignment=TextAlignment.Left,
+              textString="CO2",
+              textStyle={TextStyle.Bold}),
+            Text(
+              extent={{-78,18},{-32,-2}},
+              lineColor={0,0,0},
+              fontSize=16,
+              horizontalAlignment=TextAlignment.Left,
+              textStyle={TextStyle.Bold},
+              textString="O2"),
+            Text(
+              extent={{32,0},{78,-20}},
+              lineColor={0,0,0},
+              fontSize=16,
+              horizontalAlignment=TextAlignment.Right,
+              textStyle={TextStyle.Bold},
+              textString="CO2"),
+            Text(
+              extent={{32,20},{78,0}},
+              lineColor={0,0,0},
+              fontSize=16,
+              horizontalAlignment=TextAlignment.Right,
+              textStyle={TextStyle.Bold},
+              textString="O2")}),
+                              Diagram(coordinateSystem(preserveAspectRatio=false,
               extent={{-100,-100},{100,100}})));
     end TissuesBloodGases;
 
@@ -5242,7 +5127,7 @@ initial algorithm
             origin={7,-55}),                              iconTransformation(
               extent={{-120,-70},{-100,-50}})));
       PulmonaryShunts pulmonaryShunts
-        annotation (Placement(transformation(extent={{-28,-4},{32,36}})));
+        annotation (Placement(transformation(extent={{-26,-4},{34,36}})));
       TissuesBloodGases tissuesBloodGases
         annotation (Placement(transformation(extent={{-16,-38},{28,0}})));
     initial algorithm
@@ -5273,66 +5158,69 @@ initial algorithm
           index=-1,
           extent={{-6,3},{-6,3}}));
 
-      connect(pulmonaryShunts.CardiacOutput, Q) annotation (Line(points={{-26.5,
+      connect(pulmonaryShunts.CardiacOutput, Q) annotation (Line(points={{-24.5,
               18.6},{-38.475,18.6},{-38.475,9},{-69,9}},
                                                   color={0,0,127}));
-      connect(pulmonaryShunts.FractionShunts, ShuntFract) annotation (Line(points={{-25.6,
+      connect(pulmonaryShunts.FractionShunts, ShuntFract) annotation (Line(points={{-23.6,
               26.4},{-39.16,22},{-70,22}},     color={0,0,127}));
-      connect(tissuesBloodGases.O2v, pulmonaryShunts.O2v) annotation (Line(
-          points={{-13.8,-17.48},{-20,-17.48},{-20,6.8},{-26.2,6.8}},
-          color={28,108,200},
-          thickness=1));
-      connect(tissuesBloodGases.CO2v, pulmonaryShunts.CO2v) annotation (Line(
-          points={{-13.8,-20.9},{-24,-20.9},{-24,2.8},{-26.2,2.8}},
-          color={28,108,200},
-          thickness=1));
       connect(tissuesBloodGases.O2a, pulmonaryShunts.O2a) annotation (Line(
-          points={{25.8,-17.1},{34,-17.1},{34,6.8},{25.4,6.8}},
+          points={{25.8,-17.1},{34,-17.1},{34,6.8},{27.4,6.8}},
           color={255,0,0},
           thickness=1));
       connect(tissuesBloodGases.CO2a, pulmonaryShunts.CO2a) annotation (Line(
-          points={{25.8,-20.9},{32,-20.9},{32,2.8},{25.4,2.8}},
+          points={{25.8,-20.9},{32,-20.9},{32,2.8},{27.4,2.8}},
           color={255,0,0},
           thickness=1));
       connect(pulmonaryShunts.CO2epc, alveolocapillaryUnit.CO2pc) annotation (Line(
-          points={{13.4,11.6},{70,11.6},{70,66.4},{25.2,66.4}},
+          points={{15.4,11.6},{70,11.6},{70,64.6},{25.2,64.6}},
           color={255,0,0},
           thickness=1));
       connect(pulmonaryShunts.O2epc, alveolocapillaryUnit.O2pc) annotation (Line(
-          points={{13.4,15.6},{62,15.6},{62,49},{24.6,49}},
+          points={{15.4,15.6},{62,15.6},{62,49},{24.6,49}},
           color={255,0,0},
-          thickness=1));
-      connect(pulmonaryShunts.O2v, alveolocapillaryUnit.O2ven) annotation (Line(
-          points={{-26.2,6.8},{-20,6.8},{-20,49.6},{-13.8,49.6}},
-          color={28,108,200},
-          thickness=1));
-      connect(pulmonaryShunts.CO2v, alveolocapillaryUnit.CO2ven) annotation (Line(
-          points={{-26.2,2.8},{-24,2.8},{-24,64.6},{-13.8,64.6}},
-          color={28,108,200},
           thickness=1));
       connect(tissuesBloodGases.VO2, VO2) annotation (Line(points={{0.28,-38},{0.28,
               -41},{0,-41},{0,-46.5}}, color={0,0,127}));
       connect(tissuesBloodGases.VCO2, VCO2) annotation (Line(points={{7.76,-38},{7.76,
               -45},{7,-45},{7,-55}}, color={0,0,127}));
-      connect(VenousBlood.O2, pulmonaryShunts.O2v) annotation (Line(
-          points={{-61.8,-23.8},{-61.8,-10},{-20,-10},{-20,6.8},{-26.2,6.8}},
-          color={28,108,200},
-          thickness=1));
-      connect(VenousBlood.CO2, pulmonaryShunts.CO2v) annotation (Line(
-          points={{-80.4,-23.8},{-80.4,-8},{-24,-8},{-24,2.8},{-26.2,2.8}},
-          color={28,108,200},
-          thickness=1));
       connect(ArterialBlood.O2, pulmonaryShunts.O2a) annotation (Line(
-          points={{64.2,-23.8},{64.2,-4},{34,-4},{34,6.8},{25.4,6.8}},
+          points={{64.2,-23.8},{64.2,-4},{34,-4},{34,6.8},{27.4,6.8}},
           color={255,0,0},
           thickness=1));
       connect(ArterialBlood.CO2, pulmonaryShunts.CO2a) annotation (Line(
-          points={{45.6,-23.8},{45.6,-8},{32,-8},{32,2.8},{25.4,2.8}},
+          points={{45.6,-23.8},{45.6,-8},{32,-8},{32,2.8},{27.4,2.8}},
           color={255,0,0},
           thickness=1));
       connect(pulmonaryShunts.PulmonaryPerfusion, alveolocapillaryUnit.Q)
-        annotation (Line(points={{-8.2,11.6},{-4,11.6},{-4,40},{-44,40},{-44,83.8},{
-              -4.8,83.8}}, color={0,0,127}));
+        annotation (Line(points={{-6.2,11.6},{-4,11.6},{-4,40},{-44,40},{-44,
+              83.8},{-4.8,83.8}},
+                           color={0,0,127}));
+      connect(tissuesBloodGases.CO2v, pulmonaryShunts.CO2v) annotation (Line(
+          points={{-13.8,-20.9},{-34,-20.9},{-34,2.8},{-24.2,2.8}},
+          color={28,108,200},
+          thickness=1));
+      connect(pulmonaryShunts.CO2v, alveolocapillaryUnit.CO2ven) annotation (
+          Line(
+          points={{-24.2,2.8},{-34,2.8},{-34,64.6},{-13.8,64.6}},
+          color={28,108,200},
+          thickness=1));
+      connect(tissuesBloodGases.O2v, pulmonaryShunts.O2v) annotation (Line(
+          points={{-13.8,-17.48},{-32,-17.48},{-32,6.8},{-24.2,6.8}},
+          color={28,108,200},
+          thickness=1));
+      connect(pulmonaryShunts.O2v, alveolocapillaryUnit.O2ven) annotation (Line(
+          points={{-24.2,6.8},{-32,6.8},{-32,49.6},{-13.8,49.6}},
+          color={28,108,200},
+          thickness=1));
+      connect(tissuesBloodGases.O2v, VenousBlood.O2) annotation (Line(
+          points={{-13.8,-17.48},{-61.8,-17.48},{-61.8,-23.8}},
+          color={28,108,200},
+          thickness=1));
+      connect(tissuesBloodGases.CO2v, VenousBlood.CO2) annotation (Line(
+          points={{-13.8,-20.9},{-34,-20.9},{-34,-6},{-80.4,-6},{-80.4,-23.8}},
+          color={28,108,200},
+          thickness=1));
+
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}}), graphics={
             Rectangle(
@@ -5349,30 +5237,40 @@ initial algorithm
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="ShuntFract"),
             Text(
-              extent={{-116,98},{-52,66}},
+              extent={{-94,88},{-30,74}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="Q"),
             Text(
-              extent={{-106,28},{-42,-4}},
+              extent={{-92,30},{-28,-2}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="VAi"),
             Text(
-              extent={{-98,-10},{-34,-42}},
+              extent={{-92,-10},{-28,-42}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="VO2"),
             Text(
-              extent={{-90,-44},{-22,-78}},
+              extent={{-94,-44},{-26,-78}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left,
               textString="VCO2")}), Diagram(coordinateSystem(preserveAspectRatio=false,
                        extent={{-100,-100},{100,100}})));
     end SimpleCirculationO2CO2;
@@ -5451,7 +5349,7 @@ initial algorithm
           extent={{-6,3},{-6,3}}));
       connect(alveolocapillaryUnit.CO2pc, pulmonaryShunts.CO2epc) annotation (
          Line(
-          points={{20.84,61.64},{64,61.64},{64,-12.06},{8.5,-12.06}},
+          points={{20.84,59.66},{64,59.66},{64,-12.06},{8.5,-12.06}},
           color={255,0,0},
           thickness=1));
       connect(alveolocapillaryUnit.O2pc, pulmonaryShunts.O2epc) annotation (
@@ -5534,59 +5432,77 @@ initial algorithm
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid),
             Text(
-              extent={{-116,88},{-52,56}},
+              extent={{-94,74},{-2,70}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="Q"),
+              textString="Q",
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left),
             Text(
               extent={{-94,68},{10,10}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="ShuntFract"),
+              textString="ShuntFract",
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left),
             Text(
-              extent={{-106,18},{-42,-14}},
+              extent={{-94,6},{-34,0}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="VAi"),
+              textString="VAi",
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left),
             Text(
-              extent={{-98,-20},{-34,-52}},
+              extent={{-94,-32},{-30,-38}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="VO2"),
+              textString="VO2",
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left),
             Text(
-              extent={{-90,-54},{-22,-88}},
+              extent={{-94,-66},{-30,-74}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="VCO2"),
+              textString="VCO2",
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Left),
             Text(
-              extent={{30,84},{92,58}},
+              extent={{36,72},{94,68}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="CvO2"),
+              fontSize=12,
+              textString="CvO2",
+              horizontalAlignment=TextAlignment.Right),
             Text(
-              extent={{24,62},{94,24}},
+              extent={{28,42},{94,42}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="CvCO2"),
+              textString="CvCO2",
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right),
             Text(
-              extent={{24,2},{94,-36}},
+              extent={{24,-16},{94,-20}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="CaCO2"),
+              textString="CaCO2",
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right),
             Text(
-              extent={{30,28},{92,2}},
+              extent={{34,14},{94,12}},
               lineColor={0,0,255},
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid,
-              textString="CaO2")}));
+              textString="CaO2",
+              fontSize=12,
+              horizontalAlignment=TextAlignment.Right)}));
     end O2CO2CirculationFlow;
 
     package testOSA
@@ -6392,9 +6308,8 @@ initial algorithm
           offset=8E-5)
           annotation (Placement(transformation(extent={{-46,108},{-26,128}})));
       equation
-
-       // alvEq.CvO2 = alvEq.CpcO2 - alvEq.VO2/Q;
-       // alvEq.CvCO2 = alvEq.CpcCO2 + alvEq.VCO2/Q;
+        // alvEq.CvO2 = alvEq.CpcO2 - alvEq.VO2/Q;
+        // alvEq.CvCO2 = alvEq.CpcCO2 + alvEq.VCO2/Q;
         connect(alvEq.PB, PB.y) annotation (Line(
             points={{33.08,94.84},{3,94.84},{3,95},{-52,95}},
             color={0,0,127},
@@ -6951,10 +6866,8 @@ initial algorithm
         Physiolibrary.Chemical.Sensors.ConcentrationMeasure epcCO1
           annotation (Placement(transformation(extent={{128,-44},{144,-32}})));
       equation
-
-       // alvEq.CvO2 = alvEq.CpcO2 - alvEq.VO2/Q;
-       // alvEq.CvCO2 = alvEq.CpcCO2 + alvEq.VCO2/Q;
-
+        // alvEq.CvO2 = alvEq.CpcO2 - alvEq.VO2/Q;
+        // alvEq.CvCO2 = alvEq.CpcCO2 + alvEq.VCO2/Q;
         connect(BEox.y, arterialBlood.BEox) annotation (Line(points={{-44,69},{
                 -23,69},{-23,73.26},{-88.1,73.26}},  color={0,0,127}));
         connect(venousBlood.BEox, arterialBlood.BEox) annotation (Line(points={{-90.4,
@@ -7710,8 +7623,8 @@ initial algorithm
         connect(o2CO2CirculationFlow.CaCO2, arterial.ctCO2) annotation (Line(
               points={{74.9,55.52},{80,55.52},{80,24},{0,24},{0,-9.12},{10.9,
                 -9.12}}, color={0,0,127}));
-        connect(venous.ctO2, o2CO2CirculationFlow.CvO2) annotation (Line(points
-              ={{10.9,-57.12},{2,-57.12},{2,-40},{96,-40},{96,80.16},{74.9,
+        connect(venous.ctO2, o2CO2CirculationFlow.CvO2) annotation (Line(points=
+               {{10.9,-57.12},{2,-57.12},{2,-40},{96,-40},{96,80.16},{74.9,
                 80.16}}, color={0,0,127}));
         connect(o2CO2CirculationFlow.CvCO2, venous.ctCO2) annotation (Line(
               points={{74.9,71.76},{92,71.76},{92,-38},{0,-38},{0,-71.12},{10.9,
@@ -8437,7 +8350,7 @@ initial algorithm
       Real aCO2( final displayUnit="mmol/(l.kPa)");
       Real pK;
       Real pH;
-      Real NormalSID;       //SID in pH=7.4 - at pCO2=40 torr - SID is independent of pCO2
+      Real NormalSID;             //SID in pH=7.4 - at pCO2=40 torr - SID is independent of pCO2
       Real pCO240torr=40*101325/760;
 
       Physiolibrary.Types.RealIO.ConcentrationOutput cHCO3 annotation (Placement(
@@ -15562,7 +15475,7 @@ parameters")}));
       Physiolibrary.Types.RealIO.PressureInput pCO2
         annotation (Placement(transformation(extent={{-100,60},{-60,100}})));
       Real pK = 6.1 + (-0.0026)*(T-310.15);
-      Real aCO2(final displayUnit="mmol/(l.kPa)") = 0.00023 * 10^(-0.0092*(T-310.15));       //solubility depends on temperature
+      Real aCO2(final displayUnit="mmol/(l.kPa)") = 0.00023 * 10^(-0.0092*(T-310.15));             //solubility depends on temperature
        Physiolibrary.Types.Concentration cdCO2(displayUnit="mmol/l") = aCO2*pCO2;
       Real pH;
 
