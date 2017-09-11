@@ -804,6 +804,7 @@ package NewBloodyMary_testing
     protected
        Real epsPO2 = 0.000001;
        Real epsPCO2 = 0.000001;
+       Real epsAPO2 = 0.00001;
        Real DPO2;
        Real AO2;
        Real CO2;
@@ -828,7 +829,7 @@ package NewBloodyMary_testing
       sO2 := 0.9591382375911204;
       DPO2 := 2;
       //main iteration loop
-      while abs(DPO2) > epsPO2 loop
+      while abs(DPO2) > epsAPO2 loop
         AO2 := pO2;
         pH := BEINVof(BEox, pCO2, cHb, cAlb, cPi, sO2, temp);
         CO2 := ctCO2Bof(pH, pCO2, temp, cHb, sO2);
@@ -3849,7 +3850,7 @@ package NewBloodyMary_testing
     equation
 
       temp_cels =  T-273.15;
-      //from �C to K conversion
+      //from grad C to grad K conversion
       PB_mmHg = PB / 133.322365;
       // from mmHg to Pa conversion
       PAO2_mmHg = PAO2 / 133.322365;
@@ -6249,6 +6250,27 @@ package NewBloodyMary_testing
                   -100},{100,100}}), graphics));
       end testAlvEqalgr;
 
+      model testAlveolarGases
+        Real VAi= 4.91753;
+        Real FiO2= 0.21;
+        Real FiCO2 = 0.0004;
+        Real temp = 37;
+        Real PB= 760;
+        Real VO2=11;// "rate of oxygen comsumption [mmol/min]";
+        Real VCO2 = 10;// "rate of carbon dioxide production [mmol/min]"
+
+        Real PAO2_mmHg;
+        Real PACO2_mmHg;
+        Real Ve_BTPS;
+        Real PACO2_kPa;
+        Real PAO2_kPa;
+
+      algorithm
+          (PAO2_mmHg, PACO2_mmHg,Ve_BTPS):=AlveolarGases(VAi, FiO2,FiCO2,temp, PB,VO2, VCO2);
+          PACO2_kPa:=PACO2_mmHg/7.50061683;
+          PAO2_kPa:=PAO2_mmHg/7.50061683;
+      end testAlveolarGases;
+
       model testAlvEq
 
         Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
@@ -6721,7 +6743,7 @@ package NewBloodyMary_testing
             thickness=1));
         connect(CO2PulmBloodOutflow.q_in, alveolocapillaryUnit.CO2pc)
           annotation (Line(
-            points={{138,64},{114.84,64},{114.84,63.64}},
+            points={{138,64},{114.84,64},{114.84,61.66}},
             color={107,45,134},
             thickness=1));
         connect(O2PulmBloodOutflow.q_in, alveolocapillaryUnit.O2pc) annotation (
@@ -6747,7 +6769,7 @@ package NewBloodyMary_testing
                 -7}}, color={0,0,127}));
         connect(concentrationMeasure1.q_in, alveolocapillaryUnit.CO2pc)
           annotation (Line(
-            points={{130,56},{124,56},{124,64},{114.84,64},{114.84,63.64}},
+            points={{130,56},{124,56},{124,64},{114.84,64},{114.84,61.66}},
             color={107,45,134},
             thickness=1));
         connect(shuntMixing.CpcCO2, concentrationMeasure1.concentration)
@@ -7497,11 +7519,12 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-90,68},{-83,74}})));
         Physiolibrary.Types.Constants.FractionConst FiO2(k=0.21)
           annotation (Placement(transformation(extent={{-91,57},{-83,63}})));
-        Physiolibrary.Types.Constants.FractionConst FiCO2(k=0.0004)
+        Physiolibrary.Types.Constants.FractionConst FiCO2(k(displayUnit="1")=
+            0.0004)
           annotation (Placement(transformation(extent={{-91,46},{-83,52}})));
 
         Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
-                "m3/s") = 8.19588e-05)
+                "ml/min") = 8.19588e-05)
           annotation (Placement(transformation(extent={{-11,58},{-3,64}})));
         Physiolibrary.Types.Constants.VolumeFlowRateConst Q(k(displayUnit=
                 "l/min") = 8.3333333333333e-05)
