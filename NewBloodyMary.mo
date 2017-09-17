@@ -5284,17 +5284,17 @@ package NewBloodyMary_testing
           transformation(extent={{-2,6},{20,28}}),   iconTransformation(
             extent={{58,-102},{98,-62}})));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure CaCO2measure
-        annotation (Placement(transformation(extent={{66,-44},{82,-32}})));
+        annotation (Placement(transformation(extent={{42,-48},{58,-36}})));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure CaO2measure
-        annotation (Placement(transformation(extent={{42,-42},{58,-30}})));
+        annotation (Placement(transformation(extent={{42,-28},{58,-16}})));
       PulmonaryShunts pulmonaryShunts
         annotation (Placement(transformation(extent={{-26,-30},{24,16}})));
       TissuesBloodGases tissuesBloodGases
         annotation (Placement(transformation(extent={{-24,-80},{20,-38}})));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure CvCO2Measure
-        annotation (Placement(transformation(extent={{-58,44},{-42,56}})));
+        annotation (Placement(transformation(extent={{-62,44},{-46,56}})));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure CvO2measure
-        annotation (Placement(transformation(extent={{-58,22},{-42,34}})));
+        annotation (Placement(transformation(extent={{-62,22},{-46,34}})));
       Physiolibrary.Types.RealIO.VolumeFlowRateInput Q annotation (Placement(
             transformation(extent={{-40,-9},{-30,1}}),   iconTransformation(
             extent={{-10,-10},{10,10}},
@@ -5322,22 +5322,22 @@ package NewBloodyMary_testing
             transformation(
             extent={{-6,-6},{6,6}},
             rotation=270,
-            origin={-50,12}), iconTransformation(extent={{100,62},{120,82}})));
+            origin={-54,12}), iconTransformation(extent={{100,62},{120,82}})));
       Physiolibrary.Types.RealIO.ConcentrationOutput CvCO2 annotation (
           Placement(transformation(
             extent={{-6,-6},{6,6}},
             rotation=270,
-            origin={-50,36}), iconTransformation(extent={{100,32},{120,52}})));
+            origin={-54,36}), iconTransformation(extent={{100,32},{120,52}})));
       Physiolibrary.Types.RealIO.ConcentrationOutput CaCO2 annotation (
           Placement(transformation(
             extent={{-7,-7},{7,7}},
             rotation=270,
-            origin={74,-53}), iconTransformation(extent={{100,-26},{120,-6}})));
+            origin={50,-57}), iconTransformation(extent={{100,-26},{120,-6}})));
       Physiolibrary.Types.RealIO.ConcentrationOutput CaO2 annotation (Placement(
             transformation(
             extent={{-7,-7},{7,7}},
             rotation=270,
-            origin={50,-51}), iconTransformation(extent={{100,4},{120,24}})));
+            origin={50,-35}), iconTransformation(extent={{100,4},{120,24}})));
     equation
 
       connect(busConnector, alveolocapillaryUnit.busConnector) annotation (
@@ -5350,7 +5350,7 @@ package NewBloodyMary_testing
           extent={{-6,3},{-6,3}}));
       connect(alveolocapillaryUnit.CO2pc, pulmonaryShunts.CO2epc) annotation (
          Line(
-          points={{20.84,59.66},{64,59.66},{64,-12.06},{8.5,-12.06}},
+          points={{20.84,59.66},{48,59.66},{48,-12.06},{8.5,-12.06}},
           color={255,0,0},
           thickness=1));
       connect(alveolocapillaryUnit.O2pc, pulmonaryShunts.O2epc) annotation (
@@ -5365,20 +5365,20 @@ package NewBloodyMary_testing
           thickness=1));
       connect(pulmonaryShunts.CO2v, alveolocapillaryUnit.CO2ven) annotation (
           Line(
-          points={{-24.5,-22.18},{-62,-22.18},{-62,59.66},{-19.46,59.66}},
+          points={{-24.5,-22.18},{-42,-22.18},{-42,59.66},{-19.46,59.66}},
           color={0,0,255},
           thickness=1));
       connect(CvCO2Measure.q_in, alveolocapillaryUnit.CO2ven) annotation (Line(
-          points={{-50,50},{-62,50},{-62,59.66},{-19.46,59.66}},
+          points={{-54,50},{-42,50},{-42,59.66},{-19.46,59.66}},
           color={0,0,255},
           thickness=1));
       connect(CvO2measure.q_in, alveolocapillaryUnit.O2ven) annotation (Line(
-          points={{-50,28},{-40,28},{-40,43.16},{-19.46,43.16}},
+          points={{-54,28},{-40,28},{-40,43.16},{-19.46,43.16}},
           color={0,0,255},
           thickness=1));
       connect(tissuesBloodGases.CO2v, alveolocapillaryUnit.CO2ven)
         annotation (Line(
-          points={{-21.8,-61.1},{-62,-61.1},{-62,59.66},{-19.46,59.66}},
+          points={{-21.8,-61.1},{-42,-61.1},{-42,59.66},{-19.46,59.66}},
           color={0,0,255},
           thickness=1));
       connect(tissuesBloodGases.O2v, alveolocapillaryUnit.O2ven) annotation (
@@ -5391,7 +5391,7 @@ package NewBloodyMary_testing
           color={255,0,0},
           thickness=1));
       connect(pulmonaryShunts.CO2a, tissuesBloodGases.CO2a) annotation (Line(
-          points={{18.5,-22.18},{62,-22.18},{62,-61.1},{17.8,-61.1}},
+          points={{18.5,-22.18},{38,-22.18},{38,-61.1},{17.8,-61.1}},
           color={255,0,0},
           thickness=1));
       connect(pulmonaryShunts.PulmonaryPerfusion, alveolocapillaryUnit.Q)
@@ -5399,11 +5399,11 @@ package NewBloodyMary_testing
               -28,80.78},{-10.16,80.78}},
                              color={0,0,127}));
       connect(CaO2measure.q_in, tissuesBloodGases.O2a) annotation (Line(
-          points={{50,-36},{40,-36},{40,-56.9},{17.8,-56.9}},
+          points={{50,-22},{40,-22},{40,-56.9},{17.8,-56.9}},
           color={255,0,0},
           thickness=1));
       connect(CaCO2measure.q_in, tissuesBloodGases.CO2a) annotation (Line(
-          points={{74,-38},{62,-38},{62,-61.1},{17.8,-61.1}},
+          points={{50,-42},{38,-42},{38,-61.1},{17.8,-61.1}},
           color={255,0,0},
           thickness=1));
       connect(alveolocapillaryUnit.VAi, VAi) annotation (Line(points={{-15.12,
@@ -5417,16 +5417,17 @@ package NewBloodyMary_testing
               {-7.72,-86},{-10,-86},{-10,-92.5}}, color={0,0,127}));
       connect(VCO2, tissuesBloodGases.VCO2) annotation (Line(points={{1,-93},{1,
               -86.5},{-0.24,-86.5},{-0.24,-80}}, color={0,0,127}));
-      connect(CaCO2measure.concentration, CaCO2) annotation (Line(points={{74,
-              -42.8},{74,-53},{74,-53}}, color={0,0,127}));
+      connect(CaCO2measure.concentration, CaCO2) annotation (Line(points={{50,
+              -46.8},{50,-57}},          color={0,0,127}));
       connect(CaO2measure.concentration, CaO2) annotation (Line(points={{50,
-              -40.8},{50,-40.8},{50,-51},{50,-51}}, color={0,0,127}));
-      connect(CvO2measure.concentration, CvO2) annotation (Line(points={{-50,
-              23.2},{-50,12},{-50,12}}, color={0,0,127}));
-      connect(CvCO2Measure.concentration, CvCO2) annotation (Line(points={{-50,
-              45.2},{-50,36},{-50,36}}, color={0,0,127}));
+              -26.8},{50,-35}},                     color={0,0,127}));
+      connect(CvO2measure.concentration, CvO2) annotation (Line(points={{-54,
+              23.2},{-54,12}},          color={0,0,127}));
+      connect(CvCO2Measure.concentration, CvCO2) annotation (Line(points={{-54,
+              45.2},{-54,40},{-54,36}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-                -100},{100,100}})), Icon(coordinateSystem(preserveAspectRatio=false,
+                -100},{100,100}}), graphics),
+                                    Icon(coordinateSystem(preserveAspectRatio=false,
                       extent={{-100,-100},{100,100}}), graphics={Rectangle(
               extent={{-100,100},{100,-100}},
               lineColor={28,108,200},
@@ -7524,7 +7525,7 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-91,46},{-83,52}})));
 
         Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
-                "ml/min") = 8.19588e-05)
+                "ml/min") = 6.6666666666667e-05)
           annotation (Placement(transformation(extent={{-11,58},{-3,64}})));
         Physiolibrary.Types.Constants.VolumeFlowRateConst Q(k(displayUnit=
                 "l/min") = 8.3333333333333e-05)
