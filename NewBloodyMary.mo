@@ -1188,20 +1188,12 @@ package NewBloodyMary_testing
       Real pCO2T0;
     algorithm
       //pCO2T0 := pCO22of(pCO2, T, T0, ctHb, cAlb, pH);
-      pCO2T0 :=plasma_pCO22of(
-            pCO2,
-            T,
-            T0,
-            cAlb,
-            pH);
+      pCO2T0 :=plasma_pCO22of( pCO2, T,  T0, cAlb, pH);
       //pHT0   := pH2of(pH, T, T0, ctHb);
-      pHT0 :=plasma_pH2of(
-            pH,
-            T,
-            T0,
-            cAlb,
-            pCO2);
-      result_plasmaBE :=  (cHCO3of(pHT0, pCO2T0, T0) + (betaP + 8 * (cAlb - cAlbN) + 0.309 * (cPi - cPiN)) * (pHT0 - pH0));
+      pHT0 :=plasma_pH2of(  pH,  T,   T0,  cAlb, pCO2);
+      //result_plasmaBE :=  (cHCO3of(pHT0, pCO2T0, T0) + (betaP + 8 * (cAlb - cAlbN) + 0.309 * (cPi - cPiN)) * (pHT0 - pH0));
+      result_plasmaBE :=  (cHCO3of(pHT0, pCO2T0, T0) - cHCO3of(pH0, pCO20, T0)
+                                                     + (betaP + 8 * (cAlb - cAlbN) + 0.309 * (cPi - cPiN)) * (pHT0-pH0));
       annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end plasmaBEof;
 
@@ -2434,39 +2426,32 @@ package NewBloodyMary_testing
     end O2CO2CirculationFlow;
 
     model plasma_O2CO2
-      Physiolibrary.Types.RealIO.FractionOutput sO2 annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin = {88, -16}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 0})));
       Physiolibrary.Types.RealIO.ConcentrationOutput cHCO3(displayUnit = "mmol/l")
-        "outgoing concentration of HCO3"                                                                            annotation(Placement(transformation(extent = {{-7, -7.5}, {7, 7.5}}, rotation = 0, origin = {87, -6.5}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 20})));
-      Physiolibrary.Types.RealIO.TemperatureInput T(start = 310.15) annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin = {-68, -65}), iconTransformation(extent = {{-120, -106}, {-100, -86}})));
-      Physiolibrary.Types.RealIO.ConcentrationInput BEox annotation(Placement(transformation(extent = {{-70, 29}, {-54, 45}}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 98})));
+        "outgoing concentration of HCO3"                                                                            annotation(Placement(transformation(extent = {{-7, -7.5}, {7, 7.5}}, rotation = 0, origin={87,-6.5}),    iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 20})));
+      Physiolibrary.Types.RealIO.TemperatureInput T(start = 310.15) annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin={-58,-63}),    iconTransformation(extent = {{-120, -106}, {-100, -86}})));
+      Physiolibrary.Types.RealIO.ConcentrationInput BEox annotation(Placement(transformation(extent={{-64,5},
+                {-48,21}}),                                                                                                    iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 98})));
       Physiolibrary.Types.RealIO.ConcentrationInput ctAlb(displayUnit = "mmol/l")
-        "concentration of total haemoglobin in whole blood (8.4)"                                                                           annotation(Placement(transformation(extent = {{7, 7}, {-7, -7}}, rotation = 180, origin = {-73, -7}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 20})));
+        "concentration of total haemoglobin in whole blood (8.4)"                                                                           annotation(Placement(transformation(extent = {{7, 7}, {-7, -7}}, rotation = 180, origin={-55,-7}),    iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 20})));
       Physiolibrary.Types.RealIO.pHOutput pH annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin = {88, 3}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 40})));
       Physiolibrary.Types.RealIO.ConcentrationOutput cdO2 annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin = {87, -44}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -58})));
       Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2 annotation(Placement(transformation(extent = {{-7, -6.5}, {7, 6.5}}, rotation = 0, origin = {87, -53.5}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -78})));
-      Physiolibrary.Types.RealIO.ConcentrationOutput ceHb
-        "effiective concentration of hemoglobin (mmol/l)"                                                   annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin = {88, -34}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -38})));
       Physiolibrary.Types.RealIO.ConcentrationInput ctO2(start = 6) annotation(Placement(transformation(extent = {{-34, 39}, {-16, 57}}), iconTransformation(extent = {{-120, 70}, {-100, 90}})));
       Physiolibrary.Types.RealIO.ConcentrationInput ctCO2(start = 23) annotation(Placement(transformation(extent = {{-32, 68}, {-16, 84}}), iconTransformation(extent = {{-120, 50}, {-100, 70}})));
       Physiolibrary.Types.RealIO.PressureOutput pO2(start = 13300) annotation(Placement(transformation(extent = {{36, 41}, {50, 55}}), iconTransformation(extent = {{100, 70}, {120, 90}})));
       Physiolibrary.Types.RealIO.PressureOutput pCO2 annotation(Placement(transformation(extent = {{36, 70}, {48, 82}}), iconTransformation(extent = {{100, 50}, {120, 70}})));
-      PO2PCO2 pO2PCO2 annotation(Placement(transformation(extent = {{-36, -64}, {62, 32}})));
       Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints annotation(Placement(transformation(extent = {{-8, 64}, {32, 88}})));
       Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints1 annotation(Placement(transformation(extent = {{-8, 36}, {32, 60}})));
       Physiolibrary.Types.RealIO.ConcentrationInput ctPi(displayUnit = "mmol/l")
-        "concentration of total haemoglobin in whole blood (8.4)"                                                                          annotation(Placement(transformation(extent = {{7, 7}, {-7, -7}}, rotation = 180, origin = {-85, -13}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 2})));
+        "concentration of total haemoglobin in whole blood (8.4)"                                                                          annotation(Placement(transformation(extent = {{7, 7}, {-7, -7}}, rotation = 180, origin={-55,-17}),    iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 2})));
       /*
     Real pO2_kPa_init;
     Real pCO2_kPa_init;
     Real pHinit;
     Real sO2init;
     */
-      Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=0)     annotation(Placement(transformation(extent={{-65,0},
-                {-56,6}})));
-      Physiolibrary.Types.Constants.FractionConst fHb(k=0.005)
-        annotation (Placement(transformation(extent={{-71,-40},{-63,-32}})));
-      Physiolibrary.Types.Constants.ConcentrationConst cDPG(k = 5) annotation(Placement(transformation(extent={{-69,-28},
-                {-61,-22}})));
+      plasma_PO2PCO2 plasma_PO2PCO2_1
+        annotation (Placement(transformation(extent={{-34,-64},{62,32}})));
     initial algorithm
       /*
    (pO2_kPa_init,pCO2_kPa_init,pHinit,sO2init) := O2CO2of(ctO2,ctCO2,BEox,ctHb,ctAlb,ctPi,cDPG,FCOHb,FMetHb,FHbF,T-273.15);
@@ -2482,39 +2467,40 @@ package NewBloodyMary_testing
   pHinit = pH;
   sO2init = sO2;
   */
-      connect(pO2PCO2.pH, pH) annotation(Line(points = {{66.9, 3.2}, {88, 3.2}, {88, 3}}, color = {0, 0, 127}));
-      connect(pO2PCO2.cHCO3, cHCO3) annotation(Line(points = {{66.9, -6.4}, {75.45, -6.4}, {75.45, -6.5}, {87, -6.5}}, color = {0, 0, 127}));
-      connect(pO2PCO2.sO2, sO2) annotation(Line(points = {{66.9, -16}, {88, -16}}, color = {0, 0, 127}));
-      connect(pO2PCO2.ceHb, ceHb) annotation(Line(points = {{66.9, -34.24}, {74.45, -34.24}, {74.45, -34}, {88, -34}}, color = {0, 0, 127}));
-      connect(pO2PCO2.cdO2, cdO2) annotation(Line(points = {{66.9, -43.84}, {75.45, -43.84}, {75.45, -44}, {87, -44}}, color = {0, 0, 127}));
-      connect(pO2PCO2.cdCO2, cdCO2) annotation(Line(points = {{66.9, -53.44}, {75.45, -53.44}, {75.45, -53.5}, {87, -53.5}}, color = {0, 0, 127}));
-      connect(BEox, pO2PCO2.BEox) annotation(Line(points = {{-62, 37}, {-40.9, 11.84}}, color = {0, 0, 127}));
-      connect(pO2PCO2.ctO2, inverseBlockConstraints1.u2) annotation(Line(points = {{66.9, 22.4}, {76, 22.4}, {76, 34}, {16, 34}, {16, 48}, {-4, 48}}, color = {0, 0, 127}));
       connect(inverseBlockConstraints1.u1, ctO2) annotation(Line(points = {{-10, 48}, {-13.5, 48}, {-25, 48}}, color = {0, 0, 127}));
       connect(inverseBlockConstraints.u1, ctCO2) annotation(Line(points = {{-10, 76}, {-18, 76}, {-24, 76}}, color = {0, 0, 127}));
-      connect(pO2PCO2.ctCO2, inverseBlockConstraints.u2) annotation(Line(points = {{66.9, 12.8}, {82, 12.8}, {82, 62}, {14, 62}, {14, 76}, {-4, 76}}, color = {0, 0, 127}));
       connect(inverseBlockConstraints.y1, pCO2) annotation(Line(points = {{33, 76}, {42, 76}, {42, 76}}, color = {0, 0, 127}));
       connect(inverseBlockConstraints1.y1, pO2) annotation(Line(points = {{33, 48}, {43, 48}, {43, 48}}, color = {0, 0, 127}));
-      connect(pO2PCO2.pO2, inverseBlockConstraints1.y2) annotation(Line(points = {{-40.9, 31.04}, {-70, 31.04}, {-70, 56}, {22, 56}, {22, 48}, {29, 48}}, color = {0, 0, 127}));
-      connect(pO2PCO2.pCO2, inverseBlockConstraints.y2) annotation(Line(points = {{-40.9, 21.44}, {-60, 21.44}, {-78, 21.44}, {-78, 82}, {20, 82}, {20, 76}, {29, 76}}, color = {0, 0, 127}));
-      connect(ctAlb, pO2PCO2.ctAlb) annotation(Line(points = {{-73, -7}, {-40.9, -7}, {-40.9, -7.36}}, color = {0, 0, 127}));
-      connect(T, pO2PCO2.T) annotation(Line(points = {{-68, -65}, {-50, -65}, {-50, -64}, {-40.9, -64}}, color = {0, 0, 127}));
-      connect(pO2PCO2.ctPi, ctPi) annotation(Line(points = {{-40.9, -16.96}, {-60.45, -16.96}, {-60.45, -13}, {-85, -13}}, color = {0, 0, 127}));
-      connect(ctHb.y, pO2PCO2.ctHb) annotation (Line(points={{-54.875,3},{
-              -49.4375,3},{-49.4375,2.24},{-40.9,2.24}}, color={0,0,127}));
-      connect(fHb.y, pO2PCO2.FMetHb) annotation (Line(points={{-62,-36},{-52,
-              -36},{-52,-35.2},{-40.9,-35.2}}, color={0,0,127}));
-      connect(pO2PCO2.FCOHb, pO2PCO2.FMetHb) annotation (Line(points={{-40.9,
-              -44.8},{-58,-44.8},{-58,-36},{-52,-36},{-52,-35.2},{-40.9,-35.2}},
+      connect(plasma_PO2PCO2_1.ctO2, inverseBlockConstraints1.u2) annotation (
+          Line(points={{66.8,22.4},{74,22.4},{74,38},{4,38},{4,48},{-4,48}},
             color={0,0,127}));
-      connect(fHb.y, pO2PCO2.FHbF) annotation (Line(points={{-62,-36},{-52,-36},
-              {-52,-54.4},{-40.9,-54.4}}, color={0,0,127}));
-      connect(cDPG.y, pO2PCO2.cDPG) annotation (Line(points={{-60,-25},{-52,-25},
-              {-52,-25.6},{-40.9,-25.6}}, color={0,0,127}));
+      connect(inverseBlockConstraints1.y2, plasma_PO2PCO2_1.pO2) annotation (
+          Line(points={{29,48},{14,48},{14,62},{-46,62},{-46,31.04},{-38.8,
+              31.04}}, color={0,0,127}));
+      connect(inverseBlockConstraints.y2, plasma_PO2PCO2_1.pCO2) annotation (
+          Line(points={{29,76},{18,76},{18,94},{-52,94},{-52,21.44},{-38.8,
+              21.44}}, color={0,0,127}));
+      connect(plasma_PO2PCO2_1.ctCO2, inverseBlockConstraints.u2) annotation (
+          Line(points={{66.8,12.8},{90,12.8},{90,68},{2,68},{2,76},{-4,76}},
+            color={0,0,127}));
+      connect(plasma_PO2PCO2_1.pH, pH) annotation (Line(points={{66.8,3.2},{
+              73.4,3.2},{73.4,3},{88,3}}, color={0,0,127}));
+      connect(plasma_PO2PCO2_1.cHCO3, cHCO3) annotation (Line(points={{66.8,
+              -6.4},{75.4,-6.4},{75.4,-6.5},{87,-6.5}}, color={0,0,127}));
+      connect(plasma_PO2PCO2_1.cdO2, cdO2) annotation (Line(points={{66.8,
+              -43.84},{73.4,-43.84},{73.4,-44},{87,-44}}, color={0,0,127}));
+      connect(plasma_PO2PCO2_1.cdCO2, cdCO2) annotation (Line(points={{66.8,
+              -53.44},{74.4,-53.44},{74.4,-53.5},{87,-53.5}}, color={0,0,127}));
+      connect(plasma_PO2PCO2_1.ctPi, ctPi) annotation (Line(points={{-38.8,
+              -16.96},{-43.4,-16.96},{-43.4,-17},{-55,-17}}, color={0,0,127}));
+      connect(ctAlb, plasma_PO2PCO2_1.ctAlb) annotation (Line(points={{-55,-7},
+              {-48.5,-7},{-48.5,-7.36},{-38.8,-7.36}}, color={0,0,127}));
+      connect(T, plasma_PO2PCO2_1.T) annotation (Line(points={{-58,-63},{-50,
+              -63},{-50,-64},{-38.8,-64}}, color={0,0,127}));
+      connect(plasma_PO2PCO2_1.BEox, BEox) annotation (Line(points={{-38.8,
+              11.84},{-44.4,11.84},{-44.4,13},{-56,13}}, color={0,0,127}));
       annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{74, 4}, {92, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
-                horizontalAlignment =                                                                                                    TextAlignment.Right, textString = "sO2"), Text(extent = {{70, 30}, {94, 10}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid),                               Text(extent = {{70, 30}, {94, 10}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
                 horizontalAlignment =                                                                                                    TextAlignment.Right, textString = "HCO3"), Text(extent = {{-96, -92}, {-78, -102}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
@@ -2522,9 +2508,7 @@ package NewBloodyMary_testing
                 fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
                 horizontalAlignment =                                                                                                    TextAlignment.Right, textString = "pH"), Text(extent = {{-96, 100}, {-78, 90}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
-                horizontalAlignment =                                                                                                    TextAlignment.Left, textString = "BEox"), Text(extent = {{-96, 44}, {-78, 34}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
-                horizontalAlignment =                                                                                                    TextAlignment.Left, textString = "ctHb"), Text(extent = {{-10, 6}, {10, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                horizontalAlignment =                                                                                                    TextAlignment.Left, textString = "BEox"), Text(extent = {{-10, 6}, {10, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, origin = {-86, 78}, rotation = 180, fontSize = 12,
                 horizontalAlignment =                                                                                                    TextAlignment.Left, textString = "ctO2"), Text(extent = {{-13, 7}, {13, -7}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, origin = {-83, 59}, rotation = 180, fontSize = 12,
@@ -2538,25 +2522,16 @@ O2CO2"),                                                                        
                 fillPattern =                                                                                                    FillPattern.Solid,
                 horizontalAlignment =                                                                                                    TextAlignment.Right, fontSize = 12, textString = "pO2"), Text(extent = {{70, 70}, {92, 52}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
-                horizontalAlignment =                                                                                                    TextAlignment.Right, textString = "pCO2"), Text(extent = {{-96, -72}, {-78, -80}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
-                horizontalAlignment =                                                                                                    TextAlignment.Left, textString = "FHbF"), Text(extent = {{-96, -28}, {-68, -46}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
-                horizontalAlignment =                                                                                                    TextAlignment.Left, textString = "FMetHb"), Text(extent = {{-96, -12}, {-76, -22}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
-                horizontalAlignment =                                                                                                    TextAlignment.Left, textString = "cDPG"), Text(extent = {{-96, 26}, {-76, 14}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                horizontalAlignment =                                                                                                    TextAlignment.Right, textString = "pCO2"),Text(extent = {{-96, 26}, {-76, 14}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
                 horizontalAlignment =                                                                                                    TextAlignment.Left, textString = "ctAlb"), Text(extent = {{-12, 6}, {12, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, origin = {78, -58}, rotation = 180, fontSize = 12,
                 horizontalAlignment =                                                                                                    TextAlignment.Right, textString = "cdO2"), Text(extent = {{-15.5, 19.5}, {15.5, -19.5}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, origin = {76.5, -77.5}, rotation = 180, fontSize = 12,
-                horizontalAlignment =                                                                                                    TextAlignment.Right, textString = "cdCO2"), Text(extent = {{-96, -48}, {-72, -64}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                horizontalAlignment =                                                                                                    TextAlignment.Right, textString = "cdCO2"),Text(extent = {{-96, 6}, {-78, -4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
-                horizontalAlignment =                                                                                                    TextAlignment.Left, textString = "FHbCO"), Text(extent = {{-12, 5}, {12, -5}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, origin = {78, -39}, rotation = 180, fontSize = 12,
-                horizontalAlignment =                                                                                                    TextAlignment.Right, textString = "ceHb"), Text(extent = {{-96, 6}, {-78, -4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, fontSize = 12,
-                horizontalAlignment =                                                                                                    TextAlignment.Left, textString = "ctPi"), Text(extent = {{-60, 92}, {70, 62}}, lineColor = {28, 108, 200}, textString = "%name")}), Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
+                horizontalAlignment =                                                                                                    TextAlignment.Left, textString = "ctPi"), Text(extent={{
+                  -54,-96},{76,-126}},                                                                                                    lineColor = {28, 108, 200}, textString = "%name")}), Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
                 -100},{100,100}})));
     end plasma_O2CO2;
 
@@ -2611,10 +2586,10 @@ O2CO2"),                                                                        
       connect(T, plasma_ctCO2content1.T) annotation (Line(points={{-98,-8},{-64,
               -8},{-4,-8},{-4,52},{8.9,52}}, color={0,0,127}));
       connect(plasma_BEINV1.pH, plasma_ctCO2content1.pH) annotation (Line(
-            points={{30.38,-40},{36,-40},{36,14},{36,16},{-14,16},{-14,63.2},{
+            points={{34.7,-40},{36,-40},{36,14},{36,16},{-14,16},{-14,63.2},{
               8.9,63.2}}, color={0,0,127}));
-      connect(plasma_BEINV1.pH, pH) annotation (Line(points={{30.38,-40},{40,
-              -40},{40,-44},{56,-44}}, color={0,0,127}));
+      connect(plasma_BEINV1.pH, pH) annotation (Line(points={{34.7,-40},{40,-40},
+              {40,-44},{56,-44}}, color={0,0,127}));
       connect(pCO2, plasma_ctCO2content1.pCO2) annotation (Line(points={{-73,
               -30},{-64,-30},{-64,6},{-20,6},{-20,74},{8.9,74},{8.9,74.4}},
             color={0,0,127}));
@@ -3875,51 +3850,52 @@ O2CO2"),                                                                        
 
       model testPlasmaO2CO2
         plasma_O2CO2 plasmaO2CO2_1
-          annotation (Placement(transformation(extent={{36,-92},{94,-6}})));
-        Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit = "kPa") = 5330) annotation(Placement(transformation(extent={{-94,84},
-                  {-86,92}})));
-        Physiolibrary.Types.Constants.ConcentrationConst cAlb(k = 0.66) annotation(Placement(transformation(extent={{-84,58},
-                  {-76,66}})));
-        Physiolibrary.Types.Constants.TemperatureConst temperature(k = 310.15) annotation(Placement(transformation(extent={{-94,2},
-                  {-86,10}})));
-        Physiolibrary.Types.Constants.ConcentrationConst BEox(k = -19) annotation(Placement(transformation(extent={{-78,74},
-                  {-70,82}})));
-        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit = "kPa") = 13300) annotation(Placement(transformation(extent = {{-74, 60}, {-66, 68}}, origin={-10.334,
-                  34},                                                                                                    rotation = 0), visible = true));
-        Physiolibrary.Types.Constants.ConcentrationConst cPi(k = 1.15) annotation(Placement(transformation(extent={{-94,46},
-                  {-86,54}})));
+          annotation (Placement(transformation(extent={{30,-94},{108,-10}})));
+        Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit = "kPa") = 5330) annotation(Placement(transformation(extent={{-100,82},
+                  {-92,90}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cAlb(k = 0.66) annotation(Placement(transformation(extent={{-90,56},
+                  {-82,64}})));
+        Physiolibrary.Types.Constants.TemperatureConst temperature(k = 310.15) annotation(Placement(transformation(extent={{-100,0},
+                  {-92,8}})));
+        Physiolibrary.Types.Constants.ConcentrationConst BEox(k = -19) annotation(Placement(transformation(extent={{-84,72},
+                  {-76,80}})));
+        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit = "kPa") = 13300) annotation(Placement(transformation(extent = {{-74, 60}, {-66, 68}}, origin={-16.334,
+                  32},                                                                                                    rotation = 0), visible = true));
+        Physiolibrary.Types.Constants.ConcentrationConst cPi(k = 1.15) annotation(Placement(transformation(extent={{-100,44},
+                  {-92,52}})));
         plasma_PO2PCO2 plasmaPO2PCO2_1
-          annotation (Placement(transformation(extent={{-56,6},{16,98}})));
+          annotation (Placement(transformation(extent={{-62,4},{4,96}})));
       equation
-        connect(pO2.y, plasmaPO2PCO2_1.pO2) annotation (Line(points={{-75.334,
-                98},{-68,98},{-68,97.08},{-59.6,97.08}}, color={0,0,127}));
-        connect(BEox.y, plasmaPO2PCO2_1.BEox) annotation (Line(points={{-69,78},
-                {-59.6,78},{-59.6,78.68}}, color={0,0,127}));
-        connect(pCO2.y, plasmaPO2PCO2_1.pCO2) annotation (Line(points={{-85,88},
-                {-59.6,88},{-59.6,87.88}}, color={0,0,127}));
-        connect(cAlb.y, plasmaPO2PCO2_1.ctAlb) annotation (Line(points={{-75,62},
-                {-59.6,62},{-59.6,60.28}}, color={0,0,127}));
-        connect(cPi.y, plasmaPO2PCO2_1.ctPi) annotation (Line(points={{-85,50},
-                {-72,50},{-72,51.08},{-59.6,51.08}}, color={0,0,127}));
+        connect(pO2.y, plasmaPO2PCO2_1.pO2) annotation (Line(points={{-81.334,
+                96},{-74,96},{-74,95.08},{-65.3,95.08}}, color={0,0,127}));
+        connect(BEox.y, plasmaPO2PCO2_1.BEox) annotation (Line(points={{-75,76},
+                {-65.3,76},{-65.3,76.68}}, color={0,0,127}));
+        connect(pCO2.y, plasmaPO2PCO2_1.pCO2) annotation (Line(points={{-91,86},
+                {-65.3,86},{-65.3,85.88}}, color={0,0,127}));
+        connect(cAlb.y, plasmaPO2PCO2_1.ctAlb) annotation (Line(points={{-81,60},
+                {-65.3,60},{-65.3,58.28}}, color={0,0,127}));
+        connect(cPi.y, plasmaPO2PCO2_1.ctPi) annotation (Line(points={{-91,48},
+                {-78,48},{-78,49.08},{-65.3,49.08}}, color={0,0,127}));
         connect(temperature.y, plasmaPO2PCO2_1.T)
-          annotation (Line(points={{-85,6},{-59.6,6}}, color={0,0,127}));
-        connect(plasmaO2CO2_1.T, plasmaPO2PCO2_1.T) annotation (Line(points={{
-                33.1,-90.28},{33.1,-90},{-59.6,-90},{-59.6,6}}, color={0,0,127}));
+          annotation (Line(points={{-91,4},{-65.3,4}}, color={0,0,127}));
+        connect(plasmaO2CO2_1.T, plasmaPO2PCO2_1.T) annotation (Line(points={{26.1,
+                -92.32},{26.1,-92},{-65.3,-92},{-65.3,4}},      color={0,0,127}));
         connect(plasmaO2CO2_1.BEox, plasmaPO2PCO2_1.BEox) annotation (Line(
-              points={{33.1,-6.86},{-66,-6.86},{-66,78},{-59.6,78},{-59.6,78.68}},
+              points={{26.1,-10.84},{-72,-10.84},{-72,76},{-65.3,76},{-65.3,
+                76.68}},
               color={0,0,127}));
         connect(plasmaO2CO2_1.ctO2, plasmaPO2PCO2_1.ctO2) annotation (Line(
-              points={{33.1,-14.6},{26,-14.6},{26,88.8},{19.6,88.8}}, color={0,
+              points={{26.1,-18.4},{20,-18.4},{20,86.8},{7.3,86.8}},  color={0,
                 0,127}));
         connect(plasmaO2CO2_1.ctCO2, plasmaPO2PCO2_1.ctCO2) annotation (Line(
-              points={{33.1,-23.2},{24,-23.2},{24,79.6},{19.6,79.6}}, color={0,
+              points={{26.1,-26.8},{18,-26.8},{18,77.6},{7.3,77.6}},  color={0,
                 0,127}));
         connect(plasmaO2CO2_1.ctAlb, plasmaPO2PCO2_1.ctAlb) annotation (Line(
-              points={{33.1,-40.4},{-74,-40.4},{-74,62},{-59.6,62},{-59.6,60.28}},
+              points={{26.1,-43.6},{-80,-43.6},{-80,60},{-65.3,60},{-65.3,58.28}},
               color={0,0,127}));
         connect(plasmaO2CO2_1.ctPi, plasmaPO2PCO2_1.ctPi) annotation (Line(
-              points={{33.1,-48.14},{-80,-48.14},{-80,50},{-72,50},{-72,51.08},
-                {-59.6,51.08}}, color={0,0,127}));
+              points={{26.1,-51.16},{-86,-51.16},{-86,48},{-78,48},{-78,49.08},
+                {-65.3,49.08}}, color={0,0,127}));
         annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
                   -100},{100,100}})));
       end testPlasmaO2CO2;
@@ -3933,7 +3909,8 @@ O2CO2"),                                                                        
                   {-38,4}})));
         Physiolibrary.Types.Constants.ConcentrationConst BEox(k = -19) annotation(Placement(transformation(extent={{-30,68},
                   {-22,76}})));
-        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit = "kPa") = 13300) annotation(Placement(transformation(extent = {{-74, 60}, {-66, 68}}, origin={-6.334,
+        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="kPa") =
+            0)                                                                          annotation(Placement(transformation(extent = {{-74, 60}, {-66, 68}}, origin={-6.334,
                   28},                                                                                                    rotation = 0), visible = true));
         Physiolibrary.Types.Constants.ConcentrationConst cPi(k = 1.15) annotation(Placement(transformation(extent={{-46,40},
                   {-38,48}})));
@@ -4047,9 +4024,9 @@ O2CO2"),                                                                        
       Physiolibrary.Types.RealIO.ConcentrationInput cAlb
         "albumin concentration in plasma (mmol/l)"                                                  annotation(Placement(transformation(extent={{-64,-24},
                 {-46,-6}}),                                                                                                    iconTransformation(extent = {{-120, -36}, {-100, -16}})));
-      Physiolibrary.Types.RealIO.pHOutput pH "plasma pH at given temperature" annotation(Placement(transformation(extent={{84,-10},
-                {104,10}}),                                                                                                    iconTransformation(extent={{84,-10},
-                {104,10}})));
+      Physiolibrary.Types.RealIO.pHOutput pH "plasma pH at given temperature" annotation(Placement(transformation(extent={{100,-10},
+                {120,10}}),                                                                                                    iconTransformation(extent={{100,-10},
+                {120,10}})));
       Physiolibrary.Types.RealIO.ConcentrationInput BEox "BEox in mmol/l" annotation(Placement(transformation(extent = {{-60, 51}, {-42, 69}}), iconTransformation(extent = {{-120, 70}, {-100, 90}})));
       Physiolibrary.Types.RealIO.TemperatureInput temp "temperature in Kelvins"
                                                                                 annotation(Placement(transformation(extent={{-68,-58},
@@ -4062,8 +4039,8 @@ O2CO2"),                                                                        
         annotation (Placement(transformation(extent={{-30,-54},{42,36}})));
     equation
       connect(inverseBlockConstraints1.u1, BEox) annotation(Line(points = {{-26.8, 60}, {-51, 60}, {-51, 60}}, color = {0, 0, 127}));
-      connect(pH, inverseBlockConstraints1.y1) annotation(Line(points={{94,0},{
-              70,0},{70,60},{33.4,60}},                                                                            color = {0, 0, 127}));
+      connect(pH, inverseBlockConstraints1.y1) annotation(Line(points={{110,0},
+              {70,0},{70,60},{33.4,60}},                                                                           color = {0, 0, 127}));
       connect(plasmaBEox1.BEox, inverseBlockConstraints1.u2) annotation (Line(
             points={{45.6,-9},{56,-9},{56,50},{-2,50},{-2,60},{-18.4,60}},
             color={0,0,127}));
@@ -4078,7 +4055,8 @@ O2CO2"),                                                                        
               -15},{-44.5,-14.4},{-33.6,-14.4}}, color={0,0,127}));
       connect(plasmaBEox1.temp, temp) annotation (Line(points={{-33.6,-50.4},{
               -44.8,-50.4},{-44.8,-50},{-60,-50}}, color={0,0,127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+      annotation(Icon(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
+                -100},{100,100}}),                                                                        graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid), Text(extent={{
                   -88,56},{90,22}},                                                                                                    lineColor=
                   {28,108,200},                                                                                                    fillColor=
@@ -4236,12 +4214,15 @@ O2CO2"),                                                                        
 
     connector MassInflowConnector "Mass Concentration and Solute Inflow"
       extends MassFlowConnector;
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid)}));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid)}));
     end MassInflowConnector;
 
     connector MassOutflowConnector "Mass Concentration and Solute Outflow"
       extends MassFlowConnector;
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Rectangle(extent=  {{-60, 60}, {60, -60}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 255}, fillPattern=  FillPattern.Solid)}));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Rectangle(extent = {{-60, 60}, {60, -60}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 255},
+                fillPattern =                                                                                                    FillPattern.Solid)}));
     end MassOutflowConnector;
 
     partial model ConditionalVolume
@@ -4272,7 +4253,53 @@ O2CO2"),                                                                        
       massInflowConnector.q = der(mass);
       massConcentration = mass / volume;
       massInflowConnector.conc = massConcentration;
-      annotation(Placement(transformation(extent = {{-44, -96}, {-24, -76}}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 270, origin = {-54, -96})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Text(extent=  {{-34, 14}, {52, 84}}, lineColor=  {28, 108, 200}, textString=  "Mol"), Polygon(points=  {{-84, 20}, {-84, 56}, {-86, 62}, {-90, 70}, {-94, 74}, {-98, 78}, {-94, 82}, {-82, 90}, {86, 90}, {94, 86}, {98, 82}, {98, 78}, {96, 74}, {94, 72}, {94, 66}, {94, 20}, {94, -78}, {92, -84}, {88, -86}, {78, -86}, {-74, -86}, {-82, -86}, {-84, -82}, {-84, -76}, {-84, 20}}, lineColor=  {0, 0, 0}, fillColor=  {255, 255, 255}, fillPattern=  FillPattern.Solid, smooth=  Smooth.Bezier), Polygon(points=  {{-84, 20}, {94, 20}, {94, 20}, {94, -78}, {92, -84}, {88, -86}, {78, -86}, {-74, -86}, {-82, -86}, {-84, -82}, {-84, -76}, {-84, 20}, {-84, 20}}, lineColor=  {0, 0, 0}, fillColor=  {215, 215, 215}, fillPattern=  FillPattern.Solid, smooth=  Smooth.Bezier), Ellipse(extent=  {{-62, 12}, {-56, 6}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-40, 16}, {-34, 10}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-30, 4}, {-24, -2}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-22, 14}, {-16, 8}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-64, -10}, {-58, -16}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-48, -14}, {-42, -20}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-52, -38}, {-46, -44}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-74, -54}, {-68, -60}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-74, -28}, {-68, -34}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-78, 10}, {-72, 4}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-14, -12}, {-8, -18}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{68, 8}, {74, 2}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{2, -52}, {8, -58}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-24, -26}, {-18, -32}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-34, -44}, {-28, -50}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-34, -70}, {-28, -76}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-2, 12}, {4, 6}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{18, -2}, {24, -8}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{0, 0}, {6, -6}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-30, -12}, {-24, -18}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{64, -36}, {70, -42}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{48, -36}, {54, -42}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{44, -48}, {50, -54}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{28, -20}, {34, -26}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{18, -38}, {24, -44}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{18, -64}, {24, -70}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{66, -6}, {72, -12}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{82, 16}, {88, 10}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{52, 6}, {58, 0}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{38, 12}, {44, 6}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-76, -74}, {-70, -80}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-18, -60}, {-12, -66}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-56, -72}, {-50, -78}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{18, 12}, {24, 6}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{2, -76}, {8, -82}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{80, -78}, {86, -84}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{64, -68}, {70, -74}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{74, -58}, {80, -64}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{76, -36}, {82, -42}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{54, -18}, {60, -24}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{42, -72}, {48, -78}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{80, -14}, {86, -20}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{40, -6}, {46, -12}}, lineColor=  {0, 0, 0}, fillColor=  {127, 0, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{30, 124}, {300, 90}}, lineColor=  {28, 108, 200}, textString=  "%name", horizontalAlignment=  TextAlignment.Left)}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Placement(transformation(extent = {{-44, -96}, {-24, -76}}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 270, origin = {-54, -96})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-34, 14}, {52, 84}}, lineColor = {28, 108, 200}, textString = "Mol"), Polygon(points = {{-84, 20}, {-84, 56}, {-86, 62}, {-90, 70}, {-94, 74}, {-98, 78}, {-94, 82}, {-82, 90}, {86, 90}, {94, 86}, {98, 82}, {98, 78}, {96, 74}, {94, 72}, {94, 66}, {94, 20}, {94, -78}, {92, -84}, {88, -86}, {78, -86}, {-74, -86}, {-82, -86}, {-84, -82}, {-84, -76}, {-84, 20}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
+                fillPattern =                                                                                                    FillPattern.Solid, smooth = Smooth.Bezier), Polygon(points = {{-84, 20}, {94, 20}, {94, 20}, {94, -78}, {92, -84}, {88, -86}, {78, -86}, {-74, -86}, {-82, -86}, {-84, -82}, {-84, -76}, {-84, 20}, {-84, 20}}, lineColor = {0, 0, 0}, fillColor = {215, 215, 215},
+                fillPattern =                                                                                                    FillPattern.Solid, smooth = Smooth.Bezier), Ellipse(extent = {{-62, 12}, {-56, 6}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-40, 16}, {-34, 10}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-30, 4}, {-24, -2}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-22, 14}, {-16, 8}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-64, -10}, {-58, -16}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-48, -14}, {-42, -20}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-52, -38}, {-46, -44}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-74, -54}, {-68, -60}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-74, -28}, {-68, -34}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-78, 10}, {-72, 4}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-14, -12}, {-8, -18}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{68, 8}, {74, 2}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{2, -52}, {8, -58}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-24, -26}, {-18, -32}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-34, -44}, {-28, -50}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-34, -70}, {-28, -76}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-2, 12}, {4, 6}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{18, -2}, {24, -8}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{0, 0}, {6, -6}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-30, -12}, {-24, -18}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{64, -36}, {70, -42}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{48, -36}, {54, -42}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{44, -48}, {50, -54}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{28, -20}, {34, -26}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{18, -38}, {24, -44}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{18, -64}, {24, -70}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{66, -6}, {72, -12}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{82, 16}, {88, 10}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{52, 6}, {58, 0}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{38, 12}, {44, 6}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-76, -74}, {-70, -80}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-18, -60}, {-12, -66}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-56, -72}, {-50, -78}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{18, 12}, {24, 6}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{2, -76}, {8, -82}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{80, -78}, {86, -84}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{64, -68}, {70, -74}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{74, -58}, {80, -64}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{76, -36}, {82, -42}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{54, -18}, {60, -24}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{42, -72}, {48, -78}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{80, -14}, {86, -20}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{40, -6}, {46, -12}}, lineColor = {0, 0, 0}, fillColor = {127, 0, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{30, 124}, {300, 90}}, lineColor = {28, 108, 200}, textString = "%name",
+                horizontalAlignment =                                                                                                    TextAlignment.Left)}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end MassContent;
 
     class MolarContent "compartment for molar content storage"
@@ -4291,7 +4318,53 @@ O2CO2"),                                                                        
       concentration = molarContent / volume;
       molarInflowConnector.conc = concentration;
       ekvivalentConcentration = concentration * valence;
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Text(extent=  {{-34, 14}, {52, 84}}, lineColor=  {28, 108, 200}, textString=  "Mol"), Polygon(points=  {{-84, 20}, {-84, 56}, {-86, 62}, {-90, 70}, {-94, 74}, {-98, 78}, {-94, 82}, {-82, 90}, {86, 90}, {94, 86}, {98, 82}, {98, 78}, {96, 74}, {94, 72}, {94, 66}, {94, 20}, {94, -78}, {92, -84}, {88, -86}, {78, -86}, {-74, -86}, {-82, -86}, {-84, -82}, {-84, -76}, {-84, 20}}, lineColor=  {0, 0, 0}, fillColor=  {255, 255, 255}, fillPattern=  FillPattern.Solid, smooth=  Smooth.Bezier), Polygon(points=  {{-84, 20}, {94, 20}, {94, 20}, {94, -78}, {92, -84}, {88, -86}, {78, -86}, {-74, -86}, {-82, -86}, {-84, -82}, {-84, -76}, {-84, 20}, {-84, 20}}, lineColor=  {0, 0, 0}, fillColor=  {170, 255, 255}, fillPattern=  FillPattern.Solid, smooth=  Smooth.Bezier), Ellipse(extent=  {{-62, 12}, {-56, 6}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-40, 16}, {-34, 10}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-30, 4}, {-24, -2}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-18, 14}, {-12, 8}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-64, -10}, {-58, -16}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-54, -26}, {-48, -32}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-52, -46}, {-46, -52}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-74, -54}, {-68, -60}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-74, -28}, {-68, -34}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-78, 6}, {-72, 0}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-14, -12}, {-8, -18}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{72, 6}, {78, 0}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{2, -52}, {8, -58}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-24, -26}, {-18, -32}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-34, -44}, {-28, -50}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-34, -70}, {-28, -76}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-46, -4}, {-40, -10}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{18, -2}, {24, -8}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{0, 0}, {6, -6}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-30, -12}, {-24, -18}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{66, -32}, {72, -38}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{48, -36}, {54, -42}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{44, -48}, {50, -54}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{28, -20}, {34, -26}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{18, -38}, {24, -44}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{18, -64}, {24, -70}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{62, -6}, {68, -12}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{82, 16}, {88, 10}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{52, 6}, {58, 0}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{38, 12}, {44, 6}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-76, -74}, {-70, -80}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-18, -60}, {-12, -66}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{-56, -72}, {-50, -78}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{18, 12}, {24, 6}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{2, -76}, {8, -82}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{80, -78}, {86, -84}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{64, -68}, {70, -74}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{74, -58}, {80, -64}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{76, -36}, {82, -42}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{54, -18}, {60, -24}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{42, -72}, {48, -78}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{80, -14}, {86, -20}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Ellipse(extent=  {{40, -6}, {46, -12}}, lineColor=  {0, 0, 0}, fillColor=  {0, 0, 255}, fillPattern=  FillPattern.Solid), Text(extent=  {{4, 116}, {204, 84}}, lineColor=  {28, 108, 200}, textString=  "%name", horizontalAlignment=  TextAlignment.Left)}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-34, 14}, {52, 84}}, lineColor = {28, 108, 200}, textString = "Mol"), Polygon(points = {{-84, 20}, {-84, 56}, {-86, 62}, {-90, 70}, {-94, 74}, {-98, 78}, {-94, 82}, {-82, 90}, {86, 90}, {94, 86}, {98, 82}, {98, 78}, {96, 74}, {94, 72}, {94, 66}, {94, 20}, {94, -78}, {92, -84}, {88, -86}, {78, -86}, {-74, -86}, {-82, -86}, {-84, -82}, {-84, -76}, {-84, 20}}, lineColor = {0, 0, 0}, fillColor = {255, 255, 255},
+                fillPattern =                                                                                                    FillPattern.Solid, smooth = Smooth.Bezier), Polygon(points = {{-84, 20}, {94, 20}, {94, 20}, {94, -78}, {92, -84}, {88, -86}, {78, -86}, {-74, -86}, {-82, -86}, {-84, -82}, {-84, -76}, {-84, 20}, {-84, 20}}, lineColor = {0, 0, 0}, fillColor = {170, 255, 255},
+                fillPattern =                                                                                                    FillPattern.Solid, smooth = Smooth.Bezier), Ellipse(extent = {{-62, 12}, {-56, 6}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-40, 16}, {-34, 10}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-30, 4}, {-24, -2}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-18, 14}, {-12, 8}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-64, -10}, {-58, -16}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-54, -26}, {-48, -32}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-52, -46}, {-46, -52}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-74, -54}, {-68, -60}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-74, -28}, {-68, -34}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-78, 6}, {-72, 0}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-14, -12}, {-8, -18}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{72, 6}, {78, 0}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{2, -52}, {8, -58}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-24, -26}, {-18, -32}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-34, -44}, {-28, -50}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-34, -70}, {-28, -76}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-46, -4}, {-40, -10}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{18, -2}, {24, -8}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{0, 0}, {6, -6}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-30, -12}, {-24, -18}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{66, -32}, {72, -38}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{48, -36}, {54, -42}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{44, -48}, {50, -54}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{28, -20}, {34, -26}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{18, -38}, {24, -44}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{18, -64}, {24, -70}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{62, -6}, {68, -12}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{82, 16}, {88, 10}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{52, 6}, {58, 0}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{38, 12}, {44, 6}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-76, -74}, {-70, -80}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-18, -60}, {-12, -66}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{-56, -72}, {-50, -78}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{18, 12}, {24, 6}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{2, -76}, {8, -82}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{80, -78}, {86, -84}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{64, -68}, {70, -74}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{74, -58}, {80, -64}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{76, -36}, {82, -42}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{54, -18}, {60, -24}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{42, -72}, {48, -78}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{80, -14}, {86, -20}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Ellipse(extent = {{40, -6}, {46, -12}}, lineColor = {0, 0, 0}, fillColor = {0, 0, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{4, 116}, {204, 84}}, lineColor = {28, 108, 200}, textString = "%name",
+                horizontalAlignment =                                                                                                    TextAlignment.Left)}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end MolarContent;
 
     class ISF_O2
@@ -4339,14 +4412,17 @@ O2CO2"),                                                                        
 
     connector ChemicalEquivalentConcentrationOutput = output
         ChemicalEquivalentConcentration
-      "output ChemicalEquivalentConcentration as connector"                                                                                        annotation(defaultComponentName = "volumeDensityOfCharge", Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics = {Polygon(points=  {{-100, 100}, {100, 0}, {-100, -100}, {-100, 100}}, lineColor=  {0, 0, 127}, fillColor=  {255, 255, 255}, fillPattern=  FillPattern.Solid)}), Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics = {Polygon(points=  {{-100, 50}, {0, 0}, {-100, -50}, {-100, 50}}, lineColor=  {0, 0, 127}, fillColor=  {255, 255, 255}, fillPattern=  FillPattern.Solid), Text(extent=  {{30, 110}, {30, 60}}, lineColor=  {0, 0, 127}, textString=  "%name")}), Documentation(info = "<html>
+      "output ChemicalEquivalentConcentration as connector"                                                                                        annotation(defaultComponentName = "volumeDensityOfCharge", Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics={  Polygon(points = {{-100, 100}, {100, 0}, {-100, -100}, {-100, 100}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
+              fillPattern =                                                                                                    FillPattern.Solid)}), Diagram(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics={  Polygon(points = {{-100, 50}, {0, 0}, {-100, -50}, {-100, 50}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
+              fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{30, 110}, {30, 60}}, lineColor = {0, 0, 127}, textString = "%name")}), Documentation(info = "<html>
   <p>
   Connector with one output signal of type VolumeDensityOfCharge.
   </p>
   </html>"));
     connector ChemicalEquivalentConcentrationInput = input
         ChemicalEquivalentConcentration
-      "input ChemicalEquivalentConcentration as connector"                                                                                      annotation(defaultComponentName = "volumeDensityOfCharge", Icon(graphics = {Polygon(points=  {{-100, 100}, {100, 0}, {-100, -100}, {-100, 100}}, lineColor=  {0, 0, 127}, fillColor=  {0, 0, 127}, fillPattern=  FillPattern.Solid)}, coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.2)), Diagram(coordinateSystem(preserveAspectRatio = true, initialScale = 0.2, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics = {Polygon(points=  {{0, 50}, {100, 0}, {0, -50}, {0, 50}}, lineColor=  {0, 0, 127}, fillColor=  {0, 0, 127}, fillPattern=  FillPattern.Solid), Text(extent=  {{-10, 85}, {-10, 60}}, lineColor=  {0, 0, 127}, textString=  "%name")}), Documentation(info = "<html>
+      "input ChemicalEquivalentConcentration as connector"                                                                                      annotation(defaultComponentName = "volumeDensityOfCharge", Icon(graphics={  Polygon(points = {{-100, 100}, {100, 0}, {-100, -100}, {-100, 100}}, lineColor = {0, 0, 127}, fillColor = {0, 0, 127},
+              fillPattern =                                                                                                    FillPattern.Solid)}, coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.2)), Diagram(coordinateSystem(preserveAspectRatio = true, initialScale = 0.2, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics = {Polygon(points=  {{0, 50}, {100, 0}, {0, -50}, {0, 50}}, lineColor=  {0, 0, 127}, fillColor=  {0, 0, 127}, fillPattern=  FillPattern.Solid), Text(extent=  {{-10, 85}, {-10, 60}}, lineColor=  {0, 0, 127}, textString=  "%name")}), Documentation(info = "<html>
     <p>
     Connector with one input signal of type VolumeDensityOfCharge.
     </p>
@@ -4407,7 +4483,7 @@ O2CO2"),                                                                        
       connect(EnvironmentPressure, deadVolume.P2) annotation(Line(points = {{-84, -10}, {-70, -10}, {-70, -22}, {30, -22}, {30, -68}, {6.6, -68}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(AmbientTemperature, tidalVolume.T2) annotation(Line(points = {{-84, 64}, {-94, 64}, {-94, -98}, {38, -98}, {38, -48}, {6.6, -48}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(AmbientTemperature, deadVolume.T2) annotation(Line(points = {{-84, 64}, {-94, 64}, {-94, -98}, {38, -98}, {38, -74}, {6.6, -74}}, color = {0, 0, 127}, smooth = Smooth.None));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Text(extent=  {{-100, -100}, {76, -70}}, textString=  "%name", lineColor=  {0, 0, 255})}));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-100, -100}, {76, -70}}, textString = "%name", lineColor = {0, 0, 255})}));
     end AlveolarVentilation_BTPS;
 
     model GasEquation
@@ -4419,7 +4495,10 @@ O2CO2"),                                                                        
       Physiolibrary.Types.RealIO.VolumeOutput V2(displayUnit = "ml") annotation(Placement(transformation(extent = {{56, 54}, {96, 94}}), iconTransformation(extent = {{72, 66}, {100, 94}})));
     equation
       P1 * V1 / T1 = P2 * V2 / T2;
-      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 0}, fillColor=  {170, 213, 255}, fillPattern=  FillPattern.Solid), Rectangle(extent=  {{0, 100}, {0, -100}}, lineColor=  {0, 0, 0}, fillColor=  {170, 213, 255}, fillPattern=  FillPattern.Solid), Text(extent=  {{-98, 136}, {100, 100}}, lineColor=  {0, 0, 0}, fillColor=  {170, 213, 255}, fillPattern=  FillPattern.Solid, textString=  "%name")}));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 0}, fillColor = {170, 213, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Rectangle(extent = {{0, 100}, {0, -100}}, lineColor = {0, 0, 0}, fillColor = {170, 213, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-98, 136}, {100, 100}}, lineColor = {0, 0, 0}, fillColor = {170, 213, 255},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "%name")}));
     end GasEquation;
 
     model VaporPressure
@@ -4427,7 +4506,8 @@ O2CO2"),                                                                        
       Physiolibrary.Types.RealIO.PressureOutput VaporPressure_(displayUnit = "mmHg") annotation(Placement(transformation(extent = {{56, 54}, {96, 94}}), iconTransformation(extent = {{100, -14}, {128, 14}})));
     equation
       VaporPressure_ = if T < 273.15 then 0 else if T > 373.15 then 101325 else 101325 / 760 * exp(18.6686 - 4030.183 / (T - 273.15 + 235));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 40}, {100, -40}}, lineColor=  {0, 0, 0}, fillColor=  {170, 213, 255}, fillPattern=  FillPattern.Solid)}));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 40}, {100, -40}}, lineColor = {0, 0, 0}, fillColor = {170, 213, 255},
+                fillPattern =                                                                                                    FillPattern.Solid)}));
     end VaporPressure;
 
     model bloodO2CO2
@@ -4473,7 +4553,24 @@ O2CO2"),                                                                        
       connect(tCO2.totalCO2, ctCO2) annotation(Line(points = {{-62, -6}, {-62, -12.5}, {-64, -12.5}, {-64, -28}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(ctCO2, ctCO2) annotation(Line(points = {{-64, -28}, {-64, -28}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(tO2.pCO2, pCO2) annotation(Line(points = {{23, 48}, {6, 48}, {6, 58}, {-20, 58}, {-20, 62}, {-90, 62}, {-90, 32}, {-106, 32}}, color = {0, 0, 127}, smooth = Smooth.None));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{74, -56}, {92, -66}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "sO2"), Text(extent=  {{76, -76}, {98, -92}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cHCO3"), Text(extent=  {{-98, 92}, {-80, 82}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "T"), Text(extent=  {{-98, 34}, {-80, 24}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pH"), Text(extent=  {{-96, -14}, {-78, -24}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pHery"), Text(extent=  {{-96, -58}, {-78, -68}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "Hct"), Text(extent=  {{-96, -82}, {-78, -92}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctHb"), Text(extent=  {{-56, -82}, {-38, -92}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctO2"), Text(extent=  {{-24, -82}, {-6, -92}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctCO2"), Text(extent=  {{-72, 114}, {72, 16}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "%name"), Text(extent=  {{18, -80}, {36, -90}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pO2"), Text(extent=  {{44, -80}, {62, -90}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pCO2"), Text(extent=  {{74, -26}, {92, -36}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pCO"), Text(extent=  {{74, -6}, {92, -16}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "FHbF"), Text(extent=  {{72, 16}, {94, 4}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "FMetHb"), Text(extent=  {{72, 36}, {92, 26}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cDPG")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{74, -56}, {92, -66}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "sO2"), Text(extent = {{76, -76}, {98, -92}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cHCO3"), Text(extent = {{-98, 92}, {-80, 82}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "T"), Text(extent = {{-98, 34}, {-80, 24}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pH"), Text(extent = {{-96, -14}, {-78, -24}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pHery"), Text(extent = {{-96, -58}, {-78, -68}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "Hct"), Text(extent = {{-96, -82}, {-78, -92}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctHb"), Text(extent = {{-56, -82}, {-38, -92}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctO2"), Text(extent = {{-24, -82}, {-6, -92}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctCO2"), Text(extent = {{-72, 114}, {72, 16}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "%name"), Text(extent = {{18, -80}, {36, -90}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pO2"), Text(extent = {{44, -80}, {62, -90}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pCO2"), Text(extent = {{74, -26}, {92, -36}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pCO"), Text(extent = {{74, -6}, {92, -16}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "FHbF"), Text(extent = {{72, 16}, {94, 4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "FMetHb"), Text(extent = {{72, 36}, {92, 26}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cDPG")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics));
     end bloodO2CO2;
 
     model TotalCO2
@@ -4564,7 +4661,28 @@ O2CO2"),                                                                        
       connect(BEox, bloodPhMeassure.BEox) annotation(Line(points = {{0, -56}, {16, -56}, {16, -20}, {28.7, -20}, {28.7, -27.3}}, color = {0, 0, 127}));
       connect(totalO2.cdO2p, cdO2) annotation(Line(points = {{26.3, 16.3}, {26.3, 11.15}, {26, 11.15}, {26, -2}}, color = {0, 0, 127}));
       connect(totalCO2.cdCO2p, cdCO2) annotation(Line(points = {{-73.4, 16}, {-74, 16}, {-74, -10}, {-74, -10}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{74, -56}, {92, -66}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "sO2"), Text(extent=  {{76, -76}, {98, -92}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cHCO3"), Text(extent=  {{-98, 84}, {-80, 74}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "T"), Text(extent=  {{-96, 34}, {-78, 24}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pH"), Text(extent=  {{2, -80}, {20, -90}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "BEox"), Text(extent=  {{-96, -52}, {-78, -62}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctHb"), Text(extent=  {{-10, 6}, {10, -6}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctO2", origin=  {-40, -88}, rotation=  90), Text(extent=  {{-13, 7}, {13, -7}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctCO2", origin=  {-15, -85}, rotation=  90), Text(extent=  {{-74, 114}, {70, 16}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "%name"), Text(extent=  {{24, -80}, {42, -90}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pO2"), Text(extent=  {{50, -78}, {70, -92}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pCO2"), Text(extent=  {{76, -34}, {94, -44}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctGlb"), Text(extent=  {{76, -16}, {94, -24}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pCO"), Text(extent=  {{76, 4}, {94, -4}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "FHbF"), Text(extent=  {{74, 26}, {94, 16}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "FMetHb"), Text(extent=  {{76, 42}, {94, 34}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cDPG"), Text(extent=  {{78, 62}, {96, 54}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctPO4"), Text(extent=  {{78, 82}, {96, 74}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctAlb"), Text(extent=  {{-12, 6}, {12, -6}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cdO2", origin=  {-90, -84}, rotation=  90), Text(extent=  {{-15.5, 19.5}, {15.5, -19.5}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cdCO2", origin=  {-63.5, -83.5}, rotation=  90)}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{74, -56}, {92, -66}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "sO2"), Text(extent = {{76, -76}, {98, -92}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cHCO3"), Text(extent = {{-98, 84}, {-80, 74}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "T"), Text(extent = {{-96, 34}, {-78, 24}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pH"), Text(extent = {{2, -80}, {20, -90}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "BEox"), Text(extent = {{-96, -52}, {-78, -62}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctHb"), Text(extent = {{-10, 6}, {10, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctO2", origin = {-40, -88}, rotation = 90), Text(extent = {{-13, 7}, {13, -7}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctCO2", origin = {-15, -85}, rotation = 90), Text(extent = {{-74, 114}, {70, 16}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "%name"), Text(extent = {{24, -80}, {42, -90}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pO2"), Text(extent = {{50, -78}, {70, -92}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pCO2"), Text(extent = {{76, -34}, {94, -44}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctGlb"), Text(extent = {{76, -16}, {94, -24}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pCO"), Text(extent = {{76, 4}, {94, -4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "FHbF"), Text(extent = {{74, 26}, {94, 16}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "FMetHb"), Text(extent = {{76, 42}, {94, 34}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cDPG"), Text(extent = {{78, 62}, {96, 54}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctPO4"), Text(extent = {{78, 82}, {96, 74}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctAlb"), Text(extent = {{-12, 6}, {12, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cdO2", origin = {-90, -84}, rotation = 90), Text(extent = {{-15.5, 19.5}, {15.5, -19.5}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cdCO2", origin = {-63.5, -83.5}, rotation = 90)}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end bloodPO2PCO2;
 
     model bloodCO2O2BEox
@@ -4621,7 +4739,28 @@ O2CO2"),                                                                        
       connect(inverseBlockConstraints.y2, bloodPO2PCO2_.pO2) annotation(Line(points = {{-37, -60}, {-50, -60}, {-50, -54}, {2, -54}, {2, -42}, {23.04, -42}, {23.04, -30}}, color = {0, 0, 127}));
       connect(bloodPO2PCO2_.cdO2, cdO2) annotation(Line(points = {{-58.88, -35.28}, {-58.88, -42}, {-70, -42}, {-70, -30}, {-88, -30}}, color = {0, 0, 127}));
       connect(bloodPO2PCO2_.cdCO2, cdCO2) annotation(Line(points = {{-42.24, -35.28}, {-42.24, -44}, {-88, -44}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {102, -102}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{74, -56}, {92, -66}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "sO2"), Text(extent=  {{76, -76}, {98, -92}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cHCO3"), Text(extent=  {{-98, 92}, {-80, 82}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "T"), Text(extent=  {{-98, 34}, {-80, 24}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pH"), Text(extent=  {{-18, -74}, {4, -88}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "BEox"), Text(extent=  {{-96, -46}, {-78, -56}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctHb"), Text(extent=  {{-92, -76}, {-68, -88}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctO2"), Text(extent=  {{-58, -72}, {-30, -90}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctCO2"), Text(extent=  {{-86, 114}, {58, 16}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "%name"), Text(extent=  {{18, -80}, {36, -90}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pO2"), Text(extent=  {{44, -80}, {62, -90}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pCO2"), Text(extent=  {{82, 88}, {100, 78}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctAlb"), Text(extent=  {{82, 66}, {100, 56}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctPO4"), Text(extent=  {{82, 48}, {100, 38}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cDPG"), Text(extent=  {{78, 28}, {98, 16}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "FMetHb"), Text(extent=  {{82, 6}, {98, -2}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "FHbF"), Text(extent=  {{80, -14}, {96, -22}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pCO"), Text(extent=  {{80, -34}, {96, -42}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctGlb"), Text(extent=  {{-96, 6}, {-76, -6}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cdO2"), Text(extent=  {{-96, -14}, {-70, -30}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cdCO2")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {102, -102}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{74, -56}, {92, -66}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "sO2"), Text(extent = {{76, -76}, {98, -92}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cHCO3"), Text(extent = {{-98, 92}, {-80, 82}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "T"), Text(extent = {{-98, 34}, {-80, 24}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pH"), Text(extent = {{-18, -74}, {4, -88}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "BEox"), Text(extent = {{-96, -46}, {-78, -56}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctHb"), Text(extent = {{-92, -76}, {-68, -88}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctO2"), Text(extent = {{-58, -72}, {-30, -90}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctCO2"), Text(extent = {{-86, 114}, {58, 16}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "%name"), Text(extent = {{18, -80}, {36, -90}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pO2"), Text(extent = {{44, -80}, {62, -90}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pCO2"), Text(extent = {{82, 88}, {100, 78}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctAlb"), Text(extent = {{82, 66}, {100, 56}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctPO4"), Text(extent = {{82, 48}, {100, 38}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cDPG"), Text(extent = {{78, 28}, {98, 16}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "FMetHb"), Text(extent = {{82, 6}, {98, -2}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "FHbF"), Text(extent = {{80, -14}, {96, -22}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pCO"), Text(extent = {{80, -34}, {96, -42}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctGlb"), Text(extent = {{-96, 6}, {-76, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cdO2"), Text(extent = {{-96, -14}, {-70, -30}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cdCO2")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end bloodCO2O2BEox;
 
     partial model HendersonHasselbach
@@ -4701,7 +4840,8 @@ O2CO2"),                                                                        
       //solubility 0.23 (mmol/l)/kPa at 25degC
       //plasma+erythrocyte
       tCO2 = tCO2_ery * Hct + tCO2_P * (1 - Hct);
-      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {215, 215, 215}, fillPattern=  FillPattern.Solid), Text(extent=  {{-74, -26}, {74, -58}}, lineColor=  {0, 0, 255}, textString=  "%name")}), Documentation(revisions = "<html>
+      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {215, 215, 215},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-74, -26}, {74, -58}}, lineColor = {0, 0, 255}, textString = "%name")}), Documentation(revisions = "<html>
 
 <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\"><tr>
 <td><p>Author:</p></td>
@@ -4879,7 +5019,8 @@ O2CO2"),                                                                        
       //  x=log(pO2CO/7);
       //  x=log(max(1e-15+1e-19*pO2CO,pO2CO/7)) - a - 0.055*(T-37); //namiesto:  x=log(pO2CO/7) - a - 0.055*(T-37);
       //  y=log(max(1e-15+1e-19*sO2CO/(1-sO2CO),sO2CO/(1-sO2CO)));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {215, 215, 215}, fillPattern=  FillPattern.Solid), Text(extent=  {{-74, -32}, {74, -64}}, lineColor=  {0, 0, 255}, textString=  "%name")}));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {215, 215, 215},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-74, -32}, {74, -64}}, lineColor = {0, 0, 255}, textString = "%name")}));
     end BloodO2Base;
 
     partial model BloodPhBase
@@ -4956,7 +5097,8 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
 </table>
 <br/><p>Copyright &copy; 2014 Marek Matejak, Charles University in Prague.</p><br/>
 
-</html>"), Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Text(extent=  {{-72, -56}, {76, -92}}, lineColor=  {0, 0, 255}, textString=  "%name"), Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {215, 215, 215}, fillPattern=  FillPattern.Solid), Text(extent=  {{-96, -62}, {98, -94}}, lineColor=  {0, 0, 255}, textString=  "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+</html>"), Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-72, -56}, {76, -92}}, lineColor = {0, 0, 255}, textString = "%name"), Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {215, 215, 215},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-96, -62}, {98, -94}}, lineColor = {0, 0, 255}, textString = "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end BloodPhBase;
 
     model BloodPhMeassure
@@ -5044,7 +5186,9 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
   //plasma+erythrocyte
   tCO2 = tCO2_ery*Hct + tCO2_P*(1-Hct);
 */
-      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {215, 215, 215}, fillPattern=  FillPattern.Solid), Text(extent=  {{-74, -26}, {74, -58}}, lineColor=  {0, 0, 255}, textString=  "%name"), Polygon(points=  {{-72, 10}, {80, 0}, {-72, -10}, {-72, 10}}, lineColor=  {0, 0, 127}, fillColor=  {255, 255, 255}, fillPattern=  FillPattern.Solid, origin=  {-2, -80}, rotation=  360)}));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {215, 215, 215},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-74, -26}, {74, -58}}, lineColor = {0, 0, 255}, textString = "%name"), Polygon(points = {{-72, 10}, {80, 0}, {-72, -10}, {-72, 10}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
+                fillPattern =                                                                                                    FillPattern.Solid, origin = {-2, -80}, rotation = 360)}));
     end FlowMeasureCO2;
 
     partial model BloodCO2TransportBase
@@ -5060,7 +5204,9 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       //mmol/l
       tCO2 = -q_out.q / BloodFlow;
       //mmol/l
-      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {215, 215, 215}, fillPattern=  FillPattern.Solid), Text(extent=  {{-74, -26}, {74, -58}}, lineColor=  {0, 0, 255}, textString=  "%name"), Polygon(points=  {{-72, 10}, {80, 0}, {-72, -10}, {-72, 10}}, lineColor=  {0, 0, 127}, fillColor=  {255, 255, 255}, fillPattern=  FillPattern.Solid, origin=  {-2, -80}, rotation=  360)}), Documentation(revisions = "<html>
+      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {215, 215, 215},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-74, -26}, {74, -58}}, lineColor = {0, 0, 255}, textString = "%name"), Polygon(points = {{-72, 10}, {80, 0}, {-72, -10}, {-72, 10}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
+                fillPattern =                                                                                                    FillPattern.Solid, origin = {-2, -80}, rotation = 360)}), Documentation(revisions = "<html>
 
 <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\"><tr>
 <td><p>Author:</p></td>
@@ -5229,7 +5375,8 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       q_in.q = 0;
       tCO2 = q_in.conc;
       // * MiniliterPerLiter;  //mmol/l
-      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {215, 215, 215}, fillPattern=  FillPattern.Solid), Text(extent=  {{-74, -26}, {74, -58}}, lineColor=  {0, 0, 255}, textString=  "%name")}));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {215, 215, 215},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-74, -26}, {74, -58}}, lineColor = {0, 0, 255}, textString = "%name")}));
     end MeassureBloodCO2;
 
     model ctHb_to_Htc
@@ -5270,7 +5417,10 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       // in erythrocytes ctHBE = 21 mmol/l if erythrocytes = 33.9 g/dl of erythrocytes
       // Htc = ctHb/(33.9*0.62058)=ctHb/21.037662
       Htc = ctHb / 21;
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 48}, {100, -46}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{20, 24}, {92, -22}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "Hct"), Text(extent=  {{-92, 32}, {-20, -32}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctHb")}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 48}, {100, -46}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{20, 24}, {92, -22}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "Hct"), Text(extent = {{-92, 32}, {-20, -32}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctHb")}));
     end ctHb_to_Htc;
 
     model VenousO2CO2
@@ -5349,7 +5499,33 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       connect(venousFick.ctO2a, ctO2a) annotation(Line(points = {{-72.61, -46.56}, {-78.305, -46.56}, {-78.305, -53}, {-92.5, -53}}, color = {0, 0, 127}));
       connect(bloodCO2O2BEox.cdCO2, cdCO2v) annotation(Line(points = {{-74, 52.88}, {-80, 52.88}, {-80, 49}, {-91, 49}}, color = {0, 0, 127}));
       connect(bloodCO2O2BEox.cdO2, cdO2v) annotation(Line(points = {{-74, 62}, {-80, 62}, {-80, 61}, {-93, 61}}, color = {0, 0, 127}));
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{-94, 84}, {-74, 76}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "VO2"), Text(extent=  {{74, 96}, {94, 88}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "VCO2"), Text(extent=  {{-94, 68}, {-74, 60}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "RQ"), Text(extent=  {{-96, 52}, {-76, 44}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "Q"), Text(extent=  {{-96, 20}, {-76, 12}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctO2a"), Text(extent=  {{-94, 2}, {-74, -6}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctCO2a"), Text(extent=  {{-92, -16}, {-72, -24}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "BEox"), Text(extent=  {{-92, -34}, {-72, -42}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctHb"), Text(extent=  {{-8, 4}, {8, -4}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctGlb", origin=  {70, -84}, rotation=  180), Text(extent=  {{-8, 4}, {8, -4}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pCO", origin=  {42, -84}, rotation=  180), Text(extent=  {{-8, 4}, {8, -4}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, origin=  {22, -84}, rotation=  180, textString=  "FHbF"), Text(extent=  {{-10, 6}, {10, -6}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, origin=  {-4, -84}, rotation=  180, textString=  "FMetHb"), Text(extent=  {{-9, 5}, {9, -5}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cDPG", origin=  {-29, -83}, rotation=  180), Text(extent=  {{-9, 5}, {9, -5}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, origin=  {-53, -85}, rotation=  180, textString=  "ctPO4"), Text(extent=  {{-9, 5}, {9, -5}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, origin=  {-79, -85}, rotation=  180, textString=  "ctAlb"), Text(extent=  {{-8, 4}, {8, -4}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, origin=  {82, 14}, rotation=  180, textString=  "pO2v"), Text(extent=  {{70, 2}, {90, -8}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pCO2v"), Text(extent=  {{74, -60}, {96, -76}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cHCO3v"), Text(extent=  {{76, -42}, {92, -50}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "sO2v"), Text(extent=  {{78, -20}, {94, -28}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "pHv"), Text(extent=  {{74, 70}, {96, 56}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctCO2v"), Text(extent=  {{76, 82}, {94, 72}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctO2v"), Text(extent=  {{-96, -54}, {-78, -64}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "T"), Text(extent=  {{-68, 92}, {58, 68}}, lineColor=  {28, 108, 200}, textString=  "%name"), Text(extent=  {{78, 52}, {96, 42}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cdO2v"), Text(extent=  {{74, 40}, {96, 26}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "cdCO2v")}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-94, 84}, {-74, 76}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "VO2"), Text(extent = {{74, 96}, {94, 88}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "VCO2"), Text(extent = {{-94, 68}, {-74, 60}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "RQ"), Text(extent = {{-96, 52}, {-76, 44}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "Q"), Text(extent = {{-96, 20}, {-76, 12}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctO2a"), Text(extent = {{-94, 2}, {-74, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctCO2a"), Text(extent = {{-92, -16}, {-72, -24}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "BEox"), Text(extent = {{-92, -34}, {-72, -42}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctHb"), Text(extent = {{-8, 4}, {8, -4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctGlb", origin = {70, -84}, rotation = 180), Text(extent = {{-8, 4}, {8, -4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pCO", origin = {42, -84}, rotation = 180), Text(extent = {{-8, 4}, {8, -4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, origin = {22, -84}, rotation = 180, textString = "FHbF"), Text(extent = {{-10, 6}, {10, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, origin = {-4, -84}, rotation = 180, textString = "FMetHb"), Text(extent = {{-9, 5}, {9, -5}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cDPG", origin = {-29, -83}, rotation = 180), Text(extent = {{-9, 5}, {9, -5}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, origin = {-53, -85}, rotation = 180, textString = "ctPO4"), Text(extent = {{-9, 5}, {9, -5}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, origin = {-79, -85}, rotation = 180, textString = "ctAlb"), Text(extent = {{-8, 4}, {8, -4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, origin = {82, 14}, rotation = 180, textString = "pO2v"), Text(extent = {{70, 2}, {90, -8}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pCO2v"), Text(extent = {{74, -60}, {96, -76}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cHCO3v"), Text(extent = {{76, -42}, {92, -50}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "sO2v"), Text(extent = {{78, -20}, {94, -28}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "pHv"), Text(extent = {{74, 70}, {96, 56}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctCO2v"), Text(extent = {{76, 82}, {94, 72}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctO2v"), Text(extent = {{-96, -54}, {-78, -64}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "T"), Text(extent = {{-68, 92}, {58, 68}}, lineColor = {28, 108, 200}, textString = "%name"), Text(extent = {{78, 52}, {96, 42}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cdO2v"), Text(extent = {{74, 40}, {96, 26}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "cdCO2v")}));
     end VenousO2CO2;
 
     model VenousFick
@@ -5393,7 +5569,22 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       FextrO2 = (ctO2a - ctO2v) / ctO2a;
       //CO2 addition ratio
       FaddCO2 = (ctCO2v - ctCO2a) / ctCO2v;
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{-92, 70}, {-72, 62}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "VO2"), Text(extent=  {{74, 76}, {94, 68}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "VCO2"), Text(extent=  {{-92, 50}, {-72, 42}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "RQ"), Text(extent=  {{-94, 28}, {-74, 20}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "Q"), Text(extent=  {{-90, 6}, {-70, -2}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctO2a"), Text(extent=  {{-90, -16}, {-70, -24}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctCO2a"), Text(extent=  {{72, 40}, {90, 30}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctCO2v"), Text(extent=  {{74, 58}, {90, 48}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "ctO2v"), Text(extent=  {{74, 20}, {92, 12}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "DO2"), Text(extent=  {{74, 4}, {92, -4}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "DCO2"), Text(extent=  {{74, -12}, {92, -20}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "RO2"), Text(extent=  {{74, -28}, {92, -36}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "RCO2"), Text(extent=  {{72, -48}, {94, -56}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "FextrO2"), Text(extent=  {{70, -66}, {94, -78}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "FaddCO2"), Text(extent=  {{-44, 86}, {34, 48}}, lineColor=  {0, 0, 255}, textString=  "%name")}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-92, 70}, {-72, 62}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "VO2"), Text(extent = {{74, 76}, {94, 68}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "VCO2"), Text(extent = {{-92, 50}, {-72, 42}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "RQ"), Text(extent = {{-94, 28}, {-74, 20}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "Q"), Text(extent = {{-90, 6}, {-70, -2}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctO2a"), Text(extent = {{-90, -16}, {-70, -24}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctCO2a"), Text(extent = {{72, 40}, {90, 30}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctCO2v"), Text(extent = {{74, 58}, {90, 48}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "ctO2v"), Text(extent = {{74, 20}, {92, 12}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "DO2"), Text(extent = {{74, 4}, {92, -4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "DCO2"), Text(extent = {{74, -12}, {92, -20}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "RO2"), Text(extent = {{74, -28}, {92, -36}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "RCO2"), Text(extent = {{72, -48}, {94, -56}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "FextrO2"), Text(extent = {{70, -66}, {94, -78}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "FaddCO2"), Text(extent = {{-44, 86}, {34, 48}}, lineColor = {0, 0, 255}, textString = "%name")}));
     end VenousFick;
 
     model Albumin
@@ -5412,7 +5603,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
 <p><br/>A least-squares linear regression fit to the Figge-Fencl quantitative physicochemical model (version 3.0) over the pH range of 6.90 to 7.90 yields the following equation for the charge displayed by albumin:</p>
 <p><br/> [ Albx- ] = -10 x [ Albumin ] x ( 0.123 x pH - 0.631 );</p>
 <p><br/> where [ Albx- ] is in mEq / L and [ Albumin ] is in g / dL. Therefore, at pH 7.40, the charge contributed by 4.40 g / dL of albumin is approximately -12.3 mEq / L.</p>
-</html>"), Icon(graphics = {Text(extent=  {{-79, -27}, {79, 27}}, lineColor=  {0, 0, 255}, origin=  {73, 19}, rotation=  90, textString=  "Alb")}));
+</html>"), Icon(graphics={  Text(extent = {{-79, -27}, {79, 27}}, lineColor = {0, 0, 255}, origin = {73, 19}, rotation = 90, textString = "Alb")}));
     end Albumin;
 
     model Globulins
@@ -5423,7 +5614,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       y = -ctGlb * (0.075 / 0.77 * (pH - 7.4) + 2.5 / 28) * Modelica.Constants.F;
       //chcem naboj -2.5 mEq/l pre normalnu koncentraciu 28 mg/l a pH=7.4
       //  y=-ctGlb*((0.075/0.77)*(pH-7.4) + 15.6/28)* Modelica.Constants.F; //chcem naboj -15.6 mEq/l pre normalnu koncentraciu 28 mg/l a pH=7.4
-      annotation(Icon(graphics = {Text(extent=  {{-79, -27}, {79, 27}}, lineColor=  {0, 0, 255}, origin=  {73, 19}, rotation=  90, textString=  "Glb")}));
+      annotation(Icon(graphics={  Text(extent = {{-79, -27}, {79, 27}}, lineColor = {0, 0, 255}, origin = {73, 19}, rotation = 90, textString = "Glb")}));
     end Globulins;
 
     model Phosphates
@@ -5442,7 +5633,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
 <p><br/>[H2PO4] / [H3PO4] = 10^(pH-pKa1) </p>
 <p><br/>[HPO4] / [H2PO4] = 10^(pH-pKa2) </p>
 <p><br/>[PO4] / [HPO4] = 10^(pH-pKa3) </p>
-</html>"), Icon(graphics = {Text(extent=  {{-79, -27}, {79, 27}}, lineColor=  {0, 0, 255}, origin=  {73, 19}, rotation=  90, textString=  "PO4")}));
+</html>"), Icon(graphics={  Text(extent = {{-79, -27}, {79, 27}}, lineColor = {0, 0, 255}, origin = {73, 19}, rotation = 90, textString = "PO4")}));
     end Phosphates;
 
     model Bicarbonate
@@ -5463,7 +5654,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       //bicarbonate
       y2 = -cdCO2 * 10 ^ (pH - 6.35) * Modelica.Constants.F;
       //bicarbonate
-      annotation(Icon(graphics = {Text(extent=  {{-79, -27}, {79, 27}}, lineColor=  {0, 0, 255}, origin=  {75, 19}, rotation=  90, textString=  "HCO3")}));
+      annotation(Icon(graphics={  Text(extent = {{-79, -27}, {79, 27}}, lineColor = {0, 0, 255}, origin = {75, 19}, rotation = 90, textString = "HCO3")}));
     end Bicarbonate;
 
     model Haemoglobin
@@ -5515,7 +5706,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       //= zOxyHb + -[O2HbNH2]/([O2HbNH2]+[O2HbNH3+]) + -2[O2HbNH3+]/([O2HbNH2]+[O2HbNH3+]), where pKZO=8.08
       zDeoxyCarbaminoHb = zDeoxyHb + (1 + 2 * 10 ^ (pKzR - pH)) / (1 + 10 ^ (pKzR - pH));
       //betaOxyHb(pH) * (pH-pIO) + -[HbNH2]/([HbNH2]+[HbNH3+]) + -2[HbNH3+]/([HbNH2]+[HbNH3+]), where pKZR=7.14
-      annotation(Icon(graphics = {Text(extent=  {{-79, -27}, {79, 27}}, lineColor=  {0, 0, 255}, origin=  {73, 19}, rotation=  90, textString=  "Hb")}));
+      annotation(Icon(graphics={  Text(extent = {{-79, -27}, {79, 27}}, lineColor = {0, 0, 255}, origin = {73, 19}, rotation = 90, textString = "Hb")}));
     end Haemoglobin;
 
     model OtherRBCBuffers
@@ -5532,14 +5723,14 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
 <p><br/>[H2PO4] / [H3PO4] = 10^(pH-pKa1) </p>
 <p><br/>[HPO4] / [H2PO4] = 10^(pH-pKa2) </p>
 <p><br/>[PO4] / [HPO4] = 10^(pH-pKa3) </p>
-</html>"), Icon(graphics = {Text(extent=  {{-79, -27}, {79, 27}}, lineColor=  {0, 0, 255}, origin=  {73, 19}, rotation=  90, textString=  "Others")}));
+</html>"), Icon(graphics={  Text(extent = {{-79, -27}, {79, 27}}, lineColor = {0, 0, 255}, origin = {73, 19}, rotation = 90, textString = "Others")}));
     end OtherRBCBuffers;
 
     partial model BufferInterface
       Physiolibrary.Types.RealIO.pHInput pH annotation(Placement(transformation(extent = {{-120, 40}, {-80, 80}})));
       Physiolibrary.Types.RealIO.VolumeDensityOfChargeOutput y(displayUnit = "mEq/l")
         "charge of buffer"                                                                               annotation(Placement(transformation(extent = {{80, -100}, {120, -60}}), iconTransformation(extent = {{80, -100}, {120, -60}})));
-      annotation(Icon(graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255})}));
+      annotation(Icon(graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255})}));
     end BufferInterface;
 
     model TestToolVenousBlood
@@ -5608,7 +5799,8 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       connect(ArterialBlood.cdO2, cdO2) annotation(Line(points = {{-57.52, 31.6}, {-57.52, 26.8}, {-58, 26.8}, {-58, 18}}, color = {0, 0, 127}));
       connect(VenousBlood.ctO2v, ctO2v) annotation(Line(points = {{40.59, 1.03}, {46.295, 1.03}, {46.295, 2}, {56, 2}}, color = {0, 0, 127}));
       connect(VenousBlood.ctCO2v, ctCO2v) annotation(Line(points = {{40.59, -4.43}, {49.295, -4.43}, {49.295, -5}, {61, -5}}, color = {0, 0, 127}));
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {128, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{-68, 78}, {84, 34}}, lineColor=  {28, 108, 200}, textString=  "Venous Blood 
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {128, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-68, 78}, {84, 34}}, lineColor = {28, 108, 200}, textString = "Venous Blood 
 Test Tool")}));
     end TestToolVenousBlood;
 
@@ -5633,7 +5825,8 @@ Test Tool")}));
       connect(dilution.q_out, solventFlowPump.q_in) annotation(Line(points = {{-14, 28}, {-2, 28}}, color = {200, 0, 0}, thickness = 1, smooth = Smooth.None));
       connect(inspired, dilution.q_in) annotation(Line(points = {{-72, 28}, {-34, 28}}, color = {200, 0, 0}, thickness = 1, smooth = Smooth.None));
       connect(solventFlowPump.q_out, alveolar) annotation(Line(points = {{18, 28}, {36, 28}, {36, -4}, {30, -4}}, color = {107, 45, 134}, thickness = 1, smooth = Smooth.None));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Polygon(points=  {{-38, 93}, {40, 80}, {-38, 66}, {-38, 93}}, lineColor=  {0, 0, 127}, fillColor=  {255, 255, 255}, fillPattern=  FillPattern.Solid), Text(extent=  {{-92, -90}, {84, -60}}, textString=  "%name", lineColor=  {0, 0, 255})}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Polygon(points = {{-38, 93}, {40, 80}, {-38, 66}, {-38, 93}}, lineColor = {0, 0, 127}, fillColor = {255, 255, 255},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-92, -90}, {84, -60}}, textString = "%name", lineColor = {0, 0, 255})}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end AlveolarVentilation;
 
     model fractToPressure
@@ -5642,7 +5835,9 @@ Test Tool")}));
       Physiolibrary.Types.RealIO.PressureOutput partialPressure annotation(Placement(transformation(extent = {{46, -72}, {66, -52}}), iconTransformation(extent = {{100, -20}, {142, 22}})));
     equation
       partialPressure = pressure * fraction;
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 40}, {100, -40}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{-100, 30}, {98, -28}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "%name")}));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 40}, {100, -40}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-100, 30}, {98, -28}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "%name")}));
     end fractToPressure;
 
     model GasPartialPressure
@@ -5651,7 +5846,9 @@ Test Tool")}));
       Physiolibrary.Types.RealIO.FractionInput gasFractionConcentration annotation(Placement(transformation(extent = {{-140, -70}, {-100, -30}}), iconTransformation(extent = {{-140, -70}, {-100, -30}})));
     equation
       partialPressure = pressure * gasFractionConcentration;
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{-102, 42}, {102, -30}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-102, 42}, {102, -30}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end GasPartialPressure;
 
     model VentilationO2CO2
@@ -5744,7 +5941,8 @@ Test Tool")}));
       connect(FHbF.y, bloodParameters.FHbF) annotation(Line(points = {{38.5, -18}, {22, -18}, {2, -18}, {2, 22}, {-46, 22}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(FMetHb.y, bloodParameters.FMetHb) annotation(Line(points = {{38.5, -6}, {20, -6}, {2, -6}, {2, 22}, {-46, 22}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(PCO.y, bloodParameters.PCO) annotation(Line(points = {{40.75, -33}, {2, -33}, {2, 22}, {-46, 22}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-98, 100}, {100, -98}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{-106, 76}, {96, 36}}, lineColor=  {28, 108, 200}, textString=  "Blood 
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-98, 100}, {100, -98}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-106, 76}, {96, 36}}, lineColor = {28, 108, 200}, textString = "Blood 
 parameters")}));
     end BloodParameters;
 
@@ -5783,7 +5981,15 @@ parameters")}));
       connect(Blood.T, bloodParameters.temp) annotation(Line(points = {{-59.04, 10.68}, {-66, 10.68}, {-66, 24}, {46, 24}, {46, 34}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(Blood.FMetHb, bloodParameters.FMetHb) annotation(Line(points = {{24.56, -13.64}, {46, -13.64}, {46, 34}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(BEox, Blood.BEox) annotation(Line(points = {{-35, -75}, {-19.14, -75}, {-19.14, -61.14}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-102, 100}, {98, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{-70, 26}, {-48, 8}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "O2"), Text(extent=  {{-38, 66}, {-16, 48}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "O2"), Text(extent=  {{50, 26}, {72, 8}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "O2"), Text(extent=  {{-68, -16}, {-36, -44}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "CO2"), Text(extent=  {{36, -10}, {68, -38}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "CO2"), Text(extent=  {{10, 68}, {42, 40}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "CO2"), Text(extent=  {{-100, -50}, {100, -94}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-102, 100}, {98, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-70, 26}, {-48, 8}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "O2"), Text(extent = {{-38, 66}, {-16, 48}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "O2"), Text(extent = {{50, 26}, {72, 8}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "O2"), Text(extent = {{-68, -16}, {-36, -44}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "CO2"), Text(extent = {{36, -10}, {68, -38}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "CO2"), Text(extent = {{10, 68}, {42, 40}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "CO2"), Text(extent = {{-100, -50}, {100, -94}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end BloodO2CO2Equilibrium;
 
     model Alveolus
@@ -5833,7 +6039,11 @@ parameters")}));
       connect(Blood.T, bloodParameters.temp) annotation(Line(points = {{-59.04, 10.68}, {-66, 10.68}, {-66, 24}, {46, 24}, {46, 34}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(Blood.FMetHb, bloodParameters.FMetHb) annotation(Line(points = {{24.56, -13.64}, {46, -13.64}, {46, 34}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(BEox, Blood.BEox) annotation(Line(points = {{-35, -75}, {-19.14, -75}, {-19.14, -61.14}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-102, 100}, {98, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{-70, 26}, {-48, 8}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "O2"), Text(extent=  {{-68, -16}, {-36, -44}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "CO2"), Text(extent=  {{-100, -50}, {100, -94}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-102, 100}, {98, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-70, 26}, {-48, 8}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "O2"), Text(extent = {{-68, -16}, {-36, -44}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "CO2"), Text(extent = {{-100, -50}, {100, -94}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end BloodO2CO2measured;
 
     model BloodyMary_version01
@@ -5920,7 +6130,9 @@ parameters")}));
       connect(ArtBlood.BEox, BEox.y) annotation(Line(points = {{59.4, 48.6}, {38, 48.6}, {38, 17}, {-29, 17}}, color = {0, 0, 127}));
       connect(TissueCapillary.BEox, BEox.y) annotation(Line(points = {{24.73, -56.03}, {38, -56.03}, {38, 17}, {-29, 17}}, color = {0, 0, 127}));
       connect(atmosphericTemperature.y, ventilation.ambientTemperature) annotation(Line(points = {{-36.75, 76}, {-22, 76}, {-22, 78.88}, {-7.9, 78.88}}, color = {0, 0, 127}));
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{-98, 68}, {88, 2}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "Bloody Mary")}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-98, 68}, {88, 2}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "Bloody Mary")}));
     end BloodyMary_version01;
 
     model TissuesO2
@@ -5953,7 +6165,7 @@ parameters")}));
       connect(O2Tissue.T, busConnector.core_T) annotation(Line(points = {{1, -11}, {32, -11}, {32, 74}, {-82, 74}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(O2Tissue.pCO2, busConnector.tissueVein_pCO2) annotation(Line(points = {{1, -15}, {32, -15}, {32, 74}, {-82, 74}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(O2Tissue.pH, busConnector.tissueVein_pH) annotation(Line(points = {{1, -19}, {32, -19}, {32, 74}, {-82, 74}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-120, 100}, {120, -100}}, lineColor=  {0, 0, 0})}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-120, 100}, {120, -100}}, lineColor = {0, 0, 0})}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end TissuesO2;
 
     model TissuesCO2
@@ -6001,7 +6213,7 @@ parameters")}));
       connect(pCO2, interstitium.pCO2) annotation(Line(points = {{46, -18}, {82, -18}, {82, -34}, {116, -34}}, color = {0, 0, 127}));
       connect(cHCO3_interstitial, add.u2) annotation(Line(points = {{-18, -72}, {12, -72}, {40, -72}}, color = {0, 0, 127}));
       connect(interstitium.BE, busConnector.interstitiumBEoxFlow) annotation(Line(points = {{124, -33}, {124, -33}, {124, -18}, {124, 92}, {-88, 92}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-      annotation(Icon(graphics = {Rectangle(extent=  {{-120, 100}, {120, -100}}, lineColor=  {0, 0, 0})}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(graphics={  Rectangle(extent = {{-120, 100}, {120, -100}}, lineColor = {0, 0, 0})}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end TissuesCO2;
 
     model O2Physiomodel
@@ -6077,7 +6289,7 @@ parameters")}));
       connect(pulmShortCircuitFlow.y, pulmShortCircuit.solutionFlow) annotation(Line(points = {{3, -46}, {-8, -46}, {-8, -39}}, color = {0, 0, 127}));
       connect(veinsO2.q_in, pulmShortCircuit.q_in) annotation(Line(points = {{-80, -8}, {-50, -8}, {-50, -32}, {-18, -32}}, color = {107, 45, 134}, thickness = 1));
       connect(pulmShortCircuit.q_out, artysO2.q_in) annotation(Line(points = {{2, -32}, {36, -32}, {36, -10}, {70, -10}}, color = {107, 45, 134}, thickness = 1));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Bitmap(extent=  {{-100, 102}, {100, -98}}, fileName=  "modelica://Physiolibrary/Resources/Icons/O2.png"), Text(extent=  {{-130, -100}, {146, -148}}, lineColor=  {28, 108, 200}, textString=  "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Bitmap(extent = {{-100, 102}, {100, -98}}, fileName = "modelica://Physiolibrary/Resources/Icons/O2.png"), Text(extent = {{-130, -100}, {146, -148}}, lineColor = {28, 108, 200}, textString = "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end O2Physiomodel;
 
     model CO2Physiomodel
@@ -6150,7 +6362,7 @@ parameters")}));
       connect(busConnector.FiCO2, product.u2) annotation(Line(points = {{-94, -42}, {-100, -42}, {-100, 86.4}, {-79.2, 86.4}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
       connect(busConnector.BarometerPressure, product.u1) annotation(Line(points = {{-94, -42}, {-100, -42}, {-100, 93.6}, {-79.2, 93.6}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
       connect(alveolarVentilation.inspired, air.q_out) annotation(Line(points = {{-10, 86}, {-30, 86}, {-30, 90}, {-48, 90}}, color = {107, 45, 134}, thickness = 1));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Text(extent=  {{-100, -98}, {130, -144}}, lineColor=  {28, 108, 200}, textString=  "%name")}), Documentation(revisions = "<html>
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-100, -98}, {130, -144}}, lineColor = {28, 108, 200}, textString = "%name")}), Documentation(revisions = "<html>
 
 <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\"><tr>
 <td><p>Author:</p></td>
@@ -6228,7 +6440,7 @@ parameters")}));
       connect(busConnector.BEox, tissueVeinPH.BEox) annotation(Line(points = {{-24, 92}, {-24, 92}, {-24, -8}, {26.6, -8}, {26.6, -22.6}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
       connect(tissueVeinPH.pH, busConnector.tissueVein_pH) annotation(Line(points = {{16.8, -54.8}, {16.8, -60}, {34, -60}, {34, 92}, {-24, 92}}, color = {0, 0, 127}));
       connect(tissueVeinPH.pH_ery, busConnector.tissueVein_pH_ery) annotation(Line(points = {{11.2, -54.8}, {11.2, -64}, {34, -64}, {34, 92}, {-24, 92}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Text(extent=  {{-118, -84}, {124, -118}}, lineColor=  {0, 0, 255}, textString=  "%name")}), Documentation(revisions = "<html>
+      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-118, -84}, {124, -118}}, lineColor = {0, 0, 255}, textString = "%name")}), Documentation(revisions = "<html>
 
 <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\"><tr>
 <td><p>Author:</p></td>
@@ -6275,7 +6487,7 @@ parameters")}));
       connect(alveolarVentilation.RespRate, busConnector.RespRate) annotation(Line(points = {{-25, -40}, {-4, -40}, {18, -40}, {18, -20}, {76, -20}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(alveolarVentilation.DeadSpace, busConnector.DeadSpace) annotation(Line(points = {{-25, -34}, {-4, -34}, {18, -34}, {18, -20}, {76, -20}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(alveolarVentilation.TidalVolume, busConnector.TidalVolume) annotation(Line(points = {{-25, -28}, {-4, -28}, {18, -28}, {18, -20}, {76, -20}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics = {Text(extent=  {{-120, -108}, {130, -126}}, lineColor=  {0, 0, 255}, textString=  "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = true, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-120, -108}, {130, -126}}, lineColor = {0, 0, 255}, textString = "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end Ventilation;
 
     model BloodyMary_Physiomodel
@@ -6293,7 +6505,9 @@ parameters")}));
       connect(ventilation.busConnector, busConnector) annotation(Line(points = {{-32, 74.4}, {-6, 74.4}, {-6, 74}, {34, 74}, {34, 48}, {34, 46}, {70, 46}, {70, 58}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(busConnector, bodyBEox.busConnector) annotation(Line(points = {{70, 58}, {76, 58}, {76, 98}, {82, 98}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
       connect(busConnector, kidney1.busConnector) annotation(Line(points = {{70, 58}, {76, 58}, {76, 38.2}, {82, 38.2}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid), Text(extent=  {{-92, 80}, {88, -18}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, textString=  "Bloody Mary
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-92, 80}, {88, -18}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "Bloody Mary
 (Physiomodel)")}));
     end BloodyMary_Physiomodel;
 
@@ -6399,7 +6613,7 @@ parameters")}));
       connect(busConnector.core_T, alveolus.temperature) annotation(Line(points = {{92, 34}, {90, 34}, {90, 36}, {90, 34}, {30, 34}, {30, 30}, {8, 30}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
       connect(O2Lung.q_in, unlimitedSolutionStorage.q_out) annotation(Line(points = {{-19, -9}, {-50, -9}, {-50, -8}, {-78, -8}}, color = {107, 45, 134}, thickness = 1));
       connect(O2Lung.q_out, unlimitedSolutionStorage1.q_out) annotation(Line(points = {{-1, -9}, {24.5, -9}, {24.5, -12}, {60, -12}}, color = {107, 45, 134}, thickness = 1));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -40}, {100, 100}}), graphics = {Bitmap(extent=  {{-100, 102}, {100, -98}}, fileName=  "modelica://Physiolibrary/Resources/Icons/O2.png"), Text(extent=  {{-130, -100}, {146, -148}}, lineColor=  {28, 108, 200}, textString=  "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -40}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -40}, {100, 100}}), graphics={  Bitmap(extent = {{-100, 102}, {100, -98}}, fileName = "modelica://Physiolibrary/Resources/Icons/O2.png"), Text(extent = {{-130, -100}, {146, -148}}, lineColor = {28, 108, 200}, textString = "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -40}, {100, 100}})));
     end O2PhysiomodelDbg;
 
     model VentilationInputs
@@ -6411,7 +6625,7 @@ parameters")}));
     equation
       connect(constBronchiDilution.y, busConnector.BronchiDilution) annotation(Line(points = {{-69, -16}, {76, -16}, {76, -20}}, color = {0, 0, 127}, smooth = Smooth.None), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(constAlveolarVentilation_Env.y, busConnector.AlveolarVentilation_Env) annotation(Line(points = {{-71, 38}, {76, 38}, {76, -20}}, color = {0, 0, 127}, smooth = Smooth.None), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Text(extent=  {{-120, -108}, {130, -126}}, lineColor=  {0, 0, 255}, textString=  "%name"), Line(points=  {{-88, -88}, {60, 40}}, color=  {28, 108, 200}, arrow=  {Arrow.None, Arrow.Filled}, thickness=  0.5)}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-120, -108}, {130, -126}}, lineColor = {0, 0, 255}, textString = "%name"), Line(points = {{-88, -88}, {60, 40}}, color = {28, 108, 200}, arrow = {Arrow.None, Arrow.Filled}, thickness = 0.5)}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end VentilationInputs;
 
     model AcidBaseInputs
@@ -6431,7 +6645,7 @@ parameters")}));
       connect(constveins_erypH.y, busConnector.Veins_pH_ery) annotation(Line(points = {{-79, 62}, {-24, 62}, {-24, 92}}, color = {0, 0, 127}, smooth = Smooth.None), Text(string = "%second", index = 1, extent = {{6, -13}, {6, -13}}));
       connect(constLung_pH.y, busConnector.Lung_pH) annotation(Line(points = {{-1, 80}, {-1, 78}, {32, 78}, {32, 92}, {-24, 92}}, color = {0, 0, 127}, smooth = Smooth.None), Text(string = "%second", index = 1, extent = {{6, -8}, {6, -8}}));
       connect(constlung_erypH.y, busConnector.Lung_pH_ery) annotation(Line(points = {{-3, 48}, {-3, 46}, {36, 46}, {36, 92}, {-24, 92}}, color = {0, 0, 127}, smooth = Smooth.None), Text(string = "%second", index = 1, extent = {{6, -13}, {6, -13}}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Text(extent=  {{-118, -84}, {124, -118}}, lineColor=  {0, 0, 255}, textString=  "%name"), Line(points=  {{-98, -100}, {-24, -24}}, color=  {28, 108, 200}, thickness=  0.5, arrow=  {Arrow.None, Arrow.Filled}), Line(points=  {{-98, 98}, {-34, 34}}, color=  {28, 108, 200}, thickness=  0.5, arrow=  {Arrow.None, Arrow.Filled})}), Documentation(revisions = "<html>
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-118, -84}, {124, -118}}, lineColor = {0, 0, 255}, textString = "%name"), Line(points = {{-98, -100}, {-24, -24}}, color = {28, 108, 200}, thickness = 0.5, arrow = {Arrow.None, Arrow.Filled}), Line(points = {{-98, 98}, {-34, 34}}, color = {28, 108, 200}, thickness = 0.5, arrow = {Arrow.None, Arrow.Filled})}), Documentation(revisions = "<html>
 
 <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\"><tr>
 <td><p>Author:</p></td>
@@ -6483,7 +6697,7 @@ parameters")}));
       connect(constArtyspCO2.y, busConnector.CO2Artys_pCO2) annotation(Line(points = {{79, -66}, {79, 12}, {100, 12}, {100, -42}, {-94, -42}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(constLungspCO2.y, busConnector.CO2Lung_pCO2) annotation(Line(points = {{-1, -66}, {-1, 10}, {10, 10}, {10, -42}, {-94, -42}}, color = {0, 0, 127}, smooth = Smooth.None), Text(string = "%second", index = 1, extent = {{6, -5}, {6, -5}}));
       connect(constLungsHCO.y, busConnector.CO2Lung_cHCO3) annotation(Line(points = {{-1, -78}, {-1, 12}, {10, 12}, {10, -42}, {-94, -42}}, color = {0, 0, 127}, smooth = Smooth.None));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Text(extent=  {{-100, -98}, {130, -144}}, lineColor=  {28, 108, 200}, textString=  "%name"), Line(points=  {{-100, -98}, {44, 34}}, color=  {28, 108, 200}, thickness=  1, arrow=  {Arrow.None, Arrow.Filled})}), Documentation(revisions = "<html>
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-100, -98}, {130, -144}}, lineColor = {28, 108, 200}, textString = "%name"), Line(points = {{-100, -98}, {44, 34}}, color = {28, 108, 200}, thickness = 1, arrow = {Arrow.None, Arrow.Filled})}), Documentation(revisions = "<html>
 
 <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\"><tr>
 <td><p>Author:</p></td>
@@ -7046,7 +7260,7 @@ parameters")}));
     equation
       connect(kidneyABRcompensation1.molarflowrate, busConnector.kidneyBEoxFlow) annotation(Line(points = {{-21, 18}, {-6, 18}, {-6, 82}, {-80, 82}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(kidneyABRcompensation1.pH, busConnector.Artys_pH) annotation(Line(points = {{-38, 18}, {-38, 18}, {-80, 18}, {-80, 82}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{-3, -3}, {-3, -3}}));
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(graphics = {Ellipse(extent=  {{-56, 90}, {24, -82}}, lineColor=  {28, 108, 200}), Line(points=  {{32, 88}, {24, -4}, {52, -86}}, color=  {28, 108, 200})}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(graphics={  Ellipse(extent = {{-56, 90}, {24, -82}}, lineColor = {28, 108, 200}), Line(points = {{32, 88}, {24, -4}, {52, -86}}, color = {28, 108, 200})}));
     end kidney;
   end Parts;
 
