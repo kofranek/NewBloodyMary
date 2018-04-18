@@ -3909,7 +3909,7 @@ O2CO2"),                                                                        
                   {-38,4}})));
         Physiolibrary.Types.Constants.ConcentrationConst BEox(k = -19) annotation(Placement(transformation(extent={{-30,68},
                   {-22,76}})));
-        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="kPa") =
+        Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="kPa")=
             0)                                                                          annotation(Placement(transformation(extent = {{-74, 60}, {-66, 68}}, origin={-6.334,
                   28},                                                                                                    rotation = 0), visible = true));
         Physiolibrary.Types.Constants.ConcentrationConst cPi(k = 1.15) annotation(Placement(transformation(extent={{-46,40},
@@ -3945,8 +3945,8 @@ O2CO2"),                                                                        
         connect(plasmaPO2PCO2old1.ctPi, plasmaPO2PCO2_1.ctPi) annotation (Line(
               points={{-9.3,-51.74},{-30,-51.74},{-30,44},{-24,44},{-24,45.08},
                 {-11.6,45.08}}, color={0,0,127}));
-        connect(plasmaPO2PCO2old1.T, plasmaPO2PCO2_1.T) annotation (Line(points
-              ={{-9.3,-88},{-24,-88},{-24,-86},{-34,-86},{-34,0},{-11.6,0}},
+        connect(plasmaPO2PCO2old1.T, plasmaPO2PCO2_1.T) annotation (Line(points=
+               {{-9.3,-88},{-24,-88},{-24,-86},{-34,-86},{-34,0},{-11.6,0}},
               color={0,0,127}));
         annotation(experiment(__Wolfram_Algorithm = "cvodes"), Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
                   -100},{100,100}})));
@@ -7217,6 +7217,25 @@ parameters")}));
         connect(ctHb.y, ctO2content.ctHb) annotation(Line(points = {{70.75, 46}, {58.3, 46}, {58.3, 45.4}}, color = {0, 0, 127}));
         annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
       end TestOSA1;
+
+      model TestNH4Excretion
+
+        AmmoniumExcretion ammoniumExcretion
+          annotation (Placement(transformation(extent={{-48,12},{-10,52}})));
+        Physiolibrary.Types.Constants.pHConst pH(k=7.2)
+          annotation (Placement(transformation(extent={{-82,24},{-74,32}})));
+        Physiolibrary.Types.Constants.ConcentrationConst Cloride(k=85)
+          annotation (Placement(transformation(extent={{-84,64},{-76,72}})));
+        Real cas;
+      equation
+        cas = time/86000;
+        connect(pH.y, ammoniumExcretion.arterialpH) annotation (Line(points={{-73,28},
+                {-60,28},{-60,25.8},{-46.29,25.8}}, color={0,0,127}));
+        connect(Cloride.y, ammoniumExcretion.ChlorideConcentration) annotation (Line(
+              points={{-75,68},{-62,68},{-62,44.4},{-46.1,44.4}}, color={0,0,127}));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}})));
+      end TestNH4Excretion;
     end tests;
 
     model kidneyABRcompensation
@@ -7262,6 +7281,255 @@ parameters")}));
       connect(kidneyABRcompensation1.pH, busConnector.Artys_pH) annotation(Line(points = {{-38, 18}, {-38, 18}, {-80, 18}, {-80, 82}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{-3, -3}, {-3, -3}}));
       annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(graphics={  Ellipse(extent = {{-56, 90}, {24, -82}}, lineColor = {28, 108, 200}), Line(points = {{32, 88}, {24, -4}, {52, -86}}, color = {28, 108, 200})}));
     end kidney;
+
+    model AmmoniumExcretion
+      parameter Real normalpH=7.42;
+       extends Physiolibrary.Icons.Amonium;
+    Physiolibrary.Blocks.Factors.Spline PT_NH3_AcuteEffect(data={{7.00,2.0,0},
+          {normalpH,1.0,-3.0},{7.80,0.0,0}})
+        "marek: normal pH corrected from 7.45 to 7.42"
+      annotation (Placement(transformation(extent={{-60,52},{-40,72}})));
+      Physiolibrary.Blocks.Factors.SplineLag PT_NH3_ChronicEffect(
+      stateName="PT_NH3.ChronicPhEffect",
+      data={{7.00,3.0,0},{normalpH,1.0,-4.0},{7.80,0.0,0}},
+        HalfTime=1*86400*Modelica.Math.log(2))
+        "marek: normal pH corrected from 7.45 to 7.42"
+      annotation (Placement(transformation(extent={{-60,40},{-40,60}})));
+    Physiolibrary.Blocks.Factors.Spline CD_NH4_PhOnFlux(data={{7.00,1.0,0},{
+          normalpH,0.6,-2.0},{7.80,0.0,0}})
+        "marek: normal pH corrected from 7.45 to 7.42"
+      annotation (Placement(transformation(extent={{-60,24},{-40,44}})));
+    Physiolibrary.Types.Constants.MolarFlowRateConst
+      electrolytesFlowConstant(k=6.6666666666667e-07)
+      annotation (Placement(transformation(extent={{-68,74},{-56,86}})));
+    Physiolibrary.Blocks.Factors.Spline ChloridePoolEffect(data={{0.00,0.0,0},
+          {80,1.0,0.0}})
+        "electroneutrality does not allow to extract cation without anion"
+      annotation (Placement(transformation(extent={{-60,-2},{-40,18}})));
+      Physiolibrary.Types.RealIO.pHInput arterialpH annotation (Placement(
+            transformation(extent={{-88,42},{-72,58}}), iconTransformation(extent={{
+                -106,-46},{-76,-16}})));
+      Physiolibrary.Types.RealIO.ConcentrationInput ChlorideConcentration
+        annotation (Placement(transformation(extent={{-86,0},{-70,16}}),
+            iconTransformation(extent={{-104,48},{-76,76}})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput NH4Excretion annotation (
+          Placement(transformation(extent={{86,-6},{106,14}}),  iconTransformation(
+              extent={{86,-6},{106,14}})));
+    equation
+
+    connect(PT_NH3_AcuteEffect.y, PT_NH3_ChronicEffect.yBase) annotation (
+        Line(
+        points={{-50,58},{-50,52}},
+        color={0,0,127},
+        smooth=Smooth.None));
+    connect(PT_NH3_ChronicEffect.y, CD_NH4_PhOnFlux.yBase) annotation (Line(
+        points={{-50,46},{-50,36}},
+        color={0,0,127},
+        smooth=Smooth.None));
+    connect(electrolytesFlowConstant.y, PT_NH3_AcuteEffect.yBase) annotation (
+       Line(
+        points={{-54.5,80},{-50,80},{-50,64}},
+        color={0,0,127},
+        smooth=Smooth.None));
+    connect(CD_NH4_PhOnFlux.y, ChloridePoolEffect.yBase) annotation (Line(
+        points={{-50,30},{-50,10}},
+        color={0,0,127},
+        smooth=Smooth.None));
+      connect(ChloridePoolEffect.u, ChlorideConcentration)
+        annotation (Line(points={{-58,8},{-78,8},{-78,8}}, color={0,0,127}));
+      connect(arterialpH, PT_NH3_ChronicEffect.u)
+        annotation (Line(points={{-80,50},{-58,50},{-58,50}}, color={0,0,127}));
+      connect(PT_NH3_AcuteEffect.u, PT_NH3_ChronicEffect.u) annotation (Line(points=
+             {{-58,62},{-64,62},{-64,50},{-58,50}}, color={0,0,127}));
+      connect(CD_NH4_PhOnFlux.u, PT_NH3_ChronicEffect.u) annotation (Line(points={{-58,
+              34},{-64,34},{-64,50},{-58,50}}, color={0,0,127}));
+      connect(ChloridePoolEffect.y, NH4Excretion)
+        annotation (Line(points={{-50,4},{-50,4},{96,4}},    color={0,0,127}));
+      annotation ( Icon(coordinateSystem(
+              preserveAspectRatio=false,extent={{-100,-100},{100,100}}),
+            graphics={              Text(
+              extent={{-112,-102},{108,-128}},
+              lineColor={0,0,255},
+              textString="%name")}),
+        Documentation(revisions="<html>
+
+<table>
+<tr>
+<td>Author:</td>
+<td>Marek Matejak</td>
+</tr>
+<tr>
+<td>License:</td>
+<td><a href=\"http://www.physiomodel.org/license.html\">Physiomodel License 1.0</a> </td>
+</tr>
+<tr>
+<td>By:</td>
+<td>Charles University, Prague</td>
+</tr>
+<tr>
+<td>Date of:</td>
+<td>2009</td>
+</tr>
+<tr>
+<td>References:</td>
+<td>Tom Coleman: QHP 2008 beta 3, University of Mississippi Medical Center</td>
+</tr>
+</table>
+<br/><p>Copyright &copy; 2014 Marek Matejak, Charles University in Prague.</p><br/>
+
+</html>"),
+        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
+                100}})));
+    end AmmoniumExcretion;
+
+    model Urine
+
+      Physiolibrary.Types.RealIO.MolarFlowRateInput
+                                         qPO4(displayUnit="mmol/min")
+        "total phosphates outflow to urine"                                                       annotation (Placement(
+            transformation(
+            extent={{-20,-20},{20,20}},
+            origin={-100,100}),
+                              iconTransformation(
+            extent={{-10,-10},{10,10}},
+            origin={-90,-50})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput
+                                         qKA(displayUnit="mmol/min")
+        "total keto-acids outflow to urine"                                                       annotation (Placement(
+            transformation(extent={{-120,42},{-80,82}}),  iconTransformation(
+            extent={{-10,-10},{10,10}},
+            origin={-90,-70})));
+      Physiolibrary.Types.RealIO.pHOutput PHU(start=5.7) "urine pH" annotation (Placement(
+            transformation(extent={{70,-61},{100,-31}}),iconTransformation(extent={{86,-16},
+                {118,16}})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput
+                                         qNa(displayUnit="mmol/min")
+        "total sodium outflow to urine"                                                              annotation (Placement(transformation(
+              extent={{-120,-30},{-80,10}}), iconTransformation(extent={{-10,-10},{10,
+                10}},
+            origin={-90,90})));
+
+      parameter Real CO2_solubility(displayUnit="(mmol/l)/Pa")=0.00023;
+      parameter Real pKaCO2=6.1 "CO2 acid dissociation constant";
+      parameter Real pKaHCO3=10.329 "HCO3 acid dissociation constant";
+      parameter Real pKaH3PO4=1.91 "H3PO4 acid dissociation constant";
+      parameter Real pKaH2PO4=6.66 "H2PO4 acid dissociation constant";
+      parameter Real pKaHPO4=11.78 "HPO4 acid dissociation constant";
+      parameter Real pKaKA=4.3 "average Keto-acids acid dissociation constant";
+      //constant Real ml2l = 0.001;
+
+      Real zPO4 "average charge of one phosphate in urine";
+               //(displayUnit="Eq/Mol")
+
+      Real zKA "average charge of one keto acid in purine";
+              //(displayUnit="Eq/Mol")
+
+      Real zCO2_qCO2 "charge outflow in (bi)carbonates to urine";
+                    //(displayUnit="Eq/min")
+      Physiolibrary.Types.RealIO.PressureInput
+                                         pCO2(displayUnit="mmHg")
+        "partial CO2 pressure"                 annotation (Placement(transformation(
+              extent={{-120,-120},{-80,-80}}),
+                                             iconTransformation(extent={{-100,-100},
+                {-80,-80}})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput
+                                         qH2O(displayUnit="ml/min")
+        "water flow to urine"                  annotation (Placement(transformation(
+              extent={{-120,-140},{-80,-100}}),
+                                             iconTransformation(extent={{-10,-10},{10,
+                10}},
+            origin={-90,-110})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput qCl(displayUnit="mmol/min")
+        "chloride flow to urine"               annotation (Placement(transformation(
+              extent={{-120,-128},{-80,-88}}),
+                                             iconTransformation(extent={{-10,-10},{10,
+                10}},
+            origin={-90,-10})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput
+                                         qSO4(displayUnit="mmol/min")
+        "sulfate flow to urine"                annotation (Placement(transformation(
+              extent={{-120,-128},{-80,-88}}),
+                                             iconTransformation(extent={{-10,-10},{10,
+                10}},
+            origin={-90,-30})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput
+                                         qK(displayUnit="mmol/min")
+        "total potassium outflow to urine"                                                        annotation (Placement(transformation(
+              extent={{-120,-30},{-80,10}}), iconTransformation(extent={{-10,-10},{10,
+                10}},
+            origin={-90,70})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput
+                                         qNH4(displayUnit="mmol/min")
+        "total amonium outflow to urine"                                                          annotation (Placement(transformation(
+              extent={{-120,-30},{-80,10}}), iconTransformation(extent={{-10,-10},{10,
+                10}},
+            origin={-90,50})));
+     Physiolibrary.Types.RealIO.MolarFlowRateInput
+                                         qMg(displayUnit="mmol/min")
+        "chloride flow to urine"               annotation (Placement(transformation(
+              extent={{-120,-128},{-80,-88}}),
+                                             iconTransformation(extent={{-10,-10},{10,
+                10}},
+            origin={-90,30})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput
+                                         qCa(displayUnit="mmol/min")
+        "chloride flow to urine"               annotation (Placement(transformation(
+              extent={{-120,-128},{-80,-88}}),
+                                             iconTransformation(extent={{-10,-10},{10,
+                10}},
+            origin={-90,10})));
+      parameter Physiolibrary.Types.MolarFlowRate  qX(displayUnit="mmol/min") = -5.6666666666666666666666666666667e-7
+        "other acids/electrolytes charge outflow";
+    equation
+
+        zPO4 = -(1+2*10^(PHU-pKaH2PO4)+ 3*10^(2*PHU-pKaH2PO4 -pKaHPO4)) / (10^(pKaH3PO4-PHU)+1+10^(PHU-pKaH2PO4)+ 10^(2*PHU-pKaH2PO4-pKaHPO4));
+
+        zKA = - 1/(10^(pKaKA-PHU)+1);
+
+        zCO2_qCO2 = -CO2_solubility*pCO2*(10^(PHU-pKaCO2))*(qH2O);
+
+        qX + 1*qNa + 1*qK + 2*qMg + 2*qCa + 1*qNH4 + (-1)*qCl + (-2)*qSO4 + zPO4*qPO4 + zKA*qKA + zCO2_qCO2 = 0;  // electroneutrality of urine outflow
+
+      annotation (
+        Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-120},{100,100}}),
+                             graphics={
+            Rectangle(
+              extent={{-100,100},{100,-120}},
+              lineColor={0,0,255},
+              lineThickness=0.5,
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid),
+            Text(
+              extent={{118,70},{-36,96}},
+              lineColor={0,0,255},
+              lineThickness=0.5,
+              textString="Urine pH")}),
+        Diagram(coordinateSystem(preserveAspectRatio=true, extent={{-100,-120},{100,
+                100}}), graphics),
+        Documentation(revisions="<html>
+
+<table cellspacing=\"2\" cellpadding=\"0\" border=\"0\"><tr>
+<td><p>Author:</p></td>
+<td><p>Marek Matejak</p></td>
+</tr>
+<tr>
+<td><p>License:</p></td>
+<td><p><a href=\"http://www.physiomodel.org/license.html\">Physiomodel License 1.0</a> </p></td>
+</tr>
+
+<tr>
+<td><p>Date of:</p></td>
+<td><p>2013</p></td>
+</tr>
+<tr>
+<td><p>References:</p></td>
+<td><p>Medsoft 2013, 146-147</p></td>
+</tr>
+</table>
+<br/><p>Copyright &copy; 2014 Marek Matejak, Charles University in Prague.</p><br/>
+
+</html>"));
+    end Urine;
   end Parts;
 
   package Icons
