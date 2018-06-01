@@ -3401,9 +3401,9 @@ O2CO2"),                                                                        
         connect(venousBlood.ctO2, venousO2CO2_1.CvO2) annotation(Line(points = {{-84.4, -20}, {-68, -20}, {-68, -18}, {-53, -18}, {-53, -69.94}, {-46.1, -69.94}}, color = {0, 0, 127}));
         connect(venousBlood.ctCO2, venousO2CO2_1.CvCO2) annotation(Line(points = {{-84.4, -28}, {-50, -28}, {-50, -75.38}, {-46.1, -75.38}}, color = {0, 0, 127}));
         connect(shuntPerfusin.Qpulm, alveolocapillaryUnit.Q) annotation(Line(points = {{83.9, -28.2}, {84, -28.2}, {84, 20}, {34, 20}, {34, 82.78}, {83.84, 82.78}}, color = {0, 0, 127}));
-        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                  fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-72, 66}, {66, 14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                  fillPattern =                                                                                                    FillPattern.Solid, textString = "Test AlvEqFLow")}));
+        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-72, 66}, {66, 14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "Test AlvEqFLow")}));
       end testAlvEqFlow;
 
       model testArtEqFlow
@@ -3501,9 +3501,9 @@ O2CO2"),                                                                        
         connect(epcCO1.q_in, tissuesBloodGases.CO2a) annotation(Line(points = {{136, -38}, {130, -38}, {130, -61.1}, {91.8, -61.1}}, color = {255, 0, 0}, thickness = 1));
         connect(arterialBlood.ctO2, epcO1.concentration) annotation(Line(points = {{-88.1, 66.6}, {-78, 66.6}, {-78, 100}, {146, 100}, {146, -52}, {122, -52}, {122, -42.8}}, color = {0, 0, 127}));
         connect(epcCO1.concentration, arterialBlood.ctCO2) annotation(Line(points = {{136, -42.8}, {136, -50}, {144, -50}, {144, 98}, {-74, 98}, {-74, 59.2}, {-88.1, 59.2}}, color = {0, 0, 127}));
-        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                  fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-72, 66}, {66, 14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                  fillPattern =                                                                                                    FillPattern.Solid, textString = "Test AlvEqFLow")}));
+        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-72, 66}, {66, 14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "Test AlvEqFLow")}));
       end testArtEqFlow;
 
       model testArtEqFlowMin
@@ -3564,9 +3564,9 @@ O2CO2"),                                                                        
         connect(pulmonaryShunts.O2a, tissuesBloodGases.O2a) annotation(Line(points = {{41.16, -8.12}, {68, -8.12}, {68, -46.9}, {45.8, -46.9}}, color = {255, 0, 0}, thickness = 1));
         connect(pulmonaryShunts.CO2a, tissuesBloodGases.CO2a) annotation(Line(points = {{41.16, -12.52}, {90, -12.52}, {90, -51.1}, {45.8, -51.1}}, color = {255, 0, 0}, thickness = 1));
         connect(pulmonaryShunts.PulmonaryPerfusion, alveolocapillaryUnit.Q) annotation(Line(points = {{16.52, -2.84}, {22, -2.84}, {22, 28}, {0, 28}, {0, 90.78}, {17.84, 90.78}}, color = {0, 0, 127}));
-        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                  fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-72, 66}, {66, 14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                  fillPattern =                                                                                                    FillPattern.Solid, textString = "Test AlvEqFLow")}));
+        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-72, 66}, {66, 14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "Test AlvEqFLow")}));
       end testArtEqFlowMin;
 
       model testSimpleCirculationO2CO2
@@ -3609,9 +3609,9 @@ O2CO2"),                                                                        
         connect(cDPG.y, busConnector.cDPG) annotation(Line(points = {{-60, -73}, {-42, -73}, {-42, -72}, {-20, -72}, {-20, -19}, {33, -19}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
         connect(busConnector, simpleCirculationO2CO2.busConnector) annotation(Line(points = {{33, -19}, {92, -19}, {92, 50.14}, {75.36, 50.14}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
         connect(VAi.y, simpleCirculationO2CO2.VAi) annotation(Line(points = {{14, 73}, {24, 73}, {24, 72.22}, {33.6, 72.22}}, color = {0, 0, 127}));
-        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 170},
-                  fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-78, 70}, {56, -4}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 170},
-                  fillPattern =                                                                                                    FillPattern.Solid, textString = "Test SimpleCirculationO2CO2")}));
+        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 170},
+                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 70}, {56, -4}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 170},
+                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "Test SimpleCirculationO2CO2")}));
       end testSimpleCirculationO2CO2;
 
       model testO2CO2CirculationFlow
@@ -3661,9 +3661,9 @@ O2CO2"),                                                                        
         connect(VO2.y, o2CO2CirculationFlow.VO2) annotation(Line(points = {{-6.875, 50}, {-8, 50}, {-8, 49.92}, {11.1, 49.92}}, color = {0, 0, 127}));
         connect(ShFract.y, o2CO2CirculationFlow.ShuntFract) annotation(Line(points = {{-22, 70}, {-6, 70}, {-6, 71.2}, {11.1, 71.2}}, color = {0, 0, 127}));
         connect(Q.y, o2CO2CirculationFlow.Q) annotation(Line(points = {{-10, 80}, {11.1, 80}, {11.1, 80.16}}, color = {0, 0, 127}));
-        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 170},
-                  fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-78, 70}, {56, -4}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 170},
-                  fillPattern =                                                                                                    FillPattern.Solid, textString = "Test SimpleCirculationO2CO2")}));
+        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 170},
+                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 70}, {56, -4}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 170},
+                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "Test SimpleCirculationO2CO2")}));
       end testO2CO2CirculationFlow;
 
       model testAlvEq1
@@ -5978,10 +5978,15 @@ parameters")}));
       connect(Blood.pCO, bloodParameters.PCO) annotation(Line(points = {{24.56, -28.84}, {46, -28.84}, {46, 34}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(Blood.ctGlb, bloodParameters.ctGlb) annotation(Line(points = {{24.56, -36.44}, {46, -36.44}, {46, 34}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(Blood.ctHb, bloodParameters.ctHb) annotation(Line(points = {{-59.8, -42.52}, {-68, -42.52}, {-68, -82}, {46, -82}, {46, 34}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-      connect(Blood.T, bloodParameters.temp) annotation(Line(points = {{-59.04, 10.68}, {-66, 10.68}, {-66, 24}, {46, 24}, {46, 34}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
+      connect(Blood.T, bloodParameters.temp) annotation(Line(points={{-59.04,
+              10.68},{-66,10.68},{-66,24},{46,24},{46,34}}, color={0,0,127}),                                                                               Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
       connect(Blood.FMetHb, bloodParameters.FMetHb) annotation(Line(points = {{24.56, -13.64}, {46, -13.64}, {46, 34}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(BEox, Blood.BEox) annotation(Line(points = {{-35, -75}, {-19.14, -75}, {-19.14, -61.14}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-102, 100}, {98, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+      annotation(Icon(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
+                -100},{100,100}}),                                                                        graphics={  Rectangle(extent = {{-102, 100}, {98, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-70, 26}, {-48, 8}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, textString = "O2"), Text(extent = {{-38, 66}, {-16, 48}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, textString = "O2"), Text(extent = {{50, 26}, {72, 8}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
@@ -5989,7 +5994,8 @@ parameters")}));
                 fillPattern =                                                                                                    FillPattern.Solid, textString = "CO2"), Text(extent = {{36, -10}, {68, -38}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, textString = "CO2"), Text(extent = {{10, 68}, {42, 40}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, textString = "CO2"), Text(extent = {{-100, -50}, {100, -94}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, textString = "%name")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "%name")}), Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
+                -100},{100,100}})));
     end BloodO2CO2Equilibrium;
 
     model Alveolus
@@ -6573,7 +6579,8 @@ parameters")}));
       connect(VCO2.y, busConnector.VCO2) annotation(Line(points = {{-28.75, 72}, {-12, 72}, {4, 72}, {4, 0}, {74, 0}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(bloofVol_Hct.y, busConnector.BloodVol_Hct) annotation(Line(points = {{-73, 28}, {-34, 28}, {-34, 30}, {4, 30}, {4, 0}, {74, 0}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
       connect(stepFiCO2.y, busConnector.FiCO2) annotation(Line(points = {{-63.6, -36}, {-30, -36}, {4, -36}, {4, 0}, {74, 0}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics = {Text(extent=  {{24, 90}, {96, 22}}, lineColor=  {28, 108, 200}, textString=  "AlveolarBlood flow > cardiac output???")}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
+                -100},{100,100}}),                                                                           graphics={  Text(extent = {{24, 90}, {96, 22}}, lineColor = {28, 108, 200}, textString = "AlveolarBlood flow > cardiac output???")}));
     end TestInputs;
 
     model O2PhysiomodelDbg
@@ -7301,7 +7308,7 @@ parameters")}));
       annotation (Placement(transformation(extent={{-60,24},{-40,44}})));
     Physiolibrary.Types.Constants.MolarFlowRateConst
       electrolytesFlowConstant(k=6.6666666666667e-07)
-      annotation (Placement(transformation(extent={{-68,74},{-56,86}})));
+      annotation (Placement(transformation(extent={{-72,82},{-60,94}})));
     Physiolibrary.Blocks.Factors.Spline ChloridePoolEffect(data={{0.00,0.0,0},
           {80,1.0,0.0}})
         "electroneutrality does not allow to extract cation without anion"
@@ -7313,8 +7320,8 @@ parameters")}));
         annotation (Placement(transformation(extent={{-86,0},{-70,16}}),
             iconTransformation(extent={{-104,48},{-76,76}})));
       Physiolibrary.Types.RealIO.MolarFlowRateOutput NH4Excretion annotation (
-          Placement(transformation(extent={{86,-6},{106,14}}),  iconTransformation(
-              extent={{86,-6},{106,14}})));
+          Placement(transformation(extent={{-16,-16},{4,4}}),   iconTransformation(
+              extent={{-16,-16},{4,4}})));
     equation
 
     connect(PT_NH3_AcuteEffect.y, PT_NH3_ChronicEffect.yBase) annotation (
@@ -7328,7 +7335,7 @@ parameters")}));
         smooth=Smooth.None));
     connect(electrolytesFlowConstant.y, PT_NH3_AcuteEffect.yBase) annotation (
        Line(
-        points={{-54.5,80},{-50,80},{-50,64}},
+        points={{-58.5,88},{-50,88},{-50,64}},
         color={0,0,127},
         smooth=Smooth.None));
     connect(CD_NH4_PhOnFlux.y, ChloridePoolEffect.yBase) annotation (Line(
@@ -7338,13 +7345,13 @@ parameters")}));
       connect(ChloridePoolEffect.u, ChlorideConcentration)
         annotation (Line(points={{-58,8},{-78,8},{-78,8}}, color={0,0,127}));
       connect(arterialpH, PT_NH3_ChronicEffect.u)
-        annotation (Line(points={{-80,50},{-58,50},{-58,50}}, color={0,0,127}));
+        annotation (Line(points={{-80,50},{-58,50}},          color={0,0,127}));
       connect(PT_NH3_AcuteEffect.u, PT_NH3_ChronicEffect.u) annotation (Line(points=
              {{-58,62},{-64,62},{-64,50},{-58,50}}, color={0,0,127}));
       connect(CD_NH4_PhOnFlux.u, PT_NH3_ChronicEffect.u) annotation (Line(points={{-58,
               34},{-64,34},{-64,50},{-58,50}}, color={0,0,127}));
       connect(ChloridePoolEffect.y, NH4Excretion)
-        annotation (Line(points={{-50,4},{-50,4},{96,4}},    color={0,0,127}));
+        annotation (Line(points={{-50,4},{-50,-6},{-6,-6}},  color={0,0,127}));
       annotation ( Icon(coordinateSystem(
               preserveAspectRatio=false,extent={{-100,-100},{100,100}}),
             graphics={              Text(
@@ -7378,8 +7385,8 @@ parameters")}));
 <br/><p>Copyright &copy; 2014 Marek Matejak, Charles University in Prague.</p><br/>
 
 </html>"),
-        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},{100,
-                100}})));
+        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                {100,100}})));
     end AmmoniumExcretion;
 
     model Urine
