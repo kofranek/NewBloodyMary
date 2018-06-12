@@ -316,75 +316,115 @@ package AcidBaseBalance
                false, extent={{-100,-100},{100,100}})));
     end TotalAcidExcretion;
 
-    model pHUrine_New "prefix Y - flows, X - concentrations. All in SI units"
+    model pHUrine_New
+      "prefix Y - flows, X - concentrations. All in SI units"
 
-      Physiolibrary.Types.RealIO.MolarFlowRateInput TA annotation(Placement(transformation(extent = {{-102, 20}, {-62, 60}}), iconTransformation(extent = {{-102, 20}, {-62, 60}})));
-      Physiolibrary.Types.RealIO.pHOutput pHu annotation(Placement(transformation(extent = {{90, 2}, {110, 22}}), iconTransformation(extent = {{90, 2}, {110, 22}})));
-      Physiolibrary.Types.RealIO.pHInput pHa annotation(Placement(transformation(extent = {{-102, -46}, {-62, -6}}), iconTransformation(extent = {{-102, -46}, {-62, -6}})));
-      Real YPO4 "mmol/min renal outflow of Phosphates";
-      Real YORG "mmol/min renal outflow of Organic acids";
-     // Real STPG;
-     // Real STPO;
-      Real PHA;
-      Real GFR; //mmol/min
-      Real XPO4;//mmol/l
-      Real XOGE;//mmol/l
-      Real YTA;//mmol/min
-
-      Real YTAP; //HPO4+H2PO4 flow in mmol/min
-      Real YTAORG; //ORG+HORG flow in mmol/min
-      Real YTANH3; //NH3 consumed (converted to NH4) due to changes from pHA to pHU in mmol/min
-      Real PHU;
-      Real YNH34; //NH4+NH3 flow in mmol/min
-      Real YNH3; // Flow NH3 to urine mmol/min
-      Real YNH4; // Flow NH4 to urine mmol/min
-      Real YNH30; // Flow NH3 to collecting ducts in mmol/min
-      Real YNH40; // Flow NH4 to collecting ducts in mmol/min
-
-      Real FNH3; // Flow NH3 to medullar connective duckts through intercallar cells
+      Physiolibrary.Types.RealIO.MolarFlowRateInput TA annotation (Placement(
+            transformation(extent={{-102,20},{-62,60}}), iconTransformation(extent={
+                {-102,20},{-62,60}})));
+      Physiolibrary.Types.RealIO.pHInput pHa annotation (Placement(transformation(
+              extent={{-102,-46},{-62,-6}}), iconTransformation(extent={{-102,-46},{
+                -62,-6}})));
       Physiolibrary.Types.RealIO.ConcentrationInput OrgAnionsConc
-        "organic acid anions"                                                           annotation(Placement(transformation(extent = {{-114, 58}, {-74, 98}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 270, origin = {-60, 84})));
+        "organic acid anions" annotation (Placement(transformation(extent={{-114,58},
+                {-74,98}}), iconTransformation(
+            extent={{-20,-20},{20,20}},
+            rotation=270,
+            origin={-60,84})));
       Physiolibrary.Types.RealIO.VolumeFlowRateInput GlomerularFiltration
-        "Glomerular filtation rate"                                                                   annotation(Placement(transformation(extent = {{24, 62}, {64, 102}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 270, origin = {64, 82})));
+        "Glomerular filtation rate" annotation (Placement(transformation(extent={{24,
+                62},{64,102}}), iconTransformation(
+            extent={{-20,-20},{20,20}},
+            rotation=270,
+            origin={64,82})));
       Physiolibrary.Types.RealIO.ConcentrationInput PhosphateConc
-        "Phosphate concentrations"                                                           annotation(Placement(transformation(extent = {{-114, 58}, {-74, 98}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 270, origin = {2, 82})));
+        "Phosphate concentrations" annotation (Placement(transformation(extent={{-114,
+                58},{-74,98}}), iconTransformation(
+            extent={{-20,-20},{20,20}},
+            rotation=270,
+            origin={2,82})));
       Physiolibrary.Types.RealIO.MolarFlowRateInput NH4exretion annotation (
           Placement(transformation(extent={{-102,20},{-62,60}}), iconTransformation(
               extent={{-106,-94},{-66,-54}})));
+
+      Real YPO4=if XPO4*GFR <= 0.11 then 5/22*XPO4*GFR else XPO4*GFR - 0.085
+        "mmol/min renal outflow of Phosphates. Ikeda F55";
+      Real YORG=if XOGE*GFR <= 0.6 then XOGE*GFR/60 else XOGE*GFR/3 - 0.19
+        "mmol/min renal outflow of Organic acids, Ikeda F56";
+      // Real STPG;
+      // Real STPO;
+      parameter Real GFR=0.1;
+      //mmol/min
+      parameter Real XPO4=1.1;
+      //mmol/l
+      parameter Real XOGE=6;
+      //mmol/l
+      Real YTA=TA*60000 "mmol/min, mol/sec = 60000 mmol/min";
+
+      Real YTAP=YPO4*(10^(-pHa) + 2*10^(-6.66))/(10^(-pHa) + 10^(-6.66)) - YPO4*(10^
+          (-pHu) + 2*10^(-6.66))/(10^(-pHu) + 10^(-6.66))
+        "HPO4+H2PO4 flow in mmol/min";
+      Real YTAORG=YORG*10^(-4.3)/(10^(-pHa) + 10^(-4.3)) - YORG*10^(-4.3)/(10^(-pHu)
+           + 10^(-4.3)) "ORG+HORG flow in mmol/min";
+      Real YTANH3=YNH34*10^(-9)/(10^(-pHa) + 10^(-9)) - YNH3
+        "NH3 consumed (converted to NH4) due to changes from pHA to pHU in mmol/min";
+      Real YNH34=NH4exretion*60000 "NH4+NH3 flow in mmol/min";
+      Real YNH3=YNH30 - FNH3 "Flow NH3 to urine mmol/min";
+      Real YNH4=YNH40 + FNH3 "Flow NH4 to urine mmol/min";
+      Real YNH30 "Flow NH3 to collecting ducts in mmol/min";
+      Real YNH40 "Flow NH4 to collecting ducts in mmol/min";
+
+      parameter Real NH3Resorb=1;
+      Real FNH3=NH3Resorb*YNH34*YTA
+        "Flow NH3 to medullar connective duckts through intercallar cells";
+
+      Physiolibrary.Types.RealIO.pHOutput pHu annotation (Placement(transformation(
+              extent={{90,2},{110,22}}), iconTransformation(extent={{90,2},{110,22}})));
     equation
-      GFR = 0.1; //mmol/min
-      XPO4 = 1.1; //mmol/min
-      XOGE = 6; //mmol/l
+
+      YTA = YTAP + YTAORG + YTANH3;
+      YNH3 = YNH34*10^(-9)/(10^(-pHu) + 10^(-9));
+      YNH34 = YNH30 + YNH40;
+      //   YNH4 = YNH40 + FNH3;
+      //   YNH3 = YNH30 - FNH3;
+
+
+
+      //   GFR = 0.1;
+      //   //mmol/min
+      //   XPO4 = 1.1;
+      //   //mmol/min
+      //   XOGE = 6;
+      //   //mmol/l
       /*
   GFR = GlomerularFiltration*60000;
   XPO4 = PhosphateConc; 
   XOGE = OrgAnionsConc;
   */
-      YTA = TA * 60000; //YTA mmol/min TA=mol/sev; mol/sec = 60000 mmol/min
-      YNH34 = NH4exretion*60000; //mmol/min
-      PHA = pHa;
-      PHU = pHu;
+      //   YTA = TA*60000;
+      //YTA mmol/min TA=mol/sev; mol/sec = 60000 mmol/min
+      // YNH34 = NH4exretion*60000;
+      //mmol/min
 
       // F55
-      YPO4 = if XPO4 * GFR <= 0.11 then 5 / 22 * XPO4 * GFR else XPO4 * GFR - 0.085;
+      //  YPO4 = if XPO4*GFR <= 0.11 then 5/22*XPO4*GFR else XPO4*GFR - 0.085;
       //mM/min
       // F56
-      YORG = if XOGE * GFR <= 0.6 then XOGE * GFR / 60 else XOGE * GFR / 3 - 0.19;
+      //YORG = if XOGE*GFR <= 0.6 then XOGE*GFR/60 else XOGE*GFR/3 - 0.19;
       // mM/min
 
-      YTAP = YPO4*(10^(-PHA)+2*10^(-6.66))/(10^(-PHA) +10^(-6.66)) - YPO4*(10^(-PHU)+2*10^(-6.66))/(10^(-PHU) +10^(-6.66));
-      YTAORG = YORG*10^(-4.3)/(10^(-PHA)+10^(-4.3))-YORG*10^(-4.3)/(10^(-PHU)+10^(-4.3));
+      //   YTAP = YPO4*(10^(-pHa) + 2*10^(-6.66))/(10^(-pHa) + 10^(-6.66)) - YPO4*(10^(-
+      //     pHu) + 2*10^(-6.66))/(10^(-pHu) + 10^(-6.66));
+      //   YTAORG = YORG*10^(-4.3)/(10^(-pHa) + 10^(-4.3)) - YORG*10^(-4.3)/(10^(-pHu) +
+      //     10^(-4.3));
 
 
-      FNH3=10*YNH34*YTA; //this must be adjusted in future
+      //   FNH3 = 10*YNH34*YTA;
+      //this must be adjusted in future
 
-      YNH34=YNH30+YNH40;
-      YNH4=YNH40+FNH3;
-      YNH3=YNH30-FNH3;
 
-      YNH3=YNH34*10^(-9)/(10^(-PHU)+10^(-9));
-      YTANH3 =YNH34*10^(-9)/(10^(-PHA)+10^(-9))-YNH3;
-      YTA=YTAP+YTAORG+YTANH3;
+      //   YTANH3 = YNH34*10^(-9)/(10^(-pHa) + 10^(-9)) - YNH3;
+
 
       /*
   STPO = YPO4 * (1 + 1 / (1 + 10 ^ (6.8 - PHA)));
@@ -393,11 +433,28 @@ package AcidBaseBalance
   pHu = -log10(((-((10 ^ (-4.3) + 10 ^ (-6.8)) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) - 10 ^ (-6.8) * YPO4 - 10 ^ (-4.3) * YORG)) + (((10 ^ (-4.3) + 10 ^ (-6.8)) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) - 10 ^ (-6.8) * YPO4 - 10 ^ (-4.3) * YORG) ^ 2 - 4 * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) * (10 ^ (-4.3) * 10 ^ (-6.8) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG - YPO4 - YORG))) ^ 0.5) / 2 / (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG));
   STPG = max(0, STPO + YORG - YTA);
   */
-      annotation(Icon(coordinateSystem(preserveAspectRatio=false,   extent={{-100,-100},
-                {100,100}}),                                                                              graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-68, 64}, {-6, 18}}, lineColor = {28, 108, 200}, textString = "TA"), Text(extent = {{-54, 0}, {8, -46}}, lineColor = {28, 108, 200}, textString = "pHa"), Text(extent = {{16, 38}, {78, -8}}, lineColor = {28, 108, 200}, textString = "pHu")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
+                {100,100}}), graphics={
+            Rectangle(
+              extent={{-100,80},{100,-80}},
+              lineColor={28,108,200},
+              fillColor={255,255,0},
+              fillPattern=FillPattern.Solid),
+            Text(
+              extent={{-68,64},{-6,18}},
+              lineColor={28,108,200},
+              textString="TA"),
+            Text(
+              extent={{-54,0},{8,-46}},
+              lineColor={28,108,200},
+              textString="pHa"),
+            Text(
+              extent={{16,38},{78,-8}},
+              lineColor={28,108,200},
+              textString="pHu")}), Diagram(coordinateSystem(preserveAspectRatio=false,
+              extent={{-100,-100},{100,100}})));
     end pHUrine_New;
   end Kidney;
-  annotation(uses(                             Physiolibrary(version = "2.3.1"),
-        Modelica(version="3.2.2")));
+  annotation(uses(
+        Modelica(version="3.2.2"), Physiolibrary(version="2.3.2-beta")));
 end AcidBaseBalance;
