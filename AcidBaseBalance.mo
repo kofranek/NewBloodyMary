@@ -17,7 +17,8 @@ package AcidBaseBalance
       Physiolibrary.Blocks.Factors.Spline CD_NH4_PhOnFlux(data={{7.00,1.0,0},{
             7.4,0.6,-2.0},{7.80,0.0,0}})
         "marek: normal pH corrected from 7.45 to 7.42"                                                                                                     annotation(Placement(transformation(extent = {{-28, 20}, {-8, 40}})));
-      Physiolibrary.Types.Constants.MolarFlowRateConst electrolytesFlowConstant(k = 6.6666666666667e-07) annotation(Placement(transformation(extent = {{-36, 70}, {-24, 82}})));
+      Physiolibrary.Types.Constants.MolarFlowRateConst electrolytesFlowConstant(k=
+            6.6666666666667e-07)                                                                         annotation(Placement(transformation(extent = {{-36, 70}, {-24, 82}})));
       Physiolibrary.Blocks.Factors.Spline ChloridePoolEffect(data = {{0.00, 0.0, 0}, {80, 1.0, 0.0}})
         "electroneutrality does not allow to extract cation without anion"                                                                                               annotation(Placement(transformation(extent = {{-28, -6}, {-8, 14}})));
       Physiolibrary.Types.BusConnector busConnector annotation(Placement(transformation(extent = {{-96, 62}, {-64, 94}}), iconTransformation(extent = {{-102, 68}, {-62, 108}})));
@@ -58,8 +59,25 @@ package AcidBaseBalance
 </table>
 <br/><p>Copyright &copy; 2014 Marek Matejak, Charles University in Prague.</p><br/>
 
+</html>", info="<html>
+<p>Taken from Hummod 1.6, norm pH 7.4</p>
 </html>"), Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
-                -100},{100,100}})));
+                -100},{100,100}}), graphics={
+            Text(
+              extent={{-6,54},{18,60}},
+              lineColor={28,108,200},
+              horizontalAlignment=TextAlignment.Left,
+              textString="Proximal tubule"),
+            Text(
+              extent={{-6,42},{18,48}},
+              lineColor={28,108,200},
+              horizontalAlignment=TextAlignment.Left,
+              textString="Proximal tubule"),
+            Text(
+              extent={{-6,26},{18,32}},
+              lineColor={28,108,200},
+              horizontalAlignment=TextAlignment.Left,
+              textString="distal nefron (collecting duct)")}));
     end Ammonium;
 
     package Test
@@ -80,7 +98,7 @@ package AcidBaseBalance
         TotalAcidExcretion totalAcidExcretion
           annotation (Placement(transformation(extent={{70,14},{90,34}})));
         pHUrine_New pHUrine_New1
-          annotation (Placement(transformation(extent={{50,-76},{82,-40}})));
+          annotation (Placement(transformation(extent={{48,-76},{80,-40}})));
       equation
         connect(pH.y, busConnector.pH_art) annotation(Line(points={{-75.75,83},
                 {2,83},{2,56},{24,56}},                                                                         color = {0, 0, 127}, visible = true, origin = {0, 2}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
@@ -99,24 +117,24 @@ package AcidBaseBalance
               points={{70.2,30.4},{-10,30.4},{-10,-32},{16,-32},{16,-48.62},{
                 7.685,-48.62}}, color={0,0,127}));
         connect(pHUrine_New1.GlomerularFiltration, GFR.y) annotation (Line(
-              points={{76.24,-43.24},{76.24,-24},{60,-24},{60,-10},{74,-10}},
+              points={{74.24,-43.24},{74.24,-24},{60,-24},{60,-10},{74,-10}},
               color={0,0,127}));
         connect(pHUrine_New1.PhosphateConc, Phosphate.y) annotation (Line(
-              points={{66.32,-43.24},{66.32,-28},{48,-28},{48,9},{24,9}},
+              points={{64.32,-43.24},{64.32,-28},{48,-28},{48,9},{24,9}},
               color={0,0,127}));
         connect(pHUrine_New1.OrgAnionsConc, OrgAnions.y) annotation (Line(
-              points={{56.4,-42.88},{56.4,-30},{36,-30},{36,-15},{22,-15}},
+              points={{54.4,-42.88},{54.4,-30},{36,-30},{36,-15},{22,-15}},
               color={0,0,127}));
         connect(titratableAcid.TA, pHUrine_New1.TA) annotation (Line(points={{7.685,
-                -48.62},{16,-48.62},{16,-50},{48,-50},{48,-50.8},{52.88,-50.8}},
+                -48.62},{16,-48.62},{16,-50},{48,-50},{48,-50.8},{50.88,-50.8}},
                          color={0,0,127}));
         connect(pHUrine_New1.NH4exretion, ammonium.molarflowrate) annotation (
-            Line(points={{52.24,-71.32},{46,-71.32},{46,-82},{96,-82},{96,72.8},
+            Line(points={{50.24,-71.32},{46,-71.32},{46,-82},{96,-82},{96,72.8},
                 {88.44,72.8}},       color={0,0,127}));
-        connect(pHUrine_New1.pHu, titratableAcid.pHu) annotation (Line(points={
-                {82,-55.84},{96,-55.84},{98,-55.84},{98,-86},{-46,-86},{-46,
-                -47.48},{-33.055,-47.48}}, color={0,0,127}));
-        connect(pHUrine_New1.pHa, pH.y) annotation (Line(points={{52.88,-62.68},
+        connect(pHUrine_New1.pHu, titratableAcid.pHu) annotation (Line(points={{80,
+                -55.84},{80,-55.84},{98,-55.84},{98,-86},{-46,-86},{-46,-47.48},
+                {-33.055,-47.48}},         color={0,0,127}));
+        connect(pHUrine_New1.pHa, pH.y) annotation (Line(points={{50.88,-62.68},
                 {20,-62.68},{20,-74},{-40,-74},{-40,-36},{-40,85},{-75.75,85}},
               color={0,0,127}));
         annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
@@ -149,7 +167,7 @@ package AcidBaseBalance
       y1 = if u <= 4 then 0 elseif u > 4 and u <= 5 then yBase1 * (u - 4) else yBase1 annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 20}, {100, -20}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-78, 14}, {84, -14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, textString = "F63")}));
-      annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10}), graphics = {Rectangle(visible=  true, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, extent=  {{-100, -20}, {100, 20}}), Text(visible=  true, origin=  {-3.907, 0}, textColor=  {0, 0, 255}, extent=  {{-69.022, -12.502}, {69.022, 12.502}}, textString=  "F63")}));
+      annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10}), graphics = {Rectangle(visible = true, fillColor = {255, 255, 0}, fillPattern = FillPattern.Solid, extent = {{-100, -20}, {100, 20}}), Text(visible = true, origin = {-3.907, 0}, textColor = {0, 0, 255}, extent = {{-69.022, -12.502}, {69.022, 12.502}}, textString = "F63")}));
     end F63;
 
     model AldEffect
@@ -197,7 +215,19 @@ package AcidBaseBalance
                 fillPattern =                                                                                                    FillPattern.Solid, textString = "pHa"), Text(extent = {{-78, 28}, {-42, -6}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, textString = "pHu"), Text(extent = {{-78, -24}, {-42, -58}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                    FillPattern.Solid, textString = "fald"), Text(extent = {{38, 18}, {74, -16}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, textString = "TA")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+                fillPattern =                                                                                                    FillPattern.Solid, textString = "TA")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
+            graphics={Text(
+              extent={{60,-8},{102,10}},
+              lineColor={28,108,200},
+              textString="Damping effect of H+-urine pump  to pH",
+              horizontalAlignment=TextAlignment.Left), Text(
+              extent={{62,-48},{104,-30}},
+              lineColor={28,108,200},
+              textString="Damping effect of H+-urine pump  to pH",
+              horizontalAlignment=TextAlignment.Left)}),
+        Documentation(info="<html>
+<p>Taken from ikeda</p>
+</html>"));
     end TitratableAcid;
 
     model pHUrine
@@ -286,26 +316,26 @@ package AcidBaseBalance
                false, extent={{-100,-100},{100,100}})));
     end TotalAcidExcretion;
 
-    model pHUrine_New
+    model pHUrine_New "prefix Y - flows, X - concentrations. All in SI units"
 
       Physiolibrary.Types.RealIO.MolarFlowRateInput TA annotation(Placement(transformation(extent = {{-102, 20}, {-62, 60}}), iconTransformation(extent = {{-102, 20}, {-62, 60}})));
       Physiolibrary.Types.RealIO.pHOutput pHu annotation(Placement(transformation(extent = {{90, 2}, {110, 22}}), iconTransformation(extent = {{90, 2}, {110, 22}})));
       Physiolibrary.Types.RealIO.pHInput pHa annotation(Placement(transformation(extent = {{-102, -46}, {-62, -6}}), iconTransformation(extent = {{-102, -46}, {-62, -6}})));
-      Real YPO4;
-      Real YORG;
+      Real YPO4 "mmol/min renal outflow of Phosphates";
+      Real YORG "mmol/min renal outflow of Organic acids";
      // Real STPG;
      // Real STPO;
       Real PHA;
-      Real GFR;
-      Real XPO4;
-      Real XOGE;
-      Real YTA;
+      Real GFR; //mmol/min
+      Real XPO4;//mmol/l
+      Real XOGE;//mmol/l
+      Real YTA;//mmol/min
 
-      Real YTAP;
-      Real YTAORG;
-      Real YTANH3;
+      Real YTAP; //HPO4+H2PO4 flow in mmol/min
+      Real YTAORG; //ORG+HORG flow in mmol/min
+      Real YTANH3; //NH3 consumed (converted to NH4) due to changes from pHA to pHU in mmol/min
       Real PHU;
-      Real YNH4;
+      Real YNH4; //NH4+NH3 flow in mmol/min
       Physiolibrary.Types.RealIO.ConcentrationInput OrgAnionsConc
         "organic acid anions"                                                           annotation(Placement(transformation(extent = {{-114, 58}, {-74, 98}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 270, origin = {-60, 84})));
       Physiolibrary.Types.RealIO.VolumeFlowRateInput GlomerularFiltration
@@ -316,16 +346,16 @@ package AcidBaseBalance
           Placement(transformation(extent={{-102,20},{-62,60}}), iconTransformation(
               extent={{-106,-94},{-66,-54}})));
     equation
-      GFR = 0.1;
-      XPO4 = 1.1;
-      XOGE = 6;
+      GFR = 0.1; //mmol/min
+      XPO4 = 1.1; //mmol/min
+      XOGE = 6; //mmol/l
       /*
-  GFR = GlomerularFiltration-60000;
+  GFR = GlomerularFiltration*60000;
   XPO4 = PhosphateConc; 
   XOGE = OrgAnionsConc;
   */
-      YTA = TA * 60000;
-      YNH4 = NH4exretion*60000;
+      YTA = TA * 60000; //YTA mmol/min TA=mol/sev; mol/sec = 60000 mmol/min
+      YNH4 = NH4exretion*60000; //mmol/min
       PHA = pHa;
       PHU = pHu;
 
@@ -338,7 +368,7 @@ package AcidBaseBalance
 
       YTAP = YPO4*(10^(-PHA)+2*10^(-6.66))/(10^(-PHA) +10^(-6.66)) - YPO4*(10^(-PHU)+2*10^(-6.66))/(10^(-PHU) +10^(-6.66));
       YTAORG = YORG*10^(-4.3)/(10^(-PHA)+10^(-4.3))-YORG*10^(-4.3)/(10^(-PHU)+10^(-4.3));
-      YTANH3 =YNH4*10^(-9)/(10^(-PHA)+10^(-9))-YORG*10^(-9)/(10^(-PHU)+10^(-9));
+      YTANH3 =YNH4*10^(-9)/(10^(-PHA)+10^(-9))-YNH4*10^(-9)/(10^(-PHU)+10^(-9));
       YTA=YTAP+YTAORG+YTANH3;
 
       /*
@@ -353,5 +383,6 @@ package AcidBaseBalance
                 fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-68, 64}, {-6, 18}}, lineColor = {28, 108, 200}, textString = "TA"), Text(extent = {{-54, 0}, {8, -46}}, lineColor = {28, 108, 200}, textString = "pHa"), Text(extent = {{16, 38}, {78, -8}}, lineColor = {28, 108, 200}, textString = "pHu")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end pHUrine_New;
   end Kidney;
-  annotation(uses(Modelica(version = "3.2.1"), Physiolibrary(version = "2.3.1")));
+  annotation(uses(                             Physiolibrary(version = "2.3.1"),
+        Modelica(version="3.2.2")));
 end AcidBaseBalance;
