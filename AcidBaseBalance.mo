@@ -335,7 +335,13 @@ package AcidBaseBalance
       Real YTAORG; //ORG+HORG flow in mmol/min
       Real YTANH3; //NH3 consumed (converted to NH4) due to changes from pHA to pHU in mmol/min
       Real PHU;
-      Real YNH4; //NH4+NH3 flow in mmol/min
+      Real YNH34; //NH4+NH3 flow in mmol/min
+      Real YNH3; // Flow NH3 to urine mmol/min
+      Real YNH4; // Flow NH4 to urine mmol/min
+      Real YNH30; // Flow NH3 to collecting ducts in mmol/min
+      Real YNH40; // Flow NH4 to collecting ducts in mmol/min
+
+      Real FNH3; // Flow NH3 to medullar connective duckts through intercallar cells
       Physiolibrary.Types.RealIO.ConcentrationInput OrgAnionsConc
         "organic acid anions"                                                           annotation(Placement(transformation(extent = {{-114, 58}, {-74, 98}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 270, origin = {-60, 84})));
       Physiolibrary.Types.RealIO.VolumeFlowRateInput GlomerularFiltration
@@ -355,7 +361,7 @@ package AcidBaseBalance
   XOGE = OrgAnionsConc;
   */
       YTA = TA * 60000; //YTA mmol/min TA=mol/sev; mol/sec = 60000 mmol/min
-      YNH4 = NH4exretion*60000; //mmol/min
+      YNH34 = NH4exretion*60000; //mmol/min
       PHA = pHa;
       PHU = pHu;
 
@@ -368,7 +374,16 @@ package AcidBaseBalance
 
       YTAP = YPO4*(10^(-PHA)+2*10^(-6.66))/(10^(-PHA) +10^(-6.66)) - YPO4*(10^(-PHU)+2*10^(-6.66))/(10^(-PHU) +10^(-6.66));
       YTAORG = YORG*10^(-4.3)/(10^(-PHA)+10^(-4.3))-YORG*10^(-4.3)/(10^(-PHU)+10^(-4.3));
-      YTANH3 =YNH4*10^(-9)/(10^(-PHA)+10^(-9))-YNH4*10^(-9)/(10^(-PHU)+10^(-9));
+
+
+      FNH3=10*YNH34*YTA; //this must be adjusted in future
+
+      YNH34=YNH30+YNH40;
+      YNH4=YNH40+FNH3;
+      YNH3=YNH30-FNH3;
+
+      YNH3=YNH34*10^(-9)/(10^(-PHU)+10^(-9));
+      YTANH3 =YNH34*10^(-9)/(10^(-PHA)+10^(-9))-YNH3;
       YTA=YTAP+YTAORG+YTANH3;
 
       /*
