@@ -3,6 +3,7 @@
 
 	public class BloodyMary extends MovieClip {
 		public function BloodyMary() {
+			trace("konctruktor BloodyMary");
 			// constructor code
 		}
 
