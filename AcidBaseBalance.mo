@@ -364,8 +364,8 @@ package AcidBaseBalance
       Real YTAP=YPO4*(10^(-pHa) + 2*10^(-6.66))/(10^(-pHa) + 10^(-6.66)) - YPO4*(10^
           (-pHu) + 2*10^(-6.66))/(10^(-pHu) + 10^(-6.66))
         "HPO4+H2PO4 flow in mmol/min";
-      Real YTAORG=YORG*10^(-4.3)/(10^(-pHa) + 10^(-4.3)) - YORG*10^(-4.3)/(10^(-pHu)
-           + 10^(-4.3)) "ORG+HORG flow in mmol/min";
+      Real YTAORG=YORG*10^(-4.3)/(10^(-pHa) + 10^(-4.3)) - YORG*10^(-4.3)/(10^(
+          -pHu) + 10^(-4.3)) "ORG+HORG flow in mmol/min";
       Real YTANH3=YNH34*10^(-9)/(10^(-pHa) + 10^(-9)) - YNH3
         "NH3 consumed (converted to NH4) due to changes from pHA to pHU in mmol/min";
       Real YNH34=NH4exretion*60000 "NH4+NH3 flow in mmol/min";
@@ -374,7 +374,7 @@ package AcidBaseBalance
       Real YNH30 "Flow NH3 to collecting ducts in mmol/min";
       Real YNH40 "Flow NH4 to collecting ducts in mmol/min";
 
-      parameter Real NH3Resorb=1;
+      parameter Real NH3Resorb=1.2;
       Real FNH3=NH3Resorb*YNH34*YTA
         "Flow NH3 to medullar connective duckts through intercallar cells";
 
@@ -382,7 +382,7 @@ package AcidBaseBalance
               extent={{90,2},{110,22}}), iconTransformation(extent={{90,2},{110,22}})));
     equation
 
-      YTA = YTAP + YTAORG + YTANH3;
+      YTA =YTAP + YTAORG + YTANH3 + FNH3;
       YNH3 = YNH34*10^(-9)/(10^(-pHu) + 10^(-9));
       YNH34 = YNH30 + YNH40;
       //   YNH4 = YNH40 + FNH3;
