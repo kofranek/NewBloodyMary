@@ -1,4 +1,4 @@
-within ;
+﻿within ;
 package NewBloodyMary_testing
   package OSA
     function HbFromGramDlToMmolL
@@ -1272,8 +1272,7 @@ package NewBloodyMary_testing
       Physiolibrary.Types.RealIO.pHOutput pH "plasma pH at given temperature" annotation(Placement(transformation(extent = {{100, -10}, {120, 10}}), iconTransformation(extent = {{100, -10}, {120, 10}})));
       Physiolibrary.Types.RealIO.ConcentrationInput BEox "BEox in mmol/l" annotation(Placement(transformation(extent = {{-60, 51}, {-42, 69}}), iconTransformation(extent = {{-120, 70}, {-100, 90}})));
       bloodBEox vanSlykeEquation annotation(Placement(transformation(extent = {{-36, -32}, {44, 40}})));
-      Physiolibrary.Types.RealIO.TemperatureInput temp "temperature in Kelvins"
-                                                                                annotation(Placement(transformation(extent = {{-90, -68}, {-74, -52}}), iconTransformation(extent = {{-120, -108}, {-100, -88}})));
+      Physiolibrary.Types.RealIO.TemperatureInput temp "temperature in Kelvins" annotation(Placement(transformation(extent = {{-90, -68}, {-74, -52}}), iconTransformation(extent = {{-120, -108}, {-100, -88}})));
       Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints1 annotation(Placement(transformation(extent = {{-24, 42}, {32, 78}})));
       Physiolibrary.Types.RealIO.ConcentrationInput cPi
         "albumin concentration in plasma (mmol/l)"                                                 annotation(Placement(transformation(extent = {{-88, -28}, {-70, -10}}), iconTransformation(extent = {{-120, -60}, {-100, -40}})));
@@ -1889,8 +1888,7 @@ package NewBloodyMary_testing
         "mixed venous O2 concentration"                                                  annotation(Placement(transformation(extent = {{-34, 39}, {-16, 57}}), iconTransformation(extent = {{-120, -20}, {-100, 0}})));
       Physiolibrary.Types.RealIO.ConcentrationInput CvCO2
         "mixed venous CO2 concentration"                                                   annotation(Placement(transformation(extent = {{-32, 68}, {-16, 84}}), iconTransformation(extent = {{-120, -46}, {-100, -26}})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateInput Qpulm "Pulmonary Perfusin"
-                                                                                annotation(Placement(transformation(extent = {{-82, -92}, {-64, -74}}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 54})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput Qpulm "Pulmonary Perfusin" annotation(Placement(transformation(extent = {{-82, -92}, {-64, -74}}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 54})));
       Physiolibrary.Types.RealIO.ConcentrationOutput CaO2
         "arteril O2 contentration"                                                   annotation(Placement(transformation(extent = {{100, 8}, {120, 28}}), iconTransformation(extent = {{100, 8}, {120, 28}})));
       Physiolibrary.Types.RealIO.ConcentrationOutput CaCO2
@@ -3401,9 +3399,9 @@ O2CO2"),                                                                        
         connect(venousBlood.ctO2, venousO2CO2_1.CvO2) annotation(Line(points = {{-84.4, -20}, {-68, -20}, {-68, -18}, {-53, -18}, {-53, -69.94}, {-46.1, -69.94}}, color = {0, 0, 127}));
         connect(venousBlood.ctCO2, venousO2CO2_1.CvCO2) annotation(Line(points = {{-84.4, -28}, {-50, -28}, {-50, -75.38}, {-46.1, -75.38}}, color = {0, 0, 127}));
         connect(shuntPerfusin.Qpulm, alveolocapillaryUnit.Q) annotation(Line(points = {{83.9, -28.2}, {84, -28.2}, {84, 20}, {34, 20}, {34, 82.78}, {83.84, 82.78}}, color = {0, 0, 127}));
-        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-72, 66}, {66, 14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "Test AlvEqFLow")}));
+        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-72, 66}, {66, 14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, textString = "Test AlvEqFLow")}));
       end testAlvEqFlow;
 
       model testArtEqFlow
@@ -3501,9 +3499,9 @@ O2CO2"),                                                                        
         connect(epcCO1.q_in, tissuesBloodGases.CO2a) annotation(Line(points = {{136, -38}, {130, -38}, {130, -61.1}, {91.8, -61.1}}, color = {255, 0, 0}, thickness = 1));
         connect(arterialBlood.ctO2, epcO1.concentration) annotation(Line(points = {{-88.1, 66.6}, {-78, 66.6}, {-78, 100}, {146, 100}, {146, -52}, {122, -52}, {122, -42.8}}, color = {0, 0, 127}));
         connect(epcCO1.concentration, arterialBlood.ctCO2) annotation(Line(points = {{136, -42.8}, {136, -50}, {144, -50}, {144, 98}, {-74, 98}, {-74, 59.2}, {-88.1, 59.2}}, color = {0, 0, 127}));
-        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-72, 66}, {66, 14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "Test AlvEqFLow")}));
+        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-72, 66}, {66, 14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, textString = "Test AlvEqFLow")}));
       end testArtEqFlow;
 
       model testArtEqFlowMin
@@ -3564,9 +3562,9 @@ O2CO2"),                                                                        
         connect(pulmonaryShunts.O2a, tissuesBloodGases.O2a) annotation(Line(points = {{41.16, -8.12}, {68, -8.12}, {68, -46.9}, {45.8, -46.9}}, color = {255, 0, 0}, thickness = 1));
         connect(pulmonaryShunts.CO2a, tissuesBloodGases.CO2a) annotation(Line(points = {{41.16, -12.52}, {90, -12.52}, {90, -51.1}, {45.8, -51.1}}, color = {255, 0, 0}, thickness = 1));
         connect(pulmonaryShunts.PulmonaryPerfusion, alveolocapillaryUnit.Q) annotation(Line(points = {{16.52, -2.84}, {22, -2.84}, {22, 28}, {0, 28}, {0, 90.78}, {17.84, 90.78}}, color = {0, 0, 127}));
-        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-72, 66}, {66, 14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "Test AlvEqFLow")}));
+        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-72, 66}, {66, 14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, textString = "Test AlvEqFLow")}));
       end testArtEqFlowMin;
 
       model testSimpleCirculationO2CO2
@@ -3609,9 +3607,9 @@ O2CO2"),                                                                        
         connect(cDPG.y, busConnector.cDPG) annotation(Line(points = {{-60, -73}, {-42, -73}, {-42, -72}, {-20, -72}, {-20, -19}, {33, -19}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
         connect(busConnector, simpleCirculationO2CO2.busConnector) annotation(Line(points = {{33, -19}, {92, -19}, {92, 50.14}, {75.36, 50.14}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
         connect(VAi.y, simpleCirculationO2CO2.VAi) annotation(Line(points = {{14, 73}, {24, 73}, {24, 72.22}, {33.6, 72.22}}, color = {0, 0, 127}));
-        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 170},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 70}, {56, -4}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 170},
-                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "Test SimpleCirculationO2CO2")}));
+        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 170},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-78, 70}, {56, -4}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 170},
+                  fillPattern =                                                                                                   FillPattern.Solid, textString = "Test SimpleCirculationO2CO2")}));
       end testSimpleCirculationO2CO2;
 
       model testO2CO2CirculationFlow
@@ -3661,9 +3659,9 @@ O2CO2"),                                                                        
         connect(VO2.y, o2CO2CirculationFlow.VO2) annotation(Line(points = {{-6.875, 50}, {-8, 50}, {-8, 49.92}, {11.1, 49.92}}, color = {0, 0, 127}));
         connect(ShFract.y, o2CO2CirculationFlow.ShuntFract) annotation(Line(points = {{-22, 70}, {-6, 70}, {-6, 71.2}, {11.1, 71.2}}, color = {0, 0, 127}));
         connect(Q.y, o2CO2CirculationFlow.Q) annotation(Line(points = {{-10, 80}, {11.1, 80}, {11.1, 80.16}}, color = {0, 0, 127}));
-        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 170},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 70}, {56, -4}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 170},
-                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "Test SimpleCirculationO2CO2")}));
+        annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 170},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-78, 70}, {56, -4}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 170},
+                  fillPattern =                                                                                                   FillPattern.Solid, textString = "Test SimpleCirculationO2CO2")}));
       end testO2CO2CirculationFlow;
 
       model testAlvEq1
@@ -4028,8 +4026,7 @@ O2CO2"),                                                                        
                 {120,10}}),                                                                                                    iconTransformation(extent={{100,-10},
                 {120,10}})));
       Physiolibrary.Types.RealIO.ConcentrationInput BEox "BEox in mmol/l" annotation(Placement(transformation(extent = {{-60, 51}, {-42, 69}}), iconTransformation(extent = {{-120, 70}, {-100, 90}})));
-      Physiolibrary.Types.RealIO.TemperatureInput temp "temperature in Kelvins"
-                                                                                annotation(Placement(transformation(extent={{-68,-58},
+      Physiolibrary.Types.RealIO.TemperatureInput temp "temperature in Kelvins" annotation(Placement(transformation(extent={{-68,-58},
                 {-52,-42}}),                                                                                                    iconTransformation(extent = {{-120, -108}, {-100, -88}})));
       Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints1 annotation(Placement(transformation(extent = {{-24, 42}, {32, 78}})));
       Physiolibrary.Types.RealIO.ConcentrationInput cPi
@@ -4422,7 +4419,7 @@ O2CO2"),                                                                        
     connector ChemicalEquivalentConcentrationInput = input
         ChemicalEquivalentConcentration
       "input ChemicalEquivalentConcentration as connector"                                                                                      annotation(defaultComponentName = "volumeDensityOfCharge", Icon(graphics={  Polygon(points = {{-100, 100}, {100, 0}, {-100, -100}, {-100, 100}}, lineColor = {0, 0, 127}, fillColor = {0, 0, 127},
-              fillPattern =                                                                                                    FillPattern.Solid)}, coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.2)), Diagram(coordinateSystem(preserveAspectRatio = true, initialScale = 0.2, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics = {Polygon(points=  {{0, 50}, {100, 0}, {0, -50}, {0, 50}}, lineColor=  {0, 0, 127}, fillColor=  {0, 0, 127}, fillPattern=  FillPattern.Solid), Text(extent=  {{-10, 85}, {-10, 60}}, lineColor=  {0, 0, 127}, textString=  "%name")}), Documentation(info = "<html>
+              fillPattern =                                                                                                    FillPattern.Solid)}, coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.2)), Diagram(coordinateSystem(preserveAspectRatio = true, initialScale = 0.2, extent = {{-100, -100}, {100, 100}}, grid = {1, 1}), graphics = {Polygon(points = {{0, 50}, {100, 0}, {0, -50}, {0, 50}}, lineColor = {0, 0, 127}, fillColor = {0, 0, 127}, fillPattern = FillPattern.Solid), Text(extent = {{-10, 85}, {-10, 60}}, lineColor = {0, 0, 127}, textString = "%name")}), Documentation(info = "<html>
     <p>
     Connector with one input signal of type VolumeDensityOfCharge.
     </p>
@@ -4828,8 +4825,7 @@ O2CO2"),                                                                        
         "outgoing intracellular erytrocytes pH"                                         annotation(Placement(transformation(extent = {{-120, 10}, {-80, 50}}), iconTransformation(extent = {{-100, 30}, {-80, 50}})));
       Physiolibrary.Types.RealIO.FractionInput Hct
         "outgoing hematocrit (erytrocytes volume/blood volume)"                                            annotation(Placement(transformation(extent = {{60, 60}, {100, 100}}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 180, origin = {90, 40})));
-      Physiolibrary.Types.RealIO.FractionInput sO2 "outgoing oxygen saturation"
-                                                                                annotation(Placement(transformation(extent = {{60, 20}, {100, 60}}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 180, origin = {90, 0})));
+      Physiolibrary.Types.RealIO.FractionInput sO2 "outgoing oxygen saturation" annotation(Placement(transformation(extent = {{60, 20}, {100, 60}}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 180, origin = {90, 0})));
     equation
       //total plasma CO2 from SimpleCO2Solution
       tCO2_P = cHCO3 + cdCO2;
@@ -5041,8 +5037,7 @@ O2CO2"),                                                                        
         "total concentration of tiratable hydrogen ions in fully oxygenated blood";
       //( displayUnit="mEq/l")
       Physiolibrary.Types.RealIO.pHOutput pH(start = 7.4) "plasma pH" annotation(Placement(transformation(extent = {{30, -98}, {70, -58}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 270, origin = {-20, -120})));
-      Physiolibrary.Types.RealIO.pHOutput pH_ery "intracellular erytrocytes pH"
-                                                                                annotation(Placement(transformation(extent = {{-14, -98}, {26, -58}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 270, origin = {20, -120})));
+      Physiolibrary.Types.RealIO.pHOutput pH_ery "intracellular erytrocytes pH" annotation(Placement(transformation(extent = {{-14, -98}, {26, -58}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 270, origin = {20, -120})));
       Physiolibrary.Types.RealIO.ConcentrationInput cHCO3(displayUnit = "mmol/l")
         "concentration of plasma HCO3 ions (default=24.5mmol/l)"                                                                           annotation(Placement(transformation(extent = {{50, 18}, {90, 58}}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 180, origin = {90, 80})));
       Physiolibrary.Types.RealIO.ConcentrationInput ctHb(displayUnit = "mmol/l")
@@ -5456,8 +5451,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
         "venous  concentration of HCO3 in mmol/l"                                                                             annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin = {93, 23}), iconTransformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin = {108, -68})));
       Physiolibrary.Types.RealIO.PressureOutput pCO2v
         "pCO2 in venous blood (Pa)"                                               annotation(Placement(transformation(extent = {{-6, -6}, {6, 6}}, rotation = 0, origin = {40, 12}), iconTransformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin = {107, -5})));
-      Physiolibrary.Types.RealIO.PressureOutput pO2v "pO2 in venous blood (Pa)"
-                                                                                annotation(Placement(transformation(extent = {{-6, -6}, {6, 6}}, rotation = 0, origin = {18, 10}), iconTransformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin = {107, 11})));
+      Physiolibrary.Types.RealIO.PressureOutput pO2v "pO2 in venous blood (Pa)" annotation(Placement(transformation(extent = {{-6, -6}, {6, 6}}, rotation = 0, origin = {18, 10}), iconTransformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin = {107, 11})));
       Physiolibrary.Types.RealIO.pHOutput pHv "pH in venous blood" annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 180, origin = {-92, 72}), iconTransformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin = {108, -28})));
       Physiolibrary.Types.RealIO.ConcentrationOutput ctO2v
         "total concentration of O2 in venous blood (in mmol/l)"                                                    annotation(Placement(transformation(extent = {{-6, -6}, {6, 6}}, rotation = 0, origin = {88, -26}), iconTransformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin = {107, 77})));
@@ -7551,5 +7545,7 @@ parameters")}));
     end Shunts;
     annotation(uses(Modelica(version = "3.2.1"), Physiolibrary(version = "2.3.1"), Physiomodel(version = "1.0.0")));
   end Icons;
-  annotation(uses(Modelica(version = "3.2.1"), Physiolibrary(version = "2.3.1"), Physiomodel(version = "1.0.0")));
+  annotation(uses(                                                               Physiomodel(version = "1.0.0"),
+      Modelica(version="3.2.2"),
+      Physiolibrary(version="2.3.2-beta")));
 end NewBloodyMary_testing;

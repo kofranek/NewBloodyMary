@@ -338,8 +338,8 @@ package AcidBaseBalance
             rotation=270,
             origin={64,82})));
       Physiolibrary.Types.RealIO.ConcentrationInput PhosphateConc
-        "Phosphate concentrations" annotation (Placement(transformation(extent={{-114,
-                58},{-74,98}}), iconTransformation(
+        "Phosphate concentrations" annotation (Placement(transformation(extent={{-80,58},
+                {-40,98}}),     iconTransformation(
             extent={{-20,-20},{20,20}},
             rotation=270,
             origin={2,82})));
