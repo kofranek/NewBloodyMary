@@ -654,7 +654,7 @@ package AcidBaseBalance
       extends Physiolibrary.Icons.HydraulicResistor;
         parameter Physiolibrary.Types.HydraulicResistance Resistance;
       Physiolibrary.Hydraulic.Components.Resistor resistor(Resistance=
-            bloodResistance)
+            Resistance)
         annotation (Placement(transformation(extent={{-20,0},{0,20}})));
 
       BloodPort_a bloodPort_a(numberOfSubstances=3) annotation (Placement(
@@ -953,8 +953,8 @@ package AcidBaseBalance
 
     model BloodElasticVesselCompliance
       extends Physiolibrary.Icons.ElasticBalloon;
-      parameter Physiolibrary.Types.Volume ZeroPressureVolume;
-      parameter Physiolibrary.Types.Pressure ExternalPressure;
+      parameter Physiolibrary.Types.Volume ZeroPressureVolume = 0;
+      parameter Physiolibrary.Types.Pressure ExternalPressure = 0;
       parameter Physiolibrary.Types.HydraulicCompliance Compliance;
       parameter Physiolibrary.Types.Volume volume_start=1e-3;
      // parameter Physiolibrary.Types.Concentration O2_startConcentration;
@@ -1045,8 +1045,6 @@ package AcidBaseBalance
           thickness=1));
       connect(flowMeasure.volumeFlow, O2flow.solutionFlow) annotation (Line(points={{-5,-3.2},
               {-5,-14},{-18,-14},{-18,-19}},           color={0,0,127}));
-      connect(CO2flow.solutionFlow, O2flow.solutionFlow) annotation (Line(points={{-18,-43},
-              {-18,-19}},                      color={0,0,127}));
       connect(flowMeasure.volumeFlow, CO2flow.solutionFlow)
         annotation (Line(points={{-5,-3.2},{-5,-43},{-18,-43}}, color={0,0,127}));
       connect(flowMeasure.volumeFlow, BEoxflow.solutionFlow)
@@ -1775,10 +1773,11 @@ package AcidBaseBalance
         ExternalPressure=0,
         O2_concentration=10,
         ZeroPressureVolume=0.001,
-        Elastance=1333223874.15,
-        volume_start=0.0005)
+        Compliance=3.7503078792283e-6,
+        volume_start=0.0005,
+        Elastance=1333223874.15)
         annotation (Placement(transformation(extent={{-10,-20},{10,0}})));
-      Package.BloodResistor bloodResistor(bloodResistance=100.0)
+      Package.BloodResistor bloodResistor(Resistance=799934324490)
         annotation (Placement(transformation(extent={{20,-20},{40,0}})));
       Package.BloodPort_a_Extension bloodPort_a_Extension
         annotation (Placement(transformation(extent={{44,-20},{64,0}})));
@@ -1945,8 +1944,8 @@ package AcidBaseBalance
         annotation (Placement(transformation(extent={{4,74},{24,94}})));
       Package.BloodElasticVesselCompliance pulmonaryArteries(
         ZeroPressureVolume(displayUnit="l") = 0.00030625,
-        Compliance(displayUnit="l/mmHg") = 3.6002955640592e-08,
-        volume_start(displayUnit="l") = 0.00038)
+        volume_start(displayUnit="l") = 0.00038,
+        Compliance(displayUnit="l/mmHg") = 3.6002955640592e-8)
         annotation (Placement(transformation(extent={{-62,74},{-42,94}})));
       Package.BloodConductor
                pulmonary(Conductance(displayUnit="l/(mmHg.min)") = 4.1665920538226e-08)
@@ -1954,12 +1953,14 @@ package AcidBaseBalance
       Package.BloodElasticVesselCompliance arteries(
         volume_start(displayUnit="l") = 0.00085,
         ZeroPressureVolume(displayUnit="l") = 0.000495,
-        Compliance(displayUnit="l/mmHg") = 2.6627185942521e-08)
+        Compliance(displayUnit="l/mmHg") = 2.6627185942521e-8,
+        CO2_concentration=10)
         annotation (Placement(transformation(extent={{14,-46},{34,-26}})));
       Package.BloodElasticVesselCompliance veins(
-        Compliance(displayUnit="l/mmHg") = 6.1880080007267e-07,
         volume_start(displayUnit="l") = 0.00325,
-        ZeroPressureVolume(displayUnit="l") = 0.00295)
+        ZeroPressureVolume(displayUnit="l") = 0.00295,
+        Compliance(displayUnit="l/mmHg") = 6.1880080007267e-7,
+        CO2_concentration=20)
         annotation (Placement(transformation(extent={{-64,-46},{-44,-26}})));
       Package.BloodConductor
                nonMuscle(Conductance(displayUnit="l/(mmHg.min)") = 3.5627924852669e-09)
@@ -2101,6 +2102,8 @@ package AcidBaseBalance
           points={{68,30},{68,58},{56,58},{56,58}},
           color={0,0,0},
           thickness=1));
+      connect(rightStarling.y, rightHeart.volumeflowrate)
+        annotation (Line(points={{-46,28},{-46,22}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}}), graphics={Text(
               extent={{-82,-80},{80,-100}},
