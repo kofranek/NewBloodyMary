@@ -33,7 +33,7 @@ package AcidBaseBalance
       connect(busConnector.pH_art, CD_NH4_PhOnFlux.u) annotation(Line(points = {{-80, 78}, {-80, 78}, {-80, 30}, {-26, 30}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
       connect(busConnector.Cl_art, ChloridePoolEffect.u) annotation(Line(points = {{-80, 78}, {-80, 78}, {-80, 12}, {-80, 4}, {-26, 4}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
       connect(ChloridePoolEffect.y, molarflowrate) annotation(Line(points = {{-18, 0}, {-18, 0}, {-18, -22}, {10, -22}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-112, -102}, {108, -128}}, lineColor = {0, 0, 255}, textString = "%name")}), Documentation(revisions = "<html>
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent=  {{-112, -102}, {108, -128}}, lineColor=  {0, 0, 255}, textString=  "%name")}), Documentation(revisions = "<html>
 
 <table>
 <tr>
@@ -159,9 +159,9 @@ package AcidBaseBalance
       Modelica.Blocks.Interfaces.RealInput u annotation(Placement(transformation(extent = {{-100, -20}, {-60, 20}}), iconTransformation(extent = {{-128, -20}, {-88, 20}})));
     equation
       y = yBase * 60000 * ((-2.5 * u) + 19.5) / 60000;
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 20}, {100, -20}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-78, 14}, {84, -14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, textString = "F62")}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 20}, {100, -20}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 14}, {84, -14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid, textString=  "F62")}));
     end F62;
 
     model F63
@@ -175,10 +175,10 @@ package AcidBaseBalance
       //mmol/min = mol/sec*60000
       y * 60000 = y1;
       //mol/sec *60000 = mmol/min
-      y1 = if u <= 4 then 0 elseif u > 4 and u <= 5 then yBase1 * (u - 4) else yBase1 annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 20}, {100, -20}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-78, 14}, {84, -14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, textString = "F63")}));
-      annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10}), graphics = {Rectangle(visible = true, fillColor = {255, 255, 0}, fillPattern = FillPattern.Solid, extent = {{-100, -20}, {100, 20}}), Text(visible = true, origin = {-3.907, 0}, textColor = {0, 0, 255}, extent = {{-69.022, -12.502}, {69.022, 12.502}}, textString = "F63")}));
+      y1 = if u <= 4 then 0 elseif u > 4 and u <= 5 then yBase1 * (u - 4) else yBase1 annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 20}, {100, -20}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 14}, {84, -14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid, textString=  "F63")}));
+      annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10}), graphics = {Rectangle(visible=  true, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, extent=  {{-100, -20}, {100, 20}}), Text(visible=  true, origin=  {-3.907, 0}, textColor=  {0, 0, 255}, extent=  {{-69.022, -12.502}, {69.022, 12.502}}, textString=  "F63")}));
     end F63;
 
     model AldEffect
@@ -188,9 +188,9 @@ package AcidBaseBalance
     equation
       y = (yBase * 60000 + 0.009 + u * 0.001) / 60000;
       // y = (yBase*60000+0.01)/60000;
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 20}, {100, -20}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-78, 14}, {84, -14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, textString = "AldEffect")}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 20}, {100, -20}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 14}, {84, -14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid, textString=  "AldEffect")}));
     end AldEffect;
 
     model TitratableAcid
@@ -221,12 +221,12 @@ package AcidBaseBalance
       connect(f63_1.yBase, f62_1.y) annotation(Line(visible = true, origin = {36, 25.84}, points = {{0, -20.08}, {0, 20.08}}, color = {0, 0, 127}));
       connect(f63_1.y, aldEffect.yBase) annotation(Line(visible = true, origin = {36.5, -20.77}, points = {{-0.5, 13.93}, {-0.5, -0.23}, {0.5, -0.23}, {0.5, -13.47}}, color = {0, 0, 127}));
       connect(aldEffect.y, TA) annotation(Line(visible = true, origin = {44.667, -68.947}, points = {{-7.667, 22.107}, {-7.667, -11.053}, {15.333, -11.053}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-76, 82}, {-40, 48}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, textString = "pHa"), Text(extent = {{-78, 28}, {-42, -6}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, textString = "pHu"), Text(extent = {{-78, -24}, {-42, -58}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, textString = "fald"), Text(extent = {{38, 18}, {74, -16}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid, textString = "TA")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 80}, {100, -80}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-76, 82}, {-40, 48}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid, textString=  "pHa"), Text(extent=  {{-78, 28}, {-42, -6}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid, textString=  "pHu"), Text(extent=  {{-78, -24}, {-42, -58}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid, textString=  "fald"), Text(extent=  {{38, 18}, {74, -16}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid, textString=  "TA")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
             graphics={Text(
               extent={{60,-8},{102,10}},
               lineColor={28,108,200},
@@ -285,8 +285,8 @@ package AcidBaseBalance
       pHu = -log10(((-((10 ^ (-4.3) + 10 ^ (-6.66)) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) - 10 ^ (-6.66) * YPO4 - 10 ^ (-4.3) * YORG)) + (((10 ^ (-4.3) + 10 ^ (-6.66)) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) - 10 ^ (-6.66) * YPO4 - 10 ^ (-4.3) * YORG) ^ 2 - 4 * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) * (10 ^ (-4.3) * 10 ^ (-6.66) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG - YPO4 - YORG))) ^ 0.5) / 2 / (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG));
 
       STPG = max(0, STPO + YORG - YTA);
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                    FillPattern.Solid), Text(extent = {{-68, 64}, {-6, 18}}, lineColor = {28, 108, 200}, textString = "TA"), Text(extent = {{-54, 0}, {8, -46}}, lineColor = {28, 108, 200}, textString = "pHa"), Text(extent = {{16, 38}, {78, -8}}, lineColor = {28, 108, 200}, textString = "pHu")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 80}, {100, -80}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
+                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-68, 64}, {-6, 18}}, lineColor=  {28, 108, 200}, textString=  "TA"), Text(extent=  {{-54, 0}, {8, -46}}, lineColor=  {28, 108, 200}, textString=  "pHa"), Text(extent=  {{16, 38}, {78, -8}}, lineColor=  {28, 108, 200}, textString=  "pHu")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end pHUrine;
 
     model TotalAcidExcretion
@@ -327,8 +327,7 @@ package AcidBaseBalance
                false, extent={{-100,-100},{100,100}})));
     end TotalAcidExcretion;
 
-    model pHUrine_New
-      "prefix Y - flows, X - concentrations. All in SI units"
+    model pHUrine_New "prefix Y - flows, X - concentrations. All in SI units"
 
       Physiolibrary.Types.RealIO.MolarFlowRateInput TA annotation (Placement(
             transformation(extent={{-102,20},{-62,60}}), iconTransformation(extent={
@@ -399,8 +398,6 @@ package AcidBaseBalance
       //   YNH4 = YNH40 + FNH3;
       //   YNH3 = YNH30 - FNH3;
 
-
-
       //   GFR = 0.1;
       //   //mmol/min
       //   XPO4 = 1.1;
@@ -429,13 +426,10 @@ package AcidBaseBalance
       //   YTAORG = YORG*10^(-4.3)/(10^(-pHa) + 10^(-4.3)) - YORG*10^(-4.3)/(10^(-pHu) +
       //     10^(-4.3));
 
-
       //   FNH3 = 10*YNH34*YTA;
       //this must be adjusted in future
 
-
       //   YTANH3 = YNH34*10^(-9)/(10^(-pHa) + 10^(-9)) - YNH3;
-
 
       /*
   STPO = YPO4 * (1 + 1 / (1 + 10 ^ (6.8 - PHA)));
@@ -476,8 +470,10 @@ package AcidBaseBalance
       Physiolibrary.Types.Pressure pressure "Pressure";
       flow Physiolibrary.Types.VolumeFlowRate bloodFlow "Volume flow";
 
-      Physiolibrary.Types.Concentration conc[numberOfSubstances] "Solute concentration";
-      flow Physiolibrary.Types.MolarFlowRate q[numberOfSubstances] "Solute flow";
+      Physiolibrary.Types.Concentration conc[numberOfSubstances]
+        "Solute concentration";
+      flow Physiolibrary.Types.MolarFlowRate q[numberOfSubstances]
+        "Solute flow";
 
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)),
                                                 Diagram(coordinateSystem(
@@ -528,7 +524,6 @@ package AcidBaseBalance
 
     model BloodPort_a_Extension
 
-
       BloodPort_a bloodPort_a(numberOfSubstances=3)
                               annotation (Placement(transformation(extent={{-110,
                 -10},{-90,10}}),
@@ -549,17 +544,13 @@ package AcidBaseBalance
                                                        iconTransformation(extent={{90,-90},
                 {110,-70}})));
 
-
-
     equation
-
         O2.conc=bloodPort_a.conc[1];
         O2.q=bloodPort_a.q[1];
         CO2.conc=bloodPort_a.conc[2];
         CO2.q=bloodPort_a.q[2];
         BEox.conc=bloodPort_a.conc[3];
         BEox.q=bloodPort_a.q[3];
-
 
         bloodFlow.pressure=bloodPort_a.pressure;
         bloodFlow.q=bloodPort_a.bloodFlow
@@ -620,7 +611,6 @@ package AcidBaseBalance
         BEox.q=bloodPort_b.q[3];
         bloodPort_b.pressure=bloodFlow.pressure;
         bloodPort_b.bloodFlow=bloodFlow.q;
-
 
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
             Text(
@@ -1263,8 +1253,8 @@ package AcidBaseBalance
       Physiolibrary.Chemical.Components.Stream StreamBEox(useSolutionFlowInput=
             true)
         annotation (Placement(transformation(extent={{-20,-70},{0,-50}})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateInput volumeflowrate annotation
-        (Placement(transformation(
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput volumeflowrate annotation (
+         Placement(transformation(
             extent={{-20,-20},{20,20}},
             rotation=270,
             origin={0,108}), iconTransformation(
@@ -1491,17 +1481,19 @@ package AcidBaseBalance
         EMIN=15998686.4898,
         EMAX=37330268.4762)
         annotation (Placement(transformation(extent={{56,92},{94,124}})));
-      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance LVentricularElastance(EMIN=
+      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance
+                                                                                 LVentricularElastance(EMIN=
             11999014.86735, EMAX=533289549.66)
         annotation (Placement(transformation(extent={{164,88},{200,120}})));
       Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.AtrialElastance RAtrialElastance(EMIN=
             6666119.37075, EMAX=19998358.11225)
         annotation (Placement(transformation(extent={{-244,86},{-206,118}})));
-      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance RVentricularElastance(EMIN=
+      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance
+                                                                                 RVentricularElastance(EMIN=
             7599376.082655, EMAX=65327969.83335)
         annotation (Placement(transformation(extent={{-180,88},{-150,122}})));
       replaceable Physiolibrary.Types.Constants.FrequencyConst HeartRate(k(displayUnit = "1/min") = 1.2) annotation(Placement(visible = true, transformation(origin={-243,
-                148.5},                                                                                                                                                              extent = {{-11, -6.5}, {11, 6.5}}, rotation = 0)));
+                148.5},                                                                                                    extent = {{-11, -6.5}, {11, 6.5}}, rotation = 0)));
       Package.BloodElasticVesselElastance Eitha(
         ZeroPressureVolume=0.00014,
         ExternalPressure=-533.28954966,
@@ -1882,8 +1874,8 @@ package AcidBaseBalance
           points={{-80,-90},{-68,-90}},
           color={107,45,134},
           thickness=1));
-      connect(unlimitedSolutionStorageBEox1.q_out, BEoxflow1.q_out) annotation
-        (Line(
+      connect(unlimitedSolutionStorageBEox1.q_out, BEoxflow1.q_out) annotation (
+         Line(
           points={{104,-90},{96,-90}},
           color={107,45,134},
           thickness=1));
@@ -2007,6 +1999,22 @@ package AcidBaseBalance
         annotation (Placement(transformation(extent={{-98,38},{-78,58}})));
       Package.BloodPort_a_Extension bloodPort_a_Extension1
         annotation (Placement(transformation(extent={{36,38},{56,58}})));
+      Package.BloodPort_b_Extension bloodPort_b_Extension
+        annotation (Placement(transformation(extent={{-42,106},{-22,126}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump
+        unlimitedSolutePumpLungsO2(SoluteFlow=0.0003)
+        annotation (Placement(transformation(extent={{-90,106},{-70,126}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
+        unlimitedSolutePumpOutLungsCO2(SoluteFlow=0.0003)
+        annotation (Placement(transformation(extent={{-70,92},{-90,112}})));
+      Package.BloodPort_b_Extension bloodPort_b_Extension1
+        annotation (Placement(transformation(extent={{26,-78},{6,-58}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump
+        unlimitedSolutePumpTissuesCO2(SoluteFlow=0.0003)
+        annotation (Placement(transformation(extent={{66,-86},{46,-66}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
+        unlimitedSolutePumpOutTissueO2(SoluteFlow=0.0003)
+        annotation (Placement(transformation(extent={{46,-70},{66,-50}})));
     equation
       connect(RNormalCO.y, rightStarling.yBase) annotation (Line(
           points={{-51,44},{-46,44},{-46,34}},
@@ -2061,8 +2069,8 @@ package AcidBaseBalance
           points={{-36,18},{-26,18},{-26,64},{-82,64},{-82,84},{-61.8,84}},
           color={28,108,200},
           thickness=0.5));
-      connect(pulmonaryArteries.bloodPort_b, pulmonary.bloodPort_a) annotation
-        (Line(
+      connect(pulmonaryArteries.bloodPort_b, pulmonary.bloodPort_a) annotation (
+         Line(
           points={{-42,84},{-29,84}},
           color={28,108,200},
           thickness=0.5));
@@ -2104,8 +2112,38 @@ package AcidBaseBalance
           thickness=1));
       connect(rightStarling.y, rightHeart.volumeflowrate)
         annotation (Line(points={{-46,28},{-46,22}}, color={0,0,127}));
+      connect(bloodPort_b_Extension.bloodPort_b, pulmonary.bloodPort_b)
+        annotation (Line(
+          points={{-22,116},{-16,116},{-11,116},{-11,84}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(unlimitedSolutePumpLungsO2.q_out, bloodPort_b_Extension.O2)
+        annotation (Line(
+          points={{-70,116},{-56,116},{-42,116}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePumpOutLungsCO2.q_in, bloodPort_b_Extension.CO2)
+        annotation (Line(
+          points={{-70,102},{-62,102},{-62,112},{-42,112}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_b_Extension1.bloodPort_b, veins.bloodPort_b)
+        annotation (Line(
+          points={{6,-68},{-44,-68},{-44,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(unlimitedSolutePumpTissuesCO2.q_out, bloodPort_b_Extension1.CO2)
+        annotation (Line(
+          points={{46,-76},{42,-76},{42,-72},{26,-72}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePumpOutTissueO2.q_in, bloodPort_b_Extension1.O2)
+        annotation (Line(
+          points={{46,-60},{42,-60},{42,-68},{26,-68}},
+          color={107,45,134},
+          thickness=1));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-                -100},{100,100}}), graphics={Text(
+                -100},{100,140}}), graphics={Text(
               extent={{-82,-80},{80,-100}},
               lineColor={175,175,175},
               textString=
@@ -2118,7 +2156,8 @@ package AcidBaseBalance
 <p><i>2014</i></p>
 <p>Marek Matejak, Charles University, Prague, Czech Republic </p>
 </html>"),
-        experiment(StopTime=300));
+        experiment(StopTime=300),
+        Icon(coordinateSystem(extent={{-100,-100},{100,140}})));
     end CardiovascularSystem_GCG_Extension;
   end Test;
 
@@ -2460,6 +2499,6 @@ package AcidBaseBalance
 </html>"));
     end BloodElasticVesselElastanceParam;
   end Trash;
-  annotation(uses(
-        Modelica(version="3.2.2"), Physiolibrary(version="2.3.1")));
+  annotation(uses(                 Physiolibrary(version="2.3.1"), Modelica(
+          version="3.2.1")));
 end AcidBaseBalance;
