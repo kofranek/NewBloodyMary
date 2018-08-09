@@ -33,7 +33,7 @@ package AcidBaseBalance
       connect(busConnector.pH_art, CD_NH4_PhOnFlux.u) annotation(Line(points = {{-80, 78}, {-80, 78}, {-80, 30}, {-26, 30}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
       connect(busConnector.Cl_art, ChloridePoolEffect.u) annotation(Line(points = {{-80, 78}, {-80, 78}, {-80, 12}, {-80, 4}, {-26, 4}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
       connect(ChloridePoolEffect.y, molarflowrate) annotation(Line(points = {{-18, 0}, {-18, 0}, {-18, -22}, {10, -22}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent=  {{-112, -102}, {108, -128}}, lineColor=  {0, 0, 255}, textString=  "%name")}), Documentation(revisions = "<html>
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-112, -102}, {108, -128}}, lineColor = {0, 0, 255}, textString = "%name")}), Documentation(revisions = "<html>
 
 <table>
 <tr>
@@ -159,9 +159,9 @@ package AcidBaseBalance
       Modelica.Blocks.Interfaces.RealInput u annotation(Placement(transformation(extent = {{-100, -20}, {-60, 20}}), iconTransformation(extent = {{-128, -20}, {-88, 20}})));
     equation
       y = yBase * 60000 * ((-2.5 * u) + 19.5) / 60000;
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 20}, {100, -20}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 14}, {84, -14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "F62")}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 20}, {100, -20}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-78, 14}, {84, -14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "F62")}));
     end F62;
 
     model F63
@@ -175,10 +175,10 @@ package AcidBaseBalance
       //mmol/min = mol/sec*60000
       y * 60000 = y1;
       //mol/sec *60000 = mmol/min
-      y1 = if u <= 4 then 0 elseif u > 4 and u <= 5 then yBase1 * (u - 4) else yBase1 annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 20}, {100, -20}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 14}, {84, -14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "F63")}));
-      annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10}), graphics = {Rectangle(visible=  true, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, extent=  {{-100, -20}, {100, 20}}), Text(visible=  true, origin=  {-3.907, 0}, textColor=  {0, 0, 255}, extent=  {{-69.022, -12.502}, {69.022, 12.502}}, textString=  "F63")}));
+      y1 = if u <= 4 then 0 elseif u > 4 and u <= 5 then yBase1 * (u - 4) else yBase1 annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 20}, {100, -20}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-78, 14}, {84, -14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "F63")}));
+      annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10}), graphics = {Rectangle(visible = true, fillColor = {255, 255, 0}, fillPattern = FillPattern.Solid, extent = {{-100, -20}, {100, 20}}), Text(visible = true, origin = {-3.907, 0}, textColor = {0, 0, 255}, extent = {{-69.022, -12.502}, {69.022, 12.502}}, textString = "F63")}));
     end F63;
 
     model AldEffect
@@ -188,9 +188,9 @@ package AcidBaseBalance
     equation
       y = (yBase * 60000 + 0.009 + u * 0.001) / 60000;
       // y = (yBase*60000+0.01)/60000;
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 20}, {100, -20}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 14}, {84, -14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "AldEffect")}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 20}, {100, -20}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-78, 14}, {84, -14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "AldEffect")}));
     end AldEffect;
 
     model TitratableAcid
@@ -221,12 +221,12 @@ package AcidBaseBalance
       connect(f63_1.yBase, f62_1.y) annotation(Line(visible = true, origin = {36, 25.84}, points = {{0, -20.08}, {0, 20.08}}, color = {0, 0, 127}));
       connect(f63_1.y, aldEffect.yBase) annotation(Line(visible = true, origin = {36.5, -20.77}, points = {{-0.5, 13.93}, {-0.5, -0.23}, {0.5, -0.23}, {0.5, -13.47}}, color = {0, 0, 127}));
       connect(aldEffect.y, TA) annotation(Line(visible = true, origin = {44.667, -68.947}, points = {{-7.667, 22.107}, {-7.667, -11.053}, {15.333, -11.053}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 80}, {100, -80}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-76, 82}, {-40, 48}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "pHa"), Text(extent=  {{-78, 28}, {-42, -6}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "pHu"), Text(extent=  {{-78, -24}, {-42, -58}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "fald"), Text(extent=  {{38, 18}, {74, -16}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "TA")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-76, 82}, {-40, 48}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "pHa"), Text(extent = {{-78, 28}, {-42, -6}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "pHu"), Text(extent = {{-78, -24}, {-42, -58}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "fald"), Text(extent = {{38, 18}, {74, -16}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "TA")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
             graphics={Text(
               extent={{60,-8},{102,10}},
               lineColor={28,108,200},
@@ -285,8 +285,8 @@ package AcidBaseBalance
       pHu = -log10(((-((10 ^ (-4.3) + 10 ^ (-6.66)) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) - 10 ^ (-6.66) * YPO4 - 10 ^ (-4.3) * YORG)) + (((10 ^ (-4.3) + 10 ^ (-6.66)) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) - 10 ^ (-6.66) * YPO4 - 10 ^ (-4.3) * YORG) ^ 2 - 4 * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) * (10 ^ (-4.3) * 10 ^ (-6.66) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG - YPO4 - YORG))) ^ 0.5) / 2 / (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG));
 
       STPG = max(0, STPO + YORG - YTA);
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 80}, {100, -80}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-68, 64}, {-6, 18}}, lineColor=  {28, 108, 200}, textString=  "TA"), Text(extent=  {{-54, 0}, {8, -46}}, lineColor=  {28, 108, 200}, textString=  "pHa"), Text(extent=  {{16, 38}, {78, -8}}, lineColor=  {28, 108, 200}, textString=  "pHu")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-68, 64}, {-6, 18}}, lineColor = {28, 108, 200}, textString = "TA"), Text(extent = {{-54, 0}, {8, -46}}, lineColor = {28, 108, 200}, textString = "pHa"), Text(extent = {{16, 38}, {78, -8}}, lineColor = {28, 108, 200}, textString = "pHu")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end pHUrine;
 
     model TotalAcidExcretion
@@ -1372,52 +1372,52 @@ package AcidBaseBalance
     equation
       connect(unlimitedPump.q_out, bloodPort_a_Extension.bloodFlow) annotation (
          Line(
-          points={{-62,60},{-60,60},{-60,7.6},{-56.7,7.6}},
+          points={{-62,60},{-60,60},{-60,16},{-58,16}},
           color={0,0,0},
           thickness=1));
       connect(unlimitedVolume.y, bloodPort_b_Extension.bloodFlow) annotation (
           Line(
-          points={{8,52},{36,52},{52.9,52},{52.9,5.44}},
+          points={{8,52},{36,52},{54,52},{54,16}},
           color={0,0,0},
           thickness=1));
       connect(unlimitedSolutePump.q_out, bloodPort_a_Extension.O2) annotation (
           Line(
-          points={{-82,14},{-64,14},{-64,2},{-56.7,2}},
+          points={{-82,14},{-64,14},{-64,2},{-58,2}},
           color={107,45,134},
           thickness=1));
       connect(unlimitedSolutionStorage.q_out, bloodPort_b_Extension.O2)
         annotation (Line(
-          points={{84,-54},{88,-54},{88,-1.6},{52.9,-1.6}},
+          points={{84,-54},{88,-54},{88,0},{54,0}},
           color={107,45,134},
           thickness=1));
       connect(unlimitedSolutePump1.q_out, bloodPort_a_Extension.CO2)
         annotation (Line(
-          points={{-82,-6},{-68,-6},{-68,-4.16},{-56.7,-4.16}},
+          points={{-82,-6},{-68,-6},{-68,-3.88},{-58,-3.88}},
           color={107,45,134},
           thickness=1));
       connect(unlimitedSolutePump2.q_out, bloodPort_a_Extension.BEox)
         annotation (Line(
-          points={{-80,-26},{-68,-26},{-68,-9.2},{-56.7,-9.2}},
+          points={{-80,-26},{-68,-26},{-68,-9.2},{-58,-9.2}},
           color={107,45,134},
           thickness=1));
       connect(bloodPort_b_Extension.BEox, unlimitedSolutionStorage2.q_out)
         annotation (Line(
-          points={{52.9,-13.76},{61.45,-13.76},{61.45,-26},{6,-26}},
+          points={{54,-12.8},{61.45,-12.8},{61.45,-26},{6,-26}},
           color={107,45,134},
           thickness=1));
       connect(unlimitedSolutionStorage1.q_out, bloodPort_b_Extension.CO2)
         annotation (Line(
-          points={{48,-40},{80,-40},{80,-7.68},{52.9,-7.68}},
+          points={{48,-40},{80,-40},{80,-6.4},{54,-6.4}},
           color={107,45,134},
           thickness=1));
       connect(bloodPort_a_Extension.bloodPort_a, bloodElasticVesselElastance.bloodPort_a)
         annotation (Line(
-          points={{-33.3,2},{-18,2},{-18,4.2},{-2.2,4.2}},
+          points={{-32,2},{-18,2},{-18,4},{-11.8,4}},
           color={28,108,200},
           thickness=0.5));
       connect(bloodElasticVesselElastance.bloodPort_a, bloodPort_b_Extension.bloodPort_b)
         annotation (Line(
-          points={{-2.2,4.2},{15.9,4.2},{15.9,0},{33.1,0}},
+          points={{-11.8,4},{15.9,4},{15.9,0},{32,0}},
           color={28,108,200},
           thickness=0.5));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
@@ -1481,15 +1481,13 @@ package AcidBaseBalance
         EMIN=15998686.4898,
         EMAX=37330268.4762)
         annotation (Placement(transformation(extent={{56,92},{94,124}})));
-      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance
-                                                                                 LVentricularElastance(EMIN=
+      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance LVentricularElastance(EMIN=
             11999014.86735, EMAX=533289549.66)
-        annotation (Placement(transformation(extent={{164,88},{200,120}})));
+        annotation (Placement(transformation(extent={{122,92},{158,124}})));
       Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.AtrialElastance RAtrialElastance(EMIN=
             6666119.37075, EMAX=19998358.11225)
         annotation (Placement(transformation(extent={{-244,86},{-206,118}})));
-      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance
-                                                                                 RVentricularElastance(EMIN=
+      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance RVentricularElastance(EMIN=
             7599376.082655, EMAX=65327969.83335)
         annotation (Placement(transformation(extent={{-180,88},{-150,122}})));
       replaceable Physiolibrary.Types.Constants.FrequencyConst HeartRate(k(displayUnit = "1/min") = 1.2) annotation(Placement(visible = true, transformation(origin={-243,
@@ -1497,68 +1495,80 @@ package AcidBaseBalance
       Package.BloodElasticVesselElastance Eitha(
         ZeroPressureVolume=0.00014,
         ExternalPressure=-533.28954966,
-        Elastance=190651014.00345,
+        Compliance=0,
         volume_start=0.000204,
-        O2_solute_start=2.04,
-        CO2_solute_start=2.04,
-        BEox_solute_start=2.04)
-        annotation (Placement(transformation(extent={{174,-10},{194,10}})));
+        Elastance=190651014.00345)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={188,0})));
       Package.BloodInertia inertia(BloodInertance=335972416.2858,
           Blood_volume_start=2.1666666666667e-05)
-        annotation (Placement(transformation(extent={{158,-8},{134,8}})));
-      Package.BloodResistor Rlain(bloodResistance=23998029.7347)
+        annotation (Placement(transformation(extent={{12,-8},{-12,8}},
+            rotation=0,
+            origin={146,0})));
+      Package.BloodResistor Rlain(Resistance=23998029.7347)
         annotation (Placement(transformation(extent={{10,50},{30,70}})));
       Package.BloodValve AorticValve(
         Blood_Goff=0,
         Blood_Pknee=0,
         Blood_Ron=63994745.9592)
         annotation (Placement(transformation(extent={{196,30},{216,50}})));
-      Package.BloodResistor Retha(bloodResistance=479960594.694)
-        annotation (Placement(transformation(extent={{100,-10},{120,10}})));
+      Package.BloodResistor Retha(Resistance=479960594.694)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={108,0})));
       Package.BloodElasticVesselElastance Eetha(
         ExternalPressure=0,
         ZeroPressureVolume=0.00037,
-        Elastance=74127247.40274,
+        Compliance=0,
         volume_start=0.000526,
-        O2_solute_start=5.26,
-        CO2_solute_start=5.26,
-        BEox_solute_start=5.26)
-        annotation (Placement(transformation(extent={{68,-10},{88,10}})));
-      Package.BloodResistor RsartRsart(bloodResistance=6399474595.92)
-        annotation (Placement(transformation(extent={{26,-10},{46,10}})));
+        Elastance=74127247.40274)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={66,0})));
+      Package.BloodResistor RsartRsart(Resistance=6399474595.92)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={32,0})));
       Package.BloodElasticVesselElastance Est(
         ExternalPressure=0,
         ZeroPressureVolume=0.000185,
-        Elastance=34930465.50273,
+        Compliance=0,
         volume_start=0.000283,
-        O2_solute_start=2.83,
-        CO2_solute_start=2.83,
-        BEox_solute_start=2.83)
-        annotation (Placement(transformation(extent={{-14,-10},{6,10}})));
-      Package.BloodResistor Rsven(bloodResistance=1599868648.98)
-        annotation (Placement(transformation(extent={{-62,-10},{-42,10}})));
+        Elastance=34930465.50273)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-14,0})));
+      Package.BloodResistor Rsven(Resistance=1599868648.98)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-58,0})));
       Package.BloodElasticVesselElastance Eethv(
         ExternalPressure=0,
         ZeroPressureVolume=0.001,
-        Elastance=2253148.3473135,
+        Compliance=0,
         volume_start=0.00153,
-        O2_solute_start=13.5,
-        CO2_solute_start=13.5,
-        BEox_solute_start=13.5)
-        annotation (Placement(transformation(extent={{-100,-10},{-80,10}})));
-      Package.BloodResistor Rethv(bloodResistance=719940892.041)
-        annotation (Placement(transformation(extent={{-138,-10},{-118,10}})));
+        Elastance=2253148.3473135)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-100,0})));
+      Package.BloodResistor Rethv(Resistance=719940892.041)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-140,0})));
       Package.BloodElasticVesselElastance Eithv(
+        Compliance=0,
         ZeroPressureVolume=0.00119,
         ExternalPressure=-533.28954966,
-        Elastance=2426467.450953,
         volume_start=0.00148,
-        O2_solute_start=14.8,
-        CO2_solute_start=14.8,
-        BEox_solute_start=14.8)
-        annotation (Placement(transformation(extent={{-182,-10},{-162,10}})));
-      Package.BloodResistor Rrain(bloodResistance=23998029.7347)
-        annotation (Placement(transformation(extent={{-226,-10},{-206,10}})));
+        Elastance=2426467.450953)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-182,0})));
+      Package.BloodResistor Rrain(Resistance=23998029.7347)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-236,0})));
       Package.BloodValve TricuspidValve(
         Blood_Goff=0,
         Blood_Pknee=0,
@@ -1567,59 +1577,54 @@ package AcidBaseBalance
       Package.BloodValve PulmonaryValve(Blood_Ron=23998029.7347)
         annotation (Placement(transformation(extent={{-140,30},{-120,50}})));
       Package.BloodElasticVesselElastance Epa(
-        ZeroPressureVolume=5e-05,
+        Compliance=0,
+        ZeroPressureVolume=5e-5,
         ExternalPressure=-533.28954966,
-        Elastance=31064116.267695,
         volume_start=0.000106,
-        O2_solute_start=1.06,
-        CO2_solute_start=1.06,
-        BEox_solute_start=1.06)
-        annotation (Placement(transformation(extent={{-96,50},{-76,70}})));
-      Package.BloodResistor Rpp(bloodResistance=879927756.939)
+        Elastance=31064116.267695)
+        annotation (Placement(transformation(extent={{-94,50},{-74,70}})));
+      Package.BloodResistor Rpp(Resistance=879927756.939)
         annotation (Placement(transformation(extent={{-62,50},{-42,70}})));
       Package.BloodElasticVesselElastance Epv(
+        Compliance=0,
         ZeroPressureVolume=0.00035,
         ExternalPressure=-533.28954966,
-        Elastance=6066168.6273825,
         volume_start=0.000518,
-        O2_solute_start=5.18,
-        CO2_solute_start=5.18,
-        BEox_solute_start=5.18)
-        annotation (Placement(transformation(extent={{-26,50},{-6,70}})));
+        Elastance=6066168.6273825)
+        annotation (Placement(transformation(extent={{-20,50},{0,70}})));
       Package.BloodValve MitralValve(
         Blood_Goff=0,
         Blood_Pknee=0,
         Blood_Ron=23998029.7347)
         annotation (Placement(transformation(extent={{100,30},{120,50}})));
       Package.BloodElasticVesselComplianceInput LeftVentricle(
-        ZeroPressureVolume=6e-05,
+        ZeroPressureVolume=6e-5,
         ExternalPressure=-533.28954966,
+        Compliance=0,
         volume_start=0.000144,
-        O2_solute_start=1.44,
-        CO2_solute_start=1.44,
-        BEox_solute_start=1.44)
-        annotation (Placement(transformation(extent={{154,30},{174,50}})));
+        Elastance=0)
+        annotation (Placement(transformation(extent={{160,30},{180,50}})));
       Package.BloodElasticVesselComplianceInput RightAtrium(
-        ZeroPressureVolume=3e-05,
+        ZeroPressureVolume=3e-5,
         ExternalPressure=-533.28954966,
+        Compliance=0,
         volume_start=0.000135,
-        O2_solute_start=1.35,
-        CO2_solute_start=1.35,
-        BEox_solute_start=1.35)
+        Elastance=0)
         annotation (Placement(transformation(extent={{-252,30},{-232,50}})));
       Package.BloodElasticVesselComplianceInput RightVentricle(
         ZeroPressureVolume=4e-5,
         ExternalPressure=-533.28954966,
-        volume_start=0.000131)
+        Compliance=0,
+        volume_start=0.000131,
+        Elastance=0)
         annotation (Placement(transformation(extent={{-178,30},{-158,50}})));
-      Package.BloodElasticVesselComplianceInput bloodElasticVesselCompliance1(
-        ZeroPressureVolume=3e-05,
+      Package.BloodElasticVesselComplianceInput leftAtrium(
+        ZeroPressureVolume=3e-5,
         ExternalPressure=-533.28954966,
-        volume_start=9.31e-05,
-        O2_solute_start=0.931,
-        CO2_solute_start=0.931,
-        BEox_solute_start=0.931)
-        annotation (Placement(transformation(extent={{52,30},{72,50}})));
+        Compliance=0,
+        volume_start=9.31e-5,
+        Elastance=0)
+        annotation (Placement(transformation(extent={{66,30},{86,50}})));
     equation
       connect(HeartRate.y,RAtrialElastance. HR) annotation(Line(points={{-229.25,
               148.5},{-225,148.5},{-225,114.8}},                                                                           color = {0, 0, 127}, smooth = Smooth.None));
@@ -1630,106 +1635,29 @@ package AcidBaseBalance
           color={0,0,127},
           smooth=Smooth.None));
       connect(LVentricularElastance.HR, HeartRate.y) annotation (Line(
-          points={{182,116.8},{182,148.5},{-229.25,148.5}},
+          points={{140,120.8},{140,148.5},{-229.25,148.5}},
           color={0,0,127},
           smooth=Smooth.None));
-      connect(Eitha.bloodPort_a, inertia.bloodPort_a) annotation (Line(
-          points={{174.2,0},{166.9,0},{166.9,0},{156.8,0}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Retha.bloodPort_b, inertia.bloodPort_b) annotation (Line(
-          points={{119,0},{135.2,0}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Retha.bloodPort_a, Eetha.bloodPort_a) annotation (Line(
-          points={{101,0},{68.2,0},{68.2,0}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(RsartRsart.bloodPort_b, Eetha.bloodPort_a) annotation (Line(
-          points={{45,0},{68.2,0},{68.2,0}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(RsartRsart.bloodPort_a, Est.bloodPort_a) annotation (Line(
-          points={{27,0},{-13.8,0},{-13.8,0}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Rsven.bloodPort_b, Est.bloodPort_a) annotation (Line(
-          points={{-43,0},{-13.8,0},{-13.8,0}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Rsven.bloodPort_a, Eethv.bloodPort_a) annotation (Line(
-          points={{-61,0},{-99.8,0},{-99.8,0}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Eethv.bloodPort_a, Rethv.bloodPort_b) annotation (Line(
-          points={{-99.8,0},{-105.1,0},{-105.1,0},{-119,0}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Rethv.bloodPort_a, Eithv.bloodPort_a) annotation (Line(
-          points={{-137,0},{-181.8,0},{-181.8,0}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Rrain.bloodPort_b, Eithv.bloodPort_a) annotation (Line(
-          points={{-207,0},{-181.8,0},{-181.8,0}},
-          color={28,108,200},
-          thickness=0.5));
       connect(PulmonaryValve.bloodPort_b, Epa.bloodPort_a) annotation (Line(
-          points={{-120,40},{-106,40},{-106,60},{-95.8,60}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Epa.bloodPort_a, Rpp.bloodPort_a) annotation (Line(
-          points={{-95.8,60},{-65.1,60},{-65.1,60},{-61,60}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Epv.bloodPort_a, Rlain.bloodPort_a) annotation (Line(
-          points={{-25.8,60},{-3.1,60},{-3.1,60},{11,60}},
+          points={{-120,40},{-106,40},{-106,60},{-93.8,60}},
           color={28,108,200},
           thickness=0.5));
       connect(Rpp.bloodPort_b, Epv.bloodPort_a) annotation (Line(
-          points={{-43,60},{-25.8,60},{-25.8,60}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(AorticValve.bloodPort_b, Eitha.bloodPort_a) annotation (Line(
-          points={{216,40},{216,40},{244,40},{244,0},{174.2,0}},
+          points={{-43,60},{-19.8,60}},
           color={28,108,200},
           thickness=0.5));
       connect(MitralValve.bloodPort_b, LeftVentricle.bloodPort_a) annotation (
           Line(
-          points={{120,40},{154.2,40},{154.2,40}},
+          points={{120,40},{160.2,40}},
           color={28,108,200},
           thickness=0.5));
-      connect(AorticValve.bloodPort_a, LeftVentricle.bloodPort_a) annotation (
-          Line(
-          points={{196.2,40},{154.2,40},{154.2,40}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(MitralValve.bloodPort_a, bloodElasticVesselCompliance1.bloodPort_a)
-        annotation (Line(
-          points={{100.2,40},{52.2,40},{52.2,40}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Rlain.bloodPort_b, bloodElasticVesselCompliance1.bloodPort_a)
-        annotation (Line(
-          points={{29,60},{34,60},{42,60},{42,40},{52.2,40}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(RightVentricle.bloodPort_a, PulmonaryValve.bloodPort_a)
-        annotation (Line(
-          points={{-177.8,40},{-152.1,40},{-152.1,40},{-139.8,40}},
+      connect(Rlain.bloodPort_b, leftAtrium.bloodPort_a) annotation (Line(
+          points={{29,60},{48,60},{48,40},{66.2,40}},
           color={28,108,200},
           thickness=0.5));
       connect(TricuspidValve.bloodPort_b, RightVentricle.bloodPort_a)
         annotation (Line(
           points={{-194,40},{-177.8,40},{-177.8,40}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(RightAtrium.bloodPort_a, TricuspidValve.bloodPort_a) annotation (
-          Line(
-          points={{-251.8,40},{-251.8,40},{-217.76,40}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Rrain.bloodPort_a, RightAtrium.bloodPort_a) annotation (Line(
-          points={{-225,0},{-248,0},{-274,0},{-274,40},{-251.8,40}},
           color={28,108,200},
           thickness=0.5));
       connect(RightAtrium.hydrauliccompliance, RAtrialElastance.Ct) annotation (
@@ -1738,12 +1666,91 @@ package AcidBaseBalance
       connect(RVentricularElastance.Ct, RightVentricle.hydrauliccompliance)
         annotation (Line(points={{-147.15,108.91},{-120,108.91},{-120,66},{
               -167.4,66},{-167.4,49.8}}, color={0,0,127}));
-      connect(bloodElasticVesselCompliance1.hydrauliccompliance,
-        LAtrialElastance.Ct) annotation (Line(points={{62.6,49.8},{62.6,74},{
-              118,74},{118,107.84},{97.61,107.84}}, color={0,0,127}));
+      connect(leftAtrium.hydrauliccompliance, LAtrialElastance.Ct) annotation (
+          Line(points={{76.6,49.8},{76.6,76},{106,76},{106,107.84},{97.61,
+              107.84}}, color={0,0,127}));
       connect(LeftVentricle.hydrauliccompliance, LVentricularElastance.Ct)
-        annotation (Line(points={{164.6,49.8},{164.6,74},{220,74},{220,107.68},
-              {203.42,107.68}}, color={0,0,127}));
+        annotation (Line(points={{170.6,49.8},{170.6,111.68},{161.42,111.68}},
+                                color={0,0,127}));
+      connect(Epa.bloodPort_b, Rpp.bloodPort_a) annotation (Line(
+          points={{-74,60},{-61,60}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(Rlain.bloodPort_a, Epv.bloodPort_b) annotation (Line(
+          points={{11,60},{0,60}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(MitralValve.bloodPort_a, leftAtrium.bloodPort_b) annotation (Line(
+          points={{100.2,40},{86,40}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(AorticValve.bloodPort_a, LeftVentricle.bloodPort_b) annotation (Line(
+          points={{196.2,40},{180,40}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(AorticValve.bloodPort_b, Eitha.bloodPort_a) annotation (Line(
+          points={{216,40},{206,40},{206,-1.77636e-15},{197.8,-1.77636e-15}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(inertia.bloodPort_a, Eitha.bloodPort_b) annotation (Line(
+          points={{156.8,0},{168,0},{168,6.66134e-16},{178,6.66134e-16}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(Retha.bloodPort_a, inertia.bloodPort_b) annotation (Line(
+          points={{117,-1.55431e-15},{126,-1.55431e-15},{126,0},{135.2,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(Eetha.bloodPort_a, Retha.bloodPort_b) annotation (Line(
+          points={{75.8,-1.77636e-15},{88,-1.77636e-15},{88,0},{99,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(RsartRsart.bloodPort_a, Eetha.bloodPort_b) annotation (Line(
+          points={{41,-1.55431e-15},{48,-1.55431e-15},{48,7.21645e-16},{56,7.21645e-16}},
+          color={28,108,200},
+          thickness=0.5));
+
+      connect(Est.bloodPort_a, RsartRsart.bloodPort_b) annotation (Line(
+          points={{-4.2,-1.77636e-15},{14,-1.77636e-15},{14,5.55112e-16},{23,5.55112e-16}},
+          color={28,108,200},
+          thickness=0.5));
+
+      connect(Rsven.bloodPort_a, Est.bloodPort_b) annotation (Line(
+          points={{-49,0},{-24,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(Eethv.bloodPort_a, Rsven.bloodPort_b) annotation (Line(
+          points={{-90.2,-1.72085e-15},{-78,-1.72085e-15},{-78,5.55112e-16},{-67,5.55112e-16}},
+          color={28,108,200},
+          thickness=0.5));
+
+      connect(Rethv.bloodPort_a, Eethv.bloodPort_b) annotation (Line(
+          points={{-131,-1.55431e-15},{-120,-1.55431e-15},{-120,7.21645e-16},{-110,7.21645e-16}},
+          color={28,108,200},
+          thickness=0.5));
+
+      connect(Eithv.bloodPort_a, Rethv.bloodPort_b) annotation (Line(
+          points={{-172.2,-1.77636e-15},{-160,-1.77636e-15},{-160,4.44089e-16},{-149,
+              4.44089e-16}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(Rrain.bloodPort_a, Eithv.bloodPort_b) annotation (Line(
+          points={{-227,-1.77636e-15},{-200,-1.77636e-15},{-200,0},{-192,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(RightVentricle.bloodPort_b, PulmonaryValve.bloodPort_a) annotation (
+          Line(
+          points={{-158,40},{-139.8,40}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(Rrain.bloodPort_b, RightAtrium.bloodPort_a) annotation (Line(
+          points={{-245,4.44089e-16},{-256,4.44089e-16},{-256,0},{-268,0},{-268,40},
+              {-251.8,40}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(RightAtrium.bloodPort_b, TricuspidValve.bloodPort_a) annotation (Line(
+          points={{-232,40},{-217.76,40}},
+          color={28,108,200},
+          thickness=0.5));
       annotation(Diagram(coordinateSystem(extent={{-280,-140},{280,180}},      preserveAspectRatio=false)),             Icon(coordinateSystem(extent = {{-280, -140}, {280, 180}}, preserveAspectRatio = false), graphics),
         Documentation(info="<html>
 <p>Model of cardiovascular system using to demonstrate elastic and resistance features of veins and arteries in pulmonary and systemic circulation and influence of cardiac output on it.</p>
@@ -2499,6 +2506,5 @@ package AcidBaseBalance
 </html>"));
     end BloodElasticVesselElastanceParam;
   end Trash;
-  annotation(uses(                 Physiolibrary(version="2.3.1"), Modelica(
-          version="3.2.1")));
+  annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2")));
 end AcidBaseBalance;
