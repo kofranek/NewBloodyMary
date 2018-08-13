@@ -548,12 +548,12 @@ package AcidBaseBalance
         CO2_concentration = actualStream(bloodPort_a.conc[2]);
         BEox_concentration = actualStream(bloodPort_a.conc[3]);
 
-        O2.conc=inStream(bloodPort_a.conc[1]);
-        O2.q=actualStream(bloodPort_a.conc[1])*bloodPort_a.bloodFlow;
-        CO2.conc=inStream(bloodPort_a.conc[2]);
-        CO2.q=actualStream(bloodPort_a.conc[2])*bloodPort_a.bloodFlow;
-        BEox.conc=inStream(bloodPort_a.conc[3]);
-        BEox.q=actualStream(bloodPort_a.conc[3])*bloodPort_a.bloodFlow;
+        O2.conc=actualStream(bloodPort_a.conc[1]);
+        O2.q+actualStream(bloodPort_a.conc[1])*bloodPort_a.bloodFlow=0;
+        CO2.conc=actualStream(bloodPort_a.conc[2]);
+        CO2.q+actualStream(bloodPort_a.conc[2])*bloodPort_a.bloodFlow=0;
+        BEox.conc=actualStream(bloodPort_a.conc[3]);
+        BEox.q+actualStream(bloodPort_a.conc[3])*bloodPort_a.bloodFlow=0;
 
         bloodFlow.pressure=bloodPort_a.pressure;
         bloodFlow.q+bloodPort_a.bloodFlow=0
@@ -611,12 +611,12 @@ package AcidBaseBalance
         CO2_concentration = actualStream(bloodPort_b.conc[2]);
         BEox_concentration = actualStream(bloodPort_b.conc[3]);
 
-        O2.conc=inStream(bloodPort_b.conc[1]);
-        O2.q=actualStream(bloodPort_b.conc[1])*bloodPort_b.bloodFlow;
-        CO2.conc=inStream(bloodPort_b.conc[2]);
-        CO2.q=actualStream(bloodPort_b.conc[2])*bloodPort_b.bloodFlow;
-        BEox.conc=inStream(bloodPort_b.conc[3]);
-        BEox.q=actualStream(bloodPort_b.conc[3])*bloodPort_b.bloodFlow;
+        O2.conc=actualStream(bloodPort_b.conc[1]);
+        O2.q+actualStream(bloodPort_b.conc[1])*bloodPort_b.bloodFlow=0;
+        CO2.conc=actualStream(bloodPort_b.conc[2]);
+        CO2.q+actualStream(bloodPort_b.conc[2])*bloodPort_b.bloodFlow=0;
+        BEox.conc=actualStream(bloodPort_b.conc[3]);
+        BEox.q+actualStream(bloodPort_b.conc[3])*bloodPort_b.bloodFlow=0;
 
 
         bloodFlow.pressure=bloodPort_b.pressure;
