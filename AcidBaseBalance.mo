@@ -1971,7 +1971,7 @@ package AcidBaseBalance
             coordinateSystem(preserveAspectRatio=false)));
     end test3;
 
-    model HemodynamicsMeurs_flatNorm
+    model HemodynamicsMeurs_flatNorm_comparison
     extends Physiolibrary.Icons.CardioVascular;
       Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.AtrialElastance LAtrialElastance(
         Tav(displayUnit="s"),
@@ -2466,7 +2466,7 @@ package AcidBaseBalance
 </ul>
 </html>"),
         experiment(StopTime=5));
-    end HemodynamicsMeurs_flatNorm;
+    end HemodynamicsMeurs_flatNorm_comparison;
 
     model TestElastance
       Package.BloodElasticVesselElastance_old bloodElasticVesselElastance(
@@ -3137,7 +3137,7 @@ package AcidBaseBalance
         experiment(StopTime=5));
     end HemodynamicsMeurs_flatHydraulics;
 
-    model HemodynamicsMeurs_flatNorm_comparison
+    model HemodynamicsMeurs_flatNorm
     extends Physiolibrary.Icons.CardioVascular;
       Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.AtrialElastance LAtrialElastance(
         Tav(displayUnit="s"),
@@ -3449,7 +3449,7 @@ package AcidBaseBalance
 </ul>
 </html>"),
         experiment(StopTime=5));
-    end HemodynamicsMeurs_flatNorm_comparison;
+    end HemodynamicsMeurs_flatNorm;
 
     model TestDimension
       Package.BloodPort_out_Extension bloodPort_out_Extension annotation (Placement(
