@@ -556,7 +556,7 @@ package AcidBaseBalance
         BEox.q=actualStream(bloodPort_a.conc[3])*bloodPort_a.bloodFlow;
 
         bloodFlow.pressure=bloodPort_a.pressure;
-        bloodFlow.q=bloodPort_a.bloodFlow
+        bloodFlow.q+bloodPort_a.bloodFlow=0
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
             Text(
               extent={{-4,20},{92,-20}},
@@ -620,7 +620,7 @@ package AcidBaseBalance
 
 
         bloodFlow.pressure=bloodPort_b.pressure;
-        bloodFlow.q=bloodPort_b.bloodFlow
+        bloodFlow.q+bloodPort_b.bloodFlow=0
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
             Text(
               extent={{-62,14},{-18,-30}},
@@ -1671,10 +1671,11 @@ package AcidBaseBalance
     end BloodElasticVesselComplianceInput;
 
     model BloodEmbranchment
-      BloodPort_in bloodPort_in annotation (Placement(transformation(extent={{
-                84,-8},{104,12}}), iconTransformation(extent={{80,-10},{100,10}})));
-      BloodPort_out bloodPort_out annotation (Placement(transformation(extent={
-                {-106,-10},{-86,10}}), iconTransformation(extent={{-100,-10},{
+      parameter Integer numberOfFlows;
+      Package.BloodPort_in bloodPort_in annotation (Placement(transformation(extent=
+               {{84,-8},{104,12}}), iconTransformation(extent={{80,-10},{100,10}})));
+      Package.BloodPort_out bloodPort_out[numberOfFlows] annotation (Placement(transformation(
+              extent={{-106,-10},{-86,10}}), iconTransformation(extent={{-100,-10},{
                 -80,10}})));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
             Line(points={{58,0},{-60,0}}, color={0,0,0}),
@@ -1715,26 +1716,14 @@ package AcidBaseBalance
     end BloodEmbranchment;
 
     model BloodConjunction
-      parameter Integer numberOfFlows=1;
-      BloodPort_in bloodPort_in[numberOfFlows] annotation (Placement(transformation(extent={{84,-8},
-                {104,12}}), iconTransformation(extent={{80,-10},{100,10}})));
-      BloodPort_out bloodPort_out annotation (Placement(transformation(extent={{-106,
-                -10},{-86,10}}), iconTransformation(extent={{-100,-10},{-80,10}})));
-     Integer i;
-     //Integer j;
-     //Physiolibrary.Types.VolumeFlowRate totalBloodFlowRate[numberOfFlows];
-     //Physiolibrary.Types.MolarFlowRate totalFlowSubstance;
-    equation
+      parameter Integer numberOfFlows;
+      Package.BloodPort_in bloodPort_in[numberOfFlows] annotation (Placement(
+            transformation(extent={{84,-8},{104,12}}), iconTransformation(extent={{80,
+                -10},{100,10}})));
+      Package.BloodPort_out bloodPort_out annotation (Placement(transformation(
+              extent={{-106,-10},{-86,10}}), iconTransformation(extent={{-100,-10},{
+                -80,10}})));
 
-      //for i in 1:numberOfFlows loop
-      //  totalBloodFlowRate[i]=bloodPort_in[i].bloodFlow;
-      //end for;
-      //bloodPort_out.bloodFlow=sum(totalBloodFlowRate);
-      bloodPort_out.bloodFlow=sum(bloodPort_in.bloodFlow);
-      for i in 1:bloodPort_out.numberOfSubstances loop
-        bloodPort_out.q[i]=sum(bloodPort_in[i].q);
-        bloodPort_out.conc[i]=bloodPort_out[i].q/(bloodPort_out[i].bloodFlow);
-      end for;
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
             Line(points={{58,0},{-60,0}}, color={0,0,0}),
             Line(
@@ -1771,205 +1760,9 @@ package AcidBaseBalance
               origin={60,-60},
               rotation=180)}), Diagram(coordinateSystem(preserveAspectRatio=false)));
     end BloodConjunction;
-
-    model BloodConjunction_
-      parameter Integer numberOfFlows;
-      BloodPort_in bloodPort_in[numberOfFlows] annotation (Placement(transformation(extent={{84,-8},
-                {104,12}}), iconTransformation(extent={{80,-10},{100,10}})));
-      BloodPort_out bloodPort_out annotation (Placement(transformation(extent={{-106,
-                -10},{-86,10}}), iconTransformation(extent={{-100,-10},{-80,10}})));
-
-     Integer jsubstance;
-
-    equation
-     bloodPort_out.bloodFlow+sum(bloodPort_in.bloodFlow)=0;
-     for jsubstance in 1:bloodPort_out.numberOfSubstances loop
-           bloodPort_out.q[jsubstance]+sum(bloodPort_in[i].q[jsubstance] for i in 1:numberOfFlows)=0;
-           bloodPort_out.conc[jsubstance]=bloodPort_out[jsubstance].q/(bloodPort_out.bloodFlow);
-      end for;
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-            Line(points={{58,0},{-60,0}}, color={0,0,0}),
-            Line(
-              points={{-80,0},{80,0}},
-              color={191,0,0},
-              thickness=0.5),
-            Polygon(
-              points={{-20,-20},{-20,20},{20,0},{-20,-20}},
-              lineColor={191,0,0},
-              fillColor={191,0,0},
-              fillPattern=FillPattern.Solid,
-              origin={60,0},
-              rotation=180),
-            Line(
-              points={{-80,0},{40,60}},
-              color={191,0,0},
-              thickness=0.5),
-            Line(
-              points={{-80,0},{40,-60}},
-              color={191,0,0},
-              thickness=0.5),
-            Polygon(
-              points={{-20,-20},{-20,20},{20,0},{-20,-20}},
-              lineColor={191,0,0},
-              fillColor={191,0,0},
-              fillPattern=FillPattern.Solid,
-              origin={60,60},
-              rotation=180),
-            Polygon(
-              points={{-20,-20},{-20,20},{20,0},{-20,-20}},
-              lineColor={191,0,0},
-              fillColor={191,0,0},
-              fillPattern=FillPattern.Solid,
-              origin={60,-60},
-              rotation=180)}), Diagram(coordinateSystem(preserveAspectRatio=false)));
-    end BloodConjunction_;
   end Package;
 
   package Test
-
-    model test
-      Package.BloodPort_out_Extension bloodPort_b_Extension
-        annotation (Placement(transformation(extent={{-60,-14},{-40,18}})));
-      Package.BloodPort_in_Extension bloodPort_a_Extension
-        annotation (Placement(transformation(extent={{36,-14},{62,16}})));
-      Physiolibrary.Hydraulic.Sources.UnlimitedVolume unlimitedVolume(P=
-            1333.22387415)
-        annotation (Placement(transformation(extent={{-12,42},{8,62}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
-        unlimitedSolutionStorage(Conc=10)
-        annotation (Placement(transformation(extent={{70,-60},{84,-48}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
-        unlimitedSolutionStorage1(Conc=10)
-        annotation (Placement(transformation(extent={{34,-46},{48,-34}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
-        unlimitedSolutionStorage2(Conc=10)
-        annotation (Placement(transformation(extent={{-8,-32},{6,-20}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
-        unlimitedSolutionStorage3(Conc=20)
-        annotation (Placement(transformation(extent={{-96,22},{-82,34}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
-        unlimitedSolutionStorage4(Conc=20)
-        annotation (Placement(transformation(extent={{-96,-6},{-82,6}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
-        unlimitedSolutionStorage5(Conc=20)
-        annotation (Placement(transformation(extent={{-92,-38},{-78,-26}})));
-      Physiolibrary.Hydraulic.Sources.UnlimitedPump unlimitedPump(SolutionFlow=
-            1.6666666666667e-7)
-        annotation (Placement(transformation(extent={{-84,48},{-64,68}})));
-      Package.BloodElasticVesselElastance bloodElasticVesselElastance(Elastance=
-           133322387.415)
-        annotation (Placement(transformation(extent={{-12,-8},{8,12}})));
-    equation
-      connect(bloodElasticVesselElastance.bloodPort_b, bloodPort_a_Extension.bloodPort_a)
-        annotation (Line(
-          points={{8,2},{22,2},{22,1},{36,1}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(bloodPort_b_Extension.bloodPort_b, bloodElasticVesselElastance.bloodPort_a)
-        annotation (Line(
-          points={{-40,2},{-11.8,2}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(bloodPort_b_Extension.bloodFlow, unlimitedPump.q_out) annotation (
-         Line(
-          points={{-60,18},{-62,18},{-62,58},{-64,58}},
-          color={0,0,0},
-          thickness=1));
-      connect(unlimitedVolume.y, bloodPort_a_Extension.bloodFlow) annotation (
-          Line(
-          points={{8,52},{36,52},{36,16},{62,16}},
-          color={0,0,0},
-          thickness=1));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
-            coordinateSystem(preserveAspectRatio=false)));
-    end test;
-
-    model test1
-      Physiolibrary.Hydraulic.Sources.UnlimitedVolume unlimitedVolume(P=
-            1333.22387415)
-        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
-            rotation=180,
-            origin={62,50})));
-      Physiolibrary.Hydraulic.Components.ElasticVessel elasticVessel(
-          volume_start=0.0001, Compliance=7.5006157584566e-7)
-        annotation (Placement(transformation(extent={{-46,40},{-26,60}})));
-      Physiolibrary.Hydraulic.Components.Resistor resistor1(Resistance=
-            95992118938.8)
-        annotation (Placement(transformation(extent={{-4,40},{16,60}})));
-      Physiolibrary.Hydraulic.Sources.UnlimitedPump unlimitedPump(SolutionFlow=
-            1.6666666666667e-7)
-        annotation (Placement(transformation(extent={{-86,40},{-66,60}})));
-      Package.BloodEmbranchment embranchment
-        annotation (Placement(transformation(extent={{26,-10},{46,10}})));
-      Package.BloodConjunction conjunction(numberOfFlows=2)
-        annotation (Placement(transformation(extent={{-58,-10},{-38,10}})));
-      Package.Pump pump
-        annotation (Placement(transformation(extent={{24,6},{-6,30}})));
-      Package.Pump pump1
-        annotation (Placement(transformation(extent={{20,-52},{-10,-28}})));
-    equation
-      connect(unlimitedVolume.y, resistor1.q_out) annotation (Line(
-          points={{52,50},{16,50}},
-          color={0,0,0},
-          thickness=1));
-      connect(elasticVessel.q_in, resistor1.q_in) annotation (Line(
-          points={{-36,50},{-4,50}},
-          color={0,0,0},
-          thickness=1));
-      connect(unlimitedPump.q_out, elasticVessel.q_in) annotation (Line(
-          points={{-66,50},{-36,50}},
-          color={0,0,0},
-          thickness=1));
-      connect(pump.bloodPort_b, conjunction.bloodPort_in[1]) annotation (Line(
-          points={{-6,18},{-32,18},{-32,-0.5},{-39,-0.5}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(pump1.bloodPort_b, conjunction.bloodPort_in[2]) annotation (Line(
-          points={{-10,-40},{-28,-40},{-28,0.5},{-39,0.5}},
-          color={28,108,200},
-          thickness=0.5));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
-            coordinateSystem(preserveAspectRatio=false)));
-    end test1;
-
-    model test3
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump(
-          SoluteFlow=0.0016666666666667)
-        annotation (Placement(transformation(extent={{-102,4},{-82,24}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
-        unlimitedSolutionStorage(Conc=10)
-        annotation (Placement(transformation(extent={{70,-60},{84,-48}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump1(
-          SoluteFlow=0.0016666666666667)
-        annotation (Placement(transformation(extent={{-102,-16},{-82,4}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump2(
-          SoluteFlow=0.0016666666666667)
-        annotation (Placement(transformation(extent={{-100,-36},{-80,-16}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
-        unlimitedSolutionStorage1(Conc=10)
-        annotation (Placement(transformation(extent={{34,-46},{48,-34}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
-        unlimitedSolutionStorage2(Conc=10)
-        annotation (Placement(transformation(extent={{-8,-32},{6,-20}})));
-    equation
-      connect(unlimitedSolutePump.q_out, unlimitedSolutionStorage2.q_out)
-        annotation (Line(
-          points={{-82,14},{-28,14},{-28,12},{6,12},{6,-26}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePump1.q_out, unlimitedSolutionStorage1.q_out)
-        annotation (Line(
-          points={{-82,-6},{-16,-6},{-16,-4},{48,-4},{48,-40}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePump2.q_out, unlimitedSolutionStorage.q_out)
-        annotation (Line(
-          points={{-80,-26},{-54,-26},{-54,-54},{84,-54}},
-          color={107,45,134},
-          thickness=1));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
-            coordinateSystem(preserveAspectRatio=false)));
-    end test3;
 
     model HemodynamicsMeurs_flatNorm_comparison
     extends Physiolibrary.Icons.CardioVascular;
@@ -3553,7 +3346,7 @@ package AcidBaseBalance
             origin={104,-10})));
       Package.BloodPort_in_Extension bloodPort_in_Extension1
         annotation (Placement(transformation(extent={{10,-24},{30,-42}})));
-      Package.BloodConjunction_ bloodConjunction_(numberOfFlows=2)
+      Trash.BloodConjunction_ bloodConjunction_(numberOfFlows=2)
         annotation (Placement(transformation(extent={{-8,4},{12,24}})));
     equation
 
@@ -4067,6 +3860,60 @@ package AcidBaseBalance
 <p>This hydraulic conductance (resistance) element contains two connector sides. No hydraulic medium volume is changing in this element during simulation. That means that sum of flow in both connector sides is zero. The flow through element is determined by <b>Ohm&apos;s law</b>. It is used conductance (=1/resistance) because it could be numerical zero better then infinity in resistance. </p>
 </html>"));
     end BloodElasticVesselElastanceParam;
+
+    model BloodConjunction_
+      parameter Integer numberOfFlows;
+      Package.BloodPort_in bloodPort_in[numberOfFlows] annotation (Placement(
+            transformation(extent={{84,-8},{104,12}}), iconTransformation(
+              extent={{80,-10},{100,10}})));
+      Package.BloodPort_out bloodPort_out annotation (Placement(transformation(
+              extent={{-106,-10},{-86,10}}), iconTransformation(extent={{-100,-10},
+                {-80,10}})));
+
+     Integer jsubstance;
+
+    equation
+     bloodPort_out.bloodFlow+sum(bloodPort_in.bloodFlow)=0;
+     for jsubstance in 1:bloodPort_out.numberOfSubstances loop
+           bloodPort_out.q[jsubstance]+sum(bloodPort_in[i].q[jsubstance] for i in 1:numberOfFlows)=0;
+           bloodPort_out.conc[jsubstance]=bloodPort_out[jsubstance].q/(bloodPort_out.bloodFlow);
+      end for;
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+            Line(points={{58,0},{-60,0}}, color={0,0,0}),
+            Line(
+              points={{-80,0},{80,0}},
+              color={191,0,0},
+              thickness=0.5),
+            Polygon(
+              points={{-20,-20},{-20,20},{20,0},{-20,-20}},
+              lineColor={191,0,0},
+              fillColor={191,0,0},
+              fillPattern=FillPattern.Solid,
+              origin={60,0},
+              rotation=180),
+            Line(
+              points={{-80,0},{40,60}},
+              color={191,0,0},
+              thickness=0.5),
+            Line(
+              points={{-80,0},{40,-60}},
+              color={191,0,0},
+              thickness=0.5),
+            Polygon(
+              points={{-20,-20},{-20,20},{20,0},{-20,-20}},
+              lineColor={191,0,0},
+              fillColor={191,0,0},
+              fillPattern=FillPattern.Solid,
+              origin={60,60},
+              rotation=180),
+            Polygon(
+              points={{-20,-20},{-20,20},{20,0},{-20,-20}},
+              lineColor={191,0,0},
+              fillColor={191,0,0},
+              fillPattern=FillPattern.Solid,
+              origin={60,-60},
+              rotation=180)}), Diagram(coordinateSystem(preserveAspectRatio=false)));
+    end BloodConjunction_;
   end Trash;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2")));
 end AcidBaseBalance;
