@@ -470,10 +470,8 @@ package AcidBaseBalance
       Physiolibrary.Types.Pressure pressure "Pressure";
       flow Physiolibrary.Types.VolumeFlowRate bloodFlow "Volume flow";
 
-      Physiolibrary.Types.Concentration conc[numberOfSubstances]
+      stream Physiolibrary.Types.Concentration conc[numberOfSubstances]
         "Solute concentration";
-      flow Physiolibrary.Types.MolarFlowRate q[numberOfSubstances]
-        "Solute flow";
 
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)),
                                                 Diagram(coordinateSystem(
@@ -543,13 +541,19 @@ package AcidBaseBalance
                                                        iconTransformation(extent={{90,-90},
                 {110,-70}})));
 
+      Physiolibrary.Types.Concentration O2_concentration, CO2_concentration, BEox_concentration;
+
     equation
-        O2.conc=bloodPort_a.conc[1];
-        O2.q=bloodPort_a.q[1];
-        CO2.conc=bloodPort_a.conc[2];
-        CO2.q=bloodPort_a.q[2];
-        BEox.conc=bloodPort_a.conc[3];
-        BEox.q=bloodPort_a.q[3];
+        O2_concentration = actualStream(bloodPort_a.conc[1]);
+        CO2_concentration = actualStream(bloodPort_a.conc[2]);
+        BEox_concentration = actualStream(bloodPort_a.conc[3]);
+
+        O2.conc=inStream(bloodPort_a.conc[1]);
+        O2.q=actualStream(bloodPort_a.conc[1])*bloodPort_a.bloodFlow;
+        CO2.conc=inStream(bloodPort_a.conc[2]);
+        CO2.q=actualStream(bloodPort_a.conc[2])*bloodPort_a.bloodFlow;
+        BEox.conc=inStream(bloodPort_a.conc[3]);
+        BEox.q=actualStream(bloodPort_a.conc[3])*bloodPort_a.bloodFlow;
 
         bloodFlow.pressure=bloodPort_a.pressure;
         bloodFlow.q=bloodPort_a.bloodFlow
@@ -601,16 +605,22 @@ package AcidBaseBalance
       Physiolibrary.Chemical.Interfaces.ChemicalPort_b BEox annotation (
           Placement(transformation(extent={{-94,-82},{-74,-62}}),
             iconTransformation(extent={{-110,-90},{-90,-70}})));
+    Physiolibrary.Types.Concentration O2_concentration, CO2_concentration, BEox_concentration;
     equation
-        O2.conc=bloodPort_b.conc[1];
-        O2.q=bloodPort_b.q[1];
-        CO2.conc=bloodPort_b.conc[2];
-        CO2.q=bloodPort_b.q[2];
-        BEox.conc=bloodPort_b.conc[3];
-        BEox.q=bloodPort_b.q[3];
-        bloodPort_b.pressure=bloodFlow.pressure;
-        bloodPort_b.bloodFlow=bloodFlow.q;
+        O2_concentration = actualStream(bloodPort_b.conc[1]);
+        CO2_concentration = actualStream(bloodPort_b.conc[2]);
+        BEox_concentration = actualStream(bloodPort_b.conc[3]);
 
+        O2.conc=inStream(bloodPort_b.conc[1]);
+        O2.q=actualStream(bloodPort_b.conc[1])*bloodPort_b.bloodFlow;
+        CO2.conc=inStream(bloodPort_b.conc[2]);
+        CO2.q=actualStream(bloodPort_b.conc[2])*bloodPort_b.bloodFlow;
+        BEox.conc=inStream(bloodPort_b.conc[3]);
+        BEox.q=actualStream(bloodPort_b.conc[3])*bloodPort_b.bloodFlow;
+
+
+        bloodFlow.pressure=bloodPort_b.pressure;
+        bloodFlow.q=bloodPort_b.bloodFlow
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
             Text(
               extent={{-62,14},{-18,-30}},
@@ -637,6 +647,7 @@ package AcidBaseBalance
               fillPattern=FillPattern.Solid,
               textString="bloodFlow")}),                             Diagram(
             coordinateSystem(preserveAspectRatio=false)));
+
     end BloodPort_out_Extension;
 
     model BloodResistor
@@ -3497,8 +3508,8 @@ package AcidBaseBalance
         annotation (Placement(transformation(extent={{-106,18},{-88,32}})));
       Physiolibrary.Chemical.Components.Substance substance2
         annotation (Placement(transformation(extent={{-102,6},{-84,20}})));
-      Physiolibrary.Hydraulic.Sources.UnlimitedPump unlimitedPump1(SolutionFlow
-          =1.6666666666667e-6)  annotation (Placement(transformation(
+      Physiolibrary.Hydraulic.Sources.UnlimitedPump unlimitedPump1(SolutionFlow=
+           1.6666666666667e-6)  annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=180,
             origin={86,-76})));
@@ -3587,8 +3598,8 @@ package AcidBaseBalance
           points={{40,90},{32,90},{32,68.2},{22,68.2}},
           color={107,45,134},
           thickness=1));
-      connect(unlimitedVolume.y, bloodPort_out_Extension.bloodFlow) annotation
-        (Line(
+      connect(unlimitedVolume.y, bloodPort_out_Extension.bloodFlow) annotation (
+         Line(
           points={{-62,-10},{-58,-10},{-58,4},{-52,4}},
           color={0,0,0},
           thickness=1));
