@@ -523,7 +523,7 @@ package AcidBaseBalance
     model BloodPort_in_Extension
 
       BloodPort_in bloodPort_a(numberOfSubstances=3) annotation (Placement(
-            transformation(extent={{-110,-10},{-90,10}}), iconTransformation(
+            transformation(extent={{-106,-10},{-86,10}}), iconTransformation(
               extent={{-110,-10},{-90,10}})));
 
       Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a bloodFlow annotation (
@@ -531,13 +531,14 @@ package AcidBaseBalance
               extent={{90,90},{110,110}})));
 
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a O2 annotation (Placement(
-            transformation(extent={{90,-10},{110,10}}),iconTransformation(extent={{90,-10},
+            transformation(extent={{86,-10},{106,10}}),iconTransformation(extent={{90,-10},
                 {110,10}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a CO2 annotation (Placement(
-            transformation(extent={{70,-50},{90,-30}}),iconTransformation(extent={{90,-52},
+            transformation(extent={{86,-50},{106,-30}}),
+                                                       iconTransformation(extent={{90,-52},
                 {110,-32}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a BEox annotation (Placement(
-            transformation(extent={{90,-90},{110,-70}}),
+            transformation(extent={{86,-90},{106,-70}}),
                                                        iconTransformation(extent={{90,-90},
                 {110,-70}})));
 
@@ -1760,6 +1761,65 @@ package AcidBaseBalance
               origin={60,-60},
               rotation=180)}), Diagram(coordinateSystem(preserveAspectRatio=false)));
     end BloodConjunction;
+
+    model PressureMeasure "Hydraulic pressure at port"
+      extends Physiolibrary.Icons.PressureMeasure;
+      Physiolibrary.Types.RealIO.PressureOutput pressure "Pressure" annotation (
+          Placement(transformation(extent={{64,38},{104,78}}), iconTransformation(
+              extent={{38,-48},{78,-8}})));
+      BloodPort_in bloodPort_in annotation (Placement(transformation(extent={{-112,26},
+                {-92,46}}), iconTransformation(extent={{-62,-82},{-36,-58}})));
+      BloodPort_in_Extension bloodPort_in_Extension
+        annotation (Placement(transformation(extent={{-48,-10},{-28,10}})));
+      BloodPort_out bloodPort_out annotation (Placement(transformation(extent={{70,-2},
+                {92,22}}), iconTransformation(extent={{72,-84},{100,-58}})));
+      BloodPort_out_Extension bloodPort_out_Extension
+        annotation (Placement(transformation(extent={{34,-10},{58,12}})));
+      Physiolibrary.Hydraulic.Sensors.PressureMeasure pressureMeasure
+        annotation (Placement(transformation(extent={{2,40},{32,70}})));
+    equation
+
+      connect(bloodPort_in, bloodPort_in_Extension.bloodPort_a) annotation (Line(
+          points={{-102,36},{-76,36},{-76,0},{-48,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(bloodPort_out_Extension.bloodPort_b, bloodPort_out) annotation (Line(
+          points={{58,1},{70,1},{70,10},{81,10}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(bloodPort_in_Extension.O2, bloodPort_out_Extension.O2) annotation (
+          Line(
+          points={{-28,0},{4,0},{4,1},{34,1}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_in_Extension.CO2, bloodPort_out_Extension.CO2) annotation (
+          Line(
+          points={{-28,-4.2},{4,-4.2},{4,-3.4},{34,-3.4}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_in_Extension.BEox, bloodPort_out_Extension.BEox)
+        annotation (Line(
+          points={{-28,-8},{4,-8},{4,-7.8},{34,-7.8}},
+          color={107,45,134},
+          thickness=1));
+      connect(pressureMeasure.q_in, bloodPort_in_Extension.bloodFlow) annotation (
+          Line(
+          points={{11,46},{-8,46},{-8,10},{-28,10}},
+          color={0,0,0},
+          thickness=1));
+      connect(pressureMeasure.pressure, pressure) annotation (Line(points={{26,49},{
+              48,49},{48,58},{84,58}}, color={0,0,127}));
+      connect(bloodPort_out_Extension.bloodFlow, bloodPort_in_Extension.bloodFlow)
+        annotation (Line(
+          points={{34,12},{4,12},{4,10},{-28,10}},
+          color={0,0,0},
+          thickness=1));
+     annotation (
+        Documentation(revisions="<html>
+<p><i>2009-2010</i></p>
+<p>Marek Matejak, Charles University, Prague, Czech Republic </p>
+</html>"));
+    end PressureMeasure;
   end Package;
 
   package Test
@@ -2433,7 +2493,7 @@ package AcidBaseBalance
     Package.BloodElasticVesselCompliance pulmonaryVeinsAndLeftAtrium(
         volume_start(displayUnit="l") = 0.0004,
         ZeroPressureVolume(displayUnit="l") = 0.0004,
-        Compliance(displayUnit="l/mmHg") = 7.5006157584566e-08)
+        Compliance(displayUnit="l/mmHg") = 7.5006157584566e-8)
         annotation (Placement(transformation(extent={{4,74},{24,94}})));
       Package.BloodElasticVesselCompliance pulmonaryArteries(
         ZeroPressureVolume(displayUnit="l") = 0.00030625,
@@ -2448,25 +2508,27 @@ package AcidBaseBalance
         ZeroPressureVolume(displayUnit="l") = 0.000495,
         Compliance(displayUnit="l/mmHg") = 2.6627185942521e-8,
         CO2_concentration=10)
-        annotation (Placement(transformation(extent={{14,-46},{34,-26}})));
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={24,-36})));
       Package.BloodElasticVesselCompliance veins(
         volume_start(displayUnit="l") = 0.00325,
         ZeroPressureVolume(displayUnit="l") = 0.00295,
         Compliance(displayUnit="l/mmHg") = 6.1880080007267e-7,
         CO2_concentration=20)
-        annotation (Placement(transformation(extent={{-64,-46},{-44,-26}})));
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-54,-36})));
       Package.BloodConductor
                nonMuscle(Conductance(displayUnit="l/(mmHg.min)") = 3.5627924852669e-09)
-        annotation (Placement(transformation(extent={{-24,-46},{-4,-26}})));
-      Hydraulic.Sensors.PressureMeasure pressureMeasure
-        annotation (Placement(transformation(extent={{-78,30},{-58,50}})));
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-14,-36})));
       Package.Pump              rightHeart
         annotation (Placement(transformation(extent={{-56,8},{-36,28}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst RNormalCO(k(displayUnit="l/min")=
              8.3333333333333e-05)
         annotation (Placement(transformation(extent={{-60,40},{-52,48}})));
-      Hydraulic.Sensors.PressureMeasure pressureMeasure1
-        annotation (Placement(transformation(extent={{62,26},{82,46}})));
       Package.Pump              leftHeart
         annotation (Placement(transformation(extent={{16,6},{36,26}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst LNormalCO(k(displayUnit="l/min")=
@@ -2474,14 +2536,18 @@ package AcidBaseBalance
         annotation (Placement(transformation(extent={{12,42},{20,50}})));
       Package.BloodConductor
                kidney(Conductance(displayUnit="l/(mmHg.min)") = 1.4126159678427e-09)
-        annotation (Placement(transformation(extent={{-24,-64},{-4,-44}})));
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-14,-54})));
       Package.BloodConductor
                muscle(Conductance(displayUnit="l/(mmHg.min)") = 1.3001067314658e-09)
-        annotation (Placement(transformation(extent={{-24,-28},{-4,-8}})));
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-14,-18})));
       Package.BloodConductor
                largeVeins(Conductance(displayUnit="l/(mmHg.min)") = 1.6888886482791e-07)
         annotation (Placement(transformation(extent={{-10,-10},{10,10}},
-            rotation=270,
+            rotation=90,
             origin={-84,-10})));
       Package.BloodElasticVesselCompliance rightAtrium(
         volume_start(displayUnit="l") = 0.0001,
@@ -2496,26 +2562,10 @@ package AcidBaseBalance
             {0,1.01,0.29},{3,1.88,0.218333},{10,2.7,0}}, Xscale=101325/760)
         "At filling pressure -0.0029mmHg (because external thorax pressure is -4mmHg) is normal cardiac output (effect=1)."
         annotation (Placement(transformation(extent={{36,22},{16,42}})));
-      Package.BloodPort_in_Extension bloodPort_a_Extension
-        annotation (Placement(transformation(extent={{-98,38},{-78,58}})));
-      Package.BloodPort_in_Extension bloodPort_a_Extension1
-        annotation (Placement(transformation(extent={{36,38},{56,58}})));
-      Package.BloodPort_out_Extension bloodPort_b_Extension
-        annotation (Placement(transformation(extent={{-42,106},{-22,126}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump
-        unlimitedSolutePumpLungsO2(SoluteFlow=0.0003)
-        annotation (Placement(transformation(extent={{-90,106},{-70,126}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
-        unlimitedSolutePumpOutLungsCO2(SoluteFlow=0.0003)
-        annotation (Placement(transformation(extent={{-70,92},{-90,112}})));
-      Package.BloodPort_out_Extension bloodPort_b_Extension1
-        annotation (Placement(transformation(extent={{26,-78},{6,-58}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump
-        unlimitedSolutePumpTissuesCO2(SoluteFlow=0.0003)
-        annotation (Placement(transformation(extent={{66,-86},{46,-66}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
-        unlimitedSolutePumpOutTissueO2(SoluteFlow=0.0003)
-        annotation (Placement(transformation(extent={{46,-70},{66,-50}})));
+      Package.PressureMeasure pressureMeasure1
+        annotation (Placement(transformation(extent={{46,58},{66,78}})));
+      Package.PressureMeasure pressureMeasure2
+        annotation (Placement(transformation(extent={{-22,50},{-40,68}})));
     equation
       connect(RNormalCO.y, rightStarling.yBase) annotation (Line(
           points={{-51,44},{-46,44},{-46,34}},
@@ -2523,51 +2573,8 @@ package AcidBaseBalance
       connect(LNormalCO.y, leftStarling.yBase) annotation (Line(
           points={{21,46},{26,46},{26,34}},
           color={0,0,127}));
-      connect(pressureMeasure.pressure, rightStarling.u) annotation (Line(
-          points={{-62,36},{-58,36},{-58,32},{-54,32}},
-          color={0,0,127}));
-      connect(pressureMeasure1.pressure, leftStarling.u) annotation (Line(
-          points={{78,32},{34,32}},
-          color={0,0,127}));
-      connect(largeVeins.bloodPort_a, rightAtrium.bloodPort_a) annotation (Line(
-          points={{-84,-1},{-84,18},{-81.8,18}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(largeVeins.bloodPort_b, veins.bloodPort_a) annotation (Line(
-          points={{-84,-19},{-84,-36},{-63.8,-36}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(veins.bloodPort_b, muscle.bloodPort_a) annotation (Line(
-          points={{-44,-36},{-34,-36},{-34,-18},{-23,-18}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(veins.bloodPort_b, nonMuscle.bloodPort_a) annotation (Line(
-          points={{-44,-36},{-23,-36}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(veins.bloodPort_b, kidney.bloodPort_a) annotation (Line(
-          points={{-44,-36},{-34,-36},{-34,-54},{-23,-54}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(kidney.bloodPort_b, arteries.bloodPort_a) annotation (Line(
-          points={{-5,-54},{4,-54},{4,-36},{14.2,-36}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(nonMuscle.bloodPort_b, arteries.bloodPort_a) annotation (Line(
-          points={{-5,-36},{4,-36},{4,-36},{14.2,-36}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(muscle.bloodPort_b, arteries.bloodPort_a) annotation (Line(
-          points={{-5,-18},{4,-18},{4,-36},{14.2,-36}},
-          color={28,108,200},
-          thickness=0.5));
       connect(rightAtrium.bloodPort_b, rightHeart.bloodPort_a) annotation (Line(
           points={{-62,18},{-56,18}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(rightHeart.bloodPort_b, pulmonaryArteries.bloodPort_a)
-        annotation (Line(
-          points={{-36,18},{-26,18},{-26,64},{-82,64},{-82,84},{-61.8,84}},
           color={28,108,200},
           thickness=0.5));
       connect(pulmonaryArteries.bloodPort_b, pulmonary.bloodPort_a) annotation (
@@ -2582,67 +2589,69 @@ package AcidBaseBalance
           thickness=0.5));
       connect(leftStarling.y, leftHeart.volumeflowrate)
         annotation (Line(points={{26,28},{26,20}}, color={0,0,127}));
-      connect(leftHeart.bloodPort_a, pulmonaryVeinsAndLeftAtrium.bloodPort_b)
-        annotation (Line(
-          points={{16,16},{-12,16},{-12,64},{38,64},{38,84},{24,84}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(leftHeart.bloodPort_b, arteries.bloodPort_b) annotation (Line(
-          points={{36,16},{48,16},{48,-38},{34,-38},{34,-36}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(bloodPort_a_Extension.bloodPort_a, rightAtrium.bloodPort_a)
-        annotation (Line(
-          points={{-98,48},{-98,18},{-81.8,18}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(bloodPort_a_Extension.bloodFlow, pressureMeasure.q_in)
-        annotation (Line(
-          points={{-78,58},{-72,58},{-72,34}},
-          color={0,0,0},
-          thickness=1));
-      connect(bloodPort_a_Extension1.bloodPort_a, pulmonaryVeinsAndLeftAtrium.bloodPort_b)
-        annotation (Line(
-          points={{36,48},{38,48},{38,84},{24,84}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(pressureMeasure1.q_in, bloodPort_a_Extension1.bloodFlow)
-        annotation (Line(
-          points={{68,30},{68,58},{56,58},{56,58}},
-          color={0,0,0},
-          thickness=1));
       connect(rightStarling.y, rightHeart.volumeflowrate)
         annotation (Line(points={{-46,28},{-46,22}}, color={0,0,127}));
-      connect(bloodPort_b_Extension.bloodPort_b, pulmonary.bloodPort_b)
-        annotation (Line(
-          points={{-22,116},{-16,116},{-11,116},{-11,84}},
+      connect(veins.bloodPort_b, largeVeins.bloodPort_a) annotation (Line(
+          points={{-64,-36},{-84,-36},{-84,-19}},
           color={28,108,200},
           thickness=0.5));
-      connect(unlimitedSolutePumpLungsO2.q_out, bloodPort_b_Extension.O2)
-        annotation (Line(
-          points={{-70,116},{-56,116},{-42,116}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePumpOutLungsCO2.q_in, bloodPort_b_Extension.CO2)
-        annotation (Line(
-          points={{-70,102},{-62,102},{-62,112},{-42,112}},
-          color={107,45,134},
-          thickness=1));
-      connect(bloodPort_b_Extension1.bloodPort_b, veins.bloodPort_b)
-        annotation (Line(
-          points={{6,-68},{-44,-68},{-44,-36}},
+      connect(largeVeins.bloodPort_b, rightAtrium.bloodPort_a) annotation (Line(
+          points={{-84,-1},{-84,18},{-81.8,18}},
           color={28,108,200},
           thickness=0.5));
-      connect(unlimitedSolutePumpTissuesCO2.q_out, bloodPort_b_Extension1.CO2)
+      connect(leftHeart.bloodPort_b, arteries.bloodPort_a) annotation (Line(
+          points={{36,16},{74,16},{74,-36},{33.8,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(arteries.bloodPort_b, muscle.bloodPort_a) annotation (Line(
+          points={{14,-36},{4,-36},{4,-18},{-5,-18}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(arteries.bloodPort_b, nonMuscle.bloodPort_a) annotation (Line(
+          points={{14,-36},{-5,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(arteries.bloodPort_b, kidney.bloodPort_a) annotation (Line(
+          points={{14,-36},{4,-36},{4,-54},{-5,-54}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(nonMuscle.bloodPort_b, veins.bloodPort_a) annotation (Line(
+          points={{-23,-36},{-44.2,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(muscle.bloodPort_b, veins.bloodPort_a) annotation (Line(
+          points={{-23,-18},{-34,-18},{-34,-36},{-44.2,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(kidney.bloodPort_b, veins.bloodPort_a) annotation (Line(
+          points={{-23,-54},{-34,-54},{-34,-36},{-44.2,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pulmonaryVeinsAndLeftAtrium.bloodPort_b, pressureMeasure1.bloodPort_in)
         annotation (Line(
-          points={{46,-76},{42,-76},{42,-72},{26,-72}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePumpOutTissueO2.q_in, bloodPort_b_Extension1.O2)
+          points={{24,84},{38,84},{38,61},{51.1,61}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pressureMeasure1.bloodPort_out, leftHeart.bloodPort_a)
         annotation (Line(
-          points={{46,-60},{42,-60},{42,-68},{26,-68}},
-          color={107,45,134},
-          thickness=1));
+          points={{64.6,60.9},{64.6,54},{4,54},{4,16},{16,16}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(rightHeart.bloodPort_b, pressureMeasure2.bloodPort_in)
+        annotation (Line(
+          points={{-36,18},{-18,18},{-18,52.7},{-26.59,52.7}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pressureMeasure2.bloodPort_out, pulmonaryArteries.bloodPort_a)
+        annotation (Line(
+          points={{-38.74,52.61},{-84,52.61},{-84,84},{-61.8,84}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pressureMeasure2.pressure, rightStarling.u) annotation (Line(
+            points={{-36.22,56.48},{-72,56.48},{-72,32},{-54,32}}, color={0,0,
+              127}));
+      connect(pressureMeasure1.pressure, leftStarling.u) annotation (Line(
+            points={{61.8,65.2},{84,65.2},{84,32},{34,32}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,140}}), graphics={Text(
               extent={{-82,-80},{80,-100}},
@@ -3521,6 +3530,331 @@ package AcidBaseBalance
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end TestDimension1;
+
+    model CardiovascularSystem_GCG_Physiolibrary
+      "Cardiovascular part of Guyton-Coleman-Granger's model from 1972"
+       extends Modelica.Icons.Example;
+       import Physiolibrary.Hydraulic;
+      Hydraulic.Components.ElasticVessel pulmonaryVeinsAndLeftAtrium(
+        volume_start(displayUnit="l") = 0.0004,
+        ZeroPressureVolume(displayUnit="l") = 0.0004,
+        Compliance(displayUnit="l/mmHg") = 7.5006157584566e-08)
+        annotation (Placement(transformation(extent={{4,74},{24,94}})));
+      Hydraulic.Components.ElasticVessel pulmonaryArteries(
+        ZeroPressureVolume(displayUnit="l") = 0.00030625,
+        Compliance(displayUnit="l/mmHg") = 3.6002955640592e-08,
+        volume_start(displayUnit="l") = 0.00038)
+        annotation (Placement(transformation(extent={{-62,74},{-42,94}})));
+      Hydraulic.Components.Conductor
+               pulmonary(Conductance(displayUnit="l/(mmHg.min)") = 4.1665920538226e-08)
+        annotation (Placement(transformation(extent={{-30,74},{-10,94}})));
+      Hydraulic.Components.ElasticVessel arteries(
+        volume_start(displayUnit="l") = 0.00085,
+        ZeroPressureVolume(displayUnit="l") = 0.000495,
+        Compliance(displayUnit="l/mmHg") = 2.6627185942521e-08)
+        annotation (Placement(transformation(extent={{14,-46},{34,-26}})));
+      Hydraulic.Components.ElasticVessel veins(
+        Compliance(displayUnit="l/mmHg") = 6.1880080007267e-07,
+        volume_start(displayUnit="l") = 0.00325,
+        ZeroPressureVolume(displayUnit="l") = 0.00295)
+        annotation (Placement(transformation(extent={{-64,-46},{-44,-26}})));
+      Hydraulic.Components.Conductor
+               nonMuscle(Conductance(displayUnit="l/(mmHg.min)") = 3.5627924852669e-09)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-14,-36})));
+      Hydraulic.Sensors.PressureMeasure pressureMeasure
+        annotation (Placement(transformation(extent={{-78,26},{-58,46}})));
+      Hydraulic.Components.Pump rightHeart(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-56,8},{-36,28}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst RNormalCO(k(displayUnit
+            ="l/min") = 8.3333333333333e-05)
+        annotation (Placement(transformation(extent={{-60,40},{-52,48}})));
+      Hydraulic.Sensors.PressureMeasure pressureMeasure1
+        annotation (Placement(transformation(extent={{-8,26},{12,46}})));
+      Hydraulic.Components.Pump leftHeart(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{16,6},{36,26}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst LNormalCO(k(displayUnit
+            ="l/min") = 8.3333333333333e-05)
+        annotation (Placement(transformation(extent={{12,42},{20,50}})));
+      Hydraulic.Components.Conductor
+               kidney(Conductance(displayUnit="l/(mmHg.min)") = 1.4126159678427e-09)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-14,-54})));
+      Hydraulic.Components.Conductor
+               muscle(Conductance(displayUnit="l/(mmHg.min)") = 1.3001067314658e-09)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-14,-18})));
+      Hydraulic.Components.Conductor
+               largeVeins(Conductance(displayUnit="l/(mmHg.min)") = 1.6888886482791e-07)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=90,
+            origin={-84,-8})));
+      Hydraulic.Components.ElasticVessel rightAtrium(
+        volume_start(displayUnit="l") = 0.0001,
+        ZeroPressureVolume(displayUnit="l") = 0.0001,
+        Compliance(displayUnit="l/mmHg") = 3.7503078792283e-08)
+        annotation (Placement(transformation(extent={{-82,8},{-62,28}})));
+      Physiolibrary.Blocks.Factors.Spline rightStarling(data={{-6,0,0},{-3,0.15,
+            0.104},{-1,0.52,0.48},{2,1.96,0.48},{4,2.42,0.123},{8,2.7,0}},
+          Xscale=101325/760)
+        "At filling pressure 0mmHg (because external thorax pressure is -4mmHg) is normal cardiac output (effect=1)."
+        annotation (Placement(transformation(extent={{-56,22},{-36,42}})));
+      Physiolibrary.Blocks.Factors.Spline leftStarling(data={{-4,0,0},{-1,0.72,
+            0.29},{0,1.01,0.29},{3,1.88,0.218333},{10,2.7,0}}, Xscale=101325/
+            760)
+        "At filling pressure -0.0029mmHg (because external thorax pressure is -4mmHg) is normal cardiac output (effect=1)."
+        annotation (Placement(transformation(extent={{16,22},{36,42}})));
+    equation
+      connect(pulmonaryArteries.q_in,pulmonary. q_in) annotation (Line(
+          points={{-52,84},{-30,84}},
+          thickness=1));
+      connect(pulmonary.q_out, pulmonaryVeinsAndLeftAtrium.q_in) annotation (
+          Line(
+          points={{-10,84},{14,84}},
+          thickness=1));
+      connect(rightHeart.q_out,pulmonaryArteries. q_in) annotation (Line(
+          points={{-36,18},{-28,18},{-28,60},{-70,60},{-70,84},{-52,84}},
+          thickness=1));
+      connect(leftHeart.q_in, pulmonaryVeinsAndLeftAtrium.q_in) annotation (
+          Line(
+          points={{16,16},{-4,16},{-4,60},{32,60},{32,84},{14,84}},
+          thickness=1));
+      connect(leftHeart.q_out,arteries. q_in) annotation (Line(
+          points={{36,16},{44,16},{44,-36},{24,-36}},
+          thickness=1));
+      connect(pressureMeasure.q_in,rightHeart. q_in) annotation (Line(
+          points={{-72,30},{-72,18},{-56,18}},
+          thickness=1));
+      connect(pressureMeasure1.q_in, pulmonaryVeinsAndLeftAtrium.q_in)
+        annotation (Line(
+          points={{-2,30},{-4,30},{-4,60},{32,60},{32,84},{14,84}},
+          thickness=1));
+      connect(rightAtrium.q_in, rightHeart.q_in) annotation (Line(
+          points={{-72,18},{-56,18}},
+          thickness=1));
+      connect(RNormalCO.y, rightStarling.yBase) annotation (Line(
+          points={{-51,44},{-46,44},{-46,34}},
+          color={0,0,127}));
+      connect(LNormalCO.y, leftStarling.yBase) annotation (Line(
+          points={{21,46},{26,46},{26,34}},
+          color={0,0,127}));
+      connect(pressureMeasure.q_in, rightAtrium.q_in) annotation (Line(
+          points={{-72,30},{-72,18}},
+          thickness=1));
+      connect(rightHeart.solutionFlow, rightStarling.y) annotation (Line(
+          points={{-46,25},{-46,28},{-46,28}},
+          color={0,0,127}));
+      connect(leftStarling.y, leftHeart.solutionFlow) annotation (Line(
+          points={{26,28},{26,23}},
+          color={0,0,127}));
+      connect(pressureMeasure.pressure, rightStarling.u) annotation (Line(
+          points={{-62,32},{-54,32}},
+          color={0,0,127}));
+      connect(pressureMeasure1.pressure, leftStarling.u) annotation (Line(
+          points={{8,32},{18,32}},
+          color={0,0,127}));
+      connect(kidney.q_in, arteries.q_in) annotation (Line(
+          points={{-4,-54},{10,-54},{10,-36},{24,-36}},
+          color={0,0,0},
+          thickness=1));
+      connect(nonMuscle.q_in, arteries.q_in) annotation (Line(
+          points={{-4,-36},{24,-36}},
+          color={0,0,0},
+          thickness=1));
+      connect(muscle.q_in, arteries.q_in) annotation (Line(
+          points={{-4,-18},{10,-18},{10,-36},{24,-36}},
+          color={0,0,0},
+          thickness=1));
+      connect(muscle.q_out, veins.q_in) annotation (Line(
+          points={{-24,-18},{-40,-18},{-40,-36},{-54,-36}},
+          color={0,0,0},
+          thickness=1));
+      connect(nonMuscle.q_out, veins.q_in) annotation (Line(
+          points={{-24,-36},{-54,-36}},
+          color={0,0,0},
+          thickness=1));
+      connect(kidney.q_out, veins.q_in) annotation (Line(
+          points={{-24,-54},{-40,-54},{-40,-36},{-54,-36}},
+          color={0,0,0},
+          thickness=1));
+      connect(veins.q_in, largeVeins.q_in) annotation (Line(
+          points={{-54,-36},{-84,-36},{-84,-18}},
+          color={0,0,0},
+          thickness=1));
+      connect(largeVeins.q_out, rightAtrium.q_in) annotation (Line(
+          points={{-84,2},{-84,18},{-72,18}},
+          color={0,0,0},
+          thickness=1));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}), graphics={Text(
+              extent={{-82,-80},{80,-100}},
+              lineColor={175,175,175},
+              textString=
+                  "Circulation part of Guyton-Coleman-Granger's model from 1972")}),
+                                              Documentation(info="<html>
+<p>Cardiovascular subsystem in famous Guyton-Coleman-Granger model from 1972. </p>
+<p><br/>Model, all parameters and all initial values are from article: </p>
+<p>A.C. Guyton, T.G. Coleman, H.J. Granger (1972). &quot;Circulation: overall regulation.&quot; Annual review of physiology 34(1): 13-44.</p>
+</html>", revisions="<html>
+<p><i>2014</i></p>
+<p>Marek Matejak, Charles University, Prague, Czech Republic </p>
+</html>"),
+        experiment(StopTime=300));
+    end CardiovascularSystem_GCG_Physiolibrary;
+
+    model CardiovascularSystem_GCG_Extension_simple
+      "Cardiovascular part of Guyton-Coleman-Granger's model from 1972"
+       extends Modelica.Icons.Example;
+       import Physiolibrary.Hydraulic;
+    Package.BloodElasticVesselCompliance pulmonaryVeinsAndLeftAtrium(
+        volume_start(displayUnit="l") = 0.0004,
+        ZeroPressureVolume(displayUnit="l") = 0.0004,
+        Compliance(displayUnit="l/mmHg") = 7.5006157584566e-8)
+        annotation (Placement(transformation(extent={{4,74},{24,94}})));
+      Package.BloodElasticVesselCompliance pulmonaryArteries(
+        ZeroPressureVolume(displayUnit="l") = 0.00030625,
+        volume_start(displayUnit="l") = 0.00038,
+        Compliance(displayUnit="l/mmHg") = 3.6002955640592e-8)
+        annotation (Placement(transformation(extent={{-62,74},{-42,94}})));
+      Package.BloodConductor
+               pulmonary(Conductance(displayUnit="l/(mmHg.min)") = 4.1665920538226e-08)
+        annotation (Placement(transformation(extent={{-30,74},{-10,94}})));
+      Package.BloodElasticVesselCompliance arteries(
+        volume_start(displayUnit="l") = 0.00085,
+        ZeroPressureVolume(displayUnit="l") = 0.000495,
+        Compliance(displayUnit="l/mmHg") = 2.6627185942521e-8,
+        CO2_concentration=10)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={24,-36})));
+      Package.BloodElasticVesselCompliance veins(
+        volume_start(displayUnit="l") = 0.00325,
+        ZeroPressureVolume(displayUnit="l") = 0.00295,
+        Compliance(displayUnit="l/mmHg") = 6.1880080007267e-7,
+        CO2_concentration=20)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-54,-36})));
+      Package.BloodConductor
+               nonMuscle(Conductance(displayUnit="l/(mmHg.min)") = 3.5627924852669e-09)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-14,-36})));
+      Package.Pump              rightHeart
+        annotation (Placement(transformation(extent={{-56,8},{-36,28}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst RNormalCO(k(displayUnit="l/min")=
+             8.3333333333333e-05)
+        annotation (Placement(transformation(extent={{-60,40},{-52,48}})));
+      Package.Pump              leftHeart
+        annotation (Placement(transformation(extent={{16,6},{36,26}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst LNormalCO(k(displayUnit="l/min")=
+             8.3333333333333e-05)
+        annotation (Placement(transformation(extent={{12,42},{20,50}})));
+      Package.BloodConductor
+               kidney(Conductance(displayUnit="l/(mmHg.min)") = 1.4126159678427e-09)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-14,-54})));
+      Package.BloodConductor
+               muscle(Conductance(displayUnit="l/(mmHg.min)") = 1.3001067314658e-09)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={-14,-18})));
+      Package.BloodConductor
+               largeVeins(Conductance(displayUnit="l/(mmHg.min)") = 1.6888886482791e-07)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=90,
+            origin={-84,-10})));
+      Package.BloodElasticVesselCompliance rightAtrium(
+        volume_start(displayUnit="l") = 0.0001,
+        ZeroPressureVolume(displayUnit="l") = 0.0001,
+        Compliance(displayUnit="l/mmHg") = 3.7503078792283e-08)
+        annotation (Placement(transformation(extent={{-82,8},{-62,28}})));
+    equation
+      connect(rightAtrium.bloodPort_b, rightHeart.bloodPort_a) annotation (Line(
+          points={{-62,18},{-56,18}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(rightHeart.bloodPort_b, pulmonaryArteries.bloodPort_a)
+        annotation (Line(
+          points={{-36,18},{-26,18},{-26,64},{-82,64},{-82,84},{-61.8,84}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pulmonaryArteries.bloodPort_b, pulmonary.bloodPort_a) annotation (
+         Line(
+          points={{-42,84},{-29,84}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pulmonary.bloodPort_b, pulmonaryVeinsAndLeftAtrium.bloodPort_a)
+        annotation (Line(
+          points={{-11,84},{-4,84},{-4,84},{4.2,84}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(leftHeart.bloodPort_a, pulmonaryVeinsAndLeftAtrium.bloodPort_b)
+        annotation (Line(
+          points={{16,16},{-12,16},{-12,64},{38,64},{38,84},{24,84}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(veins.bloodPort_b, largeVeins.bloodPort_a) annotation (Line(
+          points={{-64,-36},{-84,-36},{-84,-19}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(largeVeins.bloodPort_b, rightAtrium.bloodPort_a) annotation (Line(
+          points={{-84,-1},{-84,18},{-81.8,18}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(leftHeart.bloodPort_b, arteries.bloodPort_a) annotation (Line(
+          points={{36,16},{74,16},{74,-36},{33.8,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(arteries.bloodPort_b, muscle.bloodPort_a) annotation (Line(
+          points={{14,-36},{4,-36},{4,-18},{-5,-18}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(arteries.bloodPort_b, nonMuscle.bloodPort_a) annotation (Line(
+          points={{14,-36},{-5,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(arteries.bloodPort_b, kidney.bloodPort_a) annotation (Line(
+          points={{14,-36},{4,-36},{4,-54},{-5,-54}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(nonMuscle.bloodPort_b, veins.bloodPort_a) annotation (Line(
+          points={{-23,-36},{-44.2,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(muscle.bloodPort_b, veins.bloodPort_a) annotation (Line(
+          points={{-23,-18},{-34,-18},{-34,-36},{-44.2,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(kidney.bloodPort_b, veins.bloodPort_a) annotation (Line(
+          points={{-23,-54},{-34,-54},{-34,-36},{-44.2,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(LNormalCO.y, leftHeart.volumeflowrate)
+        annotation (Line(points={{21,46},{26,46},{26,20}}, color={0,0,127}));
+      connect(RNormalCO.y, rightHeart.volumeflowrate) annotation (Line(points={
+              {-51,44},{-46,44},{-46,22}}, color={0,0,127}));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,140}}), graphics={Text(
+              extent={{-82,-80},{80,-100}},
+              lineColor={175,175,175},
+              textString=
+                  "Circulation part of Guyton-Coleman-Granger's model from 1972")}),
+                                              Documentation(info="<html>
+<p>Cardiovascular subsystem in famous Guyton-Coleman-Granger model from 1972. </p>
+<p><br/>Model, all parameters and all initial values are from article: </p>
+<p>A.C. Guyton, T.G. Coleman, H.J. Granger (1972). &quot;Circulation: overall regulation.&quot; Annual review of physiology 34(1): 13-44.</p>
+</html>", revisions="<html>
+<p><i>2014</i></p>
+<p>Marek Matejak, Charles University, Prague, Czech Republic </p>
+</html>"),
+        experiment(StopTime=300),
+        Icon(coordinateSystem(extent={{-100,-100},{100,140}})));
+    end CardiovascularSystem_GCG_Extension_simple;
   end Test;
 
   package Trash
