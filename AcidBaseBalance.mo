@@ -2952,7 +2952,7 @@ package AcidBaseBalance
         O2_concentration=10)
         annotation (Placement(transformation(extent={{-10,-10},{10,10}},
             rotation=180,
-            origin={-90,-36})));
+            origin={-94,-62})));
       Package.BloodConductor
                nonMuscle(Conductance(displayUnit="l/(mmHg.min)") = 3.5627924852669e-09)
         annotation (Placement(transformation(extent={{-10,-10},{10,10}},
@@ -3009,25 +3009,33 @@ package AcidBaseBalance
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump(
           SoluteFlow=0.00016666666666667)
         annotation (Placement(transformation(extent={{-56,114},{-36,134}})));
-      Package.FlowMeasure flowMeasure annotation (Placement(transformation(
+      Package.FlowMeasure flowMeasure_art annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=270,
             origin={72,4})));
-      Package.FlowMeasure flowMeasure1 annotation (Placement(transformation(
+      Package.FlowMeasure flowMeasure_ven annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=0,
             origin={-68,18})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump1(
           SoluteFlow=-0.00016666666666667)
         annotation (Placement(transformation(extent={{-48,-20},{-28,0}})));
-      Package.FlowMeasure flowMeasure2 annotation (Placement(transformation(
+      Package.FlowMeasure flowMeasure_tissue annotation (Placement(
+            transformation(
             extent={{-10,-10},{10,10}},
             rotation=180,
             origin={-60,-60})));
-      Package.FlowMeasure flowMeasure3 annotation (Placement(transformation(
+      Package.FlowMeasure flowMeasure_alv annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=0,
             origin={4,106})));
+      Package.junction_T junction_T2 annotation (Placement(transformation(
+            extent={{10,-15},{-10,15}},
+            rotation=270,
+            origin={-110,-37})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump2(
+          SoluteFlow=0)
+        annotation (Placement(transformation(extent={{-66,-40},{-86,-20}})));
     equation
       connect(RNormalCO.y, rightStarling.yBase) annotation (Line(
           points={{-51,44},{-46,44},{-46,34}},
@@ -3044,10 +3052,6 @@ package AcidBaseBalance
         annotation (Line(points={{26,28},{26,20}}, color={0,0,127}));
       connect(rightStarling.y, rightHeart.volumeflowrate)
         annotation (Line(points={{-46,28},{-46,22}}, color={0,0,127}));
-      connect(veins.bloodPort_out, largeVeins.bloodPort_in) annotation (Line(
-          points={{-100,-36},{-110,-36},{-110,-19}},
-          color={28,108,200},
-          thickness=0.5));
       connect(arteries.bloodPort_out, muscle.bloodPort_in) annotation (Line(
           points={{44,-36},{34,-36},{34,-18},{25,-18}},
           color={28,108,200},
@@ -3107,23 +3111,23 @@ package AcidBaseBalance
           points={{-36,124},{-30,124},{-30,89},{-24,89}},
           color={107,45,134},
           thickness=1));
-      connect(leftHeart.bloodPort_out, flowMeasure.bloodPort_in) annotation (
-          Line(
+      connect(leftHeart.bloodPort_out, flowMeasure_art.bloodPort_in)
+        annotation (Line(
           points={{36,16},{72,16},{72,13}},
           color={28,108,200},
           thickness=0.5));
-      connect(arteries.bloodPort_in, flowMeasure.bloodPort_out) annotation (
-          Line(
+      connect(arteries.bloodPort_in, flowMeasure_art.bloodPort_out) annotation
+        (Line(
           points={{63.8,-36},{72,-36},{72,-5}},
           color={28,108,200},
           thickness=0.5));
-      connect(rightAtrium.bloodPort_out, flowMeasure1.bloodPort_in) annotation
-        (Line(
+      connect(rightAtrium.bloodPort_out, flowMeasure_ven.bloodPort_in)
+        annotation (Line(
           points={{-82,18},{-77,18}},
           color={28,108,200},
           thickness=0.5));
-      connect(flowMeasure1.bloodPort_out, rightHeart.bloodPort_in) annotation (
-          Line(
+      connect(flowMeasure_ven.bloodPort_out, rightHeart.bloodPort_in)
+        annotation (Line(
           points={{-59,18},{-56,18}},
           color={28,108,200},
           thickness=0.5));
@@ -3136,25 +3140,39 @@ package AcidBaseBalance
           points={{-22,-27.5},{-22,-10},{-28,-10}},
           color={107,45,134},
           thickness=1));
-      connect(veins.bloodPort_in, flowMeasure2.bloodPort_out) annotation (Line(
-          points={{-80.2,-36},{-76,-36},{-76,-60},{-69,-60}},
+      connect(veins.bloodPort_in, flowMeasure_tissue.bloodPort_out) annotation
+        (Line(
+          points={{-84.2,-62},{-76,-62},{-76,-60},{-69,-60}},
           color={28,108,200},
           thickness=0.5));
-      connect(flowMeasure2.bloodPort_in, junction_T.bloodPort_out) annotation (
-          Line(
+      connect(flowMeasure_tissue.bloodPort_in, junction_T.bloodPort_out)
+        annotation (Line(
           points={{-51,-60},{-44,-60},{-44,-35},{-38,-35}},
           color={28,108,200},
           thickness=0.5));
-      connect(junction_T1.bloodPort_out, flowMeasure3.bloodPort_in) annotation
-        (Line(
+      connect(junction_T1.bloodPort_out, flowMeasure_alv.bloodPort_in)
+        annotation (Line(
           points={{-8,84},{-8,106},{-5,106}},
           color={28,108,200},
           thickness=0.5));
-      connect(flowMeasure3.bloodPort_out, pulmonaryVeinsAndLeftAtrium.bloodPort_in)
+      connect(flowMeasure_alv.bloodPort_out, pulmonaryVeinsAndLeftAtrium.bloodPort_in)
         annotation (Line(
           points={{13,106},{14,106},{14,84},{14.2,84}},
           color={28,108,200},
           thickness=0.5));
+      connect(junction_T2.bloodPort_out, largeVeins.bloodPort_in) annotation (
+          Line(
+          points={{-110,-27},{-110,-19}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(veins.bloodPort_out, junction_T2.bloodPort_in) annotation (Line(
+          points={{-104,-62},{-108,-62},{-108,-46.8},{-110,-46.8}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(junction_T2.port_O2, unlimitedSolutePump2.q_out) annotation (Line(
+          points={{-102.5,-43},{-94,-43},{-94,-30},{-86,-30}},
+          color={107,45,134},
+          thickness=1));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
                 -100},{100,140}}), graphics={Text(
               extent={{-82,-80},{80,-100}},
