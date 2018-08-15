@@ -2299,9 +2299,10 @@ package AcidBaseBalance
       Physiolibrary.Types.MolarFlowRate inflowCO2;
       Physiolibrary.Types.MolarFlowRate inflowBEox;
 
-      FickPrinciple fickPrinciple(useVolumeFlowInput=true,
+      FickPrinciple fickPrinciple(
         molarFlowInput=inflowO2,
-        useMolarFlowInput=true)
+        useVolumeFlowInput=false,
+        useMolarFlowInput=false)
         annotation (Placement(transformation(extent={{-10,-24},{28,12}})));
       FickPrinciple fickPrinciple1(useVolumeFlowInput=true,
         molarFlowInput=inflowCO2,
