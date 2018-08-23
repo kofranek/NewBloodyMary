@@ -1,4 +1,4 @@
-within ;
+ï»¿within ;
 package AcidBaseBalance
   package Electrolytes
 
@@ -33,7 +33,7 @@ package AcidBaseBalance
       connect(busConnector.pH_art, CD_NH4_PhOnFlux.u) annotation(Line(points = {{-80, 78}, {-80, 78}, {-80, 30}, {-26, 30}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
       connect(busConnector.Cl_art, ChloridePoolEffect.u) annotation(Line(points = {{-80, 78}, {-80, 78}, {-80, 12}, {-80, 4}, {-26, 4}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
       connect(ChloridePoolEffect.y, molarflowrate) annotation(Line(points = {{-18, 0}, {-18, 0}, {-18, -22}, {10, -22}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent=  {{-112, -102}, {108, -128}}, lineColor=  {0, 0, 255}, textString=  "%name")}), Documentation(revisions = "<html>
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-112, -102}, {108, -128}}, lineColor = {0, 0, 255}, textString = "%name")}), Documentation(revisions = "<html>
 
 <table>
 <tr>
@@ -159,9 +159,9 @@ package AcidBaseBalance
       Modelica.Blocks.Interfaces.RealInput u annotation(Placement(transformation(extent = {{-100, -20}, {-60, 20}}), iconTransformation(extent = {{-128, -20}, {-88, 20}})));
     equation
       y = yBase * 60000 * ((-2.5 * u) + 19.5) / 60000;
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 20}, {100, -20}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 14}, {84, -14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "F62")}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 20}, {100, -20}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-78, 14}, {84, -14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "F62")}));
     end F62;
 
     model F63
@@ -175,10 +175,10 @@ package AcidBaseBalance
       //mmol/min = mol/sec*60000
       y * 60000 = y1;
       //mol/sec *60000 = mmol/min
-      y1 = if u <= 4 then 0 elseif u > 4 and u <= 5 then yBase1 * (u - 4) else yBase1 annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 20}, {100, -20}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 14}, {84, -14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "F63")}));
-      annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10}), graphics = {Rectangle(visible=  true, fillColor=  {255, 255, 0}, fillPattern=  FillPattern.Solid, extent=  {{-100, -20}, {100, 20}}), Text(visible=  true, origin=  {-3.907, 0}, textColor=  {0, 0, 255}, extent=  {{-69.022, -12.502}, {69.022, 12.502}}, textString=  "F63")}));
+      y1 = if u <= 4 then 0 elseif u > 4 and u <= 5 then yBase1 * (u - 4) else yBase1 annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 20}, {100, -20}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-78, 14}, {84, -14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "F63")}));
+      annotation(Icon(coordinateSystem(extent = {{-100, -100}, {100, 100}}, preserveAspectRatio = true, initialScale = 0.1, grid = {10, 10}), graphics = {Rectangle(visible = true, fillColor = {255, 255, 0}, fillPattern = FillPattern.Solid, extent = {{-100, -20}, {100, 20}}), Text(visible = true, origin = {-3.907, 0}, textColor = {0, 0, 255}, extent = {{-69.022, -12.502}, {69.022, 12.502}}, textString = "F63")}));
     end F63;
 
     model AldEffect
@@ -188,9 +188,9 @@ package AcidBaseBalance
     equation
       y = (yBase * 60000 + 0.009 + u * 0.001) / 60000;
       // y = (yBase*60000+0.01)/60000;
-      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 20}, {100, -20}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-78, 14}, {84, -14}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "AldEffect")}));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})), Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 20}, {100, -20}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-78, 14}, {84, -14}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "AldEffect")}));
     end AldEffect;
 
     model TitratableAcid
@@ -221,12 +221,12 @@ package AcidBaseBalance
       connect(f63_1.yBase, f62_1.y) annotation(Line(visible = true, origin = {36, 25.84}, points = {{0, -20.08}, {0, 20.08}}, color = {0, 0, 127}));
       connect(f63_1.y, aldEffect.yBase) annotation(Line(visible = true, origin = {36.5, -20.77}, points = {{-0.5, 13.93}, {-0.5, -0.23}, {0.5, -0.23}, {0.5, -13.47}}, color = {0, 0, 127}));
       connect(aldEffect.y, TA) annotation(Line(visible = true, origin = {44.667, -68.947}, points = {{-7.667, 22.107}, {-7.667, -11.053}, {15.333, -11.053}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 80}, {100, -80}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-76, 82}, {-40, 48}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "pHa"), Text(extent=  {{-78, 28}, {-42, -6}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "pHu"), Text(extent=  {{-78, -24}, {-42, -58}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "fald"), Text(extent=  {{38, 18}, {74, -16}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid, textString=  "TA")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-76, 82}, {-40, 48}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "pHa"), Text(extent = {{-78, 28}, {-42, -6}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "pHu"), Text(extent = {{-78, -24}, {-42, -58}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "fald"), Text(extent = {{38, 18}, {74, -16}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "TA")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
             graphics={Text(
               extent={{60,-8},{102,10}},
               lineColor={28,108,200},
@@ -285,8 +285,8 @@ package AcidBaseBalance
       pHu = -log10(((-((10 ^ (-4.3) + 10 ^ (-6.66)) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) - 10 ^ (-6.66) * YPO4 - 10 ^ (-4.3) * YORG)) + (((10 ^ (-4.3) + 10 ^ (-6.66)) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) - 10 ^ (-6.66) * YPO4 - 10 ^ (-4.3) * YORG) ^ 2 - 4 * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG) * (10 ^ (-4.3) * 10 ^ (-6.66) * (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG - YPO4 - YORG))) ^ 0.5) / 2 / (STPG - YPO4 - 1 / (1 + 10 ^ (PHA - 4.3)) * YORG));
 
       STPG = max(0, STPO + YORG - YTA);
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 80}, {100, -80}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-68, 64}, {-6, 18}}, lineColor=  {28, 108, 200}, textString=  "TA"), Text(extent=  {{-54, 0}, {8, -46}}, lineColor=  {28, 108, 200}, textString=  "pHa"), Text(extent=  {{16, 38}, {78, -8}}, lineColor=  {28, 108, 200}, textString=  "pHu")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-68, 64}, {-6, 18}}, lineColor = {28, 108, 200}, textString = "TA"), Text(extent = {{-54, 0}, {8, -46}}, lineColor = {28, 108, 200}, textString = "pHa"), Text(extent = {{16, 38}, {78, -8}}, lineColor = {28, 108, 200}, textString = "pHu")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
     end pHUrine;
 
     model TotalAcidExcretion
@@ -2720,7 +2720,7 @@ package AcidBaseBalance
         input Real FCOHb "substance fraction of carboxyhemoglobin";
         input Real FMetHb "substance fraction of hemiglobin";
         input Real FHbF "substance fraction of fetal hemogobin";
-        input Real temp "temperature in °K";
+        input Real temp "temperature in Â°K";
         output Real ctO2
           "concentration of total blood oxygen concentration in mmol/l";
         output Real sO2t "oxygen saturation of hemoglobin at given temperature";
@@ -3166,7 +3166,7 @@ package AcidBaseBalance
       function cHCO3of "calculation of plasma bicarbonate concentration"
         input Real pH "plasma pH at given temperature in mmol/l";
         input Real pCO2 "pCO2 in kPa";
-        input Real T "temperature in °C";
+        input Real T "temperature in Â°C";
         output Real HCO3p "plasma bicarbonate concentration in mmol/l";
       algorithm
         HCO3p := pCO2*OSA.aCO2of(T)*
@@ -3393,9 +3393,9 @@ package AcidBaseBalance
           modelSettings.FMetHb,
           modelSettings.FHbF,
           modelSettings.Temperature);
-        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent={{
-                    -30,66},{94,-34}},                                                                                                    lineColor=  {28, 108, 200}, textString=  "O2 total"),
+        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent={{
+                    -30,66},{94,-34}},                                                                                                    lineColor = {28, 108, 200}, textString = "O2 total"),
               Text(
                 extent={{-96,66},{-40,98}},
                 lineColor={0,0,0},
@@ -3438,8 +3438,8 @@ package AcidBaseBalance
           modelSettings.Temperature,
           modelSettings.ctHb,
           sO2);
-        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent={{
+        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent={{
                     -84,26},{64,-46}},                                                                                                    lineColor=
                     {28,108,200},                                                                                                    fillColor=
                     {255,255,0},
@@ -3486,8 +3486,7 @@ total"),      Text(
       model BEINV
         Physiolibrary.Types.RealIO.PressureInput pCO2
           "pCO2 at given temperature in Pa"                                             annotation(Placement(transformation(extent = {{-69, 25}, {-53, 41}}), iconTransformation(extent = {{-120, 30}, {-100, 50}})));
-        Physiolibrary.Types.RealIO.pHOutput pH "plasma pH at given temperature"
-                                                                                annotation(Placement(transformation(extent={{148,68},
+        Physiolibrary.Types.RealIO.pHOutput pH "plasma pH at given temperature" annotation(Placement(transformation(extent={{148,68},
                   {168,88}}),                                                                                                    iconTransformation(extent={{148,68},
                   {168,88}})));
         Physiolibrary.Types.RealIO.ConcentrationInput BEox "BEox in mmol/l" annotation(Placement(transformation(extent = {{-60, 51}, {-42, 69}}), iconTransformation(extent = {{-120, 70}, {-100, 90}})));
@@ -3495,8 +3494,7 @@ total"),      Text(
           annotation (Placement(transformation(extent={{-36,-32},{44,40}})));
         Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints1 annotation(Placement(transformation(extent={{38,44},
                   {96,76}})));
-        Physiolibrary.Types.RealIO.FractionInput sO2 "O2 hemoglobin saturation"
-                                                                                annotation(Placement(transformation(extent={{-70,-28},
+        Physiolibrary.Types.RealIO.FractionInput sO2 "O2 hemoglobin saturation" annotation(Placement(transformation(extent={{-70,-28},
                   {-54,-12}}),                                                                                                    iconTransformation(extent = {{-120, -84}, {-100, -64}})));
       equation
         connect(vanSlykeEquation.pCO2, pCO2) annotation(Line(points = {{-40, 37.12}, {-56, 37.12}, {-56, 33}, {-61, 33}}, color = {0, 0, 127}));
@@ -3510,9 +3508,9 @@ total"),      Text(
                 {138,78},{138,60},{97.45,60}},                                                                       color = {0, 0, 127}));
         connect(vanSlykeEquation.sO2, sO2) annotation(Line(points={{-40,-20.48},
                 {-70,-20.48},{-70,-20},{-62,-20}},                                                                          color = {0, 0, 127}));
-        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-84, 22}, {94, -12}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "BEINV")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-84, 22}, {94, -12}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, textString = "BEINV")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
       end BEINV;
 
       model bloodBEox
@@ -3521,8 +3519,7 @@ total"),      Text(
         Physiolibrary.Types.RealIO.pHInput pH "pH at given temperature" annotation(Placement(transformation(extent = {{-140, 28}, {-100, 68}}), iconTransformation(extent = {{-120, 48}, {-100, 68}})));
         Physiolibrary.Types.RealIO.ConcentrationOutput BEox
           "Base Excess (in fully oxygenated blood) in mmol/l"                                                   annotation(Placement(transformation(extent = {{100, -10}, {120, 10}}), iconTransformation(extent = {{100, -10}, {120, 10}})));
-        Physiolibrary.Types.RealIO.FractionInput sO2 "O2 hemoglobin saturation"
-                                                                                annotation(Placement(transformation(extent={{-140,4},
+        Physiolibrary.Types.RealIO.FractionInput sO2 "O2 hemoglobin saturation" annotation(Placement(transformation(extent={{-140,4},
                   {-100,44}}),                                                                                                    iconTransformation(extent = {{-120, -78}, {-100, -58}})));
         outer ModelSettings modelSettings
           annotation (Placement(transformation(extent={{-100,-100},{-80,-80}})));
@@ -3535,8 +3532,8 @@ total"),      Text(
           modelSettings.cAlb,
           modelSettings.cPi,
           sO2);
-        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {28, 108, 200}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent={{
+        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent={{
                     -102,36},{62,-50}},                                                                                                    lineColor=
                     {28,108,200},                                                                                                    fillColor=
                     {255,255,0},
@@ -3584,23 +3581,23 @@ BEox"),       Text(
       equation
         VO2 = Q * (CpcO2 - CvO2);
         VCO2 = Q * (CvCO2 - CpcCO2);
-        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 102}, {100, -98}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-96, 6}, {96, -6}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, origin=  {2, 44}, rotation=  180, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "CvO2"), Text(extent=  {{-97, 10}, {97, -10}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, origin=  {3, 20}, rotation=  180, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "CvCO2"), Text(extent=  {{-50, 116}, {74, 38}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "O2CO2Balance"), Text(extent=  {{36, 8}, {94, -2}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "VO2"), Text(extent=  {{12, -12}, {94, -20}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "VCO2"), Text(extent=  {{-90, 13}, {90, -13}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, origin=  {-4, -33}, rotation=  180, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "CpcCO2"), Text(extent=  {{-81, 8}, {81, -8}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, origin=  {-13, -8}, rotation=  180, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "CpcO2"), Text(extent=  {{-94, 80}, {98, 64}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "Q")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 102}, {100, -98}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-96, 6}, {96, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin = {2, 44}, rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "CvO2"), Text(extent = {{-97, 10}, {97, -10}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin = {3, 20}, rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "CvCO2"), Text(extent = {{-50, 116}, {74, 38}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, textString = "O2CO2Balance"), Text(extent = {{36, 8}, {94, -2}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "VO2"), Text(extent = {{12, -12}, {94, -20}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "VCO2"), Text(extent = {{-90, 13}, {90, -13}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin = {-4, -33}, rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "CpcCO2"), Text(extent = {{-81, 8}, {81, -8}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin = {-13, -8}, rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "CpcO2"), Text(extent = {{-94, 80}, {98, 64}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "Q")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
       end O2CO2Balance;
 
       model PO2PCO2
@@ -3662,47 +3659,47 @@ BEox"),       Text(
           annotation (Line(points={{-56,7},{-56,0},{-46,0}},  color={0,0,127}));
         connect(vanSlykeEquation.pH, pH) annotation (Line(points={{-0.02,-20.6},
                 {2,-20.6},{2,-44},{6,-44}}, color={0,0,127}));
-        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-66, 4}, {94, -6}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "sO2"), Text(extent=  {{-66, 26}, {94, 8}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "HCO3"), Text(extent=  {{-94, -88}, {10, -96}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "T"), Text(extent=  {{-44, 44}, {92, 34}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "pH"), Text(extent=  {{-96, 44}, {54, 34}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "ctHb"), Text(extent=  {{-73, 7}, {73, -7}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, origin=  {19, 81}, rotation=  180, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "ctO2"), Text(extent=  {{-75, 6}, {75, -6}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, origin=  {19, 58}, rotation=  180, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "ctCO2"), Text(extent=  {{-44, 32}, {66, -56}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "PO2CO2"), Text(extent=  {{-94, 98}, {104, 88}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "pO2"), Text(extent=  {{-94, 86}, {58, 72}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "pCO2"), Text(extent=  {{-94, -74}, {102, -82}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "FHbF"), Text(extent=  {{-94, -34}, {104, -48}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "FMetHb"), Text(extent=  {{-92, -14}, {102, -28}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "cDPG"), Text(extent=  {{-94, 22}, {68, 12}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "ctAlb"), Text(extent=  {{-74, 8}, {74, -8}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, origin=  {18, -56}, rotation=  180, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "cdO2"), Text(extent=  {{-80, 11.5}, {80, -11.5}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, origin=  {14, -79.5}, rotation=  180, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "cdCO2"), Text(extent=  {{-94, -54}, {58, -64}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "FCOHb"), Text(extent=  {{-78, 7}, {78, -7}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, origin=  {14, -37}, rotation=  180, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "ceHb"), Text(extent=  {{-94, 4}, {52, -8}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "ctPi"), Text(extent=  {{-96, 66}, {52, 50}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "BEox")}), Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
+        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-66, 4}, {94, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "sO2"), Text(extent = {{-66, 26}, {94, 8}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "HCO3"), Text(extent = {{-94, -88}, {10, -96}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "T"), Text(extent = {{-44, 44}, {92, 34}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "pH"), Text(extent = {{-96, 44}, {54, 34}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "ctHb"), Text(extent = {{-73, 7}, {73, -7}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin = {19, 81}, rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "ctO2"), Text(extent = {{-75, 6}, {75, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin = {19, 58}, rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "ctCO2"), Text(extent = {{-44, 32}, {66, -56}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, textString = "PO2CO2"), Text(extent = {{-94, 98}, {104, 88}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "pO2"), Text(extent = {{-94, 86}, {58, 72}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "pCO2"), Text(extent = {{-94, -74}, {102, -82}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "FHbF"), Text(extent = {{-94, -34}, {104, -48}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "FMetHb"), Text(extent = {{-92, -14}, {102, -28}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "cDPG"), Text(extent = {{-94, 22}, {68, 12}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "ctAlb"), Text(extent = {{-74, 8}, {74, -8}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin = {18, -56}, rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "cdO2"), Text(extent = {{-80, 11.5}, {80, -11.5}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin = {14, -79.5}, rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "cdCO2"), Text(extent = {{-94, -54}, {58, -64}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "FCOHb"), Text(extent = {{-78, 7}, {78, -7}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin = {14, -37}, rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "ceHb"), Text(extent = {{-94, 4}, {52, -8}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "ctPi"), Text(extent = {{-96, 66}, {52, 50}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "BEox")}), Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
                   -100},{100,100}})));
       end PO2PCO2;
 
@@ -3752,21 +3749,21 @@ BEox"),       Text(
         //from mmol/min to mol/sec conversion
         VCO2 = VCO2_mmol_per_min / 60 / 1000;
         //from mmol/min to mol/sec conversion
-        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent=  {{-100, 100}, {100, -100}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid), Text(extent=  {{-42, -40}, {82, -86}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, textString=  "AlvGases"),   Text(extent=  {{-46, 44}, {94, 24}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "PACO2"), Text(extent=  {{-80, 62}, {94, 52}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "PAO2"), Text(extent=  {{-94, 16}, {0, 6}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "VAi"), Text(extent=  {{-46, 20}, {94, 4}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Right, textString=  "VAe"), Text(extent=  {{-94, -14}, {52, -28}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "VO2"), Text(extent=  {{-94, -36}, {66, -50}}, lineColor=  {0, 0, 255}, fillColor=  {255, 255, 0},
-                  fillPattern=                                                                                                    FillPattern.Solid, fontSize=  12,
-                  horizontalAlignment=                                                                                                    TextAlignment.Left, textString=  "VCO2")}),
+        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-42, -40}, {82, -86}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, textString = "AlvGases"),   Text(extent = {{-46, 44}, {94, 24}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "PACO2"), Text(extent = {{-80, 62}, {94, 52}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "PAO2"), Text(extent = {{-94, 16}, {0, 6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "VAi"), Text(extent = {{-46, 20}, {94, 4}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "VAe"), Text(extent = {{-94, -14}, {52, -28}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "VO2"), Text(extent = {{-94, -36}, {66, -50}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "VCO2")}),
                                                                                                     Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
       end AlvGases;
 
@@ -4100,15 +4097,13 @@ BEox"),       Text(
         EMIN=15998686.4898,
         EMAX=37330268.4762)
         annotation (Placement(transformation(extent={{56,92},{94,124}})));
-      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance
-                                                                                 LVentricularElastance(EMIN=
+      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance LVentricularElastance(EMIN=
             11999014.86735, EMAX=533289549.66)
         annotation (Placement(transformation(extent={{122,92},{158,124}})));
       Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.AtrialElastance RAtrialElastance(EMIN=
             6666119.37075, EMAX=19998358.11225)
         annotation (Placement(transformation(extent={{-244,86},{-206,118}})));
-      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance
-                                                                                 RVentricularElastance(EMIN=
+      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance RVentricularElastance(EMIN=
             7599376.082655, EMAX=65327969.83335)
         annotation (Placement(transformation(extent={{-180,88},{-150,122}})));
       replaceable Physiolibrary.Types.Constants.FrequencyConst HeartRate(k(displayUnit = "1/min") = 1.2) annotation(Placement(visible = true, transformation(origin={-243,
@@ -5320,15 +5315,13 @@ BEox"),       Text(
         EMIN=15998686.4898,
         EMAX=37330268.4762)
         annotation (Placement(transformation(extent={{56,92},{94,124}})));
-      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance
-                                                                                 LVentricularElastance(EMIN=
+      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance LVentricularElastance(EMIN=
             11999014.86735, EMAX=533289549.66)
         annotation (Placement(transformation(extent={{122,92},{158,124}})));
       Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.AtrialElastance RAtrialElastance(EMIN=
             6666119.37075, EMAX=19998358.11225)
         annotation (Placement(transformation(extent={{-244,86},{-206,118}})));
-      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance
-                                                                                 RVentricularElastance(EMIN=
+      Physiolibrary.Hydraulic.Examples.MeursModel2011.Parts.VentricularElastance RVentricularElastance(EMIN=
             7599376.082655, EMAX=65327969.83335)
         annotation (Placement(transformation(extent={{-180,88},{-150,122}})));
       replaceable Physiolibrary.Types.Constants.FrequencyConst HeartRate(k(displayUnit = "1/min") = 1.2) annotation(Placement(visible = true, transformation(origin={-243,
@@ -9067,9 +9060,11 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
   end Inputs;
 
   package PulsatileCirculation
-    model HemodynamicsSmith_shallowTest_Pulmonary
+    model HemodynamicsSmith_shallowTest
           extends Cardiovascular.Icons.Runnable_Shallow;
       import Physiolibrary.Hydraulic.Components.*;
+    //  Physiolibrary.Types.Volume leftVentricleInitVol = ventricularInteraction.rightVentricle.ventricle.volume_start;
+
     Package.BloodElasticVesselElastance aorta(
         ZeroPressureVolume=0,
         volume_start=0.0001241,
@@ -9102,61 +9097,109 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
               Ltc(I(displayUnit="mmHg.s2/ml") = 10678.18997523,
           volumeFlow_start(displayUnit="m3/s") = 0.0001372)
         annotation (Placement(transformation(extent={{-122,22},{-102,42}})));
-      Physiolibrary.Hydraulic.Components.ElasticVessel elasticVesselCompliance(
-        useComplianceInput=false,
-        Compliance(displayUnit="ml/mmHg") = 7.5006157584566e-09,
-        useExternalPressureInput=false,
-        volume_start=0.0005,
-        ZeroPressureVolume=0)
-        annotation (Placement(transformation(extent={{-14,-42},{6,-22}})));
+      Package.BloodInertia
+              Lpv(I(displayUnit="mmHg.s2/ml") = 19822.372560862, volumeFlow_start(
+            displayUnit="m3/s") = -1.9e-9)
+        annotation (Placement(transformation(extent={{170,22},{190,42}})));
+      Package.BloodValve pulmonaryValve(Pknee=0, _Ron(displayUnit="(mmHg.s)/ml") = 733273.1307825)
+        annotation (Placement(transformation(extent={{202,22},{222,42}})));
+        Package.BloodElasticVesselElastance pulmonaryArteries(
+        ZeroPressureVolume=0,
+        useExternalPressureInput=true,
+        Elastance(displayUnit="Pa/m3") = 49195960.956135,
+        volume_start=3.904e-05)
+        annotation (Placement(transformation(extent={{232,22},{252,42}})));
+      Package.BloodResistor Rpul(Resistance(displayUnit="(mmHg.s)/ml") = 20691634.526808)
+        annotation (Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={254,8})));
+    Package.BloodElasticVesselElastance pulmonaryVeins(
+        ZeroPressureVolume=0,
+        useExternalPressureInput=true,
+        volume_start=0.0008269,
+        O2_concentration=1,
+        CO2_concentration=2,
+        BEox_concentration=3,
+        Elastance(displayUnit="mmHg/ml") = 973253.4281295)
+        annotation (Placement(transformation(extent={{254,-32},{234,-12}})));
+      Package.BloodValve mitralValve(Pknee=0, _Ron(displayUnit="(mmHg.s)/ml") = 2106493.721157)
+        annotation (Placement(transformation(extent={{190,-32},{170,-12}})));
+        Package.BloodInertia Lmt(I(displayUnit="mmHg.s2/ml") = 10261.557514558,
+          volumeFlow_start(displayUnit="m3/s") = 0.0001141) annotation (
+          Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={214,-22})));
+      Physiolibrary.Types.Constants.PressureConst IntraThoracicPressure(k=-533.28954966)
+        annotation (Placement(transformation(extent={{70,12},{82,20}})));
+      Package.BloodPort_in_Extension
+                             bloodPort_in_Extension
+        annotation (Placement(transformation(extent={{-58,54},{-38,34}})));
       Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
-          solute_start=0.001)
-        annotation (Placement(transformation(extent={{-24,-94},{-4,-74}})));
+          solute_start=1e-6)
+        annotation (Placement(transformation(extent={{16,98},{36,118}})));
       Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
-          solute_start=0.001)
-        annotation (Placement(transformation(extent={{-24,-118},{-4,-98}})));
+          solute_start=1e-6)
+        annotation (Placement(transformation(extent={{16,74},{36,94}})));
       Physiolibrary.Chemical.Components.Substance BEox(useNormalizedVolume=false,
           solute_start=0)
-        annotation (Placement(transformation(extent={{-24,-142},{-4,-122}})));
+        annotation (Placement(transformation(extent={{16,50},{36,70}})));
+      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure
+        annotation (Placement(transformation(extent={{-14,23},{8,45}})));
+      Physiolibrary.Chemical.Components.Stream O2flow(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-16,98},{4,118}})));
+      Physiolibrary.Chemical.Components.Stream CO2flow(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-16,74},{4,94}})));
+      Physiolibrary.Chemical.Components.Stream BEoxflow(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-14,48},{6,68}})));
       Physiolibrary.Chemical.Components.Stream O2flow1(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{8,-94},{28,-74}})));
+        annotation (Placement(transformation(extent={{58,98},{78,118}})));
       Physiolibrary.Chemical.Components.Stream CO2flow1(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{8,-118},{28,-98}})));
+        annotation (Placement(transformation(extent={{58,74},{78,94}})));
       Physiolibrary.Chemical.Components.Stream BEoxflow1(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{8,-142},{28,-122}})));
+        annotation (Placement(transformation(extent={{58,50},{78,70}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure3
-        annotation (Placement(transformation(extent={{14,-37},{36,-59}})));
+        annotation (Placement(transformation(extent={{64,23},{86,45}})));
       Package.BloodPort_out_Extension
                               bloodPort_out_Extension
-        annotation (Placement(transformation(extent={{44,-68},{64,-48}})));
-      Physiolibrary.Hydraulic.Components.ElasticVessel elasticVesselCompliance1(
-        useComplianceInput=false,
-        useExternalPressureInput=false,
-        Compliance(displayUnit="ml/mmHg") = 7.5006157584566e-06,
-        volume_start=0.0005,
-        ZeroPressureVolume=0)
-        annotation (Placement(transformation(extent={{-12,98},{8,118}})));
+        annotation (Placement(transformation(extent={{94,54},{114,34}})));
+      Cardiovascular.Model.Smith2004.Parts.VentricularInteraction
+        ventricularInteraction
+        annotation (Placement(transformation(extent={{20,-14},{60,26}})));
+      Package.BloodPort_in_Extension
+                             bloodPort_in_Extension1
+        annotation (Placement(transformation(extent={{-54,-40},{-34,-20}})));
       Physiolibrary.Chemical.Components.Substance O1(useNormalizedVolume=false,
-          solute_start=0.001)
-        annotation (Placement(transformation(extent={{-22,46},{-2,66}})));
+          solute_start=1e-6)
+        annotation (Placement(transformation(extent={{42,-62},{22,-42}})));
       Physiolibrary.Chemical.Components.Substance CO1(useNormalizedVolume=false,
-          solute_start=0.001)
-        annotation (Placement(transformation(extent={{-22,22},{-2,42}})));
-      Physiolibrary.Chemical.Components.Substance BEox1(
-                                                       useNormalizedVolume=false,
+          solute_start=1e-6)
+        annotation (Placement(transformation(extent={{42,-86},{22,-66}})));
+      Physiolibrary.Chemical.Components.Substance BEox1(useNormalizedVolume=false,
           solute_start=0)
-        annotation (Placement(transformation(extent={{-22,-2},{-2,18}})));
-      Physiolibrary.Chemical.Components.Stream O2flow2(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{10,46},{30,66}})));
-      Physiolibrary.Chemical.Components.Stream CO2flow2(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{10,22},{30,42}})));
-      Physiolibrary.Chemical.Components.Stream BEoxflow2(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{10,-2},{30,18}})));
+        annotation (Placement(transformation(extent={{42,-110},{22,-90}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure1
-        annotation (Placement(transformation(extent={{16,103},{38,81}})));
+        annotation (Placement(transformation(extent={{22,-9},{0,-31}})));
+      Physiolibrary.Chemical.Components.Stream O2flow2(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{10,-62},{-10,-42}})));
+      Physiolibrary.Chemical.Components.Stream CO2flow2(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{10,-86},{-10,-66}})));
+      Physiolibrary.Chemical.Components.Stream BEoxflow2(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{12,-110},{-8,-90}})));
+      Physiolibrary.Chemical.Components.Stream O2flow3(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{74,-62},{54,-42}})));
+      Physiolibrary.Chemical.Components.Stream CO2flow3(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{74,-86},{54,-66}})));
+      Physiolibrary.Chemical.Components.Stream BEoxflow3(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{74,-110},{54,-90}})));
+      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure2
+        annotation (Placement(transformation(extent={{80,-9},{58,-31}})));
       Package.BloodPort_out_Extension
                               bloodPort_out_Extension1
-        annotation (Placement(transformation(extent={{48,72},{68,92}})));
+        annotation (Placement(transformation(extent={{88,-40},{108,-20}})));
+      Physiolibrary.Types.Constants.FrequencyConst HR(k=1.2)
+        annotation (Placement(transformation(extent={{-18,0},{-2,14}})));
     equation
       connect(aorticValve.bloodPort_in, Lav.bloodPort_out) annotation (Line(
           points={{-104.2,-22},{-104.2,-22},{-91,-22}},
@@ -9182,110 +9225,233 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
           points={{-103,32},{-91.8,32}},
           color={28,108,200},
           thickness=0.5));
-      connect(elasticVesselCompliance.volume,O2. solutionVolume) annotation (Line(
-            points={{2,-42},{2,-70},{-18,-70},{-18,-80}},color={0,0,127}));
-      connect(elasticVesselCompliance.volume,CO2. solutionVolume)
-        annotation (Line(points={{2,-42},{2,-104},{-18,-104}},
-                                                             color={0,0,127}));
-      connect(elasticVesselCompliance.volume,BEox. solutionVolume)
-        annotation (Line(points={{2,-42},{2,-128},{-18,-128}},
-                                                             color={0,0,127}));
+      connect(pulmonaryVeins.externalPressure,IntraThoracicPressure. y)
+        annotation (Line(
+          points={{236,-14},{264,-14},{264,16},{83.5,16}},
+          color={0,190,190},
+          smooth=Smooth.None));
+      connect(IntraThoracicPressure.y,pulmonaryArteries. externalPressure)
+        annotation (Line(points={{83.5,16},{264,16},{264,40},{250,40}},
+            color={0,0,127}));
+      connect(pulmonaryVeins.bloodPort_in,Rpul. bloodPort_out) annotation (Line(
+          points={{253.8,-22},{254,-22},{254,-1}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pulmonaryArteries.bloodPort_out,Rpul. bloodPort_in) annotation (
+          Line(
+          points={{252,32},{254,32},{254,17}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pulmonaryArteries.bloodPort_in,pulmonaryValve. bloodPort_out)
+        annotation (Line(
+          points={{232.2,32},{222,32}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(Lpv.bloodPort_out,pulmonaryValve. bloodPort_in) annotation (Line(
+          points={{189,32},{202.2,32}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pulmonaryVeins.bloodPort_out,Lmt. bloodPort_in) annotation (Line(
+          points={{234,-22},{223,-22}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(mitralValve.bloodPort_in,Lmt. bloodPort_out) annotation (Line(
+          points={{189.8,-22},{205,-22}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(bloodPort_in_Extension.bloodFlow,flowMeasure. q_in) annotation (
+          Line(
+          points={{-38,34},{-14,34}},
+          color={0,0,0},
+          thickness=1));
+      connect(bloodPort_in_Extension.O2,O2flow. q_in) annotation (Line(
+          points={{-38,44},{-38,108},{-16,108}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2flow.q_out,O2. q_out) annotation (Line(
+          points={{4,108},{26,108}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_in_Extension.CO2,CO2flow. q_in) annotation (Line(
+          points={{-38,48.2},{-20,48.2},{-20,84},{-16,84}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2flow.q_out,CO2. q_out) annotation (Line(
+          points={{4,84},{26,84}},
+          color={107,45,134},
+          thickness=1));
+      connect(BEoxflow.q_out,BEox. q_out) annotation (Line(
+          points={{6,58},{6,60},{26,60}},
+          color={107,45,134},
+          thickness=1));
+      connect(BEoxflow.q_in,bloodPort_in_Extension. BEox) annotation (Line(
+          points={{-14,58},{-22,58},{-22,52},{-38,52}},
+          color={107,45,134},
+          thickness=1));
+      connect(flowMeasure.volumeFlow,O2flow. solutionFlow) annotation (Line(points={{-3,47.2},
+              {-3,124},{-6,124},{-6,115}},             color={0,0,127}));
+      connect(flowMeasure.volumeFlow,CO2flow. solutionFlow)
+        annotation (Line(points={{-3,47.2},{-3,91},{-6,91}},    color={0,0,127}));
+      connect(flowMeasure.volumeFlow,BEoxflow. solutionFlow)
+        annotation (Line(points={{-3,47.2},{-3,65},{-4,65}},    color={0,0,127}));
       connect(O2.q_out,O2flow1. q_in) annotation (Line(
-          points={{-14,-84},{8,-84}},
+          points={{26,108},{58,108}},
           color={107,45,134},
           thickness=1));
       connect(CO2.q_out,CO2flow1. q_in) annotation (Line(
-          points={{-14,-108},{8,-108}},
+          points={{26,84},{58,84}},
           color={107,45,134},
           thickness=1));
       connect(BEox.q_out,BEoxflow1. q_in) annotation (Line(
-          points={{-14,-132},{8,-132}},
+          points={{26,60},{58,60}},
           color={107,45,134},
           thickness=1));
-      connect(elasticVesselCompliance.q_in,flowMeasure3. q_in) annotation (Line(
-          points={{-4,-32},{-4,-48},{14,-48}},
+      connect(flowMeasure.q_out,flowMeasure3. q_in) annotation (Line(
+          points={{8,34},{64,34}},
           color={0,0,0},
           thickness=1));
-      connect(flowMeasure3.volumeFlow,O2flow1. solutionFlow) annotation (Line(
-            points={{25,-61.2},{25,-75.6},{18,-75.6},{18,-77}},color={0,0,127}));
       connect(flowMeasure3.volumeFlow,CO2flow1. solutionFlow) annotation (Line(
-            points={{25,-61.2},{25,-99.6},{18,-99.6},{18,-101}},
-                                                               color={0,0,127}));
+            points={{75,47.2},{75,90.4},{68,90.4},{68,91}},    color={0,0,127}));
       connect(flowMeasure3.volumeFlow,BEoxflow1. solutionFlow) annotation (Line(
-            points={{25,-61.2},{25,-124.6},{18,-124.6},{18,-125}},
-                                                               color={0,0,127}));
+            points={{75,47.2},{75,67.4},{68,67.4},{68,67}},    color={0,0,127}));
       connect(flowMeasure3.q_out,bloodPort_out_Extension. bloodFlow)
         annotation (Line(
-          points={{36,-48},{44,-48}},
+          points={{86,34},{94,34}},
           color={0,0,0},
           thickness=1));
       connect(bloodPort_out_Extension.O2,O2flow1. q_out) annotation (Line(
-          points={{44,-58},{36,-58},{36,-84},{28,-84}},
+          points={{94,44},{94,108},{78,108}},
           color={107,45,134},
           thickness=1));
       connect(bloodPort_out_Extension.CO2,CO2flow1. q_out) annotation (Line(
-          points={{44,-62},{38,-62},{38,-108},{28,-108}},
+          points={{94,48},{94,84},{78,84}},
           color={107,45,134},
           thickness=1));
       connect(bloodPort_out_Extension.BEox,BEoxflow1. q_out) annotation (Line(
-          points={{44,-66},{40,-66},{40,-132},{28,-132}},
+          points={{94,52},{94,60},{78,60}},
           color={107,45,134},
           thickness=1));
-      connect(elasticVesselCompliance1.volume,O1. solutionVolume) annotation (Line(
-            points={{4,98},{4,70},{-16,70},{-16,60}},        color={0,0,127}));
-      connect(elasticVesselCompliance1.volume,CO1. solutionVolume)
-        annotation (Line(points={{4,98},{4,36},{-16,36}},       color={0,0,127}));
-      connect(elasticVesselCompliance1.volume,BEox1. solutionVolume)
-        annotation (Line(points={{4,98},{4,12},{-16,12}},       color={0,0,127}));
-      connect(O1.q_out,O2flow2. q_in) annotation (Line(
-          points={{-12,56},{10,56}},
+      connect(flowMeasure1.volumeFlow, O2flow2.solutionFlow)
+        annotation (Line(points={{11,-33.2},{11,-45},{0,-45}}, color={0,0,127}));
+      connect(flowMeasure1.volumeFlow, CO2flow2.solutionFlow)
+        annotation (Line(points={{11,-33.2},{11,-69},{0,-69}}, color={0,0,127}));
+      connect(flowMeasure1.volumeFlow, BEoxflow2.solutionFlow)
+        annotation (Line(points={{11,-33.2},{11,-93},{2,-93}}, color={0,0,127}));
+      connect(flowMeasure2.volumeFlow,O2flow3. solutionFlow) annotation (Line(
+            points={{69,-33.2},{69,-45},{64,-45}},             color={0,0,127}));
+      connect(flowMeasure2.volumeFlow,CO2flow3. solutionFlow) annotation (Line(
+            points={{69,-33.2},{69,-69},{64,-69}},             color={0,0,127}));
+      connect(flowMeasure2.volumeFlow,BEoxflow3. solutionFlow) annotation (Line(
+            points={{69,-33.2},{69,-93},{64,-93}},             color={0,0,127}));
+      connect(O2flow3.q_in, bloodPort_out_Extension1.O2) annotation (Line(
+          points={{74,-52},{80,-52},{80,-30},{88,-30}},
           color={107,45,134},
           thickness=1));
-      connect(CO1.q_out,CO2flow2. q_in) annotation (Line(
-          points={{-12,32},{10,32}},
+      connect(CO2flow3.q_in, bloodPort_out_Extension1.CO2) annotation (Line(
+          points={{74,-76},{82,-76},{82,-34},{88,-34}},
           color={107,45,134},
           thickness=1));
-      connect(BEox1.q_out,BEoxflow2. q_in) annotation (Line(
-          points={{-12,8},{10,8}},
+      connect(BEoxflow3.q_in, bloodPort_out_Extension1.BEox) annotation (Line(
+          points={{74,-100},{84,-100},{84,-38},{88,-38}},
           color={107,45,134},
           thickness=1));
-      connect(elasticVesselCompliance1.q_in,flowMeasure1. q_in) annotation (Line(
-          points={{-2,108},{-2,92},{16,92}},
+      connect(O1.q_out, O2flow3.q_out) annotation (Line(
+          points={{32,-52},{54,-52}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO1.q_out, CO2flow3.q_out) annotation (Line(
+          points={{32,-76},{54,-76}},
+          color={107,45,134},
+          thickness=1));
+      connect(BEox1.q_out, BEoxflow3.q_out) annotation (Line(
+          points={{32,-100},{54,-100}},
+          color={107,45,134},
+          thickness=1));
+      connect(BEox1.q_out, BEoxflow2.q_in) annotation (Line(
+          points={{32,-100},{12,-100}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2flow2.q_in, CO1.q_out) annotation (Line(
+          points={{10,-76},{32,-76}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2flow2.q_in, O1.q_out) annotation (Line(
+          points={{10,-52},{32,-52}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2flow2.q_out, bloodPort_in_Extension1.O2) annotation (Line(
+          points={{-10,-52},{-16,-52},{-16,-30},{-34,-30}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_in_Extension1.CO2, CO2flow2.q_out) annotation (Line(
+          points={{-34,-34.2},{-26,-34.2},{-26,-34},{-18,-34},{-18,-76},{-10,-76}},
+          color={107,45,134},
+          thickness=1));
+
+      connect(bloodPort_in_Extension1.BEox, BEoxflow2.q_out) annotation (Line(
+          points={{-34,-38},{-22,-38},{-22,-100},{-8,-100}},
+          color={107,45,134},
+          thickness=1));
+      connect(ventricularInteraction.rvflow, flowMeasure3.q_in) annotation (Line(
+          points={{40,26},{40,34},{64,34}},
           color={0,0,0},
           thickness=1));
-      connect(flowMeasure1.volumeFlow,O2flow2. solutionFlow) annotation (Line(
-            points={{27,78.8},{27,64.4},{20,64.4},{20,63}},    color={0,0,127}));
-      connect(flowMeasure1.volumeFlow,CO2flow2. solutionFlow) annotation (Line(
-            points={{27,78.8},{27,40.4},{20,40.4},{20,39}},    color={0,0,127}));
-      connect(flowMeasure1.volumeFlow,BEoxflow2. solutionFlow) annotation (Line(
-            points={{27,78.8},{27,15.4},{20,15.4},{20,15}},    color={0,0,127}));
-      connect(flowMeasure1.q_out,bloodPort_out_Extension1. bloodFlow) annotation (
+      connect(Lav.bloodPort_in, bloodPort_in_Extension1.bloodPort_in) annotation (
           Line(
-          points={{38,92},{48,92}},
+          points={{-73,-22},{-70,-22},{-70,-30},{-54,-30}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(tricuspidValve.bloodPort_out, bloodPort_in_Extension.bloodPort_in)
+        annotation (Line(
+          points={{-72,32},{-66,32},{-66,44},{-58,44}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(bloodPort_out_Extension.bloodPort_out, Lpv.bloodPort_in) annotation (
+          Line(
+          points={{114,44},{138,44},{138,32},{171,32}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(bloodPort_out_Extension1.bloodPort_out, mitralValve.bloodPort_out)
+        annotation (Line(
+          points={{108,-30},{126,-30},{126,-22},{170,-22}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(ventricularInteraction.leftVentricleVolume, O1.solutionVolume)
+        annotation (Line(points={{52,-12},{52,-48},{36,-48}}, color={0,0,127}));
+      connect(ventricularInteraction.leftVentricleVolume, CO1.solutionVolume)
+        annotation (Line(points={{52,-12},{52,-72},{36,-72}}, color={0,0,127}));
+      connect(ventricularInteraction.leftVentricleVolume, BEox1.solutionVolume)
+        annotation (Line(points={{52,-12},{52,-94},{36,-94},{36,-96}}, color={0,0,127}));
+      connect(flowMeasure2.q_in, bloodPort_out_Extension1.bloodFlow) annotation (
+          Line(
+          points={{80,-20},{88,-20}},
           color={0,0,0},
           thickness=1));
-      connect(bloodPort_out_Extension1.O2,O2flow2. q_out) annotation (Line(
-          points={{48,82},{40,82},{40,56},{30,56}},
-          color={107,45,134},
+      connect(flowMeasure2.q_out, ventricularInteraction.lvflow) annotation (Line(
+          points={{58,-20},{40,-20},{40,-14}},
+          color={0,0,0},
           thickness=1));
-      connect(bloodPort_out_Extension1.CO2,CO2flow2. q_out) annotation (Line(
-          points={{48,78},{40,78},{40,32},{30,32}},
-          color={107,45,134},
+      connect(flowMeasure1.q_out, bloodPort_in_Extension1.bloodFlow) annotation (
+          Line(
+          points={{0,-20},{-34,-20}},
+          color={0,0,0},
           thickness=1));
-      connect(bloodPort_out_Extension1.BEox,BEoxflow2. q_out) annotation (Line(
-          points={{48,74},{40,74},{40,8},{30,8}},
-          color={107,45,134},
+      connect(flowMeasure1.q_in, flowMeasure2.q_out) annotation (Line(
+          points={{22,-20},{58,-20}},
+          color={0,0,0},
           thickness=1));
-      connect(Lav.bloodPort_in, bloodPort_out_Extension.bloodPort_out)
-        annotation (Line(
-          points={{-73,-22},{10,-22},{10,-24},{80,-24},{80,-58},{64,-58}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(tricuspidValve.bloodPort_out, bloodPort_out_Extension1.bloodPort_out)
-        annotation (Line(
-          points={{-72,32},{8,32},{86,32},{86,82},{68,82}},
-          color={28,108,200},
-          thickness=0.5));
+      connect(ventricularInteraction.rightVentricleVolume, BEox.solutionVolume)
+        annotation (Line(points={{28,24},{28,64},{22,64}}, color={0,0,127}));
+      connect(ventricularInteraction.rightVentricleVolume, CO2.solutionVolume)
+        annotation (Line(points={{28,24},{28,88},{22,88}}, color={0,0,127}));
+      connect(ventricularInteraction.rightVentricleVolume, O2.solutionVolume)
+        annotation (Line(points={{28,24},{28,112},{22,112}}, color={0,0,127}));
+      connect(flowMeasure3.volumeFlow, O2flow1.solutionFlow) annotation (Line(
+            points={{75,47.2},{75,115},{68,115}}, color={0,0,127}));
+      connect(ventricularInteraction.frequency, HR.y) annotation (Line(points={
+              {24,7.6},{12,7.6},{12,7},{0,7}}, color={0,0,127}));
+      connect(IntraThoracicPressure.y, ventricularInteraction.Pth) annotation (
+          Line(points={{83.5,16},{92,16},{92,7.6},{56,7.6}}, color={0,0,127}));
       annotation (
         Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-160,-100},
                 {160,100}})),
@@ -9296,259 +9462,8 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
 <p>[13] CellML implementation at URL:  http://models.cellml.org/exposure/9d046663ba5cac5c8a61ac146183614b/smith_chase_nokes_shaw_wake_2004.cellml/view</p>
 </html>"),
         experiment(StopTime=5));
-    end HemodynamicsSmith_shallowTest_Pulmonary;
+    end HemodynamicsSmith_shallowTest;
 
-    model BloodHemodynamicsSmith_shallow_SystemicTest
-          extends Cardiovascular.Icons.Runnable_Shallow;
-      import Physiolibrary.Hydraulic.Components.*;
-      Package.BloodInertia
-              Lpv(I(displayUnit="mmHg.s2/ml") = 19822.372560862,
-          volumeFlow_start(displayUnit="m3/s") = -1.9e-9)
-        annotation (Placement(transformation(extent={{40,24},{60,44}})));
-      Package.BloodValve pulmonaryValve(Pknee=0, _Ron(displayUnit=
-              "(mmHg.s)/ml") = 733273.1307825)
-        annotation (Placement(transformation(extent={{72,24},{92,44}})));
-        Package.BloodElasticVesselElastance pulmonaryArteries(
-        ZeroPressureVolume=0,
-        useExternalPressureInput=true,
-        Elastance(displayUnit="Pa/m3") = 49195960.956135,
-        volume_start=3.904e-05)
-        annotation (Placement(transformation(extent={{102,24},{122,44}})));
-      Package.BloodResistor Rpul(Resistance(displayUnit="(mmHg.s)/ml") = 20691634.526808)
-        annotation (Placement(transformation(
-            extent={{-10,-10},{10,10}},
-            rotation=270,
-            origin={124,10})));
-    Package.BloodElasticVesselElastance pulmonaryVeins(
-        ZeroPressureVolume=0,
-        useExternalPressureInput=true,
-        volume_start=0.0008269,
-        O2_concentration=1,
-        CO2_concentration=2,
-        BEox_concentration=3,
-        Elastance(displayUnit="mmHg/ml") = 973253.4281295)
-        annotation (Placement(transformation(extent={{124,-30},{104,-10}})));
-      Package.BloodValve mitralValve(Pknee=0, _Ron(displayUnit=
-              "(mmHg.s)/ml") = 2106493.721157)
-        annotation (Placement(transformation(extent={{60,-30},{40,-10}})));
-        Package.BloodInertia Lmt(I(displayUnit="mmHg.s2/ml") = 10261.557514558,
-          volumeFlow_start(displayUnit="m3/s") = 0.0001141) annotation (
-          Placement(transformation(
-            extent={{-10,-10},{10,10}},
-            rotation=180,
-            origin={84,-20})));
-      Physiolibrary.Types.Constants.PressureConst IntraThoracicPressure(k=-533.28954966)
-        annotation (Placement(transformation(extent={{158,20},{170,28}})));
-      Physiolibrary.Hydraulic.Components.ElasticVessel elasticVesselCompliance(
-        useComplianceInput=false,
-        Compliance(displayUnit="ml/mmHg") = 7.5006157584566e-09,
-        useExternalPressureInput=false,
-        volume_start=0.0005,
-        ZeroPressureVolume=0)
-        annotation (Placement(transformation(extent={{-114,48},{-94,68}})));
-      Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
-          solute_start=0.001)
-        annotation (Placement(transformation(extent={{-124,-4},{-104,16}})));
-      Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
-          solute_start=0.001)
-        annotation (Placement(transformation(extent={{-124,-28},{-104,-8}})));
-      Physiolibrary.Chemical.Components.Substance BEox(useNormalizedVolume=false,
-          solute_start=0)
-        annotation (Placement(transformation(extent={{-124,-52},{-104,-32}})));
-      Physiolibrary.Chemical.Components.Stream O2flow1(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{-92,-4},{-72,16}})));
-      Physiolibrary.Chemical.Components.Stream CO2flow1(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{-92,-28},{-72,-8}})));
-      Physiolibrary.Chemical.Components.Stream BEoxflow1(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{-92,-52},{-72,-32}})));
-      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure3
-        annotation (Placement(transformation(extent={{-86,53},{-64,31}})));
-      Package.BloodPort_out_Extension
-                              bloodPort_out_Extension
-        annotation (Placement(transformation(extent={{-56,22},{-36,42}})));
-      Physiolibrary.Hydraulic.Components.ElasticVessel elasticVesselCompliance1(
-        useComplianceInput=false,
-        useExternalPressureInput=false,
-        Compliance(displayUnit="ml/mmHg") = 7.5006157584566e-06,
-        volume_start=0.0005,
-        ZeroPressureVolume=0)
-        annotation (Placement(transformation(extent={{-44,-4},{-24,16}})));
-      Physiolibrary.Chemical.Components.Substance O1(useNormalizedVolume=false,
-          solute_start=0.001)
-        annotation (Placement(transformation(extent={{-54,-56},{-34,-36}})));
-      Physiolibrary.Chemical.Components.Substance CO1(useNormalizedVolume=false,
-          solute_start=0.001)
-        annotation (Placement(transformation(extent={{-54,-80},{-34,-60}})));
-      Physiolibrary.Chemical.Components.Substance BEox1(
-                                                       useNormalizedVolume=false,
-          solute_start=0)
-        annotation (Placement(transformation(extent={{-54,-104},{-34,-84}})));
-      Physiolibrary.Chemical.Components.Stream O2flow2(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{-22,-56},{-2,-36}})));
-      Physiolibrary.Chemical.Components.Stream CO2flow2(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{-22,-80},{-2,-60}})));
-      Physiolibrary.Chemical.Components.Stream BEoxflow2(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{-22,-104},{-2,-84}})));
-      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure1
-        annotation (Placement(transformation(extent={{-16,1},{6,-21}})));
-      Package.BloodPort_out_Extension
-                              bloodPort_out_Extension1
-        annotation (Placement(transformation(extent={{16,-30},{36,-10}})));
-    equation
-      connect(pulmonaryVeins.externalPressure, IntraThoracicPressure.y)
-        annotation (Line(
-          points={{106,-12},{134,-12},{134,24},{171.5,24}},
-          color={0,190,190},
-          smooth=Smooth.None));
-      connect(IntraThoracicPressure.y, pulmonaryArteries.externalPressure)
-        annotation (Line(points={{171.5,24},{171.5,12},{134,12},{134,42},{120,42}},
-            color={0,0,127}));
-      connect(pulmonaryVeins.bloodPort_in, Rpul.bloodPort_out) annotation (Line(
-          points={{123.8,-20},{124,-20},{124,1}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(pulmonaryArteries.bloodPort_out, Rpul.bloodPort_in) annotation (
-          Line(
-          points={{122,34},{124,34},{124,19}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(pulmonaryArteries.bloodPort_in, pulmonaryValve.bloodPort_out)
-        annotation (Line(
-          points={{102.2,34},{92,34}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Lpv.bloodPort_out, pulmonaryValve.bloodPort_in) annotation (Line(
-          points={{59,34},{72.2,34}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(pulmonaryVeins.bloodPort_out, Lmt.bloodPort_in) annotation (Line(
-          points={{104,-20},{93,-20}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(mitralValve.bloodPort_in, Lmt.bloodPort_out) annotation (Line(
-          points={{59.8,-20},{75,-20}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(elasticVesselCompliance.volume,O2. solutionVolume) annotation (Line(
-            points={{-98,48},{-98,20},{-118,20},{-118,10}},
-                                                         color={0,0,127}));
-      connect(elasticVesselCompliance.volume,CO2. solutionVolume)
-        annotation (Line(points={{-98,48},{-98,-14},{-118,-14}},
-                                                             color={0,0,127}));
-      connect(elasticVesselCompliance.volume,BEox. solutionVolume)
-        annotation (Line(points={{-98,48},{-98,-38},{-118,-38}},
-                                                             color={0,0,127}));
-      connect(O2.q_out,O2flow1. q_in) annotation (Line(
-          points={{-114,6},{-92,6}},
-          color={107,45,134},
-          thickness=1));
-      connect(CO2.q_out,CO2flow1. q_in) annotation (Line(
-          points={{-114,-18},{-92,-18}},
-          color={107,45,134},
-          thickness=1));
-      connect(BEox.q_out,BEoxflow1. q_in) annotation (Line(
-          points={{-114,-42},{-92,-42}},
-          color={107,45,134},
-          thickness=1));
-
-      connect(elasticVesselCompliance.q_in,flowMeasure3. q_in) annotation (Line(
-          points={{-104,58},{-104,42},{-86,42}},
-          color={0,0,0},
-          thickness=1));
-      connect(flowMeasure3.volumeFlow,O2flow1. solutionFlow) annotation (Line(
-            points={{-75,28.8},{-75,14.4},{-82,14.4},{-82,13}},color={0,0,127}));
-      connect(flowMeasure3.volumeFlow,CO2flow1. solutionFlow) annotation (Line(
-            points={{-75,28.8},{-75,-9.6},{-82,-9.6},{-82,-11}},
-                                                               color={0,0,127}));
-      connect(flowMeasure3.volumeFlow,BEoxflow1. solutionFlow) annotation (Line(
-            points={{-75,28.8},{-75,-34.6},{-82,-34.6},{-82,-35}},
-                                                               color={0,0,127}));
-      connect(flowMeasure3.q_out,bloodPort_out_Extension. bloodFlow)
-        annotation (Line(
-          points={{-64,42},{-56,42}},
-          color={0,0,0},
-          thickness=1));
-      connect(bloodPort_out_Extension.O2,O2flow1. q_out) annotation (Line(
-          points={{-56,32},{-64,32},{-64,6},{-72,6}},
-          color={107,45,134},
-          thickness=1));
-      connect(bloodPort_out_Extension.CO2,CO2flow1. q_out) annotation (Line(
-          points={{-56,28},{-62,28},{-62,-18},{-72,-18}},
-          color={107,45,134},
-          thickness=1));
-      connect(bloodPort_out_Extension.BEox,BEoxflow1. q_out) annotation (Line(
-          points={{-56,24},{-60,24},{-60,-42},{-72,-42}},
-          color={107,45,134},
-          thickness=1));
-      connect(bloodPort_out_Extension.bloodPort_out, Lpv.bloodPort_in) annotation (
-          Line(
-          points={{-36,32},{2,32},{2,34},{41,34}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(elasticVesselCompliance1.volume, O1.solutionVolume) annotation (Line(
-            points={{-28,-4},{-28,-32},{-48,-32},{-48,-42}}, color={0,0,127}));
-      connect(elasticVesselCompliance1.volume, CO1.solutionVolume)
-        annotation (Line(points={{-28,-4},{-28,-66},{-48,-66}}, color={0,0,127}));
-      connect(elasticVesselCompliance1.volume, BEox1.solutionVolume)
-        annotation (Line(points={{-28,-4},{-28,-90},{-48,-90}}, color={0,0,127}));
-      connect(O1.q_out,O2flow2. q_in) annotation (Line(
-          points={{-44,-46},{-22,-46}},
-          color={107,45,134},
-          thickness=1));
-      connect(CO1.q_out,CO2flow2. q_in) annotation (Line(
-          points={{-44,-70},{-22,-70}},
-          color={107,45,134},
-          thickness=1));
-      connect(BEox1.q_out, BEoxflow2.q_in) annotation (Line(
-          points={{-44,-94},{-22,-94}},
-          color={107,45,134},
-          thickness=1));
-      connect(elasticVesselCompliance1.q_in, flowMeasure1.q_in) annotation (Line(
-          points={{-34,6},{-34,-10},{-16,-10}},
-          color={0,0,0},
-          thickness=1));
-      connect(flowMeasure1.volumeFlow,O2flow2. solutionFlow) annotation (Line(
-            points={{-5,-23.2},{-5,-37.6},{-12,-37.6},{-12,-39}},
-                                                               color={0,0,127}));
-      connect(flowMeasure1.volumeFlow,CO2flow2. solutionFlow) annotation (Line(
-            points={{-5,-23.2},{-5,-61.6},{-12,-61.6},{-12,-63}},
-                                                               color={0,0,127}));
-      connect(flowMeasure1.volumeFlow,BEoxflow2. solutionFlow) annotation (Line(
-            points={{-5,-23.2},{-5,-86.6},{-12,-86.6},{-12,-87}},
-                                                               color={0,0,127}));
-      connect(flowMeasure1.q_out, bloodPort_out_Extension1.bloodFlow) annotation (
-          Line(
-          points={{6,-10},{16,-10}},
-          color={0,0,0},
-          thickness=1));
-      connect(bloodPort_out_Extension1.O2, O2flow2.q_out) annotation (Line(
-          points={{16,-20},{8,-20},{8,-46},{-2,-46}},
-          color={107,45,134},
-          thickness=1));
-      connect(bloodPort_out_Extension1.CO2, CO2flow2.q_out) annotation (Line(
-          points={{16,-24},{8,-24},{8,-70},{-2,-70}},
-          color={107,45,134},
-          thickness=1));
-      connect(bloodPort_out_Extension1.BEox, BEoxflow2.q_out) annotation (Line(
-          points={{16,-28},{8,-28},{8,-94},{-2,-94}},
-          color={107,45,134},
-          thickness=1));
-      connect(mitralValve.bloodPort_out, bloodPort_out_Extension1.bloodPort_out)
-        annotation (Line(
-          points={{40,-20},{36,-20}},
-          color={28,108,200},
-          thickness=0.5));
-      annotation (
-        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-160,-100},{160,
-                100}})),
-        Icon(coordinateSystem(extent={{-160,-100},{160,100}})),
-        Documentation(info="<html>
-<p>Cardiovascular model implemented per description of Smith et al.</p>
-<p>[12] B. W. Smith, J. G. Chase, R. I. Nokes, G. M. Shaw, G. Wake, Minimal Haemodynamic System Model Including Ventricular Interaction and Valve Dynamics., Medical Engineering &AMP; Physics 26 (2) (2004) 131&ndash;139. doi:10.1016/j.medengphy.2003.10.001.</p>
-<p>[13] CellML implementation at URL:  http://models.cellml.org/exposure/9d046663ba5cac5c8a61ac146183614b/smith_chase_nokes_shaw_wake_2004.cellml/view</p>
-</html>"),
-        experiment(StopTime=5));
-    end BloodHemodynamicsSmith_shallow_SystemicTest;
   end PulsatileCirculation;
-  annotation(uses(Physiolibrary(version="2.3.1"), Modelica(version="3.2.1")));
+  annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2")));
 end AcidBaseBalance;
