@@ -872,9 +872,10 @@ package AcidBaseBalance
     end BloodConductor;
 
     model BloodValve
-      parameter Physiolibrary.Types.HydraulicConductance _Goff=0;
+      parameter Physiolibrary.Types.HydraulicConductance _Goff=1.2501026264094e-12;
       parameter Physiolibrary.Types.Pressure Pknee=0;
-      parameter Physiolibrary.Types.HydraulicResistance _Ron=0;
+      parameter Physiolibrary.Types.HydraulicResistance _Ron= 79.993432449
+        "forward state resistance";
 
       BloodPort_in bloodPort_in(numberOfSubstances=3) annotation (Placement(
             transformation(extent={{-108,-10},{-88,10}}), iconTransformation(
@@ -1330,7 +1331,6 @@ package AcidBaseBalance
 </html>"));
     end BloodInertia;
 
-
     model Pump
       BloodPort_in bloodPort_in
         annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
@@ -1427,8 +1427,6 @@ package AcidBaseBalance
               lineColor={0,0,255})}), Diagram(coordinateSystem(
               preserveAspectRatio=false)));
     end Pump;
-
-
 
     model PressureMeasure "Hydraulic pressure at port"
       extends Physiolibrary.Icons.PressureMeasure;
@@ -9069,7 +9067,7 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
   end Inputs;
 
   package PulsatileCirculation
-    model HemodynamicsSmith_shallow
+    model HemodynamicsSmith_shallowTest_Pulmonary
           extends Cardiovascular.Icons.Runnable_Shallow;
       import Physiolibrary.Hydraulic.Components.*;
     Package.BloodElasticVesselElastance aorta(
@@ -9101,6 +9099,209 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
             rotation=180,
             origin={-82,-22})));
       Package.BloodInertia
+              Ltc(I(displayUnit="mmHg.s2/ml") = 10678.18997523,
+          volumeFlow_start(displayUnit="m3/s") = 0.0001372)
+        annotation (Placement(transformation(extent={{-122,22},{-102,42}})));
+      Physiolibrary.Hydraulic.Components.ElasticVessel elasticVesselCompliance(
+        useComplianceInput=false,
+        Compliance(displayUnit="ml/mmHg") = 7.5006157584566e-09,
+        useExternalPressureInput=false,
+        volume_start=0.0005,
+        ZeroPressureVolume=0)
+        annotation (Placement(transformation(extent={{-14,-42},{6,-22}})));
+      Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
+          solute_start=0.001)
+        annotation (Placement(transformation(extent={{-24,-94},{-4,-74}})));
+      Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
+          solute_start=0.001)
+        annotation (Placement(transformation(extent={{-24,-118},{-4,-98}})));
+      Physiolibrary.Chemical.Components.Substance BEox(useNormalizedVolume=false,
+          solute_start=0)
+        annotation (Placement(transformation(extent={{-24,-142},{-4,-122}})));
+      Physiolibrary.Chemical.Components.Stream O2flow1(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{8,-94},{28,-74}})));
+      Physiolibrary.Chemical.Components.Stream CO2flow1(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{8,-118},{28,-98}})));
+      Physiolibrary.Chemical.Components.Stream BEoxflow1(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{8,-142},{28,-122}})));
+      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure3
+        annotation (Placement(transformation(extent={{14,-37},{36,-59}})));
+      Package.BloodPort_out_Extension
+                              bloodPort_out_Extension
+        annotation (Placement(transformation(extent={{44,-68},{64,-48}})));
+      Physiolibrary.Hydraulic.Components.ElasticVessel elasticVesselCompliance1(
+        useComplianceInput=false,
+        useExternalPressureInput=false,
+        Compliance(displayUnit="ml/mmHg") = 7.5006157584566e-06,
+        volume_start=0.0005,
+        ZeroPressureVolume=0)
+        annotation (Placement(transformation(extent={{-12,98},{8,118}})));
+      Physiolibrary.Chemical.Components.Substance O1(useNormalizedVolume=false,
+          solute_start=0.001)
+        annotation (Placement(transformation(extent={{-22,46},{-2,66}})));
+      Physiolibrary.Chemical.Components.Substance CO1(useNormalizedVolume=false,
+          solute_start=0.001)
+        annotation (Placement(transformation(extent={{-22,22},{-2,42}})));
+      Physiolibrary.Chemical.Components.Substance BEox1(
+                                                       useNormalizedVolume=false,
+          solute_start=0)
+        annotation (Placement(transformation(extent={{-22,-2},{-2,18}})));
+      Physiolibrary.Chemical.Components.Stream O2flow2(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{10,46},{30,66}})));
+      Physiolibrary.Chemical.Components.Stream CO2flow2(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{10,22},{30,42}})));
+      Physiolibrary.Chemical.Components.Stream BEoxflow2(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{10,-2},{30,18}})));
+      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure1
+        annotation (Placement(transformation(extent={{16,103},{38,81}})));
+      Package.BloodPort_out_Extension
+                              bloodPort_out_Extension1
+        annotation (Placement(transformation(extent={{48,72},{68,92}})));
+    equation
+      connect(aorticValve.bloodPort_in, Lav.bloodPort_out) annotation (Line(
+          points={{-104.2,-22},{-104.2,-22},{-91,-22}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(aorta.bloodPort_out, aorticValve.bloodPort_out) annotation (Line(
+          points={{-134,-22},{-124,-22}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(aorta.bloodPort_in, Rsys.bloodPort_in) annotation (Line(
+          points={{-153.8,-22},{-160,-22},{-160,-9}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(Rsys.bloodPort_out, venaCava.bloodPort_in) annotation (Line(
+          points={{-160,9},{-160,9},{-160,32},{-151.8,32}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(venaCava.bloodPort_out, Ltc.bloodPort_in) annotation (Line(
+          points={{-132,32},{-126,32},{-121,32}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(Ltc.bloodPort_out, tricuspidValve.bloodPort_in) annotation (Line(
+          points={{-103,32},{-91.8,32}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(elasticVesselCompliance.volume,O2. solutionVolume) annotation (Line(
+            points={{2,-42},{2,-70},{-18,-70},{-18,-80}},color={0,0,127}));
+      connect(elasticVesselCompliance.volume,CO2. solutionVolume)
+        annotation (Line(points={{2,-42},{2,-104},{-18,-104}},
+                                                             color={0,0,127}));
+      connect(elasticVesselCompliance.volume,BEox. solutionVolume)
+        annotation (Line(points={{2,-42},{2,-128},{-18,-128}},
+                                                             color={0,0,127}));
+      connect(O2.q_out,O2flow1. q_in) annotation (Line(
+          points={{-14,-84},{8,-84}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2.q_out,CO2flow1. q_in) annotation (Line(
+          points={{-14,-108},{8,-108}},
+          color={107,45,134},
+          thickness=1));
+      connect(BEox.q_out,BEoxflow1. q_in) annotation (Line(
+          points={{-14,-132},{8,-132}},
+          color={107,45,134},
+          thickness=1));
+      connect(elasticVesselCompliance.q_in,flowMeasure3. q_in) annotation (Line(
+          points={{-4,-32},{-4,-48},{14,-48}},
+          color={0,0,0},
+          thickness=1));
+      connect(flowMeasure3.volumeFlow,O2flow1. solutionFlow) annotation (Line(
+            points={{25,-61.2},{25,-75.6},{18,-75.6},{18,-77}},color={0,0,127}));
+      connect(flowMeasure3.volumeFlow,CO2flow1. solutionFlow) annotation (Line(
+            points={{25,-61.2},{25,-99.6},{18,-99.6},{18,-101}},
+                                                               color={0,0,127}));
+      connect(flowMeasure3.volumeFlow,BEoxflow1. solutionFlow) annotation (Line(
+            points={{25,-61.2},{25,-124.6},{18,-124.6},{18,-125}},
+                                                               color={0,0,127}));
+      connect(flowMeasure3.q_out,bloodPort_out_Extension. bloodFlow)
+        annotation (Line(
+          points={{36,-48},{44,-48}},
+          color={0,0,0},
+          thickness=1));
+      connect(bloodPort_out_Extension.O2,O2flow1. q_out) annotation (Line(
+          points={{44,-58},{36,-58},{36,-84},{28,-84}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_out_Extension.CO2,CO2flow1. q_out) annotation (Line(
+          points={{44,-62},{38,-62},{38,-108},{28,-108}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_out_Extension.BEox,BEoxflow1. q_out) annotation (Line(
+          points={{44,-66},{40,-66},{40,-132},{28,-132}},
+          color={107,45,134},
+          thickness=1));
+      connect(elasticVesselCompliance1.volume,O1. solutionVolume) annotation (Line(
+            points={{4,98},{4,70},{-16,70},{-16,60}},        color={0,0,127}));
+      connect(elasticVesselCompliance1.volume,CO1. solutionVolume)
+        annotation (Line(points={{4,98},{4,36},{-16,36}},       color={0,0,127}));
+      connect(elasticVesselCompliance1.volume,BEox1. solutionVolume)
+        annotation (Line(points={{4,98},{4,12},{-16,12}},       color={0,0,127}));
+      connect(O1.q_out,O2flow2. q_in) annotation (Line(
+          points={{-12,56},{10,56}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO1.q_out,CO2flow2. q_in) annotation (Line(
+          points={{-12,32},{10,32}},
+          color={107,45,134},
+          thickness=1));
+      connect(BEox1.q_out,BEoxflow2. q_in) annotation (Line(
+          points={{-12,8},{10,8}},
+          color={107,45,134},
+          thickness=1));
+      connect(elasticVesselCompliance1.q_in,flowMeasure1. q_in) annotation (Line(
+          points={{-2,108},{-2,92},{16,92}},
+          color={0,0,0},
+          thickness=1));
+      connect(flowMeasure1.volumeFlow,O2flow2. solutionFlow) annotation (Line(
+            points={{27,78.8},{27,64.4},{20,64.4},{20,63}},    color={0,0,127}));
+      connect(flowMeasure1.volumeFlow,CO2flow2. solutionFlow) annotation (Line(
+            points={{27,78.8},{27,40.4},{20,40.4},{20,39}},    color={0,0,127}));
+      connect(flowMeasure1.volumeFlow,BEoxflow2. solutionFlow) annotation (Line(
+            points={{27,78.8},{27,15.4},{20,15.4},{20,15}},    color={0,0,127}));
+      connect(flowMeasure1.q_out,bloodPort_out_Extension1. bloodFlow) annotation (
+          Line(
+          points={{38,92},{48,92}},
+          color={0,0,0},
+          thickness=1));
+      connect(bloodPort_out_Extension1.O2,O2flow2. q_out) annotation (Line(
+          points={{48,82},{40,82},{40,56},{30,56}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_out_Extension1.CO2,CO2flow2. q_out) annotation (Line(
+          points={{48,78},{40,78},{40,32},{30,32}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_out_Extension1.BEox,BEoxflow2. q_out) annotation (Line(
+          points={{48,74},{40,74},{40,8},{30,8}},
+          color={107,45,134},
+          thickness=1));
+      connect(Lav.bloodPort_in, bloodPort_out_Extension.bloodPort_out)
+        annotation (Line(
+          points={{-73,-22},{10,-22},{10,-24},{80,-24},{80,-58},{64,-58}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(tricuspidValve.bloodPort_out, bloodPort_out_Extension1.bloodPort_out)
+        annotation (Line(
+          points={{-72,32},{8,32},{86,32},{86,82},{68,82}},
+          color={28,108,200},
+          thickness=0.5));
+      annotation (
+        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-160,-100},
+                {160,100}})),
+        Icon(coordinateSystem(extent={{-160,-100},{160,100}})),
+        Documentation(info="<html>
+<p>Cardiovascular model implemented per description of Smith et al.</p>
+<p>[12] B. W. Smith, J. G. Chase, R. I. Nokes, G. M. Shaw, G. Wake, Minimal Haemodynamic System Model Including Ventricular Interaction and Valve Dynamics., Medical Engineering &AMP; Physics 26 (2) (2004) 131&ndash;139. doi:10.1016/j.medengphy.2003.10.001.</p>
+<p>[13] CellML implementation at URL:  http://models.cellml.org/exposure/9d046663ba5cac5c8a61ac146183614b/smith_chase_nokes_shaw_wake_2004.cellml/view</p>
+</html>"),
+        experiment(StopTime=5));
+    end HemodynamicsSmith_shallowTest_Pulmonary;
+
+    model BloodHemodynamicsSmith_shallow_SystemicTest
+          extends Cardiovascular.Icons.Runnable_Shallow;
+      import Physiolibrary.Hydraulic.Components.*;
+      Package.BloodInertia
               Lpv(I(displayUnit="mmHg.s2/ml") = 19822.372560862,
           volumeFlow_start(displayUnit="m3/s") = -1.9e-9)
         annotation (Placement(transformation(extent={{40,24},{60,44}})));
@@ -9130,69 +9331,77 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
       Package.BloodValve mitralValve(Pknee=0, _Ron(displayUnit=
               "(mmHg.s)/ml") = 2106493.721157)
         annotation (Placement(transformation(extent={{60,-30},{40,-10}})));
-      Package.BloodInertia
-              Ltc(I(displayUnit="mmHg.s2/ml") = 10678.18997523,
-          volumeFlow_start(displayUnit="m3/s") = 0.0001372)
-        annotation (Placement(transformation(extent={{-122,22},{-102,42}})));
         Package.BloodInertia Lmt(I(displayUnit="mmHg.s2/ml") = 10261.557514558,
           volumeFlow_start(displayUnit="m3/s") = 0.0001141) annotation (
           Placement(transformation(
             extent={{-10,-10},{10,10}},
             rotation=180,
             origin={84,-20})));
-      Physiolibrary.Types.Constants.FrequencyConst HR(k=1.2)
-        annotation (Placement(transformation(extent={{-42,2},{-26,16}})));
       Physiolibrary.Types.Constants.PressureConst IntraThoracicPressure(k=-533.28954966)
-        annotation (Placement(transformation(extent={{38,12},{50,20}})));
-    Cardiovascular.Model.Smith2004.Parts.VentricularInteraction_flat ventricularInteraction_flat(
-        lambdalv=33000,
-        lambdaperi=30000,
-        lambdas(displayUnit="1/m3") = 435000,
-        lambdarv(displayUnit="1/m3") = 23000,
-        Essept(displayUnit="mmHg/ml") = 6499999676.0309,
-        V0peri=0.0002,
-        Pi0sept=148.00118226939,
-        Pi0rv=28.757638965416,
-        Pi0lv=16.038683206025,
-        Pi0peri=66.701190423724,
-        Esrv=77993596.637775,
-        Eslv=383941811.27772)
-        annotation (Placement(transformation(extent={{-22,-6},{16,34}})));
-      Package.BloodPort_in_Extension bloodPort_in_Extension
-        annotation (Placement(transformation(extent={{-38,54},{-18,74}})));
-      Package.BloodPort_out_Extension bloodPort_out_Extension
-        annotation (Placement(transformation(extent={{-8,54},{12,74}})));
-      Package.FlowConcentrationMeasure flowConcentrationMeasure
-        annotation (Placement(transformation(extent={{-66,22},{-46,42}})));
-      Package.FlowConcentrationMeasure flowConcentrationMeasure1
-        annotation (Placement(transformation(extent={{16,54},{36,74}})));
-      Package.BloodPort_in_Extension bloodPort_in_Extension1
-        annotation (Placement(transformation(extent={{28,-32},{8,-12}})));
-      Package.BloodPort_out_Extension bloodPort_out_Extension1
-        annotation (Placement(transformation(extent={{-22,-32},{-42,-12}})));
-      Physiolibrary.Chemical.Components.Substance substance(solute_start=0.01)
-        annotation (Placement(transformation(extent={{-28,-68},{-8,-48}})));
-      Physiolibrary.Chemical.Components.Substance substance1(solute_start=0.02)
-        annotation (Placement(transformation(extent={{-22,-86},{-2,-66}})));
-      Physiolibrary.Chemical.Components.Substance substance2(solute_start=0.03)
-        annotation (Placement(transformation(extent={{-12,-102},{8,-82}})));
+        annotation (Placement(transformation(extent={{158,20},{170,28}})));
+      Physiolibrary.Hydraulic.Components.ElasticVessel elasticVesselCompliance(
+        useComplianceInput=false,
+        Compliance(displayUnit="ml/mmHg") = 7.5006157584566e-09,
+        useExternalPressureInput=false,
+        volume_start=0.0005,
+        ZeroPressureVolume=0)
+        annotation (Placement(transformation(extent={{-114,48},{-94,68}})));
+      Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
+          solute_start=0.001)
+        annotation (Placement(transformation(extent={{-124,-4},{-104,16}})));
+      Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
+          solute_start=0.001)
+        annotation (Placement(transformation(extent={{-124,-28},{-104,-8}})));
+      Physiolibrary.Chemical.Components.Substance BEox(useNormalizedVolume=false,
+          solute_start=0)
+        annotation (Placement(transformation(extent={{-124,-52},{-104,-32}})));
+      Physiolibrary.Chemical.Components.Stream O2flow1(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-92,-4},{-72,16}})));
+      Physiolibrary.Chemical.Components.Stream CO2flow1(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-92,-28},{-72,-8}})));
+      Physiolibrary.Chemical.Components.Stream BEoxflow1(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-92,-52},{-72,-32}})));
+      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure3
+        annotation (Placement(transformation(extent={{-86,53},{-64,31}})));
+      Package.BloodPort_out_Extension
+                              bloodPort_out_Extension
+        annotation (Placement(transformation(extent={{-56,22},{-36,42}})));
+      Physiolibrary.Hydraulic.Components.ElasticVessel elasticVesselCompliance1(
+        useComplianceInput=false,
+        useExternalPressureInput=false,
+        Compliance(displayUnit="ml/mmHg") = 7.5006157584566e-06,
+        volume_start=0.0005,
+        ZeroPressureVolume=0)
+        annotation (Placement(transformation(extent={{-44,-4},{-24,16}})));
+      Physiolibrary.Chemical.Components.Substance O1(useNormalizedVolume=false,
+          solute_start=0.001)
+        annotation (Placement(transformation(extent={{-54,-56},{-34,-36}})));
+      Physiolibrary.Chemical.Components.Substance CO1(useNormalizedVolume=false,
+          solute_start=0.001)
+        annotation (Placement(transformation(extent={{-54,-80},{-34,-60}})));
+      Physiolibrary.Chemical.Components.Substance BEox1(
+                                                       useNormalizedVolume=false,
+          solute_start=0)
+        annotation (Placement(transformation(extent={{-54,-104},{-34,-84}})));
+      Physiolibrary.Chemical.Components.Stream O2flow2(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-22,-56},{-2,-36}})));
+      Physiolibrary.Chemical.Components.Stream CO2flow2(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-22,-80},{-2,-60}})));
+      Physiolibrary.Chemical.Components.Stream BEoxflow2(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-22,-104},{-2,-84}})));
+      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure1
+        annotation (Placement(transformation(extent={{-16,1},{6,-21}})));
+      Package.BloodPort_out_Extension
+                              bloodPort_out_Extension1
+        annotation (Placement(transformation(extent={{16,-30},{36,-10}})));
     equation
-      connect(HR.y, ventricularInteraction_flat.HR) annotation (Line(
-          points={{-24,9},{-24,14},{-18.2,14}},
-          color={0,0,127},
-          smooth=Smooth.None));
-      connect(IntraThoracicPressure.y, ventricularInteraction_flat.Pth)
-        annotation (Line(
-          points={{51.5,16},{58,16},{58,14},{12.58,14}},
-          color={0,190,190},
-          smooth=Smooth.None));
       connect(pulmonaryVeins.externalPressure, IntraThoracicPressure.y)
         annotation (Line(
-          points={{106,-12},{134,-12},{134,16},{51.5,16}},
+          points={{106,-12},{134,-12},{134,24},{171.5,24}},
           color={0,190,190},
           smooth=Smooth.None));
       connect(IntraThoracicPressure.y, pulmonaryArteries.externalPressure)
-        annotation (Line(points={{51.5,16},{94,16},{134,16},{134,42},{120,42}},
+        annotation (Line(points={{171.5,24},{171.5,12},{134,12},{134,42},{120,42}},
             color={0,0,127}));
       connect(pulmonaryVeins.bloodPort_in, Rpul.bloodPort_out) annotation (Line(
           points={{123.8,-20},{124,-20},{124,1}},
@@ -9220,126 +9429,118 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
           points={{59.8,-20},{75,-20}},
           color={28,108,200},
           thickness=0.5));
-      connect(aorticValve.bloodPort_in, Lav.bloodPort_out) annotation (Line(
-          points={{-104.2,-22},{-104.2,-22},{-91,-22}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(aorta.bloodPort_out, aorticValve.bloodPort_out) annotation (Line(
-          points={{-134,-22},{-124,-22}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(aorta.bloodPort_in, Rsys.bloodPort_in) annotation (Line(
-          points={{-153.8,-22},{-160,-22},{-160,-9}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Rsys.bloodPort_out, venaCava.bloodPort_in) annotation (Line(
-          points={{-160,9},{-160,9},{-160,32},{-151.8,32}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(venaCava.bloodPort_out, Ltc.bloodPort_in) annotation (Line(
-          points={{-132,32},{-126,32},{-121,32}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(Ltc.bloodPort_out, tricuspidValve.bloodPort_in) annotation (Line(
-          points={{-103,32},{-91.8,32}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(bloodPort_in_Extension.bloodFlow, bloodPort_out_Extension.bloodFlow)
-        annotation (Line(
-          points={{-18,74},{-18,74},{-8,74}},
-          color={0,0,0},
-          thickness=1));
-      connect(bloodPort_in_Extension.O2, bloodPort_out_Extension.O2)
-        annotation (Line(
-          points={{-18,64},{-18,64},{-8,64}},
+      connect(elasticVesselCompliance.volume,O2. solutionVolume) annotation (Line(
+            points={{-98,48},{-98,20},{-118,20},{-118,10}},
+                                                         color={0,0,127}));
+      connect(elasticVesselCompliance.volume,CO2. solutionVolume)
+        annotation (Line(points={{-98,48},{-98,-14},{-118,-14}},
+                                                             color={0,0,127}));
+      connect(elasticVesselCompliance.volume,BEox. solutionVolume)
+        annotation (Line(points={{-98,48},{-98,-38},{-118,-38}},
+                                                             color={0,0,127}));
+      connect(O2.q_out,O2flow1. q_in) annotation (Line(
+          points={{-114,6},{-92,6}},
           color={107,45,134},
           thickness=1));
-      connect(bloodPort_in_Extension.CO2, bloodPort_out_Extension.CO2)
-        annotation (Line(
-          points={{-18,59.8},{-12,59.8},{-12,60},{-8,60}},
+      connect(CO2.q_out,CO2flow1. q_in) annotation (Line(
+          points={{-114,-18},{-92,-18}},
           color={107,45,134},
           thickness=1));
-      connect(bloodPort_in_Extension.BEox, bloodPort_out_Extension.BEox)
-        annotation (Line(
-          points={{-18,56},{-18,56},{-8,56}},
+      connect(BEox.q_out,BEoxflow1. q_in) annotation (Line(
+          points={{-114,-42},{-92,-42}},
           color={107,45,134},
           thickness=1));
-      connect(ventricularInteraction_flat.rvflow, bloodPort_out_Extension.bloodFlow)
-        annotation (Line(
-          points={{-3.38,34},{-12,34},{-12,74},{-8,74}},
-          color={0,0,0},
-          thickness=1));
-      connect(bloodPort_in_Extension.bloodPort_in, flowConcentrationMeasure.bloodPort_out)
-        annotation (Line(
-          points={{-38,64},{-42,64},{-42,32},{-47,32}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(flowConcentrationMeasure.bloodPort_in, tricuspidValve.bloodPort_out)
-        annotation (Line(
-          points={{-65,32},{-72,32}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(bloodPort_out_Extension.bloodPort_out, flowConcentrationMeasure1.bloodPort_in)
-        annotation (Line(
-          points={{12,64},{17,64}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(flowConcentrationMeasure1.bloodPort_out, Lpv.bloodPort_in)
-        annotation (Line(
-          points={{35,64},{38,64},{38,34},{41,34}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(bloodPort_in_Extension1.bloodPort_in, mitralValve.bloodPort_out)
-        annotation (Line(
-          points={{28,-22},{32,-22},{32,-20},{40,-20}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(bloodPort_out_Extension1.bloodFlow, bloodPort_in_Extension1.bloodFlow)
-        annotation (Line(
-          points={{-22,-12},{-22,-12},{8,-12}},
-          color={0,0,0},
-          thickness=1));
-      connect(bloodPort_out_Extension1.O2, bloodPort_in_Extension1.O2)
-        annotation (Line(
-          points={{-22,-22},{-22,-22},{8,-22}},
-          color={107,45,134},
-          thickness=1));
-      connect(bloodPort_out_Extension1.CO2, bloodPort_in_Extension1.CO2)
-        annotation (Line(
-          points={{-22,-26},{-8,-26},{-8,-26.2},{8,-26.2}},
-          color={107,45,134},
-          thickness=1));
-      connect(bloodPort_out_Extension1.BEox, bloodPort_in_Extension1.BEox)
-        annotation (Line(
-          points={{-22,-30},{8,-30}},
-          color={107,45,134},
-          thickness=1));
-      connect(ventricularInteraction_flat.lvflow, bloodPort_in_Extension1.bloodFlow)
-        annotation (Line(
-          points={{-3,-6},{4,-6},{4,-12},{8,-12}},
-          color={0,0,0},
-          thickness=1));
-      connect(bloodPort_out_Extension1.bloodPort_out, Lav.bloodPort_in)
-        annotation (Line(
-          points={{-42,-22},{-42,-22},{-73,-22}},
-          color={28,108,200},
-          thickness=0.5));
-      connect(substance.q_out, bloodPort_in_Extension1.O2) annotation (Line(
-          points={{-18,-58},{-18,-22},{8,-22}},
-          color={107,45,134},
-          thickness=1));
-      connect(substance1.q_out, bloodPort_in_Extension1.CO2) annotation (Line(
-          points={{-12,-76},{-14,-76},{-14,-26},{-8,-26},{-8,-26.2},{8,-26.2}},
 
+      connect(elasticVesselCompliance.q_in,flowMeasure3. q_in) annotation (Line(
+          points={{-104,58},{-104,42},{-86,42}},
+          color={0,0,0},
+          thickness=1));
+      connect(flowMeasure3.volumeFlow,O2flow1. solutionFlow) annotation (Line(
+            points={{-75,28.8},{-75,14.4},{-82,14.4},{-82,13}},color={0,0,127}));
+      connect(flowMeasure3.volumeFlow,CO2flow1. solutionFlow) annotation (Line(
+            points={{-75,28.8},{-75,-9.6},{-82,-9.6},{-82,-11}},
+                                                               color={0,0,127}));
+      connect(flowMeasure3.volumeFlow,BEoxflow1. solutionFlow) annotation (Line(
+            points={{-75,28.8},{-75,-34.6},{-82,-34.6},{-82,-35}},
+                                                               color={0,0,127}));
+      connect(flowMeasure3.q_out,bloodPort_out_Extension. bloodFlow)
+        annotation (Line(
+          points={{-64,42},{-56,42}},
+          color={0,0,0},
+          thickness=1));
+      connect(bloodPort_out_Extension.O2,O2flow1. q_out) annotation (Line(
+          points={{-56,32},{-64,32},{-64,6},{-72,6}},
           color={107,45,134},
           thickness=1));
-      connect(substance2.q_out, bloodPort_in_Extension1.BEox) annotation (Line(
-          points={{-2,-92},{-4,-92},{-4,-30},{8,-30}},
+      connect(bloodPort_out_Extension.CO2,CO2flow1. q_out) annotation (Line(
+          points={{-56,28},{-62,28},{-62,-18},{-72,-18}},
           color={107,45,134},
           thickness=1));
+      connect(bloodPort_out_Extension.BEox,BEoxflow1. q_out) annotation (Line(
+          points={{-56,24},{-60,24},{-60,-42},{-72,-42}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_out_Extension.bloodPort_out, Lpv.bloodPort_in) annotation (
+          Line(
+          points={{-36,32},{2,32},{2,34},{41,34}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(elasticVesselCompliance1.volume, O1.solutionVolume) annotation (Line(
+            points={{-28,-4},{-28,-32},{-48,-32},{-48,-42}}, color={0,0,127}));
+      connect(elasticVesselCompliance1.volume, CO1.solutionVolume)
+        annotation (Line(points={{-28,-4},{-28,-66},{-48,-66}}, color={0,0,127}));
+      connect(elasticVesselCompliance1.volume, BEox1.solutionVolume)
+        annotation (Line(points={{-28,-4},{-28,-90},{-48,-90}}, color={0,0,127}));
+      connect(O1.q_out,O2flow2. q_in) annotation (Line(
+          points={{-44,-46},{-22,-46}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO1.q_out,CO2flow2. q_in) annotation (Line(
+          points={{-44,-70},{-22,-70}},
+          color={107,45,134},
+          thickness=1));
+      connect(BEox1.q_out, BEoxflow2.q_in) annotation (Line(
+          points={{-44,-94},{-22,-94}},
+          color={107,45,134},
+          thickness=1));
+      connect(elasticVesselCompliance1.q_in, flowMeasure1.q_in) annotation (Line(
+          points={{-34,6},{-34,-10},{-16,-10}},
+          color={0,0,0},
+          thickness=1));
+      connect(flowMeasure1.volumeFlow,O2flow2. solutionFlow) annotation (Line(
+            points={{-5,-23.2},{-5,-37.6},{-12,-37.6},{-12,-39}},
+                                                               color={0,0,127}));
+      connect(flowMeasure1.volumeFlow,CO2flow2. solutionFlow) annotation (Line(
+            points={{-5,-23.2},{-5,-61.6},{-12,-61.6},{-12,-63}},
+                                                               color={0,0,127}));
+      connect(flowMeasure1.volumeFlow,BEoxflow2. solutionFlow) annotation (Line(
+            points={{-5,-23.2},{-5,-86.6},{-12,-86.6},{-12,-87}},
+                                                               color={0,0,127}));
+      connect(flowMeasure1.q_out, bloodPort_out_Extension1.bloodFlow) annotation (
+          Line(
+          points={{6,-10},{16,-10}},
+          color={0,0,0},
+          thickness=1));
+      connect(bloodPort_out_Extension1.O2, O2flow2.q_out) annotation (Line(
+          points={{16,-20},{8,-20},{8,-46},{-2,-46}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_out_Extension1.CO2, CO2flow2.q_out) annotation (Line(
+          points={{16,-24},{8,-24},{8,-70},{-2,-70}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_out_Extension1.BEox, BEoxflow2.q_out) annotation (Line(
+          points={{16,-28},{8,-28},{8,-94},{-2,-94}},
+          color={107,45,134},
+          thickness=1));
+      connect(mitralValve.bloodPort_out, bloodPort_out_Extension1.bloodPort_out)
+        annotation (Line(
+          points={{40,-20},{36,-20}},
+          color={28,108,200},
+          thickness=0.5));
       annotation (
-        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-160,-100},
-                {160,100}})),
+        Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-160,-100},{160,
+                100}})),
         Icon(coordinateSystem(extent={{-160,-100},{160,100}})),
         Documentation(info="<html>
 <p>Cardiovascular model implemented per description of Smith et al.</p>
@@ -9347,7 +9548,7 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
 <p>[13] CellML implementation at URL:  http://models.cellml.org/exposure/9d046663ba5cac5c8a61ac146183614b/smith_chase_nokes_shaw_wake_2004.cellml/view</p>
 </html>"),
         experiment(StopTime=5));
-    end HemodynamicsSmith_shallow;
+    end BloodHemodynamicsSmith_shallow_SystemicTest;
   end PulsatileCirculation;
   annotation(uses(Physiolibrary(version="2.3.1"), Modelica(version="3.2.1")));
 end AcidBaseBalance;
