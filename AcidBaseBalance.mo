@@ -4037,13 +4037,13 @@ BEox"),       Text(
         Physiolibrary.Types.RealIO.ConcentrationInput ctO2 annotation (Placement(
               transformation(extent={{-160,146},{-120,186}}), iconTransformation(
                 extent={{-120,80},{-100,100}})));
-        Physiolibrary.Types.RealIO.PressureOutput pO2 annotation (Placement(
+        Physiolibrary.Types.RealIO.PressureOutput pO2( start = 13300) annotation (Placement(
               transformation(extent={{-30,162},{-10,182}}), iconTransformation(extent=
                  {{100,74},{120,94}})));
         Physiolibrary.Types.RealIO.ConcentrationInput ctCO2 annotation (Placement(
               transformation(extent={{-154,182},{-114,222}}), iconTransformation(
                 extent={{-120,60},{-100,80}})));
-        Physiolibrary.Types.RealIO.PressureOutput pCO2 annotation (Placement(
+        Physiolibrary.Types.RealIO.PressureOutput pCO2( start = 5333) annotation (Placement(
               transformation(extent={{-26,194},{-6,214}}), iconTransformation(extent={
                   {100,52},{120,72}})));
         Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints annotation(Placement(transformation(extent={{-76,192},
