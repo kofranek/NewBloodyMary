@@ -1747,7 +1747,8 @@ package AcidBaseBalance
               textString="BEox")}));
     end FlowConcentrationMeasure;
 
-    model junction_T
+    model Junction_T
+     // extend Conditional_junction_T
       BloodPort_in_Extension bloodPort_in_Extension
         annotation (Placement(transformation(extent={{-86,-26},{-58,10}})));
       BloodPort_in bloodPort_in(numberOfSubstances=3) annotation (Placement(
@@ -1861,17 +1862,13 @@ package AcidBaseBalance
           points={{-31,-88},{46,-88},{46,-20.4},{52,-20.4}},
           color={107,45,134},
           thickness=1));
-      connect(port_BEox, port_BEox) annotation (Line(
-          points={{-44,-68},{16,-68},{16,-68},{-44,-68}},
-          color={107,45,134},
-          thickness=1));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
             Line(
               points={{-88,0},{90,0}},
               color={0,0,0},
               thickness=0.5)}), Diagram(coordinateSystem(preserveAspectRatio=
                 false)));
-    end junction_T;
+    end Junction_T;
 
     model FickPrinciplePort
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_in annotation (
@@ -2413,7 +2410,7 @@ package AcidBaseBalance
                 70}})));
       BloodPort_out bloodPort_out annotation (Placement(transformation(extent={{86,64},
                 {106,84}}),          iconTransformation(extent={{14,52},{34,72}})));
-      junction_T         junction_T1(useO2PortInput=true, useCO2PortInput=true)
+      Junction_T         junction_T1(useO2PortInput=true, useCO2PortInput=true)
         annotation (Placement(transformation(extent={{14,-16},{-14,16}},
             rotation=180,
             origin={24,74})));
@@ -2559,28 +2556,28 @@ package AcidBaseBalance
       //concentration input
       //alvEq.cvO2
 
-      connect(alvEq.VCO2, VCO2) annotation (Line(points={{55.92,-66.56},{75.68,
-              -66.56},{75.68,-74},{94,-74}},
+      connect(alvEq.VCO2, VCO2) annotation (Line(points={{52.7478,-60.35},{
+              75.68,-60.35},{75.68,-74},{94,-74}},
                                      color={0,0,127}));
-      connect(alvEq.VO2, VO2) annotation (Line(points={{55.92,-61.7},{79.68,
-              -61.7},{79.68,-54},{94,-54}},
+      connect(alvEq.VO2, VO2) annotation (Line(points={{52.7478,-57.3125},{
+              79.68,-57.3125},{79.68,-54},{94,-54}},
                                    color={0,0,127}));
-      connect(alvEq.VAi, VAi) annotation (Line(points={{4.56,-44.96},{-57.26,
-              -44.96},{-57.26,-42},{-70,-42}},
+      connect(alvEq.VAi, VAi) annotation (Line(points={{6.41739,-46.85},{-57.26,
+              -46.85},{-57.26,-42},{-70,-42}},
                            color={0,0,127}));
       connect(VO2, VO2)
         annotation (Line(points={{94,-54},{94,-54}},   color={0,0,127}));
       connect(Q, alvEq.Q) annotation (Line(points={{-80,-46},{-52,-46},{-52,
-              -48.2},{4.56,-48.2}},
+              -48.875},{6.41739,-48.875}},
                               color={0,0,127}));
-      connect(alvEq.BEox, BEox_v) annotation (Line(points={{4.56,-51.44},{-32,
-              -51.44},{-32,-10},{-48,-10}},
+      connect(alvEq.BEox, BEox_v) annotation (Line(points={{6,-42.125},{-32,
+              -42.125},{-32,-10},{-48,-10}},
                                     color={0,0,127}));
-      connect(alvEq.CvO2, O2_v) annotation (Line(points={{4.56,-54.68},{-36,
-              -54.68},{-36,-17},{-59,-17}},
+      connect(alvEq.CvO2, O2_v) annotation (Line(points={{6.41739,-52.925},{-36,
+              -52.925},{-36,-17},{-59,-17}},
                                     color={0,0,127}));
-      connect(alvEq.CvCO2, CO2_v) annotation (Line(points={{4.56,-57.92},{-52,
-              -57.92},{-52,-24},{-70,-24},{-70,7},{-93,7}},
+      connect(alvEq.CvCO2, CO2_v) annotation (Line(points={{6.41739,-54.95},{
+              -52,-54.95},{-52,-24},{-70,-24},{-70,7},{-93,7}},
                                                     color={0,0,127}));
       annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
             graphics={Text(
@@ -2624,6 +2621,181 @@ package AcidBaseBalance
                                 Diagram(coordinateSystem(preserveAspectRatio=
                 false)));
     end BloodResistorsArray;
+
+    model Blood_ISF_Interface
+      BloodPort_in bloodPort_in annotation (Placement(transformation(extent={{84,-10},
+                {104,10}}), iconTransformation(extent={{80,-10},{100,10}})));
+      BloodPort_out bloodPort_out annotation (Placement(transformation(extent={{-106,
+                -10},{-86,10}}), iconTransformation(extent={{-100,-10},{-80,10}})));
+
+      inner ModelSettings modelSettings
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+      FlowConcentrationMeasure flowConcentrationMeasure
+        annotation (Placement(transformation(extent={{-36,-12},{-62,12}})));
+      OSA.O2CO2 o2CO2
+        annotation (Placement(transformation(extent={{-24,-102},{66,-4}})));
+      Physiolibrary.Types.RealIO.pHOutput pH "plasma pH" annotation (Placement(
+            transformation(extent={{94,-58},{114,-38}}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=90,
+            origin={-70,10})));
+      Physiolibrary.Types.RealIO.PressureOutput pO2 "plasma pO2" annotation (
+          Placement(transformation(extent={{92,-30},{112,-10}}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=90,
+            origin={-26,10})));
+      Physiolibrary.Types.RealIO.PressureOutput pCO2 "plasma pCO2" annotation (
+          Placement(transformation(extent={{92,-46},{112,-26}}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=90,
+            origin={-48,10})));
+      Unconditional_Junction_T blood
+        annotation (Placement(transformation(extent={{44,-26},{-12,26}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump CO2_inflow(
+          useSoluteFlowInput=true, SoluteFlow=0.00018333333333333) annotation (
+          Placement(transformation(
+            extent={{10,-10},{-10,10}},
+            rotation=180,
+            origin={-40,56})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput cdO2
+        "plasma dissolved O2 concentration" annotation (Placement(
+            transformation(extent={{92,-78},{112,-58}}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={64,-10})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2
+        "plasma dissolved CO2 concentration" annotation (Placement(
+            transformation(extent={{90,-96},{110,-76}}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={34,-10})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput O2inflow annotation (
+          Placement(transformation(extent={{-12,58},{10,80}}),
+            iconTransformation(
+            extent={{-12,-12},{12,12}},
+            rotation=270,
+            origin={64,12})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput CO2inflow annotation (
+          Placement(transformation(extent={{-96,38},{-78,56}}),
+            iconTransformation(
+            extent={{-12,-12},{12,12}},
+            rotation=270,
+            origin={34,12})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput HCO3inflow annotation (
+          Placement(transformation(extent={{-94,18},{-72,40}}),
+            iconTransformation(
+            extent={{-12,-12},{12,12}},
+            rotation=270,
+            origin={4,12})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput HCO3
+        "plasma HCO3 concentration" annotation (Placement(transformation(extent
+              ={{92,-68},{112,-48}}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={4,-10})));
+      Physiolibrary.Types.RealIO.ConcentrationOutput BEox
+        "blood BEox concentration" annotation (Placement(transformation(extent=
+                {{-50,-78},{-30,-58}}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={-70,-10})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump O2_inflow(
+          useSoluteFlowInput=true, SoluteFlow=0.00018333333333333) annotation (
+          Placement(transformation(
+            extent={{10,-10},{-10,10}},
+            rotation=180,
+            origin={20,84})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump BEox_inflow(
+          useSoluteFlowInput=true, SoluteFlow=0.00018333333333333) annotation (
+          Placement(transformation(
+            extent={{10,-10},{-10,10}},
+            rotation=180,
+            origin={-26,24})));
+      Modelica.Blocks.Math.Add add
+        annotation (Placement(transformation(extent={{-62,30},{-48,44}})));
+    equation
+
+      /*
+  blood.port_O2.q=dO2.q;
+
+  blood.port_CO2.q=dCO2.q+HCO3.q;
+
+  blood.port_BEox.q=HCO3.q;
+  dO2.conc=o2CO2.cdO2;
+  dCO2.conc=o2CO2.cdCO2;
+  HCO3.conc=o2CO2.cHCO3;
+*/
+
+      connect(flowConcentrationMeasure.O2_conc, o2CO2.ctO2) annotation (Line(points={{-38.6,
+              -14.4},{-38.6,-29.9412},{-26.25,-29.9412}},        color={0,0,127}));
+      connect(flowConcentrationMeasure.CO2_conc, o2CO2.ctCO2) annotation (Line(
+            points={{-49,-14.4},{-49,-35.7059},{-26.25,-35.7059}}, color={0,0,127}));
+      connect(flowConcentrationMeasure.BEox_conc, o2CO2.BEox) annotation (Line(
+            points={{-59.4,-14.4},{-59.4,-41.4706},{-26.25,-41.4706}}, color={0,0,127}));
+      connect(flowConcentrationMeasure.bloodPort_out, bloodPort_out) annotation (
+          Line(
+          points={{-60.7,0},{-78,0},{-78,0},{-96,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(o2CO2.pCO2, pCO2) annotation (Line(points={{68.25,-38.0118},{
+              86.125,-38.0118},{86.125,-36},{102,-36}},
+                                       color={0,0,127}));
+      connect(o2CO2.pH, pH) annotation (Line(points={{68.25,-44.3529},{86.125,
+              -44.3529},{86.125,-48},{104,-48}},
+                                       color={0,0,127}));
+      connect(o2CO2.pO2, pO2) annotation (Line(points={{68.25,-31.6706},{84,
+              -31.6706},{84,-20},{102,-20}},
+                                   color={0,0,127}));
+      connect(blood.bloodPort_in, bloodPort_in) annotation (Line(
+          points={{43.44,0},{94,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(blood.bloodPort_out, flowConcentrationMeasure.bloodPort_in)
+        annotation (Line(
+          points={{-12,0},{-37.3,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(blood.port_CO2, CO2_inflow.q_out) annotation (Line(
+          points={{23.28,0},{23.28,56},{-30,56}},
+          color={107,45,134},
+          thickness=1));
+      connect(o2CO2.cdCO2, cdCO2) annotation (Line(points={{68.25,-78.3647},{
+              86.125,-78.3647},{86.125,-86},{100,-86}}, color={0,0,127}));
+      connect(cdCO2, cdCO2)
+        annotation (Line(points={{100,-86},{100,-86}}, color={0,0,127}));
+      connect(o2CO2.cdO2, cdO2) annotation (Line(points={{68.25,-72.6},{78.125,
+              -72.6},{78.125,-68},{102,-68}}, color={0,0,127}));
+      connect(O2_inflow.q_out, blood.port_O2) annotation (Line(
+          points={{30,84},{32,84},{32,0},{33.36,0}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2_inflow.soluteFlow, O2inflow)
+        annotation (Line(points={{24,80},{24,69},{-1,69}}, color={0,0,127}));
+      connect(BEox_inflow.q_out, blood.port_BEox) annotation (Line(
+          points={{-16,24},{11.52,24},{11.52,0}},
+          color={107,45,134},
+          thickness=1));
+      connect(HCO3inflow, add.u2) annotation (Line(points={{-83,29},{-68,29},{
+              -68,32.8},{-63.4,32.8}}, color={0,0,127}));
+      connect(CO2inflow, add.u1) annotation (Line(points={{-87,47},{-72,47},{
+              -72,41.2},{-63.4,41.2}}, color={0,0,127}));
+      connect(add.y, CO2_inflow.soluteFlow) annotation (Line(points={{-47.3,37},
+              {-36,37},{-36,52}}, color={0,0,127}));
+      connect(HCO3inflow, BEox_inflow.soluteFlow) annotation (Line(points={{-83,
+              29},{-66,29},{-66,24},{-40,24},{-40,12},{-22,12},{-22,20}}, color
+            ={0,0,127}));
+      connect(o2CO2.cHCO3, HCO3) annotation (Line(points={{68.25,-50.1176},{86,
+              -50.1176},{86,-58},{102,-58}}, color={0,0,127}));
+      connect(BEox, BEox) annotation (Line(points={{-40,-68},{-44,-68},{-44,-68},
+              {-40,-68}}, color={0,0,127}));
+      connect(BEox, o2CO2.BEox) annotation (Line(points={{-40,-68},{-58,-68},{
+              -58,-41.4706},{-26.25,-41.4706}}, color={0,0,127}));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+            Line(
+              points={{-88,0},{90,0}},
+              color={0,0,0},
+              thickness=0.5)}), Diagram(coordinateSystem(preserveAspectRatio=false)));
+    end Blood_ISF_Interface;
 
     package OSA
       function O2totalSI "Calculation of concentration of total oxygen"
@@ -3520,66 +3692,71 @@ BEox"),       Text(
       end O2CO2Balance;
 
       model PO2PCO2
-        Physiolibrary.Types.RealIO.FractionOutput sO2 annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin = {30, 6}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 0})));
+        Physiolibrary.Types.RealIO.FractionOutput sO2 annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin={30,-8}),   iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 0})));
         Physiolibrary.Types.RealIO.ConcentrationOutput cHCO3(displayUnit = "mmol/l")
-          "outgoing concentration of HCO3"                                                                            annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin={5,116}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 20})));
-        Physiolibrary.Types.RealIO.PressureInput pO2 annotation(Placement(transformation(extent={{-118,58},
-                  {-106,70}}),                                                                                              iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 98})));
-        Physiolibrary.Types.RealIO.PressureInput pCO2 annotation(Placement(transformation(extent={{-122,99},
-                  {-108,113}}),                                                                                          iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 78})));
-        Physiolibrary.Types.RealIO.ConcentrationOutput ctCO2 annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin={5,128}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 60})));
-        Physiolibrary.Types.RealIO.ConcentrationOutput ctO2 annotation(Placement(transformation(extent = {{7.5, -7}, {-7.5, 7}}, rotation = 180, origin = {-28.5, 0}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 80})));
+          "outgoing concentration of HCO3"                                                                            annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin={5,102}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 20})));
+        Physiolibrary.Types.RealIO.PressureInput pO2 annotation(Placement(transformation(extent={{-118,46},
+                  {-106,58}}),                                                                                              iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 98})));
+        Physiolibrary.Types.RealIO.PressureInput pCO2 annotation(Placement(transformation(extent={{-122,85},
+                  {-108,99}}),                                                                                           iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 78})));
+        Physiolibrary.Types.RealIO.ConcentrationOutput ctCO2 annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin={5,114}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 60})));
+        Physiolibrary.Types.RealIO.ConcentrationOutput ctO2 annotation(Placement(transformation(extent = {{7.5, -7}, {-7.5, 7}}, rotation = 180, origin={-28.5,
+                  -14}),                                                                                                                                               iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 80})));
         Physiolibrary.Types.RealIO.ConcentrationInput BEox annotation(Placement(transformation(extent={{-122,
-                  -28},{-106,-12}}),                                                                                               iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 58})));
-        Physiolibrary.Types.RealIO.pHOutput pH(start = 7.4) annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin={6,-44}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 40})));
+                  -42},{-106,-26}}),                                                                                               iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-110, 58})));
+        Physiolibrary.Types.RealIO.pHOutput pH(start = 7.4) annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin={6,-58}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 40})));
         Physiolibrary.Types.RealIO.ConcentrationOutput cdO2 annotation(Placement(transformation(extent={{-6,6},{
-                  6,-6}},                                                                                                    rotation = 0, origin={-46,0}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -58})));
-        Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2 annotation(Placement(transformation(extent = {{-7, 7}, {7, -7}}, rotation = 0, origin={5,104}),    iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -78})));
+                  6,-6}},                                                                                                    rotation = 0, origin={-46,-14}),   iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -58})));
+        Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2 annotation(Placement(transformation(extent = {{-7, 7}, {7, -7}}, rotation = 0, origin={5,90}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -78})));
         ctO2content bloodctO2content
-          annotation (Placement(transformation(extent={{-80,10},{-20,70}})));
+          annotation (Placement(transformation(extent={{-80,-2},{-20,58}})));
         ctCO2content bloodctCO2content
-          annotation (Placement(transformation(extent={{-80,86},{-20,146}})));
+          annotation (Placement(transformation(extent={{-80,72},{-20,132}})));
         BEINV vanSlykeEquation
-          annotation (Placement(transformation(extent={{-80,-74},{-18,-14}})));
+          annotation (Placement(transformation(extent={{-80,-88},{-18,-28}})));
         Physiolibrary.Types.RealIO.ConcentrationOutput ceHb
-          "effiective concentration of hemoglobin (mmol/l)"                                                   annotation(Placement(transformation(extent = {{-6, 6}, {6, -6}}, rotation = 0, origin = {-58, 0}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -38})));
+          "effiective concentration of hemoglobin (mmol/l)"                                                   annotation(Placement(transformation(extent = {{-6, 6}, {6, -6}}, rotation = 0, origin={-58,-14}),  iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -38})));
       equation
-        connect(bloodctCO2content.pCO2, pCO2) annotation(Line(points={{-83,140},
-                {-84,140},{-84,140},{-86,140},{-100,140},{-100,106},{-115,106}},                       color = {0, 0, 127}));
-        connect(bloodctO2content.pCO2, pCO2) annotation(Line(points={{-83,40},{
-                -100,40},{-100,106},{-115,106}},                                                                                         color = {0, 0, 127}));
-        connect(bloodctO2content.pO2, pO2) annotation(Line(points={{-83,64},{
-                -112,64}},                                                                  color = {0, 0, 127}));
+        connect(bloodctCO2content.pCO2, pCO2) annotation(Line(points={{-83,126},
+                {-100,126},{-100,92},{-115,92}},                                                       color = {0, 0, 127}));
+        connect(bloodctO2content.pCO2, pCO2) annotation(Line(points={{-83,28},{
+                -100,28},{-100,92},{-115,92}},                                                                                           color = {0, 0, 127}));
+        connect(bloodctO2content.pO2, pO2) annotation(Line(points={{-83,52},{
+                -112,52}},                                                                  color = {0, 0, 127}));
         connect(vanSlykeEquation.BEox, BEox) annotation(Line(points={{-82.8182,
-                -20},{-114,-20}},                                                                 color = {0, 0, 127}));
+                -34},{-114,-34}},                                                                 color = {0, 0, 127}));
         connect(vanSlykeEquation.pCO2, pCO2) annotation(Line(points={{-82.8182,
-                -32},{-100,-32},{-100,106},{-115,106}},                                                                                      color = {0, 0, 127}));
-        connect(bloodctO2content.sO2, bloodctCO2content.sO2) annotation(Line(points={{-32,7},
-                {-32,6},{16,6},{16,92},{-83,92}},                                                                                         color = {0, 0, 127}));
+                -46},{-100,-46},{-100,92},{-115,92}},                                                                                        color = {0, 0, 127}));
         connect(vanSlykeEquation.pH, bloodctCO2content.pH) annotation(Line(points={{
-                -21.3818,-38.6},{-120,-38.6},{-120,128},{-83,128}},                                                                                   color = {0, 0, 127}));
+                -21.3818,-52.6},{-12,-52.6},{-12,-26},{-120,-26},{-120,114},{
+                -83,114}},                                                                                                                            color = {0, 0, 127}));
         connect(bloodctO2content.pH, bloodctCO2content.pH) annotation(Line(points={{-83,
-                52.6},{-120,52.6},{-120,128},{-83,128}},                                                                                               color = {0, 0, 127}));
-        connect(sO2, bloodctCO2content.sO2) annotation(Line(points={{30,6},{16,
-                6},{16,92},{-83,92}},                                                                        color = {0, 0, 127}));
-        connect(bloodctO2content.totalO2, ctO2) annotation(Line(points={{-44,7},
-                {-44,0},{-28.5,0}},                                                                         color = {0, 0, 127}));
-        connect(bloodctCO2content.ctCO2, ctCO2) annotation(Line(points={{-17,128},
-                {5,128}},                                                                       color = {0, 0, 127}));
-        connect(bloodctCO2content.cHCO3, cHCO3) annotation(Line(points={{-17,116},
-                {5,116}},                                                                       color = {0, 0, 127}));
-        connect(bloodctO2content.ceHb, ceHb) annotation(Line(points={{-68,7},{
-                -68,0},{-58,0}},                                                                       color = {0, 0, 127}));
-        connect(vanSlykeEquation.sO2, bloodctCO2content.sO2) annotation(Line(points={{
-                -82.8182,-66.2},{16,-66.2},{16,-66},{16,-66},{16,92},{-83,92}},                                                                                           color = {0, 0, 127}));
+                40.6},{-120,40.6},{-120,114},{-83,114}},                                                                                               color = {0, 0, 127}));
+        connect(bloodctO2content.totalO2, ctO2) annotation(Line(points={{-44,-5},
+                {-44,-14},{-28.5,-14}},                                                                     color = {0, 0, 127}));
+        connect(bloodctCO2content.ctCO2, ctCO2) annotation(Line(points={{-17,114},
+                {5,114}},                                                                       color = {0, 0, 127}));
+        connect(bloodctCO2content.cHCO3, cHCO3) annotation(Line(points={{-17,102},
+                {5,102}},                                                                       color = {0, 0, 127}));
+        connect(bloodctO2content.ceHb, ceHb) annotation(Line(points={{-68,-5},{
+                -68,-14},{-58,-14}},                                                                   color = {0, 0, 127}));
         connect(bloodctCO2content.cdCO2p, cdCO2)
-          annotation (Line(points={{-17,104},{5,104}},         color={0,0,127}));
+          annotation (Line(points={{-17,90},{5,90}},           color={0,0,127}));
         connect(bloodctO2content.cdO2p, cdO2)
-          annotation (Line(points={{-56,7},{-56,0},{-46,0}},  color={0,0,127}));
+          annotation (Line(points={{-56,-5},{-56,-14},{-46,-14}},
+                                                              color={0,0,127}));
         connect(vanSlykeEquation.pH, pH) annotation (Line(points={{-21.3818,
-                -38.6},{2,-38.6},{2,-44},{6,-44}},
+                -52.6},{2,-52.6},{2,-58},{6,-58}},
                                             color={0,0,127}));
-        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+        connect(bloodctO2content.sO2, sO2) annotation (Line(points={{-32,-5},{
+                -32,-8},{30,-8}}, color={0,0,127}));
+        connect(vanSlykeEquation.sO2, sO2) annotation (Line(points={{-82.8182,
+                -80.2},{-92,-80.2},{-92,-98},{18,-98},{18,-8},{30,-8}}, color={
+                0,0,127}));
+        connect(bloodctCO2content.sO2, sO2) annotation (Line(points={{-83,78},{
+                -92,78},{-92,64},{18,64},{18,-8},{30,-8}}, color={0,0,127}));
+        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent={{-140,
+                  -100},{40,140}}),                                                                         graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-66, 4}, {94, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
                   horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "sO2"), Text(extent = {{-66, 26}, {94, 8}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
@@ -3619,8 +3796,8 @@ BEox"),       Text(
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
                   horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "ctPi"), Text(extent = {{-96, 66}, {52, 50}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "BEox")}), Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
-                  -100},{100,100}})));
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "BEox")}), Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-140,
+                  -100},{40,140}})));
       end PO2PCO2;
 
       model AlvGases
@@ -3967,16 +4144,16 @@ BEox"),       Text(
       end AlvEq;
 
       model O2CO2
-        Physiolibrary.Types.RealIO.FractionOutput sO2 annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin={4,8}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 0})));
+        Physiolibrary.Types.RealIO.FractionOutput sO2 annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin={4,8}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,60})));
         Physiolibrary.Types.RealIO.ConcentrationOutput cHCO3(displayUnit = "mmol/l")
-          "outgoing concentration of HCO3"                                                                            annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin={5,116}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 20})));
+          "outgoing concentration of HCO3"                                                                            annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin={5,116}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,80})));
         Physiolibrary.Types.RealIO.ConcentrationInput BEox annotation(Placement(transformation(extent={{-122,
-                  -28},{-106,-12}}),                                                                                               iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={-110,50})));
+                  -28},{-106,-12}}),                                                                                               iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={-186,110})));
         Physiolibrary.Types.RealIO.pHOutput pH(start = 7.4) annotation(Placement(transformation(extent={{-7,-7},
-                  {7,7}},                                                                                                    rotation = 0, origin={1,-41}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, 40})));
+                  {7,7}},                                                                                                    rotation = 0, origin={1,-41}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,100})));
         Physiolibrary.Types.RealIO.ConcentrationOutput cdO2 annotation(Placement(transformation(extent={{-6,6},{
-                  6,-6}},                                                                                                    rotation = 0, origin={-46,0}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -58})));
-        Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2 annotation(Placement(transformation(extent = {{-7, 7}, {7, -7}}, rotation = 0, origin={5,104}),    iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -78})));
+                  6,-6}},                                                                                                    rotation = 0, origin={-46,0}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,2})));
+        Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2 annotation(Placement(transformation(extent = {{-7, 7}, {7, -7}}, rotation = 0, origin={5,104}),    iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,-18})));
         ctO2content bloodctO2content
           annotation (Placement(transformation(extent={{-80,14},{-20,74}})));
         ctCO2content bloodctCO2content
@@ -3984,19 +4161,19 @@ BEox"),       Text(
         BEINV vanSlykeEquation
           annotation (Placement(transformation(extent={{-82,-76},{-20,-16}})));
         Physiolibrary.Types.RealIO.ConcentrationOutput ceHb
-          "effiective concentration of hemoglobin (mmol/l)"                                                   annotation(Placement(transformation(extent = {{-6, 6}, {6, -6}}, rotation = 0, origin = {-58, 0}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {110, -38})));
+          "effiective concentration of hemoglobin (mmol/l)"                                                   annotation(Placement(transformation(extent = {{-6, 6}, {6, -6}}, rotation = 0, origin = {-58, 0}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,22})));
         Physiolibrary.Types.RealIO.ConcentrationInput ctO2 annotation (Placement(
               transformation(extent={{-160,146},{-120,186}}), iconTransformation(
-                extent={{-120,80},{-100,100}})));
+                extent={{-196,140},{-176,160}})));
         Physiolibrary.Types.RealIO.PressureOutput pO2( start = 13300) annotation (Placement(
-              transformation(extent={{-30,162},{-10,182}}), iconTransformation(extent=
-                 {{100,74},{120,94}})));
+              transformation(extent={{-30,162},{-10,182}}), iconTransformation(extent={{56,134},
+                  {76,154}})));
         Physiolibrary.Types.RealIO.ConcentrationInput ctCO2 annotation (Placement(
               transformation(extent={{-154,182},{-114,222}}), iconTransformation(
-                extent={{-120,60},{-100,80}})));
+                extent={{-196,120},{-176,140}})));
         Physiolibrary.Types.RealIO.PressureOutput pCO2( start = 5333) annotation (Placement(
-              transformation(extent={{-26,194},{-6,214}}), iconTransformation(extent={
-                  {100,52},{120,72}})));
+              transformation(extent={{-26,194},{-6,214}}), iconTransformation(extent={{56,112},
+                  {76,132}})));
         Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints annotation(Placement(transformation(extent={{-76,192},
                   {-36,216}})));
         Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints1 annotation(Placement(transformation(extent={{-76,160},
@@ -4056,70 +4233,89 @@ BEox"),       Text(
         connect(vanSlykeEquation.pH, pH) annotation (Line(points={{-23.3818,
                 -40.6},{-10.76,-40.6},{-10.76,-41},{1,-41}}, color={0,0,127}));
         annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent={{-180,
-                  -100},{60,240}}),                                                                         graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-66, 4}, {94, -6}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  -100},{60,240}}),                                                                         graphics={  Rectangle(extent={{
+                    -180,196},{56,-58}},                                                                                                                               lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent={{
+                    -116,64},{44,54}},                                                                                                                                                    lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "sO2"), Text(extent = {{-66, 26}, {94, 8}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "sO2"), Text(extent={{
+                    -114,86},{46,68}},                                                                                                                                                                                  lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "HCO3"), Text(extent = {{-94, -88}, {10, -96}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "HCO3"), Text(extent={{
+                    -154,-28},{-50,-36}},                                                                                                                                                                                   lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "T"), Text(extent = {{-44, 44}, {92, 34}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "T"), Text(extent={{
+                    -92,104},{44,94}},                                                                                                                                                                                lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "pH"), Text(extent = {{-96, 44}, {54, 34}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "pH"), Text(extent={{
+                    -156,104},{-6,94}},                                                                                                                                                                                 lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
                   horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "ctHb"), Text(extent = {{-73, 7}, {73, -7}}, lineColor=
                     {0,0,255},                                                                                                                                                                                                        fillColor=
                     {255,255,0},
-                  fillPattern=FillPattern.Solid,                                                                                                     origin = {19, 81}, rotation = 180, fontSize=
+                  fillPattern=FillPattern.Solid,                                                                                                     origin={
+                    -29,145},                                                                                                                                           rotation = 180, fontSize=
                     12,
                   horizontalAlignment=TextAlignment.Right,
                 textString="pO2"),                                                                                                                                                   Text(extent = {{-75, 6}, {75, -6}}, lineColor=
                     {0,0,255},                                                                                                                                                                                                        fillColor=
                     {255,255,0},
-                  fillPattern=FillPattern.Solid,                                                                                                     origin = {19, 58}, rotation = 180, fontSize=
+                  fillPattern=FillPattern.Solid,                                                                                                     origin={
+                    -31,120},                                                                                                                                           rotation = 180, fontSize=
                     12,
                   horizontalAlignment=TextAlignment.Right,
-                textString="pCO2"),                                                                                                                                                   Text(extent = {{-44, 32}, {66, -56}}, lineColor=
+                textString="pCO2"),                                                                                                                                                   Text(extent={{
+                    -104,92},{6,4}},                                                                                                                                                                                        lineColor=
                     {0,0,255},                                                                                                                                                                                                        fillColor=
                     {255,255,0},
                   fillPattern=FillPattern.Solid,
-                textString="O2CO2"),                                                                                                                                         Text(extent = {{-94, 98}, {104, 88}}, lineColor=
+                textString="O2CO2"),                                                                                                                                         Text(extent={{
+                    -170,170},{28,160}},                                                                                                                                                                           lineColor=
                     {0,0,255},                                                                                                                                                                                                        fillColor=
                     {255,255,0},
                   fillPattern=FillPattern.Solid,                                                                                                     fontSize=
                     12,
                   horizontalAlignment=TextAlignment.Left,
                 textString="ctO2"),                                                                                                                                                Text(extent={{
-                    -94,78},{58,64}},                                                                                                                                                                                   lineColor=
+                    -174,138},{-22,124}},                                                                                                                                                                               lineColor=
                     {0,0,255},                                                                                                                                                                                                        fillColor=
                     {255,255,0},
                   fillPattern=FillPattern.Solid,                                                                                                     fontSize=
                     12,
                   horizontalAlignment=TextAlignment.Left,
-                textString="ctCO2"),                                                                                                                                                Text(extent = {{-94, -74}, {102, -82}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                textString="ctCO2"),                                                                                                                                                Text(extent={{
+                    -154,-14},{-4,-18}},                                                                                                                                                                                    lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "FHbF"), Text(extent = {{-94, -34}, {104, -48}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "FHbF"), Text(extent={{
+                    -154,26},{44,12}},                                                                                                                                                                                      lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "FMetHb"), Text(extent = {{-92, -14}, {102, -28}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "FMetHb"), Text(extent={{
+                    -154,48},{40,34}},                                                                                                                                                                                        lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "cDPG"), Text(extent = {{-94, 22}, {68, 12}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "cDPG"), Text(extent={{
+                    -154,82},{8,72}},                                                                                                                                                                                    lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
                   horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "ctAlb"), Text(extent = {{-74, 8}, {74, -8}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                  fillPattern =                                                                                                   FillPattern.Solid, origin = {18, -56}, rotation = 180, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "cdO2"), Text(extent = {{-80, 11.5}, {80, -11.5}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                  fillPattern =                                                                                                   FillPattern.Solid, origin = {14, -79.5}, rotation = 180, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "cdCO2"), Text(extent = {{-94, -54}, {58, -64}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin={
+                    -26,0},                                                                                                                                              rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "cdO2"), Text(extent = {{-78, 7}, {78, -7}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin={
+                    -32,23},                                                                                                                                             rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "ceHb"), Text(extent = {{-80, 11.5}, {80, -11.5}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid, origin={
+                    -30,-19.5},                                                                                                                                            rotation = 180, fontSize = 12,
+                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "cdCO2"), Text(extent={{
+                    -154,6},{-2,-4}},                                                                                                                                                                                        lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "FCOHb"), Text(extent = {{-78, 7}, {78, -7}}, lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                  fillPattern =                                                                                                   FillPattern.Solid, origin = {14, -37}, rotation = 180, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "ceHb"), Text(extent = {{-94, 4}, {52, -8}}, lineColor=
+                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "FCOHb"), Text(extent={{
+                    -154,64},{-8,52}},                                                                                                                                                                                   lineColor=
                     {0,0,255},                                                                                                                                                                                                        fillColor=
                     {255,255,0},
                   fillPattern=FillPattern.Solid,                                                                                                     fontSize=
                     12,
                   horizontalAlignment=TextAlignment.Left,
                 textString="ctPi"),                                                                                                                                                 Text(extent={{
-                    -96,58},{52,42}},                                                                                                                                                                                    lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
+                    -174,118},{-26,102}},                                                                                                                                                                                lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
                   fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
                   horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "BEox")}), Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-180,
                   -100},{60,240}})));
@@ -4203,6 +4399,124 @@ BEox"),       Text(
               fillColor={255,255,0},
               fillPattern=FillPattern.Solid)}));
     end ISFBuffer;
+
+    model Unconditional_Junction_T
+     // extend Conditional_junction_T
+      Package.BloodPort_in_Extension bloodPort_in_Extension
+        annotation (Placement(transformation(extent={{-86,-26},{-58,10}})));
+      Package.BloodPort_in bloodPort_in(numberOfSubstances=3) annotation (
+          Placement(transformation(extent={{-104,-18},{-84,2}}),
+            iconTransformation(extent={{-108,-10},{-88,10}})));
+      Package.BloodPort_out_Extension bloodPort_out_Extension
+        annotation (Placement(transformation(extent={{52,-24},{82,12}})));
+      Package.BloodPort_out bloodPort_out(numberOfSubstances=3) annotation (
+          Placement(transformation(extent={{82,-10},{102,10}}),
+            iconTransformation(extent={{90,-10},{110,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_O2  annotation (
+          Placement(transformation(extent={{8,-10},{28,10}}),
+            iconTransformation(extent={{-72,-10},{-52,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_CO2  annotation (
+          Placement(transformation(extent={{-16,-38},{4,-18}}),
+            iconTransformation(extent={{-36,-10},{-16,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_BEox  annotation (
+          Placement(transformation(extent={{-54,-78},{-34,-58}}),
+            iconTransformation(extent={{6,-10},{26,10}})));
+      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure
+        annotation (Placement(transformation(extent={{14,48},{40,20}})));
+      Package.FickPrinciplePort fickPrinciple
+        annotation (Placement(transformation(extent={{12,-28},{32,-8}})));
+      Package.FickPrinciplePort fickPrinciple1
+        annotation (Placement(transformation(extent={{-12,-56},{8,-36}})));
+      Package.FickPrinciplePort fickPrinciple2
+        annotation (Placement(transformation(extent={{-50,-98},{-30,-78}})));
+      Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a port_Flow  annotation (
+          Placement(transformation(extent={{-12,62},{8,82}}),
+            iconTransformation(extent={{46,-12},{70,12}})));
+
+    initial equation
+
+    equation
+
+      connect(bloodPort_in, bloodPort_in_Extension.bloodPort_in) annotation (
+          Line(
+          points={{-94,-8},{-86,-8}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(bloodPort_out_Extension.bloodPort_out, bloodPort_out) annotation (
+         Line(
+          points={{82,-6},{88,-6},{88,0},{92,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(bloodPort_in_Extension.bloodFlow, flowMeasure.q_in) annotation (
+          Line(
+          points={{-58,10},{-58,34},{14,34}},
+          color={0,0,0},
+          thickness=1));
+      connect(flowMeasure.q_out, bloodPort_out_Extension.bloodFlow) annotation (
+         Line(
+          points={{40,34},{52,34},{52,12}},
+          color={0,0,0},
+          thickness=1));
+      connect(port_Flow, flowMeasure.q_in) annotation (Line(
+          points={{-2,72},{-2,34},{14,34}},
+          color={0,0,0},
+          thickness=1));
+      connect(fickPrinciple1.volumeFlow, flowMeasure.volumeFlow) annotation (
+          Line(points={{1.4,-40},{1.4,12},{27,12},{27,17.2}}, color={0,0,127}));
+      connect(fickPrinciple2.volumeFlow, flowMeasure.volumeFlow) annotation (
+          Line(points={{-36.6,-82},{-28,-82},{-28,12},{27,12},{27,17.2}}, color=
+             {0,0,127}));
+      connect(fickPrinciple.volumeFlow, flowMeasure.volumeFlow) annotation (
+          Line(points={{25.4,-12},{24,12},{27,12},{27,17.2}}, color={0,0,127}));
+      connect(fickPrinciple.port_add, port_O2) annotation (Line(
+          points={{18.2,-11},{18.2,-5.5},{18,-5.5},{18,0}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple1.port_add, port_CO2) annotation (Line(
+          points={{-5.8,-39},{-5.8,-33.5},{-6,-33.5},{-6,-28}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple2.port_add, port_BEox) annotation (Line(
+          points={{-43.8,-81},{-43.8,-75.5},{-44,-75.5},{-44,-68}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple2.port_in, bloodPort_in_Extension.BEox) annotation (
+          Line(
+          points={{-49,-87.8},{-76,-87.8},{-76,-40},{-58,-40},{-58,-22.4}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple1.port_in, bloodPort_in_Extension.CO2) annotation (
+          Line(
+          points={{-11,-45.8},{-48,-45.8},{-48,-15.56},{-58,-15.56}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple.port_in, bloodPort_in_Extension.O2) annotation (
+          Line(
+          points={{13,-17.8},{-34,-17.8},{-34,-8},{-58,-8}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple.port_out, bloodPort_out_Extension.O2) annotation (
+          Line(
+          points={{31,-18},{38,-18},{38,-6},{52,-6}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple1.port_out, bloodPort_out_Extension.CO2) annotation (
+         Line(
+          points={{7,-46},{42,-46},{42,-13.2},{52,-13.2}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple2.port_out, bloodPort_out_Extension.BEox)
+        annotation (Line(
+          points={{-31,-88},{46,-88},{46,-20.4},{52,-20.4}},
+          color={107,45,134},
+          thickness=1));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+            Line(
+              points={{-88,0},{90,0}},
+              color={0,0,0},
+              thickness=0.5)}), Diagram(coordinateSystem(preserveAspectRatio=
+                false)));
+    end Unconditional_Junction_T;
   end Package;
 
   package Test
@@ -5147,7 +5461,7 @@ BEox"),       Text(
         annotation (Placement(transformation(extent={{60,58},{80,78}})));
       Package.PressureMeasure pressureMeasure2
         annotation (Placement(transformation(extent={{-90,44},{-76,58}})));
-      Package.junction_T junction_T(useO2PortInput=true, useCO2PortInput=true)
+      Package.Junction_T junction_T(useO2PortInput=true, useCO2PortInput=true)
         annotation (Placement(transformation(extent={{-18,-50},{-38,-20}})));
       Package.FlowMeasure flowMeasure_art annotation (Placement(transformation(
             extent={{-10,-10},{10,10}},
@@ -6390,6 +6704,151 @@ BEox"),       Text(
                                 Diagram(coordinateSystem(preserveAspectRatio=
                 false)));
     end BloodResistors2Split;
+
+    partial model Conditional_junction_T_test
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_O2 if useO2PortInput annotation (
+          Placement(transformation(extent={{8,-10},{28,10}}),
+            iconTransformation(extent={{-72,-10},{-52,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_CO2 if useCO2PortInput annotation (
+          Placement(transformation(extent={{-16,-38},{4,-18}}),
+            iconTransformation(extent={{-36,-10},{-16,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_BEox if useBEoxPortInput annotation (
+          Placement(transformation(extent={{-54,-78},{-34,-58}}),
+            iconTransformation(extent={{6,-10},{26,10}})));
+      Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a port_Flow if useFlowPortInput annotation (
+          Placement(transformation(extent={{-12,62},{8,82}}),
+            iconTransformation(extent={{46,-12},{70,12}})));
+
+      parameter Boolean useO2PortInput = false;
+      parameter Boolean useCO2PortInput = false;
+      parameter Boolean useBEoxPortInput = false;
+      parameter Boolean useFlowPortInput = false;
+
+    initial equation
+
+    equation
+
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)),
+                                Diagram(coordinateSystem(preserveAspectRatio=
+                false)));
+    end Conditional_junction_T_test;
+
+    model Junction_T_test
+      extends Trash.Conditional_junction_T_test;
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_O2 if useO2PortInput annotation (
+          Placement(transformation(extent={{8,-10},{28,10}}),
+            iconTransformation(extent={{-72,-10},{-52,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_CO2 if useCO2PortInput annotation (
+          Placement(transformation(extent={{-16,-38},{4,-18}}),
+            iconTransformation(extent={{-36,-10},{-16,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_BEox if useBEoxPortInput annotation (
+          Placement(transformation(extent={{-54,-78},{-34,-58}}),
+            iconTransformation(extent={{6,-10},{26,10}})));
+      Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a port_Flow if useFlowPortInput annotation (
+          Placement(transformation(extent={{-12,62},{8,82}}),
+            iconTransformation(extent={{46,-12},{70,12}})));
+
+      Package.BloodPort_in bloodPort_in(numberOfSubstances=3) annotation (
+          Placement(transformation(extent={{-104,-18},{-84,2}}),
+            iconTransformation(extent={{-108,-10},{-88,10}})));
+      Package.BloodPort_out bloodPort_out(numberOfSubstances=3) annotation (
+          Placement(transformation(extent={{82,-10},{102,10}}),
+            iconTransformation(extent={{90,-10},{110,10}})));
+      Package.BloodPort_in_Extension bloodPort_in_Extension
+        annotation (Placement(transformation(extent={{-86,-26},{-58,10}})));
+      Package.BloodPort_out_Extension bloodPort_out_Extension
+        annotation (Placement(transformation(extent={{52,-24},{82,12}})));
+      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure
+        annotation (Placement(transformation(extent={{14,48},{40,20}})));
+      Package.FickPrinciplePort fickPrinciple1
+        annotation (Placement(transformation(extent={{-12,-56},{8,-36}})));
+      Package.FickPrinciplePort fickPrinciple2
+        annotation (Placement(transformation(extent={{-50,-98},{-30,-78}})));
+      Package.FickPrinciplePort fickPrinciple
+        annotation (Placement(transformation(extent={{12,-28},{32,-8}})));
+    initial equation
+
+    equation
+
+      connect(flowMeasure.q_out,bloodPort_out_Extension. bloodFlow) annotation (
+         Line(
+          points={{40,34},{52,34},{52,12}},
+          color={0,0,0},
+          thickness=1));
+      connect(bloodPort_in_Extension.bloodFlow,flowMeasure. q_in) annotation (
+          Line(
+          points={{-58,10},{-58,34},{14,34}},
+          color={0,0,0},
+          thickness=1));
+      connect(port_Flow,flowMeasure. q_in) annotation (Line(
+          points={{-2,72},{-2,34},{14,34}},
+          color={0,0,0},
+          thickness=1));
+      connect(fickPrinciple.port_in,bloodPort_in_Extension. O2) annotation (
+          Line(
+          points={{13,-17.8},{-34,-17.8},{-34,-8},{-58,-8}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple1.port_in,bloodPort_in_Extension. CO2) annotation (
+          Line(
+          points={{-11,-45.8},{-48,-45.8},{-48,-15.56},{-58,-15.56}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple2.port_in,bloodPort_in_Extension. BEox) annotation (
+          Line(
+          points={{-49,-87.8},{-76,-87.8},{-76,-40},{-58,-40},{-58,-22.4}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple.volumeFlow,flowMeasure. volumeFlow) annotation (
+          Line(points={{25.4,-12},{24,12},{27,12},{27,17.2}}, color={0,0,127}));
+      connect(fickPrinciple2.volumeFlow,flowMeasure. volumeFlow) annotation (
+          Line(points={{-36.6,-82},{-28,-82},{-28,12},{27,12},{27,17.2}}, color=
+             {0,0,127}));
+      connect(fickPrinciple1.volumeFlow,flowMeasure. volumeFlow) annotation (
+          Line(points={{1.4,-40},{1.4,12},{27,12},{27,17.2}}, color={0,0,127}));
+      connect(fickPrinciple1.port_out,bloodPort_out_Extension. CO2) annotation (
+         Line(
+          points={{7,-46},{42,-46},{42,-13.2},{52,-13.2}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple.port_out,bloodPort_out_Extension. O2) annotation (
+          Line(
+          points={{31,-18},{38,-18},{38,-6},{52,-6}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple2.port_out, bloodPort_out_Extension.BEox)
+        annotation (Line(
+          points={{-31,-88},{46,-88},{46,-20.4},{52,-20.4}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_out_Extension.bloodPort_out, bloodPort_out) annotation (
+         Line(
+          points={{82,-6},{88,-6},{88,0},{92,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(bloodPort_in_Extension.bloodPort_in, bloodPort_in) annotation (Line(
+          points={{-86,-8},{-94,-8}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(fickPrinciple.port_add, port_O2) annotation (Line(
+          points={{18.2,-11},{18.2,-7.5},{18,-7.5},{18,0}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple1.port_add, port_CO2) annotation (Line(
+          points={{-5.8,-39},{-5.8,-34.5},{-6,-34.5},{-6,-28}},
+          color={107,45,134},
+          thickness=1));
+      connect(fickPrinciple2.port_add, port_BEox) annotation (Line(
+          points={{-43.8,-81},{-43.8,-74.5},{-44,-74.5},{-44,-68}},
+          color={107,45,134},
+          thickness=1));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+            Line(
+              points={{-88,0},{90,0}},
+              color={0,0,0},
+              thickness=0.5)}), Diagram(coordinateSystem(preserveAspectRatio=
+                false)));
+    end Junction_T_test;
   end Trash;
 
   package Inputs
@@ -6712,7 +7171,7 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{88,-40},{108,-20}})));
       Physiolibrary.Types.Constants.FrequencyConst HR(k=1.2)
         annotation (Placement(transformation(extent={{-18,0},{-2,14}})));
-      Package.junction_T junction_T(useO2PortInput=true, useCO2PortInput=true)
+      Package.Junction_T junction_T(useO2PortInput=true, useCO2PortInput=true)
         annotation (Placement(transformation(extent={{10,-10},{-10,10}},
             rotation=270,
             origin={-170,10})));
@@ -7218,7 +7677,7 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
         O2_MetabolicConsumption(SoluteFlow=0.00018333333333333)
         annotation (Placement(transformation(extent={{12,10},{32,30}})));
-      Package.junction_T junction_T(useO2PortInput=true, useCO2PortInput=true)
+      Package.Junction_T junction_T(useO2PortInput=true, useCO2PortInput=true)
         annotation (Placement(transformation(extent={{10,-10},{-10,10}},
             rotation=0,
             origin={-2,0})));
