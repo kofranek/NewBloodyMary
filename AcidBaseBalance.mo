@@ -5584,8 +5584,9 @@ total"),      Text(
             transformation(extent={{-154,182},{-114,222}}), iconTransformation(
               extent={{-120,-100},{-80,-60}})));
       Real temp = modelSettings.Temperature - 273.15;
-      Real cdO2 = exp(log(0.0105) - 0.0115 * (temp - 37.0) + 0.5 * 0.00042 * (temp - 37.0) ^ 2)*pO2;
-      Physiolibrary.Types.Pressure pO2;
+      Real aO2 = exp(log(0.0105) - 0.0115 * (temp - 37.0) + 0.5 * 0.00042 * (temp - 37.0) ^ 2)/1000;
+      Real cdO2 = aO2*pO2;
+      Physiolibrary.Types.RealIO.PressureOutput pO2 annotation(Placement(transformation(extent = {{-58, -70}, {-18, -30}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation=0,     origin={80,0})));
       Real pK;
       Real aCO2(final displayUnit = "mmol/(l.kPa)");
       Physiolibrary.Types.Concentration cdCO2(displayUnit = "mmol/l");
@@ -5596,8 +5597,8 @@ total"),      Text(
     //   Physiolibrary.Types.RealIO.ConcentrationOutput cHCO3(displayUnit = "mmol/l")
     //     "outgoing concentration of HCO3"                                                                            annotation(Placement(transformation(extent = {{20, -70}, {60, -30}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation = 270, origin = {80, -120})));
      // Physiolibrary.Types.pH pH "pH";
-      Physiolibrary.Types.RealIO.PressureOutput pCO2(start = 6000, displayUnit = "mmHg")
-        "alveolar partial pressure of pCO2"                                                                                  annotation(Placement(transformation(extent = {{-58, -70}, {-18, -30}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation=0,     origin={80,0})));
+      Physiolibrary.Types.Pressure pCO2    "alveolar partial pressure of pCO2";
+
     equation
       ctO2 = cdO2;
       ctCO2 = cdCO2;
@@ -5625,7 +5626,8 @@ total"),      Text(
                 fillPattern=FillPattern.Solid,                                                                                                     fontSize=
                   12,
                 horizontalAlignment=TextAlignment.Left,
-              textString="ctCO2")}));
+              textString="ctCO2"),
+            Rectangle(extent={{-120,140},{100,-100}}, lineColor={28,108,200})}));
     end ComputationpO2pCO2;
 
     model limitO2Metabolism
@@ -5642,14 +5644,21 @@ total"),      Text(
             rotation=0,
             origin={80,80})));
 
-            parameter Physiolibrary.Types.Pressure criticalPoint = 100;
-            parameter Physiolibrary.Types.Fraction respiratoryQuotient = 0.85;
-            parameter Real limitedMetabolismSlope = -2;
-            parameter Physiolibrary.Types.MolarFlowRate metabolismFlowRate = 0.00018333333333333;
-
+      parameter Physiolibrary.Types.Pressure criticalPoint = 100;
+      parameter Physiolibrary.Types.Fraction respiratoryQuotient = 0.85;
+      parameter Real limitedMetabolismSlope = -2;
+      parameter Physiolibrary.Types.MolarFlowRate metabolismFlowRate = 0.00018333333333333;
+      parameter Boolean limiterEnabled = true;
+      Real FirstOrderFlowRate = pO2/0.1*metabolismFlowRate;
     equation
 
-       O2FlowRate = metabolismFlowRate + min(0, (criticalPoint-pO2)*limitedMetabolismSlope);
+      if limiterEnabled and noEvent(FirstOrderFlowRate < metabolismFlowRate) then
+        O2FlowRate = FirstOrderFlowRate;
+      else
+        O2FlowRate = metabolismFlowRate;
+      end if;
+
+    //  O2FlowRate = FirstOrderFlowRate > metabolismFlowRate + min(0, (criticalPoint-pO2)*limitedMetabolismSlope) else metabolismFlowRate;
       CO2FlowRate = O2FlowRate*respiratoryQuotient;
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
@@ -7775,7 +7784,7 @@ Ventilation"),
             coordinateSystem(preserveAspectRatio=false)));
     end TestVolumeConcentrations;
 
-    model TestConcentrationSource
+    model TestMetabolism
       Package.ComputationpO2pCO2 computationpO2pCO2 annotation (Placement(
             transformation(rotation=0, extent={{-20,-20},{0,0}})));
       inner Package.ModelSettings modelSettings(PB=106657.909932)
@@ -7798,7 +7807,7 @@ Ventilation"),
               127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
-    end TestConcentrationSource;
+    end TestMetabolism;
 
     model AlvVentilation_with_ISF_dPCO2
       "Cardiovascular part of Guyton-Coleman-Granger's model from 1972"
@@ -7961,10 +7970,10 @@ Ventilation"),
       Physiolibrary.Chemical.Components.Diffusion diffusion1(Conductance=0.005)
         annotation (Placement(transformation(extent={{10,-108},{-10,-88}})));
       Physiolibrary.Chemical.Components.Substance O2Buffer(useNormalizedVolume=
-            false, solute_start=1e-12)
+            false, solute_start(displayUnit="mol") = 2e-11)
         annotation (Placement(transformation(extent={{18,-82},{26,-74}})));
       Physiolibrary.Chemical.Components.Substance CO2buffer(useNormalizedVolume=
-           false, solute_start=1e-9)
+           false, solute_start=1.6e-9)
         annotation (Placement(transformation(extent={{18,-102},{26,-94}})));
       Physiolibrary.Types.Constants.VolumeConst nearToZeroVolume(k=1e-9)
         annotation (Placement(transformation(extent={{2,-90},{16,-84}})));
@@ -7974,7 +7983,7 @@ Ventilation"),
         annotation (Placement(transformation(extent={{56,-82},{72,-96}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
-      Package.limitO2Metabolism limitO2Metabolism
+      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
       Package.AlveolarVentilation alveolarVentilation
         annotation (Placement(transformation(extent={{114,-26},{134,-6}})));
@@ -8198,9 +8207,6 @@ Ventilation"),
       connect(computationpO2pCO2_1.ctCO2, TissueCO2Concentration.concentration)
         annotation (Line(points={{69.8182,-60.8333},{68.5,-60.8333},{68.5,-83.4},
               {64,-83.4}}, color={0,0,127}));
-      connect(computationpO2pCO2_1.pCO2, limitO2Metabolism.pO2) annotation (
-          Line(points={{86.1818,-56.1667},{102.1,-56.1667},{102.1,-56},{98,-56}},
-            color={0,0,127}));
       connect(limitO2Metabolism.CO2FlowRate, CO2_MetabolicProduction.soluteFlow)
         annotation (Line(points={{114,-48},{124,-48},{124,-94},{88,-94}}, color=
              {0,0,127}));
@@ -8221,6 +8227,9 @@ Ventilation"),
       connect(alveolarVentilation.VA, alveolocapillaryUnit.VAi) annotation (
           Line(points={{135,-13},{138,-13},{138,130},{-24,130},{-24,105.16},{
               -16.78,105.16}}, color={0,0,127}));
+      connect(computationpO2pCO2_1.pO2, limitO2Metabolism.pO2) annotation (Line(
+            points={{86.1818,-56.1667},{92.0909,-56.1667},{92.0909,-56},{98,-56}},
+            color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
                 -100},{100,140}}), graphics={Text(
               extent={{-82,-80},{80,-100}},
