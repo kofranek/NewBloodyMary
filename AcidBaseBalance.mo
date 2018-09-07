@@ -4553,7 +4553,13 @@ total"),      Text(
                 lineColor={0,0,0},
                 fillColor={28,108,200},
                 fillPattern=FillPattern.Solid,
-                textString="Temp")}),                                                                                                    Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
+                textString="Temp"),
+              Text(
+                extent={{-56,-98},{0,-66}},
+                lineColor={0,0,0},
+                fillColor={28,108,200},
+                fillPattern=FillPattern.Solid,
+                textString="cdO2")}),                                                                                                    Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
       end plasmaO2content;
 
       model plasmaO2CO2
@@ -5648,6 +5654,80 @@ total"),      Text(
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end limitO2Metabolism;
+
+    block AlveolarVentilation
+
+      Real PHA = pHa "pH of arterial blood"  annotation (Placement(transformation(extent={{-120,30},
+                {-80,70}}),           iconTransformation(extent={{-122,72},{-100,
+                94}})));
+      Real PCOA = 0.00750061683 * pCO2a  "CO2 tension in alveoli"
+                                                                 annotation (Placement(transformation(extent={{-120,
+                -50},{-80,-10}}),     iconTransformation(extent={{-122,48},{-100,
+                70}})));
+      Real PO2A = 0.00750061683 * pO2a "O2 tension in alveoli" annotation (Placement(transformation(extent={{-120,
+                -10},{-80,30}}),      iconTransformation(extent={{-122,24},{-100,
+                46}})));
+      Real VI0 = 1000/60 *VA0  "Normal value of ventilation"
+                                        annotation (Placement(transformation(extent={{-120,
+                -90},{-80,-50}}),     iconTransformation(extent={{-122,0},{-100,
+                22}})));
+      Real VI "Ventilation"            annotation (Placement(transformation(extent={{60,-50},
+                {100,-10}}),        iconTransformation(extent={{100,16},{128,44}})));
+      Real VR annotation (Placement(transformation(extent={{60,-10},
+                {100,30}}),         iconTransformation(extent={{100,64},{128,92}})));
+
+      Real k1,k2,k3,k4,k5,k6;
+      Real H;
+
+      // 1 l/min =1000/60 m3/s
+      // 1 pascal = 0.00750061683 mmHg
+      Physiolibrary.Types.RealIO.PressureInput pCO2a annotation (Placement(
+            transformation(extent={{-48,-14},{-8,26}}), iconTransformation(extent={{-120,18},
+                {-80,58}})));
+      Physiolibrary.Types.RealIO.pHInput pHa annotation (Placement(transformation(
+              extent={{-50,40},{-10,80}}), iconTransformation(extent={{-120,-32},{-80,
+                8}})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateOutput VA = VI/(1000/60) annotation (Placement(
+            transformation(extent={{10,16},{30,36}}), iconTransformation(extent={{100,
+                20},{120,40}})));
+      Physiolibrary.Types.RealIO.PressureInput pO2a annotation (Placement(
+            transformation(extent={{4,48},{44,88}}), iconTransformation(extent={{-120,60},
+                {-80,100}})));
+      Physiolibrary.Types.RealIO.FractionOutput VRA=VR annotation (Placement(
+            transformation(extent={{-20,-68},{0,-48}}), iconTransformation(extent={{
+                100,-48},{120,-28}})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput VA0 annotation (Placement(
+            transformation(extent={{-74,-100},{-34,-60}}), iconTransformation(
+              extent={{-120,-84},{-80,-44}})));
+    equation
+      k1 = if PHA <= 7.4 then 0.22 else 0.0258;
+      k6 = if PHA <= 7.4 then -12.734 else -5.003;
+      k3 = 0.58;
+      k4 = 3.496;
+      k2 = if PCOA > 40 then 1 else 0.0396;
+      k5 = if PCOA > 40 then -32.08 else 160.11;
+
+      H = 10 ^ (9 - PHA);
+      VR = k1 * H + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5) + k6;
+      VI= VR*VI0;
+      //der(VI) = (VR * VI0 - VI) / 2;
+
+      assert(VR >= 0, "VR out of bounds! Original LIMIT VR >= 0; ");
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}),
+                       graphics={
+            Text(
+              extent={{-100,-24},{102,-80}},
+              lineColor={0,0,255},
+              lineThickness=0.5,
+              textString="Alveolar 
+Ventilation"),
+            Rectangle(
+              extent={{-100,100},{100,-100}},
+              lineColor={0,0,255},
+              lineThickness=0.5)}), Diagram(coordinateSystem(preserveAspectRatio=false,
+              extent={{-100,-100},{100,100}})));
+    end AlveolarVentilation;
   end Package;
 
   package Test
@@ -7713,8 +7793,8 @@ total"),      Text(
         annotation (Line(points={{-59,50},{-38,50}}, color={0,0,127}));
       connect(tO2.y, computationpO2pCO2.ctO2) annotation (Line(points={{-41,0},
               {-30,0},{-30,-1.66667},{-18.1818,-1.66667}}, color={0,0,127}));
-      connect(tCO2.y, computationpO2pCO2.ctCO2) annotation (Line(points={{-41,
-              -18},{-32,-18},{-32,-18.3333},{-18.1818,-18.3333}}, color={0,0,
+      connect(tCO2.y, computationpO2pCO2.ctCO2) annotation (Line(points={{-41,-18},
+              {-32,-18},{-32,-18.3333},{-18.1818,-18.3333}},      color={0,0,
               127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
@@ -7839,7 +7919,7 @@ total"),      Text(
         annotation (Placement(transformation(extent={{-50,100},{-30,120}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
               "ml/min") = 8.19588e-5)
-        annotation (Placement(transformation(extent={{-31,88},{-23,94}})));
+        annotation (Placement(transformation(extent={{93,-38},{101,-32}})));
       Package.BloodConductor
                pulmonary1(Conductance(displayUnit="l/(mmHg.min)")=
           4.1665920538226e-8, useConductanceInput=true)
@@ -7896,6 +7976,8 @@ total"),      Text(
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
       Package.limitO2Metabolism limitO2Metabolism
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
+      Package.AlveolarVentilation alveolarVentilation
+        annotation (Placement(transformation(extent={{114,-26},{134,-6}})));
     equation
       connect(RNormalCO.y, rightStarling.yBase) annotation (Line(
           points={{-47,44},{-40,44},{-40,34}},
@@ -8026,8 +8108,6 @@ total"),      Text(
           points={{-2.64,113.44},{3.68,113.44},{3.68,110},{11,110}},
           color={28,108,200},
           thickness=0.5));
-      connect(VAi.y, alveolocapillaryUnit.VAi) annotation (Line(points={{-22,91},{-20,
-              91},{-20,105.16},{-16.78,105.16}}, color={0,0,127}));
       connect(flowMeasure_tissue.bloodPort_in, venous_blood_ISF_Interface.bloodPort_out)
         annotation (Line(
           points={{-51,-60},{-44.6,-60}},
@@ -8122,11 +8202,25 @@ total"),      Text(
           Line(points={{86.1818,-56.1667},{102.1,-56.1667},{102.1,-56},{98,-56}},
             color={0,0,127}));
       connect(limitO2Metabolism.CO2FlowRate, CO2_MetabolicProduction.soluteFlow)
-        annotation (Line(points={{114,-48},{124,-48},{124,-94},{88,-94}}, color
-            ={0,0,127}));
+        annotation (Line(points={{114,-48},{124,-48},{124,-94},{88,-94}}, color=
+             {0,0,127}));
       connect(O2_MetabolicConsumption.soluteFlow, limitO2Metabolism.O2FlowRate)
-        annotation (Line(points={{96,-74},{118,-74},{118,-64},{114,-64}}, color
-            ={0,0,127}));
+        annotation (Line(points={{96,-74},{118,-74},{118,-64},{114,-64}}, color=
+             {0,0,127}));
+      connect(arterial_blood_ISF_Interface.pH, alveolarVentilation.pHa)
+        annotation (Line(points={{70.4,-33.8},{66,-33.8},{66,-42},{90,-42},{90,
+              -17.2},{114,-17.2}}, color={0,0,127}));
+      connect(arterial_blood_ISF_Interface.pCO2, alveolarVentilation.pCO2a)
+        annotation (Line(points={{70.4,-30.72},{64,-30.72},{64,-46},{84,-46},{
+              84,-12.2},{114,-12.2}}, color={0,0,127}));
+      connect(arterial_blood_ISF_Interface.pO2, alveolarVentilation.pO2a)
+        annotation (Line(points={{70.4,-27.64},{62,-27.64},{62,-8},{114,-8}},
+            color={0,0,127}));
+      connect(VAi.y, alveolarVentilation.VA0) annotation (Line(points={{102,-35},
+              {104,-35},{104,-22.4},{114,-22.4}}, color={0,0,127}));
+      connect(alveolarVentilation.VA, alveolocapillaryUnit.VAi) annotation (
+          Line(points={{135,-13},{138,-13},{138,130},{-24,130},{-24,105.16},{
+              -16.78,105.16}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
                 -100},{100,140}}), graphics={Text(
               extent={{-82,-80},{80,-100}},
