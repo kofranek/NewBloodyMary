@@ -4634,8 +4634,8 @@ total"),      Text(
                 {-50,184},{-50,172},{-39,172}}, color={0,0,127}));
         connect(cdO2, plasmaO2content2.cdO2) annotation (Line(points={{-22,-8},
                 {-64,-8},{-64,3.3}}, color={0,0,127}));
-        connect(inverseBlockConstraints1.u2, plasmaO2content2.cdO2) annotation
-          (Line(points={{-72,172},{-66,172},{-66,174},{-52,174},{-52,152},{34,
+        connect(inverseBlockConstraints1.u2, plasmaO2content2.cdO2) annotation (
+           Line(points={{-72,172},{-66,172},{-66,174},{-52,174},{-52,152},{34,
                 152},{34,-4},{-64,-4},{-64,3.3}}, color={0,0,127}));
         annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent={{-180,
                   -100},{60,240}}),                                                                         graphics={  Rectangle(extent={{
@@ -5430,11 +5430,11 @@ total"),      Text(
                 127}));
         connect(plasmaBEINV_by_integration1.pH, pH) annotation (Line(points={{
                 -14.4727,-45.62},{-4,-45.62},{-4,-45},{13,-45}}, color={0,0,127}));
-        connect(BEox, plasmaBEINV_by_integration1.BEox) annotation (Line(points
-              ={{-116,-20},{-106,-20},{-106,-20.2},{-95.7273,-20.2}}, color={0,
+        connect(BEox, plasmaBEINV_by_integration1.BEox) annotation (Line(points=
+               {{-116,-20},{-106,-20},{-106,-20.2},{-95.7273,-20.2}}, color={0,
                 0,127}));
-        connect(plasmaBEINV_by_integration1.Temp, Temp) annotation (Line(points
-              ={{-96.8455,-91.13},{-132,-91.13},{-132,-92},{-158,-92}}, color={
+        connect(plasmaBEINV_by_integration1.Temp, Temp) annotation (Line(points=
+               {{-96.8455,-91.13},{-132,-91.13},{-132,-92},{-158,-92}}, color={
                 0,0,127}));
         connect(feedback.u1, ctCO2) annotation (Line(points={{-118,174},{-136,
                 174},{-136,170},{-158,170}}, color={0,0,127}));
@@ -5447,14 +5447,14 @@ total"),      Text(
         connect(plasmactCO2content1.pCO2, pCO2) annotation (Line(points={{-95.3,
                 136.2},{-106,136.2},{-106,150},{-20,150},{-20,174},{-14,174},{
                 -14,176},{22,176}}, color={0,0,127}));
-        connect(plasmactCO2content1.ctCO2, feedback.u2) annotation (Line(points
-              ={{-22.7,124.6},{-10,124.6},{-10,156},{-110,156},{-110,166}},
+        connect(plasmactCO2content1.ctCO2, feedback.u2) annotation (Line(points=
+               {{-22.7,124.6},{-10,124.6},{-10,156},{-110,156},{-110,166}},
               color={0,0,127}));
-        connect(plasmaBEINV_by_integration1.pCO2, pCO2) annotation (Line(points
-              ={{-95.7273,-36.6},{-152,-36.6},{-152,150},{-20,150},{-20,174},{
+        connect(plasmaBEINV_by_integration1.pCO2, pCO2) annotation (Line(points=
+               {{-95.7273,-36.6},{-152,-36.6},{-152,150},{-20,150},{-20,174},{
                 -14,174},{-14,176},{22,176}}, color={0,0,127}));
-        connect(plasmaBEINV_by_integration1.cAlb, cAlb) annotation (Line(points
-              ={{-96.1,-55.05},{-103.05,-55.05},{-103.05,-54},{-122,-54}},
+        connect(plasmaBEINV_by_integration1.cAlb, cAlb) annotation (Line(points=
+               {{-96.1,-55.05},{-103.05,-55.05},{-103.05,-54},{-122,-54}},
               color={0,0,127}));
         connect(plasmaBEINV_by_integration1.cPi, cPi) annotation (Line(points={
                 {-96.4727,-73.5},{-103.236,-73.5},{-103.236,-75},{-121,-75}},
@@ -5602,8 +5602,8 @@ O2CO2_INTGR"),                                                                  
         connect(integrator.y, pH) annotation (Line(points={{5,74},{24,74},{24,
                 76},{44,76}}, color={0,0,127}));
         connect(plasmaBEox1.pH, pH) annotation (Line(points={{-7.6,14.66},{-22,
-                14.66},{-22,44},{22,44},{22,74},{24,74},{24,76},{44,76}}, color
-              ={0,0,127}));
+                14.66},{-22,44},{22,44},{22,74},{24,74},{24,76},{44,76}}, color=
+               {0,0,127}));
         connect(plasmaBEox1.BEox, feedback.u2) annotation (Line(points={{71.6,
                 -1},{94,-1},{94,48},{-46,48},{-46,66}}, color={0,0,127}));
         annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent={{-100,
@@ -9832,7 +9832,7 @@ Ventilation"),
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
       Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
-          metabolismFlowRate=0.00033333333333333)
+          metabolismFlowRate=0.00018333333333333)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
       Package.AlveolarVentilation alveolarVentilation
         annotation (Placement(transformation(extent={{114,-26},{134,-6}})));
