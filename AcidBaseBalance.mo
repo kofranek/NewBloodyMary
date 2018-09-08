@@ -7121,8 +7121,8 @@ Ventilation"),
       connect(unlimitedSolutePump.soluteFlow, molarFlowMeasure.molarFlowRate)
         annotation (Line(points={{-74.8,-67.4},{-74.8,-62},{-100,-62},{-100,48},
               {-53,48},{-53,57.6}}, color={0,0,127}));
-      connect(plasmaO2CO2_by_integration.cAlb, cAlb) annotation (Line(points={{
-              7.875,-30.1412},{-5.87917,-30.1412},{-5.87917,-30},{-8,-30}},
+      connect(plasmaO2CO2_by_integration.cAlb, cAlb) annotation (Line(points={{7.875,
+              -30.1412},{-5.87917,-30.1412},{-5.87917,-30},{-8,-30}},
             color={0,0,127}));
       connect(concentrationMeasure.concentration, plasmaO2CO2_by_integration.BEox)
         annotation (Line(points={{-56,-65.4},{-56,-40},{-18,-40},{-18,-15.7647},
@@ -7145,11 +7145,11 @@ Ventilation"),
       connect(plasmaO2CO2_by_integration.cHCO3, hCO3_inflow1.concentration)
         annotation (Line(points={{104.25,-24.9412},{110,-24.9412},{110,42},{0,
               42},{0,64},{-12,64}}, color={0,0,127}));
-      connect(plasmaO2CO2_by_integration.cPi, cPi) annotation (Line(points={{
-              7.5,-43.9059},{1.25,-43.9059},{1.25,-43},{-7,-43}}, color={0,0,
+      connect(plasmaO2CO2_by_integration.cPi, cPi) annotation (Line(points={{7.5,
+              -43.9059},{1.25,-43.9059},{1.25,-43},{-7,-43}},     color={0,0,
               127}));
-      connect(plasmaO2CO2_by_integration.Temp, Temp) annotation (Line(points={{
-              7.875,-57.0588},{-4,-57.0588},{-4,-72},{14,-72},{14,-80},{-4,-80}},
+      connect(plasmaO2CO2_by_integration.Temp, Temp) annotation (Line(points={{7.875,
+              -57.0588},{-4,-57.0588},{-4,-72},{14,-72},{14,-80},{-4,-80}},
             color={0,0,127}));
       connect(measure_pO2fromDissO2_1.Temp, Temp) annotation (Line(points={{
               110.5,79.1},{110.5,66},{132,66},{132,-80},{-4,-80}}, color={0,0,
@@ -9640,7 +9640,7 @@ Ventilation"),
       connect(alveolocapillaryUnit.VAi, VAi.y) annotation (Line(points={{-16.78,
               105.16},{-18,105.16},{-18,95}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
-                -100},{100,140}}), graphics={Text(
+                -120},{140,140}}), graphics={Text(
               extent={{-82,-80},{80,-100}},
               lineColor={175,175,175},
               textString=
@@ -9654,7 +9654,7 @@ Ventilation"),
 <p>Marek Matejak, Charles University, Prague, Czech Republic </p>
 </html>"),
         experiment(StopTime=300),
-        Icon(coordinateSystem(extent={{-120,-100},{100,140}})));
+        Icon(coordinateSystem(extent={{-120,-120},{140,140}})));
     end AlvVentilation_with_ISF_dPCO2;
 
     model AlvVentilation_with_ISF_dPCO2_respirationControl
@@ -10080,7 +10080,7 @@ Ventilation"),
             points={{86.1818,-56.1667},{92.0909,-56.1667},{92.0909,-56},{98,-56}},
             color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
-                -100},{100,140}}), graphics={Text(
+                -120},{140,140}}), graphics={Text(
               extent={{-82,-80},{80,-100}},
               lineColor={175,175,175},
               textString=
@@ -10094,7 +10094,7 @@ Ventilation"),
 <p>Marek Matejak, Charles University, Prague, Czech Republic </p>
 </html>"),
         experiment(StopTime=300),
-        Icon(coordinateSystem(extent={{-120,-100},{100,140}})));
+        Icon(coordinateSystem(extent={{-120,-120},{140,140}})));
     end AlvVentilation_with_ISF_dPCO2_respirationControl;
 
     model Test_BEINV_by_integration
@@ -10206,8 +10206,8 @@ Ventilation"),
               -77.7857},{-86,-77.7857},{-86,-14},{-91,-14}}, color={0,0,127}));
       connect(pO2PCO2_by_integration.BEox, BEox.y) annotation (Line(points={{
               -73.4444,-14.05},{-86,-14},{-91,-14}}, color={0,0,127}));
-      connect(pO2.y, pO2PCO2_by_integration.pO2) annotation (Line(points={{-85,
-              24},{-82,24},{-82,24.3333},{-72.6667,24.3333}}, color={0,0,127}));
+      connect(pO2.y, pO2PCO2_by_integration.pO2) annotation (Line(points={{-85,24},
+              {-82,24},{-82,24.3333},{-72.6667,24.3333}},     color={0,0,127}));
       connect(ramp.y, sin.u)
         annotation (Line(points={{-53,84},{-38,84}}, color={0,0,127}));
       connect(sin.y, pCO2inp.u)
@@ -10360,9 +10360,9 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-120,120},{-100,140}})));
       Package.AlveolocapillaryUnit_by_integration alveolocapillaryUnit
         annotation (Placement(transformation(extent={{-20,94},{8,118}})));
-      Package.Blood_ISF_Interface_by_integration venous_blood_ISF_Interface
+      Package.Blood_ISF_Interface venous_blood_ISF_Interface
         annotation (Placement(transformation(extent={{-46,-76},{-18,-44}})));
-      Package.Blood_ISF_Interface_by_integration arterial_blood_ISF_Interface annotation (
+      Package.Blood_ISF_Interface arterial_blood_ISF_Interface annotation (
           Placement(transformation(
             extent={{-14,-16},{14,16}},
             rotation=90,
@@ -10636,7 +10636,7 @@ Ventilation"),
       connect(alveolocapillaryUnit.VAi, VAi.y) annotation (Line(points={{-16.78,
               105.16},{-18,105.16},{-18,95}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
-                -100},{100,140}}), graphics={Text(
+                -120},{140,140}}), graphics={Text(
               extent={{-82,-80},{80,-100}},
               lineColor={175,175,175},
               textString=
@@ -10650,7 +10650,7 @@ Ventilation"),
 <p>Marek Matejak, Charles University, Prague, Czech Republic </p>
 </html>"),
         experiment(StopTime=300),
-        Icon(coordinateSystem(extent={{-120,-100},{100,140}})));
+        Icon(coordinateSystem(extent={{-120,-120},{140,140}})));
     end AlvVentilation_with_ISF_dPCO2_by_integration;
   end Test;
 
