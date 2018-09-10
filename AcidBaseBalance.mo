@@ -5470,13 +5470,12 @@ total"),      Text(
 
       parameter Physiolibrary.Types.Pressure criticalPoint = 100;
       parameter Physiolibrary.Types.Fraction respiratoryQuotient = 0.85;
-      parameter Real limitedMetabolismSlope = -2;
       parameter Physiolibrary.Types.MolarFlowRate metabolismFlowRate = 0.00018333333333333;
       parameter Boolean limiterEnabled = true;
-      Real FirstOrderFlowRate = pO2/0.1*metabolismFlowRate;
+      Real FirstOrderFlowRate = pO2*metabolismFlowRate/100;
     equation
 
-      if limiterEnabled and noEvent(FirstOrderFlowRate < metabolismFlowRate) then
+      if limiterEnabled and (FirstOrderFlowRate < metabolismFlowRate) then
         O2FlowRate = FirstOrderFlowRate;
       else
         O2FlowRate = metabolismFlowRate;
@@ -7708,7 +7707,7 @@ total"),      Text(
             transformation(rotation=0, extent={{-20,-20},{0,0}})));
       inner Package.ModelSettings modelSettings(PB=106657.909932)
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
-      Package.limitO2Metabolism limitO2Metabolism(limitedMetabolismSlope=-1.5E-06)
+      Package.limitO2Metabolism limitO2Metabolism
         annotation (Placement(transformation(extent={{-40,40},{-20,60}})));
       Modelica.Blocks.Sources.Clock clock
         annotation (Placement(transformation(extent={{-80,40},{-60,60}})));
@@ -7720,10 +7719,10 @@ total"),      Text(
       connect(clock.y, limitO2Metabolism.pO2)
         annotation (Line(points={{-59,50},{-38,50}}, color={0,0,127}));
       connect(tO2.y, computationpO2pCO2.ctO2) annotation (Line(points={{-41,0},
-              {-30,0},{-30,-1.66667},{-18.1818,-1.66667}}, color={0,0,127}));
-      connect(tCO2.y, computationpO2pCO2.ctCO2) annotation (Line(points={{-41,
-              -18},{-32,-18},{-32,-18.3333},{-18.1818,-18.3333}}, color={0,0,
-              127}));
+              {-30,0},{-30,-1.66667},{-18.1818,-1.66667}},
+                                                      color={0,0,127}));
+      connect(tCO2.y, computationpO2pCO2.ctCO2) annotation (Line(points={{-41,-18},
+              {-32,-18},{-32,-18.3333},{-18.1818,-18.3333}},color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end TestMetabolism;
@@ -7902,7 +7901,8 @@ total"),      Text(
         annotation (Placement(transformation(extent={{56,-82},{72,-96}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true)
+      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+          metabolismFlowRate=0.00033333333333333)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
     equation
       connect(RNormalCO.y, rightStarling.yBase) annotation (Line(
@@ -7940,28 +7940,28 @@ total"),      Text(
           thickness=0.5));
       connect(pressureMeasure1.bloodPort_out, leftHeart.bloodPort_in)
         annotation (Line(
-          points={{78.6,60.9},{78.6,54},{4,54},{4,16},{16,16}},
+          points={{78.6,60.9},{78.6,54},{4,54},{4,16},{17,16}},
           color={28,108,200},
           thickness=0.5));
       connect(pressureMeasure1.pressure, leftStarling.u) annotation (Line(
             points={{75.8,65.2},{84,65.2},{84,32},{34,32}}, color={0,0,127}));
       connect(nonMuscle.bloodPort_out, muscle.bloodPort_out) annotation (Line(
-          points={{6,-36},{-8,-36},{-8,-18},{6,-18}},
+          points={{7,-36},{-8,-36},{-8,-18},{7,-18}},
           color={28,108,200},
           thickness=0.5));
       connect(kidney.bloodPort_out, muscle.bloodPort_out) annotation (Line(
-          points={{6,-54},{-8,-54},{-8,-18},{6,-18}},
+          points={{7,-54},{-8,-54},{-8,-18},{7,-18}},
           color={28,108,200},
           thickness=0.5));
 
       connect(leftHeart.bloodPort_out, flowMeasure_art.bloodPort_in)
         annotation (Line(
-          points={{36,16},{72,16},{72,13}},
+          points={{35,16},{72,16},{72,13}},
           color={28,108,200},
           thickness=0.5));
       connect(largeVeins.bloodPort_out, rightAtrium.bloodPort_in) annotation (
           Line(
-          points={{-110,0},{-110,22},{-109.8,22}},
+          points={{-110,-1},{-110,22},{-109.8,22}},
           color={28,108,200},
           thickness=0.5));
       connect(veins.bloodPort_in, flowMeasure_tissue.bloodPort_out) annotation (
@@ -7993,23 +7993,23 @@ total"),      Text(
               127}));
       connect(rightHeart.bloodPort_out, pulmonaryArteries.bloodPort_in)
         annotation (Line(
-          points={{-32,18},{-20,18},{-20,62},{-110,62},{-110,110},{-101.8,110}},
+          points={{-33,18},{-20,18},{-20,62},{-110,62},{-110,110},{-101.8,110}},
           color={28,108,200},
           thickness=0.5));
 
       connect(flowMeasure_ven.bloodPort_out, rightHeart.bloodPort_in)
         annotation (Line(
-          points={{-59,18},{-52,18}},
+          points={{-59,18},{-51,18}},
           color={28,108,200},
           thickness=0.5));
       connect(pulmonary.bloodPort_out, flowConcentrationMeasure.bloodPort_in)
         annotation (Line(
-          points={{-54,110},{-49,110}},
+          points={{-55,110},{-49,110}},
           color={28,108,200},
           thickness=0.5));
       connect(pulmonary1.bloodPort_out, flowMeasure_alv.bloodPort_in)
         annotation (Line(
-          points={{6,80},{10,80},{10,110},{11,110}},
+          points={{5,80},{10,80},{10,110},{11,110}},
           color={28,108,200},
           thickness=0.5));
       connect(pulmonary1.bloodPort_in, pulmonaryArteries.bloodPort_out)
@@ -8043,7 +8043,7 @@ total"),      Text(
           thickness=0.5));
       connect(venous_blood_ISF_Interface.bloodPort_in, muscle.bloodPort_out)
         annotation (Line(
-          points={{-19.4,-60},{-10,-60},{-10,-36},{-8,-36},{-8,-18},{6,-18}},
+          points={{-19.4,-60},{-10,-60},{-10,-36},{-8,-36},{-8,-18},{7,-18}},
           color={28,108,200},
           thickness=0.5));
 
