@@ -3982,6 +3982,37 @@ algorithm
                 lineColor={28,108,200},
                 textString="%name")}));
 
+        annotation (Icon(graphics={
+              Rectangle(
+                extent={{-100,100},{100,-100}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.Solid),
+              Text(
+                extent={{-96,-16},{104,-50}},
+                lineColor={28,108,200},
+                textStyle={TextStyle.Bold,TextStyle.Italic},
+                textString="sCO_eq"),
+              Text(
+                extent={{108,42},{-96,20}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.None,
+                horizontalAlignment=TextAlignment.Left,
+                textString="FMetHb"),
+              Text(
+                extent={{-94,82},{70,60}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.None,
+                horizontalAlignment=TextAlignment.Left,
+                textString="FCOHb"),
+              Text(
+                extent={{-100,-108},{100,-118}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.None,
+                textString="%name")}));
       end sCO_eq;
 
       model sO2CO_eq
@@ -6129,124 +6160,184 @@ algorithm
     */
 
         Modelica.Blocks.Interfaces.RealOutput y annotation (Placement(transformation(
-                extent={{78,36},{98,56}}),    iconTransformation(extent={{100,-10},{120,
+                extent={{78,26},{98,46}}),    iconTransformation(extent={{100,-10},{120,
                   10}})));
         Modelica.Blocks.Interfaces.RealInput FMetHb annotation (Placement(
-              transformation(extent={{-100,44},{-80,64}}), iconTransformation(extent={
+              transformation(extent={{-100,34},{-80,54}}), iconTransformation(extent={
                   {-128,-66},{-100,-38}})));
         Modelica.Blocks.Interfaces.RealInput FCOHb annotation (Placement(
-              transformation(extent={{-100,76},{-80,96}}), iconTransformation(extent={
+              transformation(extent={{-100,66},{-80,86}}), iconTransformation(extent={
                   {-128,-32},{-100,-4}})));
         Modelica.Blocks.Interfaces.RealInput T annotation (Placement(transformation(
-                extent={{-108,-64},{-82,-38}}),
+                extent={{-108,-74},{-82,-48}}),
                                               iconTransformation(extent={{-128,2},{-100,
                   30}})));
         Modelica.Blocks.Interfaces.RealInput a annotation (Placement(transformation(
-                extent={{-108,-38},{-84,-14}}),
+                extent={{-108,-48},{-84,-24}}),
                                               iconTransformation(extent={{-128,36},{-100,
                   64}})));
         Modelica.Blocks.Interfaces.RealInput sO2 annotation (Placement(
-              transformation(extent={{-102,60},{-82,80}}),  iconTransformation(
+              transformation(extent={{-70,88},{-60,98}}),   iconTransformation(
                 extent={{-128,70},{-100,98}})));
-        sCO_eq sCO annotation (Placement(transformation(extent={{-54,64},{-34,
-                  84}})));
-        logit_eq logit annotation (Placement(transformation(extent={{0,16},{20,
-                  36}})));
+        sCO_eq sCO annotation (Placement(transformation(extent={{-54,54},{-34,74}})));
+        logit_eq logit annotation (Placement(transformation(extent={{0,6},{20,26}})));
 
-        Real p0 = 7.0;
-        Real T0 = 37;
+        //Real p0 = 7.0;
+        //Real T0 = 37;
+        //Real dbdT = 0.055;
+
+        //Real pO2COin;
+        //Real sO2CO;
+        //Real ym;
+
 
 
 
         y_eq y_
-          annotation (Placement(transformation(extent={{-6,-30},{14,-10}})));
+          annotation (Placement(transformation(extent={{-6,-40},{14,-20}})));
         dydx_eq dydx_
-          annotation (Placement(transformation(extent={{-8,-58},{12,-38}})));
+          annotation (Placement(transformation(extent={{-8,-68},{12,-48}})));
         Modelica.Blocks.Continuous.Integrator integrator
-          annotation (Placement(transformation(extent={{-38,-4},{-22,12}})));
+          annotation (Placement(transformation(extent={{-36,-14},{-20,2}})));
         Modelica.Blocks.Math.Add add
-          annotation (Placement(transformation(extent={{76,-10},{96,10}})));
+          annotation (Placement(transformation(extent={{76,-20},{96,0}})));
         Modelica.Blocks.Math.Feedback feedback
-          annotation (Placement(transformation(extent={{-62,-6},{-42,14}})));
+          annotation (Placement(transformation(extent={{-60,-16},{-40,4}})));
         Modelica.Blocks.Math.Feedback feedback1
-          annotation (Placement(transformation(extent={{22,18},{42,38}})));
+          annotation (Placement(transformation(extent={{22,8},{42,28}})));
         Modelica.Blocks.Math.Division division
-          annotation (Placement(transformation(extent={{48,12},{68,32}})));
+          annotation (Placement(transformation(extent={{48,2},{68,22}})));
         Modelica.Blocks.Math.Log log
-          annotation (Placement(transformation(extent={{48,-12},{60,0}})));
+          annotation (Placement(transformation(extent={{48,-22},{60,-10}})));
         Modelica.Blocks.Math.Exp exp
-          annotation (Placement(transformation(extent={{52,-78},{30,-56}})));
+          annotation (Placement(transformation(extent={{52,-88},{30,-66}})));
         MpCOof_eq mpCOof_eq
-          annotation (Placement(transformation(extent={{16,54},{48,86}})));
+          annotation (Placement(transformation(extent={{16,44},{48,76}})));
         Modelica.Blocks.Math.Feedback feedback2
-          annotation (Placement(transformation(extent={{54,56},{72,38}})));
+          annotation (Placement(transformation(extent={{54,46},{72,28}})));
+        Modelica.Blocks.Math.Add add1
+          annotation (Placement(transformation(extent={{-44,82},{-34,92}})));
+        Modelica.Blocks.Sources.Constant const(k=-1)
+          annotation (Placement(transformation(extent={{-58,78},{-50,86}})));
+        Modelica.Blocks.Math.Product product1
+          annotation (Placement(transformation(extent={{-24,78},{-16,86}})));
+        Modelica.Blocks.Math.Add add2
+          annotation (Placement(transformation(extent={{-12,80},{-2,90}})));
+        Modelica.Blocks.Sources.Constant const1(k=37)
+          annotation (Placement(transformation(extent={{-94,-98},{-86,-90}})));
+        Modelica.Blocks.Math.Feedback feedback3
+          annotation (Placement(transformation(extent={{-70,-92},{-60,-82}})));
+        Modelica.Blocks.Math.Gain gain(k=0.055)
+          annotation (Placement(transformation(extent={{-54,-94},{-44,-84}})));
+        Modelica.Blocks.Math.Add3 add3_1
+          annotation (Placement(transformation(extent={{-36,16},{-24,28}})));
+        Modelica.Blocks.Math.Log log1
+          annotation (Placement(transformation(extent={{-54,26},{-44,36}})));
+        Modelica.Blocks.Sources.Constant const2(k=7)
+          annotation (Placement(transformation(extent={{-68,28},{-60,36}})));
+        Modelica.Blocks.Math.Exp exp1
+          annotation (Placement(transformation(extent={{-56,6},{-64,14}})));
       equation
-          pO2CO = exp(log(p0) + a + dbdT * (T - T0));
+         // xx=Modelica.Math.log(p0) + a + dbdT * (T - T0);
+          //pO2COin = Modelica.Math.exp(xx);
           //sO2CO = sO2 + OSA.sCO(FCOHb, FMetHb)*(1 - sO2);
-          sO2CO = sO2 + sCO.y*(1 - sO2);
+          //sO2CO = sO2 + sCO.y*(1 - sO2);
           //ym = OSA.logit(sO2CO);
 
-          logit.x=sO2CO;
-          ym=logit.y;
+         // logit.x=sO2CO;
+         // feedback.u1=pO2COin;
 
 
-        connect(sCO.FCOHb, FCOHb) annotation (Line(points={{-55.6,81.2},{-60,
-                81.2},{-60,86},{-90,86}},
-                               color={0,0,127}));
-        connect(sCO.FMetHb, FMetHb) annotation (Line(points={{-55.6,77.2},{-66,
-                77.2},{-66,54},{-90,54}},
-                                   color={0,0,127}));
-        connect(y_.a, a) annotation (Line(points={{-8,-20},{-50,-20},{-50,-26},
-                {-96,-26}}, color={0,0,127}));
-        connect(y_.T, T) annotation (Line(points={{-8,-26.6},{-50,-26.6},{-50,
-                -51},{-95,-51}}, color={0,0,127}));
-        connect(dydx_.a, a) annotation (Line(points={{-9.7,-45.7},{-46,-45.7},{
-                -46,-20},{-50,-20},{-50,-26},{-96,-26}}, color={0,0,127}));
-        connect(dydx_.T, T) annotation (Line(points={{-9.7,-50.5},{-50,-50.5},{
-                -50,-51},{-95,-51}}, color={0,0,127}));
+
+        connect(sCO.FCOHb, FCOHb) annotation (Line(points={{-55.6,71.2},{-60,71.2},{-60,
+                76},{-90,76}}, color={0,0,127}));
+        connect(sCO.FMetHb, FMetHb) annotation (Line(points={{-55.6,67.2},{-66,67.2},{
+                -66,44},{-90,44}}, color={0,0,127}));
+        connect(y_.a, a) annotation (Line(points={{-8,-30},{-50,-30},{-50,-36},{-96,-36}},
+                            color={0,0,127}));
+        connect(y_.T, T) annotation (Line(points={{-8,-36.6},{-50,-36.6},{-50,-61},{-95,
+                -61}},           color={0,0,127}));
+        connect(dydx_.a, a) annotation (Line(points={{-9.7,-55.7},{-46,-55.7},{-46,-30},
+                {-50,-30},{-50,-36},{-96,-36}},          color={0,0,127}));
+        connect(dydx_.T, T) annotation (Line(points={{-9.7,-60.5},{-50,-60.5},{-50,-61},
+                {-95,-61}},          color={0,0,127}));
         connect(feedback.y, integrator.u)
-          annotation (Line(points={{-43,4},{-39.6,4}}, color={0,0,127}));
-        connect(y_.pO2CO, integrator.y) annotation (Line(points={{-8,-12.2},{
-                -16,-12.2},{-16,4},{-21.2,4}}, color={0,0,127}));
-        connect(dydx_.pO2CO, integrator.y) annotation (Line(points={{-9.7,-40.5},
-                {-16,-40.5},{-16,4},{-21.2,4}}, color={0,0,127}));
-        connect(y_.y, feedback1.u2) annotation (Line(points={{15,-20},{32,-20},
-                {32,20}}, color={0,0,127}));
+          annotation (Line(points={{-41,-6},{-37.6,-6}},
+                                                       color={0,0,127}));
+        connect(y_.pO2CO, integrator.y) annotation (Line(points={{-8,-22.2},{-16,-22.2},
+                {-16,-6},{-19.2,-6}},          color={0,0,127}));
+        connect(dydx_.pO2CO, integrator.y) annotation (Line(points={{-9.7,-50.5},{-16,
+                -50.5},{-16,-6},{-19.2,-6}},    color={0,0,127}));
+        connect(y_.y, feedback1.u2) annotation (Line(points={{15,-30},{32,-30},{32,10}},
+                          color={0,0,127}));
         connect(feedback1.y, division.u1)
-          annotation (Line(points={{41,28},{46,28}}, color={0,0,127}));
-        connect(dydx_.y, division.u2) annotation (Line(points={{13,-48},{34,-48},
-                {34,16},{46,16}}, color={0,0,127}));
-        connect(division.y, add.u1) annotation (Line(points={{69,22},{70,22},{
-                70,6},{74,6}}, color={0,0,127}));
-        connect(log.u, integrator.y) annotation (Line(points={{46.8,-6},{14,-6},
-                {14,4},{-21.2,4}}, color={0,0,127}));
+          annotation (Line(points={{41,18},{46,18}}, color={0,0,127}));
+        connect(dydx_.y, division.u2) annotation (Line(points={{13,-58},{34,-58},{34,6},
+                {46,6}},          color={0,0,127}));
+        connect(division.y, add.u1) annotation (Line(points={{69,12},{70,12},{70,-4},{
+                74,-4}},       color={0,0,127}));
+        connect(log.u, integrator.y) annotation (Line(points={{46.8,-16},{14,-16},{14,
+                -6},{-19.2,-6}},   color={0,0,127}));
         connect(log.y, add.u2)
-          annotation (Line(points={{60.6,-6},{74,-6}}, color={0,0,127}));
-        connect(add.y, exp.u) annotation (Line(points={{97,0},{98,0},{98,-26},{
-                62,-26},{62,-67},{54.2,-67}}, color={0,0,127}));
-        connect(exp.y, feedback.u2) annotation (Line(points={{28.9,-67},{-58,
-                -67},{-58,-12},{-52,-12},{-52,-4}}, color={0,0,127}));
-        connect(mpCOof_eq.T, T) annotation (Line(points={{13.76,72.56},{-4,
-                72.56},{-4,74},{-20,74},{-20,50},{-76,50},{-76,-51},{-95,-51}},
+          annotation (Line(points={{60.6,-16},{74,-16}},
+                                                       color={0,0,127}));
+        connect(add.y, exp.u) annotation (Line(points={{97,-10},{98,-10},{98,-36},{62,
+                -36},{62,-77},{54.2,-77}},    color={0,0,127}));
+        connect(exp.y, feedback.u2) annotation (Line(points={{28.9,-77},{-58,-77},{-58,
+                -22},{-50,-22},{-50,-14}},          color={0,0,127}));
+        connect(mpCOof_eq.T, T) annotation (Line(points={{13.76,62.56},{-4,62.56},{-4,
+                64},{-20,64},{-20,40},{-76,40},{-76,-61},{-95,-61}},
                                                               color={0,0,127}));
-        connect(mpCOof_eq.a, a) annotation (Line(points={{13.76,78},{-24,78},{
-                -24,52},{-78,52},{-78,-26},{-96,-26}},
-                                                   color={0,0,127}));
-        connect(mpCOof_eq.FCOHb, FCOHb) annotation (Line(points={{13.76,67.12},
-                {-12,67.12},{-12,56},{-64,56},{-64,86},{-90,86}},
-                                                              color={0,0,127}));
-        connect(mpCOof_eq.FMetHb, FMetHb) annotation (Line(points={{13.76,61.68},
-                {8,61.68},{8,54},{-90,54}},                   color={0,0,127}));
-        connect(mpCOof_eq.y, feedback2.u2) annotation (Line(points={{49.6,70},{
-                63,70},{63,54.2}}, color={0,0,127}));
-        connect(feedback2.y, y) annotation (Line(points={{71.1,47},{74.55,47},{
-                74.55,46},{88,46}}, color={0,0,127}));
-        connect(feedback1.u1, logit.y) annotation (Line(points={{24,28},{22,28},
-                {22,27.8},{20.2,27.8}}, color={0,0,127}));
-        connect(feedback2.u1, integrator.y) annotation (Line(points={{55.8,47},
-                {-16,47},{-16,4},{-21.2,4}}, color={0,0,127}));
-        connect(mpCOof_eq.pO2CO, integrator.y) annotation (Line(points={{13.76,
-                83.44},{-16,83.44},{-16,4},{-21.2,4}}, color={0,0,127}));
+        connect(mpCOof_eq.a, a) annotation (Line(points={{13.76,68},{-24,68},{-24,42},
+                {-78,42},{-78,-36},{-96,-36}},     color={0,0,127}));
+        connect(mpCOof_eq.FCOHb, FCOHb) annotation (Line(points={{13.76,57.12},{-12,57.12},
+                {-12,46},{-64,46},{-64,76},{-90,76}},         color={0,0,127}));
+        connect(mpCOof_eq.FMetHb, FMetHb) annotation (Line(points={{13.76,51.68},{8,51.68},
+                {8,44},{-90,44}},                             color={0,0,127}));
+        connect(mpCOof_eq.y, feedback2.u2) annotation (Line(points={{49.6,60},{63,60},
+                {63,44.2}},        color={0,0,127}));
+        connect(feedback2.y, y) annotation (Line(points={{71.1,37},{74.55,37},{74.55,36},
+                {88,36}},           color={0,0,127}));
+        connect(feedback1.u1, logit.y) annotation (Line(points={{24,18},{22,18},{22,17.8},
+                {20.2,17.8}},           color={0,0,127}));
+        connect(feedback2.u1, integrator.y) annotation (Line(points={{55.8,37},{-16,37},
+                {-16,-6},{-19.2,-6}},
+                                    color={0,0,127}));
+        connect(mpCOof_eq.pO2CO, integrator.y) annotation (Line(points={{13.76,73.44},
+                {-16,73.44},{-16,-6},{-19.2,-6}},
+                                                color={0,0,127}));
+        connect(const.y, add1.u2) annotation (Line(points={{-49.6,82},{-46,82},{-46,84},
+                {-45,84}}, color={0,0,127}));
+        connect(add1.u1, sO2) annotation (Line(points={{-45,90},{-52,90},{-52,93},{-65,
+                93}},      color={0,0,127}));
+        connect(add1.y, product1.u1) annotation (Line(points={{-33.5,87},{-28,87},{-28,
+                84.4},{-24.8,84.4}}, color={0,0,127}));
+        connect(sCO.y, product1.u2) annotation (Line(points={{-33,63.8},{-32,63.8},{-32,
+                79.6},{-24.8,79.6}}, color={0,0,127}));
+        connect(product1.y, add2.u2)
+          annotation (Line(points={{-15.6,82},{-13,82}}, color={0,0,127}));
+        connect(add2.u1, sO2) annotation (Line(points={{-13,88},{-18,88},{-18,94},{-52,
+                94},{-52,93},{-65,93}},    color={0,0,127}));
+        connect(add2.y, logit.x) annotation (Line(points={{-1.5,85},{0,85},{0,32},{-8,
+                32},{-8,17.4},{0.2,17.4}}, color={0,0,127}));
+        connect(feedback3.u2, const1.y) annotation (Line(points={{-65,-91},{-65,-94},{
+                -85.6,-94}}, color={0,0,127}));
+        connect(feedback3.u1, T) annotation (Line(points={{-69,-87},{-76,-87},{-76,-61},
+                {-95,-61}}, color={0,0,127}));
+        connect(gain.u, feedback3.y) annotation (Line(points={{-55,-89},{-57.5,-89},{-57.5,
+                -87},{-60.5,-87}}, color={0,0,127}));
+        connect(const2.y, log1.u) annotation (Line(points={{-59.6,32},{-58,32},{-58,31},
+                {-55,31}}, color={0,0,127}));
+        connect(log1.y, add3_1.u1) annotation (Line(points={{-43.5,31},{-41.75,31},{-41.75,
+                26.8},{-37.2,26.8}}, color={0,0,127}));
+        connect(add3_1.u2, a) annotation (Line(points={{-37.2,22},{-78,22},{-78,-36},{
+                -96,-36}}, color={0,0,127}));
+        connect(gain.y, add3_1.u3) annotation (Line(points={{-43.5,-89},{-42,-89},{-42,
+                -80},{-72,-80},{-72,17.2},{-37.2,17.2}}, color={0,0,127}));
+        connect(exp1.u, add3_1.y) annotation (Line(points={{-55.2,10},{-20,10},{-20,22},
+                {-23.4,22}}, color={0,0,127}));
+        connect(exp1.y, feedback.u1) annotation (Line(points={{-64.4,10},{-70,10},{-70,
+                -6},{-58,-6}}, color={0,0,127}));
         annotation (Icon(graphics={
               Rectangle(
                 extent={{-100,100},{100,-100}},
@@ -6296,119 +6387,41 @@ algorithm
                 horizontalAlignment=TextAlignment.Left,
                 textString="sO2")}), Diagram(graphics={
               Text(
-                extent={{-24,30},{-2,26}},
+                extent={{-22,16},{0,12}},
                 lineColor={28,108,200},
                 horizontalAlignment=TextAlignment.Right,
                 textString="sO2CO"),
               Text(
-                extent={{-86,6},{-64,2}},
+                extent={{-24,0},{-2,-4}},
                 lineColor={28,108,200},
                 horizontalAlignment=TextAlignment.Right,
                 textString="pO2CO"),
               Text(
-                extent={{-24,8},{-2,4}},
+                extent={{-10,22},{12,18}},
+                lineColor={28,108,200},
+                horizontalAlignment=TextAlignment.Right,
+                textString="pO2CO"),
+              Text(
+                extent={{-6,80},{16,76}},
                 lineColor={28,108,200},
                 textString="pO2CO",
                 horizontalAlignment=TextAlignment.Right),
               Text(
-                extent={{-6,32},{16,28}},
-                lineColor={28,108,200},
-                textString="pO2CO",
-                horizontalAlignment=TextAlignment.Right),
-              Text(
-                extent={{-14,92},{8,88}},
-                lineColor={28,108,200},
-                textString="pO2CO",
-                horizontalAlignment=TextAlignment.Right),
-              Text(
-                extent={{0,34},{30,30}},
+                extent={{0,24},{30,20}},
                 lineColor={28,108,200},
                 horizontalAlignment=TextAlignment.Right,
                 textString="um"),
               Text(
-                extent={{0,-14},{30,-18}},
+                extent={{0,-24},{30,-28}},
                 lineColor={28,108,200},
                 horizontalAlignment=TextAlignment.Right,
                 textString="yc"),
               Text(
-                extent={{2,-42},{32,-46}},
+                extent={{2,-52},{32,-56}},
                 lineColor={28,108,200},
                 horizontalAlignment=TextAlignment.Right,
                 textString="dydxc")}));
       end pO2fr_eq;
-
-      model sCO_eq_
-      /*  
-function sCO_eq
-  input Real FCOHb;
-  input Real FMetHb;
-  output Real returnValue;
-protected 
-  Real xFCOHb;
-algorithm 
-  if FCOHb < 0 then
-    xFCOHb := 0;
-  else
-    xFCOHb := FCOHb;
-  end if;
-  returnValue := xFCOHb / (1.0 - FMetHb);
-  */
-
-        Modelica.Blocks.Interfaces.RealInput FCOHb annotation (Placement(
-              transformation(extent={{-116,14},{-76,54}}), iconTransformation(extent={{-132,56},
-                  {-100,88}})));
-        Modelica.Blocks.Interfaces.RealOutput y annotation (Placement(transformation(
-                extent={{96,-16},{116,4}}), iconTransformation(extent={{100,-12},{120,
-                  8}})));
-        Modelica.Blocks.Interfaces.RealInput FMetHb annotation (Placement(
-              transformation(extent={{-114,-50},{-74,-10}}), iconTransformation(
-                extent={{-132,16},{-100,48}})));
-      Real xFCOHb;
-      equation
-
-        if FCOHb < 0 then
-          xFCOHb = 0;
-        else
-          xFCOHb = FCOHb;
-        end if;
-        y = xFCOHb / (1.0 - FMetHb)
-        annotation (Icon(graphics={
-              Text(
-                extent={{-100,-24},{100,-58}},
-                lineColor={28,108,200},
-                textStyle={TextStyle.Bold,TextStyle.Italic},
-                textString="sCO_eq"),
-              Text(
-                extent={{-94,82},{70,60}},
-                lineColor={28,108,200},
-                fillColor={255,213,170},
-                fillPattern=FillPattern.None,
-                horizontalAlignment=TextAlignment.Left,
-                textString="FCOHb"),
-              Text(
-                extent={{108,42},{-96,20}},
-                lineColor={28,108,200},
-                fillColor={255,213,170},
-                fillPattern=FillPattern.None,
-                horizontalAlignment=TextAlignment.Left,
-                textString="FMetHb")}),                    Diagram(graphics={Text(
-                extent={{-44,74},{86,24}},
-                lineColor={28,108,200},
-                fillColor={255,213,170},
-                fillPattern=FillPattern.None,
-                horizontalAlignment=TextAlignment.Left,
-                textString="if FCOHb < 0 then
-    xFCOHb = 0;
-  else
-    xFCOHb = FCOHb;
-  end if;
-  y = xFCOHb / (1.0 - FMetHb)")}));
-
-        annotation (Diagram(graphics={Text(
-                extent={{-88,-104},{16,-126}},
-                lineColor={28,108,200},
-                textString="%name")}));
-      end sCO_eq_;
     end OSA;
 
     connector BloodPort
@@ -9115,21 +9128,21 @@ algorithm
             points={{-21.9,-50.1176},{-73.4,-50.1176},{-73.4,-14.4}}, color={0,0,127}));
       connect(flowConcentrationMeasure.BEox_conc, BEox) annotation (Line(points={{-73.4,
               -14.4},{-73.4,-66},{-90,-66}}, color={0,0,127}));
-      connect(o2CO2.pH, pH) annotation (Line(points={{57.9,-52.5882},{88,
-              -52.5882},{88,-48},{104,-48}},
+      connect(o2CO2.pH, pH) annotation (Line(points={{57.9,-53.0824},{88,
+              -53.0824},{88,-48},{104,-48}},
                                   color={0,0,127}));
       connect(o2CO2.pCO2, pCO2) annotation (Line(points={{57.9,-47.1529},{80,
               -47.1529},{80,-36},{102,-36}},
                                    color={0,0,127}));
-      connect(o2CO2.pO2, pO2) annotation (Line(points={{57.9,-41.7176},{72,
-              -41.7176},{72,-20},{102,-20}},
+      connect(o2CO2.pO2, pO2) annotation (Line(points={{57.9,-42.2118},{72,
+              -42.2118},{72,-20},{102,-20}},
                                    color={0,0,127}));
       connect(molarFlowMeasure.q_out, hCO3_inflow.q_out) annotation (Line(
           points={{-28,40},{-16,40}},
           color={107,45,134},
           thickness=1));
       connect(o2CO2.cHCO3, hCO3_inflow.concentration) annotation (Line(points={{57.9,
-              -57.5294},{74,-57.5294},{74,88},{10,88},{10,40},{-4,40}}, color={0,0,127}));
+              -58.0235},{74,-58.0235},{74,88},{10,88},{10,40},{-4,40}}, color={0,0,127}));
       connect(unlimitedSolutePump1.soluteFlow, unlimitedSolutePump.soluteFlow)
         annotation (Line(points={{-18,57.2},{-18,54},{-38,54},{-38,73.2}}, color={0,
               0,127}));
@@ -9151,8 +9164,9 @@ algorithm
           thickness=1));
       connect(unlimitedSolutePump2.soluteFlow, molarFlowMeasure1.molarFlowRate)
         annotation (Line(points={{47.4,48},{53.6,48}}, color={0,0,127}));
-      connect(o2CO2.cdO2, o2_inflow.concentration) annotation (Line(points={{57.9,-76.8},
-              {70,-76.8},{70,14},{60,14},{60,22}}, color={0,0,127}));
+      connect(o2CO2.cdO2, o2_inflow.concentration) annotation (Line(points={{57.9,
+              -77.2941},{70,-77.2941},{70,14},{60,14},{60,22}},
+                                                   color={0,0,127}));
       connect(CO2_inflow, molarFlowMeasure2.q_in) annotation (Line(
           points={{-34,-14},{-26,-14}},
           color={107,45,134},
@@ -9169,7 +9183,7 @@ algorithm
         annotation (Line(points={{-18,-20.4},{-18,-26},{49.4,-26},{49.4,-18}},
             color={0,0,127}));
       connect(o2CO2.cdCO2, o2_inflow1.concentration) annotation (Line(points={{57.9,
-              -81.7412},{66,-81.7412},{66,-22},{28,-22},{28,-14},{14,-14}}, color={0,
+              -82.2353},{66,-82.2353},{66,-22},{28,-22},{28,-14},{14,-14}}, color={0,
               0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
             Line(
