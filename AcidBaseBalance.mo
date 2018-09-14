@@ -6424,6 +6424,1331 @@ algorithm
       end pO2fr_eq;
     end OSA;
 
+    package Nerves
+      model AplhaReceptorsActivityFactor
+        //extends Library.BaseFactor2;
+
+        Physiolibrary.Types.RealIO.FractionInput GangliaGeneral_NA(displayUnit="1")       annotation (Placement(transformation(extent={{-100,40},
+                  {-80,60}}), iconTransformation(extent={{-108,-70},{-88,-50}})));
+        Physiolibrary.Types.RealIO.FractionInput AlphaPool_Effect
+                                            annotation (Placement(transformation(extent={{-100,0},
+                  {-80,20}}),
+              iconTransformation(extent={{-108,50},{-88,70}})));
+        Physiolibrary.Types.RealIO.FractionInput AlphaBlockade_Effect
+                     annotation (Placement(transformation(extent={{-42,-46},{-22,-26}}),
+              iconTransformation(extent={{-108,-10},{-88,10}})));
+        Modelica.Blocks.Interfaces.RealInput yBase
+                                 annotation (Placement(transformation(extent={{-10,-10},
+                  {10,10}},
+              rotation=270,
+              origin={86,90}),
+              iconTransformation(extent={{-10,-10},{10,10}},rotation=270,
+              origin={0,70})));
+        Modelica.Blocks.Interfaces.RealOutput y
+                              annotation (Placement(transformation(extent={{-10,-10},
+                  {10,10}},
+              rotation=270,
+              origin={80,-90}),
+              iconTransformation(extent={{-10,-10},{10,10}},  rotation=270,
+              origin={0,-70})));
+
+        parameter Real[:,3] data;
+
+        parameter Physiolibrary.Types.Fraction NEURALK = 0.333;
+        parameter Physiolibrary.Types.Fraction HUMORALK = 0.5;
+        parameter Boolean Switch = false;
+        parameter Physiolibrary.Types.Fraction Setting = 0;
+
+        Modelica.Blocks.Math.Add TotalAgonism(k1=NEURALK, k2=HUMORALK)
+          annotation (Placement(transformation(extent={{-58,20},{-38,40}})));
+        Modelica.Blocks.Logical.Switch switch1
+          annotation (Placement(transformation(extent={{18,28},{38,48}})));
+      Modelica.Blocks.Sources.BooleanConstant booleanConstant(k=Switch)
+        annotation (Placement(transformation(extent={{-28,38},{-8,58}})));
+      Physiolibrary.Types.Constants.FractionConst             Constant(k=Setting)
+        annotation (Placement(transformation(extent={{-30,76},{-10,96}})));
+      Physiolibrary.Blocks.Interpolation.Curve SympsOnConductance(
+        x=data[:, 1],
+        y=data[:, 2],
+        slope=data[:, 3])
+        annotation (Placement(transformation(extent={{30,-40},{50,-20}})));
+        Modelica.Blocks.Math.Product Activity
+          annotation (Placement(transformation(extent={{-6,-40},{14,-20}})));
+        Modelica.Blocks.Math.Product SympsEffect
+                                              annotation (Placement(transformation(
+              extent={{-10,-10},{10,10}},
+              rotation=270,
+              origin={80,-66})));
+      equation
+
+        connect(SympsEffect.u2, SympsOnConductance.val)
+                                        annotation (Line(
+            points={{74,-54},{74,-30},{50,-30}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(SympsOnConductance.u, Activity.y)
+                                    annotation (Line(
+            points={{30,-30},{15,-30}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(Activity.u2, AlphaBlockade_Effect)
+                                                  annotation (Line(
+            points={{-8,-36},{-32,-36}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(Activity.u1, switch1.y)
+                                       annotation (Line(
+            points={{-8,-24},{-20,-24},{-20,2},{62,2},{62,38},{39,38}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(switch1.u3, TotalAgonism.y)
+                                   annotation (Line(
+            points={{16,30},{-37,30}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(switch1.u2, booleanConstant.y) annotation (Line(
+            points={{16,38},{-2,38},{-2,48},{-7,48}},
+            color={255,0,255},
+            smooth=Smooth.None));
+        connect(switch1.u1, Constant.y) annotation (Line(
+            points={{16,46},{10,46},{10,86},{-7.5,86}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(yBase, SympsEffect.u1)
+                                    annotation (Line(
+            points={{86,90},{86,-54}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(SympsEffect.y, y)
+                               annotation (Line(
+            points={{80,-77},{80,-90}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(GangliaGeneral_NA, TotalAgonism.u1) annotation (Line(
+            points={{-90,50},{-70,50},{-70,36},{-60,36}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(AlphaPool_Effect, TotalAgonism.u2) annotation (Line(
+            points={{-90,10},{-70,10},{-70,24},{-60,24}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+                  -100},{100,100}}), graphics={Rectangle(
+                extent={{-100,70},{100,-70}},
+                lineColor={112,143,0},
+                fillPattern=FillPattern.Sphere,
+                fillColor={255,255,255}), Text(
+                extent={{-88,-40},{100,48}},
+                lineColor={0,0,0},
+                fillPattern=FillPattern.Sphere,
+                fillColor={85,255,170},
+                textString="%name")}));
+      end AplhaReceptorsActivityFactor;
+    end Nerves;
+
+    package Ventilation
+      model Ventilation
+        extends Physiolibrary.Icons.Ventilation;
+      Physiolibrary.Types.BusConnector busConnector annotation (Placement(
+            transformation(extent={{66,-30},{86,-10}}), iconTransformation(
+              extent={{80,40},{120,80}})));
+      AlveolarVentilation_STPD alveolarVentilation
+          annotation (Placement(transformation(extent={{-10,-10},{10,10}}, origin={-32,
+                  -38})));
+        NaturalVentilation2 naturalVentilation(
+            DriveOnTidalVolume={{0,0,0},{1,550,400},{10,2630,0}})
+          annotation (Placement(transformation(extent={{46,2},{26,22}})));
+        Modelica.Blocks.Math.Product TotalVentilation
+          annotation (Placement(transformation(extent={{42,24},{48,30}})));
+        RespiratoryNeuralDrive3 respiratoryNeuralDrive2_1
+          annotation (Placement(transformation(extent={{-56,38},{-22,72}})));
+      equation
+        connect(alveolarVentilation.TidalVolume,naturalVentilation. TidalVolume)
+          annotation (Line(
+            points={{-24,-28},{2,-28},{2,14},{24.6,14}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(alveolarVentilation.DeadSpace,naturalVentilation. DeadSpace)
+          annotation (Line(
+            points={{-24,-32},{6.3,-32},{6.3,8},{24.6,8}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(naturalVentilation.ExcessLungWater_Volume,busConnector. ExcessLungWater_Volume)
+          annotation (Line(
+            points={{44.6,4},{76,4},{76,-20}},
+            color={0,0,127},
+            smooth=Smooth.None), Text(
+            string="%second",
+            index=1,
+            extent={{6,3},{6,3}}));
+        connect(naturalVentilation.Thorax_LungInflation,busConnector. Thorax_LungInflation)
+          annotation (Line(
+            points={{44.6,8},{76,8},{76,-20}},
+            color={0,0,127},
+            smooth=Smooth.None), Text(
+            string="%second",
+            index=1,
+            extent={{6,3},{6,3}}));
+        connect(naturalVentilation.RespiratoryMuscleFunctionEffect,busConnector. RespiratoryMuscleFunctionEffect)
+          annotation (Line(
+            points={{44.6,16},{76,16},{76,-20}},
+            color={0,0,127},
+            smooth=Smooth.None), Text(
+            string="%second",
+            index=1,
+            extent={{6,3},{6,3}}));
+        connect(naturalVentilation.RespiratoryCenterOutput_MotorNerveActivity,
+          busConnector.RespiratoryCenter_MotorNerveActivity) annotation (Line(
+            points={{44.6,20},{76,20},{76,-20}},
+            color={0,0,127},
+            smooth=Smooth.None), Text(
+            string="%second",
+            index=1,
+            extent={{6,3},{6,3}}));
+        connect(alveolarVentilation.core_T,busConnector. core_T)
+          annotation (Line(
+            points={{-24,-40},{18,-40},{18,-20},{76,-20}},
+            color={0,0,127},
+            smooth=Smooth.None), Text(
+            string="%second",
+            index=1,
+            extent={{6,3},{6,3}}));
+        connect(naturalVentilation.TidalVolume,TotalVentilation. u2)
+          annotation (Line(
+            points={{24.6,14},{4,14},{4,26},{41.4,26},{41.4,25.2}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(busConnector.RespiratoryCenter_RespRate,TotalVentilation. u1)
+          annotation (Line(
+            points={{76,-20},{76,44},{24,44},{24,28.8},{41.4,28.8}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(TotalVentilation.y,busConnector. BreathingTotalVentilation)
+          annotation (Line(
+            points={{48.3,27},{76,27},{76,-20}},
+            color={0,0,127},
+            smooth=Smooth.None), Text(
+            string="%second",
+            index=1,
+            extent={{6,3},{6,3}}));
+        connect(alveolarVentilation.RespRate,busConnector. RespiratoryCenter_RespRate)
+          annotation (Line(
+            points={{-24,-36},{18,-36},{18,-20},{76,-20}},
+            color={0,0,127},
+            smooth=Smooth.None), Text(
+            string="%second",
+            index=1,
+            extent={{6,3},{6,3}}));
+        connect(busConnector.BarometerPressure,alveolarVentilation. EnvironmentPressure)
+          annotation (Line(
+            points={{76,-20},{-72,-20},{-72,-34},{-40,-34}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(busConnector.AmbientTemperature,alveolarVentilation. AmbientTemperature)
+          annotation (Line(
+            points={{76,-20},{-72,-20},{-72,-28},{-40,-28}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(busConnector.EnvironmentRelativeHumidity,alveolarVentilation. EnvironmentRelativeHumidity)
+          annotation (Line(
+            points={{76,-20},{-72,-20},{-72,-40},{-40,-40}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(respiratoryNeuralDrive2_1.busConnector, busConnector) annotation (
+           Line(
+            points={{-52.6,68.6},{76,68.6},{76,-20}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None));
+        connect(alveolarVentilation.BronchiDilution, busConnector.BronchiDilution)
+          annotation (Line(
+            points={{-22,-48},{76,-48},{76,-20}},
+            color={0,0,127},
+            smooth=Smooth.None), Text(
+            string="%second",
+            index=1,
+            extent={{6,3},{6,3}}));
+      connect(alveolarVentilation.AlveolarVentilation, busConnector.AlveolarVentilation_Env)
+        annotation (Line(
+          points={{-22,-44},{76,-44},{76,-20}},
+          color={0,0,127},
+          smooth=Smooth.None), Text(
+          string="%second",
+          index=1,
+          extent={{6,3},{6,3}}));
+        annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+                  -100},{100,100}}), graphics={Text(
+                extent={{-120,-108},{130,-126}},
+                lineColor={0,0,255},
+                textString="%name")}));
+      end Ventilation;
+
+      model AlveolarVentilation_STPD
+        extends Physiolibrary.Icons.Lungs;
+      //  parameter Real EnvironmentPressure(final displayUnit="mmHg");
+      //  parameter Real EnvironmentTemperature(final displayUnit="degC");
+
+        Physiolibrary.Types.RealIO.FrequencyInput RespRate
+                                               annotation (Placement(transformation(
+                extent={{26,68},{40,82}}),    iconTransformation(
+              extent={{-20,-20},{20,20}},
+              rotation=180,
+              origin={80,20})));
+        Physiolibrary.Types.RealIO.VolumeInput TidalVolume
+                                                  annotation (Placement(
+              transformation(
+              extent={{-18,-18},{10,10}},
+              origin={-50,-32}), iconTransformation(
+              extent={{-20,-20},{20,20}},
+              rotation=180,
+              origin={80,100})));
+        Physiolibrary.Types.RealIO.VolumeInput DeadSpace
+                                                annotation (Placement(transformation(
+                extent={{-68,-76},{-40,-48}}), iconTransformation(
+              extent={{-20,-20},{20,20}},
+              rotation=180,
+              origin={80,60})));
+        Physiolibrary.Types.RealIO.TemperatureInput core_T
+                                               annotation (Placement(
+              transformation(
+              extent={{-20,-20},{8,8}},
+              origin={-48,-80}), iconTransformation(
+              extent={{-20,-20},{20,20}},
+              rotation=180,
+              origin={80,-20})));
+        GasEquation tidalVolume(V2(start=400))
+          annotation (Placement(transformation(extent={{-12,-54},{8,-34}})));
+        GasEquation deadVolume(V2(start=150))
+          annotation (Placement(transformation(extent={{-12,-80},{8,-60}})));
+        Modelica.Blocks.Math.Product alveolarVentilation annotation (Placement(
+            transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={54,52})));
+        VaporPressure vaporPressure annotation (
+            Placement(transformation(
+              extent={{-10,-10},{10,10}},
+              rotation=180,
+              origin={14,90})));
+        Modelica.Blocks.Math.Division vaporPart annotation (Placement(
+              transformation(
+              extent={{-6,-6},{6,6}},
+              rotation=270,
+              origin={-20,34})));
+        Modelica.Blocks.Math.Feedback added_pH2O annotation (Placement(
+              transformation(
+              extent={{-7,-7},{7,7}},
+              rotation=270,
+              origin={-15,61})));
+        VaporPressure vaporPressure1 annotation (
+            Placement(transformation(extent={{-10,-10},{10,10}}, origin={-56,64})));
+        Modelica.Blocks.Math.Product air_pH2O
+          annotation (Placement(transformation(extent={{-36,68},{-26,78}})));
+        Physiolibrary.Types.RealIO.TemperatureInput AmbientTemperature
+                                               annotation (Placement(
+              transformation(
+              extent={{-20,-20},{8,8}},
+              origin={-78,70}),  iconTransformation(
+              extent={{-20,-20},{20,20}},
+              origin={-80,100})));
+        Physiolibrary.Types.RealIO.PressureInput EnvironmentPressure
+                                               annotation (Placement(
+              transformation(
+              extent={{-20,-20},{8,8}},
+              origin={-78,-4}),  iconTransformation(
+              extent={{-20,-20},{20,20}},
+              origin={-80,40})));
+        Physiolibrary.Types.RealIO.FractionInput EnvironmentRelativeHumidity
+                                               annotation (Placement(
+              transformation(
+              extent={{-20,-20},{8,8}},
+              origin={-58,90}),  iconTransformation(
+              extent={{-20,-20},{20,20}},
+              origin={-80,-20})));
+        Modelica.Blocks.Math.Feedback alveolarVolume
+        annotation (Placement(transformation(extent={{58,-46},{78,-26}})));
+        Modelica.Blocks.Math.Feedback airPressureWitoutVapor
+          annotation (Placement(transformation(extent={{-64,0},{-44,-20}})));
+        Physiolibrary.Types.RealIO.VolumeFlowRateOutput AlveolarVentilation
+        annotation (Placement(transformation(extent={{70,22},{84,36}}),
+            iconTransformation(
+            extent={{-20,-20},{20,20}},
+            origin={100,-60})));
+        Modelica.Blocks.Math.Feedback dilution
+          annotation (Placement(transformation(extent={{-30,20},{-10,0}})));
+        Physiolibrary.Types.Constants.FractionConst             Constant(k=1)
+        annotation (Placement(transformation(extent={{-48,6},{-40,14}})));
+        Physiolibrary.Types.RealIO.FractionOutput BronchiDilution
+                                               annotation (Placement(transformation(
+                extent={{6,4},{18,16}}),      iconTransformation(
+              extent={{-20,-20},{20,20}},
+              origin={100,-100})));
+      equation
+
+        connect(TidalVolume,tidalVolume. V1) annotation (Line(
+            points={{-54,-36},{-10.6,-36}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(DeadSpace, deadVolume.V1)   annotation (Line(
+            points={{-54,-62},{-10.6,-62}},
+            color={0,0,127},
+            smooth=Smooth.None));
+      connect(RespRate, alveolarVentilation.u2) annotation (Line(
+          points={{33,75},{48,75},{48,64}},
+          color={0,0,127},
+          smooth=Smooth.None));
+        connect(core_T, vaporPressure.T)   annotation (Line(
+            points={{-54,-86},{94,-86},{94,90},{22.6,90}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(air_pH2O.y, added_pH2O.u2) annotation (Line(
+            points={{-25.5,73},{-25.5,61},{-20.6,61}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(added_pH2O.y, vaporPart.u1) annotation (Line(
+            points={{-15,54.7},{-14,54.7},{-14,54},{-16,54},{-16,44},{-16.4,44},
+              {-16.4,41.2}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(AmbientTemperature, vaporPressure1.T) annotation (Line(
+            points={{-84,64},{-64.6,64}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(EnvironmentRelativeHumidity, air_pH2O.u1) annotation (Line(
+            points={{-64,84},{-40,84},{-40,76},{-37,76}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(core_T, tidalVolume.T1) annotation (Line(
+            points={{-54,-86},{-32,-86},{-32,-48},{-10.6,-48}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(core_T, deadVolume.T1) annotation (Line(
+            points={{-54,-86},{-32,-86},{-32,-74},{-10.6,-74}},
+            color={0,0,127},
+            smooth=Smooth.None));
+      connect(alveolarVolume.y, alveolarVentilation.u1) annotation (Line(
+          points={{77,-36},{90,-36},{90,80},{60,80},{60,64}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(tidalVolume.V2, alveolarVolume.u1) annotation (Line(
+          points={{6.6,-36},{60,-36}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(alveolarVolume.u2, deadVolume.V2) annotation (Line(
+          points={{68,-44},{68,-62},{6.6,-62}},
+          color={0,0,127},
+          smooth=Smooth.None));
+        connect(EnvironmentPressure, airPressureWitoutVapor.u1) annotation (Line(
+            points={{-84,-10},{-62,-10}},
+            color={0,0,127},
+            smooth=Smooth.None));
+
+        connect(airPressureWitoutVapor.y, tidalVolume.P1) annotation (Line(
+            points={{-45,-10},{-28,-10},{-28,-42},{-10.6,-42}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(airPressureWitoutVapor.y, deadVolume.P1) annotation (Line(
+            points={{-45,-10},{-28,-10},{-28,-68},{-10.6,-68}},
+            color={0,0,127},
+            smooth=Smooth.None));
+
+        connect(Constant.y, dilution.u1) annotation (Line(
+            points={{-39,10},{-28,10}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(vaporPart.y, dilution.u2) annotation (Line(
+            points={{-20,27.4},{-20,18}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(dilution.y, BronchiDilution) annotation (Line(
+            points={{-11,10},{12,10}},
+            color={0,0,127},
+            smooth=Smooth.None));
+      connect(vaporPressure1.VaporPressure_, air_pH2O.u2) annotation (Line(
+          points={{-44.6,64},{-40,64},{-40,70},{-37,70}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(vaporPressure.VaporPressure_, added_pH2O.u1) annotation (Line(
+          points={{2.6,90},{-15,90},{-15,66.6}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(alveolarVentilation.y, AlveolarVentilation) annotation (Line(
+          points={{54,41},{54,29},{77,29}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(added_pH2O.y, airPressureWitoutVapor.u2) annotation (Line(
+          points={{-15,54.7},{-54,54.7},{-54,-2}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(EnvironmentPressure, vaporPart.u2) annotation (Line(
+          points={{-84,-10},{-70,-10},{-70,41.2},{-23.6,41.2}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(EnvironmentPressure, tidalVolume.P2) annotation (Line(
+          points={{-84,-10},{-70,-10},{-70,-22},{30,-22},{30,-42},{6.6,-42}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(EnvironmentPressure, deadVolume.P2) annotation (Line(
+          points={{-84,-10},{-70,-10},{-70,-22},{30,-22},{30,-68},{6.6,-68}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(AmbientTemperature, tidalVolume.T2) annotation (Line(
+          points={{-84,64},{-94,64},{-94,-98},{38,-98},{38,-48},{6.6,-48}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(AmbientTemperature, deadVolume.T2) annotation (Line(
+          points={{-84,64},{-94,64},{-94,-98},{38,-98},{38,-74},{6.6,-74}},
+          color={0,0,127},
+          smooth=Smooth.None));
+       annotation (
+          Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
+                  100,100}}), graphics={Text(
+                extent={{-100,-100},{76,-70}},
+                textString="%name",
+                lineColor={0,0,255})}));
+      end AlveolarVentilation_STPD;
+
+      model GasEquation
+
+        Physiolibrary.Types.RealIO.VolumeInput
+                                           V1(
+                                         displayUnit="ml") annotation (Placement(transformation(extent={
+                  {-118,42},{-78,82}}), iconTransformation(extent={{-100,66},{-72,94}})));
+        Physiolibrary.Types.RealIO.PressureInput
+                                           P1(
+                                         displayUnit="mmHg") annotation (Placement(transformation(extent={
+                  {-118,42},{-78,82}}), iconTransformation(extent={{-100,6},{-72,34}})));
+        Physiolibrary.Types.RealIO.TemperatureInput
+                                           T1(
+                                         displayUnit="degC") annotation (Placement(transformation(extent={
+                  {-118,42},{-78,82}}), iconTransformation(extent={{-100,-54},{-72,
+                  -26}})));
+        Physiolibrary.Types.RealIO.PressureInput
+                                           P2(
+                                        displayUnit="mmHg") annotation (Placement(transformation(extent={
+                  {-118,42},{-78,82}}), iconTransformation(
+              extent={{-14,-14},{14,14}},
+              rotation=180,
+              origin={86,20})));
+        Physiolibrary.Types.RealIO.TemperatureInput
+                                           T2(
+                                         displayUnit="degC") annotation (Placement(transformation(extent={
+                  {-118,42},{-78,82}}), iconTransformation(
+              extent={{-14,-14},{14,14}},
+              rotation=180,
+              origin={86,-40})));
+        Physiolibrary.Types.RealIO.VolumeOutput
+                                            V2(
+                                          displayUnit="ml") annotation (Placement(transformation(extent=
+                  {{56,54},{96,94}}), iconTransformation(extent={{72,66},{100,94}})));
+      equation
+        (P1*V1)/(T1)=(P2*V2)/(T2);
+        annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+                  -100},{100,100}}), graphics={
+              Rectangle(
+                extent={{-100,100},{100,-100}},
+                lineColor={0,0,0},
+                fillColor={170,213,255},
+                fillPattern=FillPattern.Solid),
+              Rectangle(
+                extent={{0,100},{0,-100}},
+                lineColor={0,0,0},
+                fillColor={170,213,255},
+                fillPattern=FillPattern.Solid),
+              Text(
+                extent={{-98,136},{100,100}},
+                lineColor={0,0,0},
+                fillColor={170,213,255},
+                fillPattern=FillPattern.Solid,
+                textString="%name")}));
+      end GasEquation;
+
+      model VaporPressure
+
+        Physiolibrary.Types.RealIO.TemperatureInput
+                                           T(
+                                        displayUnit="degC")   annotation (Placement(transformation(extent={
+                  {-118,42},{-78,82}}), iconTransformation(extent={{-100,-14},{-72,14}})));
+        Physiolibrary.Types.RealIO.PressureOutput
+                                            VaporPressure_(
+                                                    displayUnit="mmHg")
+                                                          annotation (Placement(transformation(extent=
+                  {{56,54},{96,94}}), iconTransformation(extent={{100,-14},{128,14}})));
+      equation
+       VaporPressure_ =  if T<273.15 then 0 else if T>373.15 then 101325 else
+                          (101325/760)*exp(18.6686-(4030.183/(T-273.15+235)));
+        annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+                  -100},{100,100}}), graphics={Rectangle(
+                extent={{-100,40},{100,-40}},
+                lineColor={0,0,0},
+                fillColor={170,213,255},
+                fillPattern=FillPattern.Solid)}));
+      end VaporPressure;
+
+      model RespiratoryNeuralDrive3
+        extends Physiolibrary.Icons.RespiratoryCenter;
+      AfferentPath afferentPath annotation (Placement(
+              transformation(extent={{-10,-10},{10,10}}, origin={66,32})));
+      Physiolibrary.Types.BusConnector busConnector annotation (Placement(
+            transformation(extent={{-80,80},{-60,100}}), iconTransformation(
+              extent={{-100,60},{-60,100}})));
+        PeripheralChemoreceptors peripheralChemoreceptors
+        annotation (Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={-26,36})));
+        SkeletalMuscleMetaboreflex skeletalMuscleMetaboreflex
+        annotation (Placement(transformation(extent={{-18,-16},{2,4}})));
+        CentralChemoreceptors centralChemoreceptors
+        annotation (Placement(transformation(extent={{8,48},{28,68}})));
+      EfferentPath efferentPath
+          annotation (Placement(transformation(extent={{50,-22},{70,-2}})));
+      /*  Modelica.Blocks.Logical.TerminateSimulation terminateSimulation(
+      terminationText="solution reached", condition=false and (
+        afferentPath.TotalDrive < efferentPath.TotalDrive))
+    annotation (Placement(transformation(extent={{-10,-84},{70,-76}})));
+
+Physiolibrary.Utilities.ConstantFromFile RespiratoryCenter_RespRate(
+                                    varName="RespiratoryCenter-Output.Rate")
+    "Respiration rate. [1/min]"
+annotation (Placement(transformation(extent={{-92,-78},{-86,-72}})));
+Physiolibrary.Utilities.ConstantFromFile
+    RespiratoryCenter_MotorNerveActivity(     varName="RespiratoryCenter-Output.MotorNerveActivity")
+    "Neural activity from respiratory center to respiratory muscle. []"
+annotation (Placement(transformation(extent={{-92,-88},{-86,-82}})));
+Physiolibrary.Utilities.ConstantFromFile
+    RespiratoryCenterIntegration_TotalDrive(                                      varName=
+        "RespiratoryCenter-Integration.TotalDrive")
+    "RespiratoryCenter-Integration.TotalDrive"
+annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
+  Physiolibrary.Blocks.Constant Constant(
+                                   k=1.04494)
+    annotation (Placement(transformation(extent={{24,-84},{32,-76}})));
+  Modelica.Blocks.Sources.Clock clock(offset=0.75)
+    annotation (Placement(transformation(extent={{-28,-80},{-8,-60}})));
+*/
+      Physiolibrary.Blocks.Math.HomotopyStrongComponentBreaker homotopy(
+          defaultValue=1, defaultSlope=0.1)
+        annotation (Placement(transformation(extent={{82,32},{90,40}})));
+      Physiolibrary.Types.Constants.OneConst one
+        annotation (Placement(transformation(extent={{8,-34},{16,-26}})));
+      equation
+       // efferentPath.TotalDrive=homotopy(actual=afferentPath.TotalDrive, simplified=1.045922);
+
+        connect(busConnector, afferentPath.busConnector)      annotation (Line(
+            points={{-70,90},{61.8,90},{61.8,40.2}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None));
+        connect(busConnector, peripheralChemoreceptors.busConnector)
+                                                           annotation (Line(
+            points={{-70,90},{-25.8,90},{-25.8,43.6}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None));
+        connect(peripheralChemoreceptors.Chemoreceptors_FiringRate,
+          afferentPath.Chemoreceptors_FiringRate)
+          annotation (Line(
+            points={{-16,38},{58,38}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(skeletalMuscleMetaboreflex.NA, afferentPath.Metaboreflex)
+          annotation (Line(
+            points={{2,-6},{28,-6},{28,34},{56.2,34}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(busConnector.skeletalMuscle_pH_intracellular,
+          skeletalMuscleMetaboreflex.skeletalMuscle_pH) annotation (Line(
+            points={{-70,90},{-70,-6},{-18,-6}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(busConnector.GangliaGeneral_NA, peripheralChemoreceptors.GangliaGeneral_NA)
+          annotation (Line(
+            points={{-70,90},{-70,40},{-36,40}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(busConnector.brain_pH_intracellular, centralChemoreceptors.Brain_pH_intracellular)
+          annotation (Line(
+            points={{-70,90},{-70,64},{10,64}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(busConnector.O2Artys_PO2, peripheralChemoreceptors.artys_pO2)
+                                                                    annotation (
+            Line(
+            points={{-70,90},{-70,32},{-36,32}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(busConnector.Artys_pH, peripheralChemoreceptors.artys_ph)
+                                                                annotation (Line(
+            points={{-70,90},{-70,36},{-36,36}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(efferentPath.RespRate, busConnector.RespiratoryCenter_RespRate)
+          annotation (Line(
+            points={{69.4,-8},{98,-8},{98,90},{-70,90}},
+            color={0,0,127},
+            smooth=Smooth.None), Text(
+            string="%second",
+            index=1,
+            extent={{6,3},{6,3}}));
+        connect(efferentPath.RespiratoryCenterOutput_MotorNerveActivity,
+          busConnector.RespiratoryCenter_MotorNerveActivity) annotation (Line(
+            points={{69.6,-16},{98,-16},{98,90},{-70,90}},
+            color={0,0,127},
+            smooth=Smooth.None), Text(
+            string="%second",
+            index=1,
+            extent={{6,3},{6,3}}));
+        connect(efferentPath.busConnector, busConnector)              annotation (
+           Line(
+            points={{55.8,-3.8},{50,-3.8},{50,90},{-70,90}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None));
+
+        connect(centralChemoreceptors.CentralChemoreceptors, afferentPath.CentralChemoreceptors)
+          annotation (Line(
+            points={{27.4,62},{38,62},{38,29},{58,29}},
+            color={0,0,127},
+            smooth=Smooth.None));
+      connect(afferentPath.TotalDrive, homotopy.u) annotation (Line(
+          points={{75.4,36},{81.2,36}},
+          color={0,0,127},
+          smooth=Smooth.None));
+      connect(one.y, efferentPath.TotalDrive) annotation (Line(
+          points={{17,-30},{34,-30},{34,-10},{50.2,-10}},
+          color={0,0,127},
+          smooth=Smooth.None));
+        annotation ( Icon(coordinateSystem(
+                preserveAspectRatio=true, extent={{-100,-100},{100,100}}),
+              graphics={Text(
+                extent={{-142,-108},{142,-140}},
+                lineColor={0,0,255},
+                textString="%name")}));
+      end RespiratoryNeuralDrive3;
+
+      model PeripheralChemoreceptors
+        extends Physiolibrary.Icons.PeripheralChemoreceptors;
+      Physiolibrary.Blocks.Interpolation.Curve PhEffectCurve(
+        x=PhEffect[:, 1],
+        y=PhEffect[:, 2],
+        slope=PhEffect[:, 3])
+        annotation (Placement(transformation(extent={{-24,8},{12,44}})));
+        Physiolibrary.Types.RealIO.FractionOutput
+                                              Chemoreceptors_FiringRate
+          annotation (Placement(transformation(extent={{98,-18},{122,6}}),
+              iconTransformation(
+              extent={{-20,-20},{20,20}},
+              rotation=90,
+              origin={-20,100})));
+        parameter Real PhEffect[:,3]={{7.1,2,0},{7.4,0.4,-3},{7.7,0,0}}; //Orginal values from Coleman {{ 7.10,  2.0,  0}, { 7.44,  0.4,  -3.0}, { 7.70,  0.0,  0}} was corrected, because normal arteries pH is not 7.44 but 7.4
+        parameter Real PO2Effect[:,3]={{  30,  10.0,  0}, {  60,   2.0,  -0.05}, {  85,   0.5,  -0.005}, { 200,   0.2,  0}}; //Orginal values from Coleman {{  30,  10.0,  0}, {  60,   2.0,  -0.05}, {  94,   0.5,  -0.005}, { 400,   0.2,  0}} was corrected, because normal arteries pO2 is not 94 but 85
+        parameter Real PO2Effect_original[:,3]={{  30,  10.0,  0}, {  60,   2.0,  -0.05}, {  94,   0.5,  -0.005}, { 200,   0.2,  0}};
+        parameter Real SteadyState[:,3]={{  0,  0,  0}, {  1,  1,  0.3}, { 10,  2,  0}};
+        parameter Physiolibrary.Types.Time Tau(displayUnit="h") = 20*60*60;
+
+      Physiolibrary.Types.BusConnector busConnector annotation (Placement(
+            transformation(extent={{-102,64},{-82,84}}), iconTransformation(
+              extent={{-96,-18},{-56,22}})));
+        Physiolibrary.Types.RealIO.FractionInput
+                                             GangliaGeneral_NA
+          annotation (Placement(transformation(extent={{-74,44},{-48,70}}),
+              iconTransformation(extent={{-20,-20},{20,20}},
+              rotation=90,
+              origin={-40,-100})));
+        Nerves.AplhaReceptorsActivityFactor aplhaReceptorsActivityFactor(
+          data={{0,0.0,0},{1,0.1,0.2},{4,0.6,0}},
+          NEURALK=0.5,
+          HUMORALK=0.5)
+          annotation (Placement(transformation(extent={{-26,68},{-6,88}})));
+      Physiolibrary.Types.Constants.FractionConst             Constant(k=1)
+        annotation (Placement(transformation(extent={{-30,90},{-22,98}})));
+      Physiolibrary.Blocks.Interpolation.Curve PO2EffectCurve(
+        x=PO2Effect[:, 1],
+        y=PO2Effect[:, 2],
+        slope=PO2Effect[:, 3],
+          Xscale=101325/760)
+        annotation (Placement(transformation(extent={{-24,-38},{12,-2}})));
+        Modelica.Blocks.Math.Sum sum(nin=3)
+          annotation (Placement(transformation(extent={{32,0},{52,20}})));
+        Modelica.Blocks.Math.Product product
+          annotation (Placement(transformation(extent={{74,-16},{94,4}})));
+      Physiolibrary.Blocks.Interpolation.Curve SteadyStateCurve(
+        x=SteadyState[:, 1],
+        y=SteadyState[:, 2],
+        slope=SteadyState[:, 3]) "ChemoreceptorAcclimation"
+        annotation (Placement(transformation(extent={{-62,-96},{-26,-60}})));
+        Modelica.Blocks.Math.Feedback feedback
+          annotation (Placement(transformation(extent={{-8,-88},{12,-68}})));
+      Physiolibrary.Blocks.Math.Integrator integrator(
+        stateName="ChemoreceptorAcclimation.Effect",
+        y_start=1.01445,
+          k=1/Tau) "ChemoreceptorAcclimation.Effect"
+        annotation (Placement(transformation(extent={{24,-88},{44,-68}})));
+        Physiolibrary.Types.RealIO.pHInput   artys_ph
+          annotation (Placement(transformation(extent={{-106,16},{-66,56}}),
+              iconTransformation(extent={{-20,-20},{20,20}},
+              rotation=90,
+              origin={0,-100})));
+        Physiolibrary.Types.RealIO.PressureInput
+                                             artys_pO2
+          annotation (Placement(transformation(extent={{-106,-20},{-66,20}}),
+              iconTransformation(extent={{-20,-20},{20,20}},
+              rotation=90,
+              origin={40,-100})));
+      Physiolibrary.Blocks.Interpolation.Curve PO2EffectCurve1(
+        x=PO2Effect_original[:, 1],
+        y=PO2Effect_original[:, 2],
+        slope=PO2Effect_original[:, 3],
+          Xscale=101325/760)
+        annotation (Placement(transformation(extent={{40,52},{76,88}})));
+      equation
+        assert(artys_pO2>30,"artys_pO2 should be greater then 30 mmHg!");
+        connect(Constant.y, aplhaReceptorsActivityFactor.yBase) annotation (Line(
+            points={{-21,94},{-16,94},{-16,85}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(busConnector.AlphaPool_Effect, aplhaReceptorsActivityFactor.AlphaPool_Effect)
+          annotation (Line(
+            points={{-92,74},{-60,74},{-60,84},{-25.8,84}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(busConnector.AlphaBlocade_Effect, aplhaReceptorsActivityFactor.AlphaBlockade_Effect)
+          annotation (Line(
+            points={{-92,74},{-60,74},{-60,78},{-25.8,78}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(aplhaReceptorsActivityFactor.GangliaGeneral_NA, GangliaGeneral_NA)
+          annotation (Line(
+            points={{-25.8,72},{-46,72},{-46,57},{-61,57}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(PhEffectCurve.val, sum.u[2]) annotation (Line(
+            points={{12,26},{26,26},{26,10},{30,10}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(aplhaReceptorsActivityFactor.y, sum.u[1]) annotation (Line(
+            points={{-16,71},{-16,54},{26,54},{26,8.66667},{30,8.66667}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(product.y, Chemoreceptors_FiringRate) annotation (Line(
+            points={{95,-6},{110,-6}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(sum.y, product.u1) annotation (Line(
+            points={{53,10},{60,10},{60,0},{72,0}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(sum.y, SteadyStateCurve.u) annotation (Line(
+            points={{53,10},{60,10},{60,-42},{-82,-42},{-82,-78},{-62,-78}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(integrator.y, product.u2) annotation (Line(
+            points={{45,-78},{66,-78},{66,-12},{72,-12}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(SteadyStateCurve.val, feedback.u1) annotation (Line(
+            points={{-26,-78},{-6,-78}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(integrator.y, feedback.u2) annotation (Line(
+            points={{45,-78},{56,-78},{56,-98},{2,-98},{2,-86}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(feedback.y, integrator.u) annotation (Line(
+            points={{11,-78},{22,-78}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(PhEffectCurve.u, artys_ph) annotation (Line(
+            points={{-24,26},{-50,26},{-50,36},{-86,36}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(PO2EffectCurve.u, artys_pO2) annotation (Line(
+            points={{-24,-20},{-50,-20},{-50,0},{-86,0}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(artys_pO2, PO2EffectCurve1.u) annotation (Line(
+            points={{-86,0},{20,0},{20,70},{40,70}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(PO2EffectCurve1.val, sum.u[3]) annotation (Line(
+            points={{76,70},{88,70},{88,32},{26,32},{26,11.3333},{30,11.3333}},
+            color={0,0,127},
+            smooth=Smooth.None));
+
+        annotation ( Icon(coordinateSystem(
+                preserveAspectRatio=true, extent={{-100,-100},{100,100}}),
+              graphics={Text(
+                extent={{-124,13},{124,-13}},
+                lineColor={0,0,255},
+                textString="%name",
+                origin={122,-9},
+                rotation=90)}));
+      end PeripheralChemoreceptors;
+
+      model NaturalVentilation2
+        extends Physiolibrary.Icons.Ventilation;
+        Physiolibrary.Types.RealIO.FrequencyInput
+          RespiratoryCenterOutput_MotorNerveActivity(
+             displayUnit="Hz")                             annotation (Placement(transformation(extent={{-88,40},
+                  {-48,80}}),           iconTransformation(extent={{-100,66},{-72,94}})));
+        Physiolibrary.Types.RealIO.FractionInput Thorax_LungInflation(
+                                                            displayUnit="1")
+                                                           annotation (Placement(transformation(extent={{-88,-22},
+                  {-48,18}}),           iconTransformation(extent={{-100,-54},{
+                  -72,-26}})));
+        Physiolibrary.Types.RealIO.VolumeInput ExcessLungWater_Volume(
+                                                             displayUnit=
+              "1")                                      annotation (Placement(transformation(extent={{-88,-58},
+                  {-48,-18}}),          iconTransformation(extent={{-100,-94},{
+                  -72,-66}})));
+        Physiolibrary.Types.RealIO.VolumeOutput TidalVolume(
+                                                   displayUnit="ml")
+                                                          annotation (Placement(transformation(extent={{52,-48},
+                  {92,-8}}),          iconTransformation(extent={{100,6},{128,34}})));
+        Physiolibrary.Types.RealIO.VolumeOutput DeadSpace(
+                                                  displayUnit="ml")
+                                                          annotation (Placement(transformation(extent={{14,-96},
+                  {54,-56}}),         iconTransformation(extent={{100,-54},{128,
+                  -26}})));
+        Physiolibrary.Types.RealIO.FractionInput RespiratoryMuscleFunctionEffect(
+                                                                      displayUnit= "1")
+                                                        annotation (Placement(transformation(extent={{-88,6},
+                  {-48,46}}),           iconTransformation(extent={{-100,26},{-72,
+                  54}})));
+
+        parameter Physiolibrary.Types.Fraction DeadSpaceSlope =   0.20;
+        parameter Physiolibrary.Types.Volume DeadSpaceMin =                            60.0e-6;
+        parameter Real[:,3] DriveOnTidalVolume =  {{  0,     0,    0}, {  1,   450,  400}, { 10,  2630,    0}};  //corrected from {{  0,     0,    0}, {  1,   550,  400}, { 10,  2630,    0}}
+
+      // Real TidalVolumeBasic;
+      Physiolibrary.Blocks.Interpolation.Curve curve(
+        x=DriveOnTidalVolume[:, 1],
+        y=DriveOnTidalVolume[:, 2],
+        slope=DriveOnTidalVolume[:, 3],
+        Yscale=1e-6)
+        annotation (Placement(transformation(extent={{-2,32},{18,52}})));
+
+      Physiolibrary.Blocks.Factors.Normalization LungInflation
+        annotation (Placement(transformation(extent={{16,6},{36,26}})));
+      Physiolibrary.Blocks.Factors.Normalization FunctionEffect
+        annotation (Placement(transformation(extent={{16,16},{36,36}})));
+        Modelica.Blocks.Math.Max max
+          annotation (Placement(transformation(extent={{36,-38},{56,-18}})));
+        Modelica.Blocks.Math.Feedback tidalVol0 annotation (Placement(transformation(
+              extent={{-10,-10},{10,10}},
+              rotation=270,
+              origin={26,-2})));
+      Physiolibrary.Types.Constants.VolumeConst Breathing_TidalVolumeMin(k=0)
+        "Breathing.TidalVolumeMin"
+        annotation (Placement(transformation(extent={{4,-42},{20,-26}})));
+      Physiolibrary.Types.Constants.VolumeConst Breathing_DeadSpaceMin(k=
+            DeadSpaceMin) "Breathing.DeadSpaceMin"
+        annotation (Placement(transformation(extent={{-88,-102},{-58,-72}})));
+      Physiolibrary.Types.Constants.FractionConst             deadSpaceSlope(k=
+            DeadSpaceSlope)
+        annotation (Placement(transformation(extent={{-82,-80},{-58,-56}})));
+        Modelica.Blocks.Math.Product product
+          annotation (Placement(transformation(extent={{-30,-72},{-10,-52}})));
+        Modelica.Blocks.Math.Add add
+          annotation (Placement(transformation(extent={{2,-86},{22,-66}})));
+      equation
+      //  u=RespiratoryCenterOutput_MotorNerveActivity; //curve x value
+      /*
+  TidalVolumeBasic  =
+      curve.val
+    * Thorax_LungInflation
+    * RespiratoryMuscleFunctionEffect;   //val.. curve y value
+
+   TidalVolume  = max(0, TidalVolumeBasic - ExcessLungWater_Volume);
+   DeadSpace  =  DeadSpaceSlope * TidalVolume + DeadSpaceMin; */
+        connect(RespiratoryCenterOutput_MotorNerveActivity, curve.u) annotation (Line(
+            points={{-68,60},{-16,60},{-16,42},{-2,42}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(RespiratoryMuscleFunctionEffect, FunctionEffect.u) annotation (Line(
+            points={{-68,26},{18,26}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(Thorax_LungInflation, LungInflation.u) annotation (Line(
+            points={{-68,-2},{-32,-2},{-32,16},{18,16}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(curve.val, FunctionEffect.yBase) annotation (Line(
+            points={{18,42},{26,42},{26,28}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(FunctionEffect.y, LungInflation.yBase) annotation (Line(
+            points={{26,22},{26,18}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(LungInflation.y, tidalVol0.u1) annotation (Line(
+            points={{26,12},{26,6}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(ExcessLungWater_Volume, tidalVol0.u2) annotation (Line(
+            points={{-68,-38},{-16,-38},{-16,-2},{18,-2}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(tidalVol0.y, max.u1) annotation (Line(
+            points={{26,-11},{26,-22},{34,-22}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(Breathing_TidalVolumeMin.y, max.u2)
+                                          annotation (Line(
+            points={{22,-34},{34,-34}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(add.y, DeadSpace) annotation (Line(
+            points={{23,-76},{34,-76}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(deadSpaceSlope.y, product.u2) annotation (Line(
+            points={{-55,-68},{-32,-68}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(product.y, add.u1) annotation (Line(
+            points={{-9,-62},{-6,-62},{-6,-70},{0,-70}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(Breathing_DeadSpaceMin.y, add.u2)
+                                           annotation (Line(
+            points={{-54.25,-87},{-28,-87},{-28,-82},{0,-82}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(product.u1, TidalVolume) annotation (Line(
+            points={{-32,-56},{-42,-56},{-42,-46},{68,-46},{68,-28},{72,-28}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(max.y, TidalVolume) annotation (Line(
+            points={{57,-28},{72,-28}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        annotation (Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,
+                  -100},{100,100}}), graphics={Text(
+                extent={{-120,-108},{130,-126}},
+                lineColor={0,0,255},
+                textString="%name")}));
+      end NaturalVentilation2;
+
+      model CentralChemoreceptors
+          extends Physiolibrary.Icons.RespiratoryCenter;
+
+          parameter Real data[:,3]={{6.60,0.0,0},{6.85,10.0,0},{7.07,1.0,-8.0},{7.50,0.0,0}}; //{{6.60,0.0,0},{6.87,10.0,0},{7.12,1.0,-8.0},{7.50,0.0,0}};
+        Physiolibrary.Types.RealIO.FractionOutput CentralChemoreceptors
+          annotation (Placement(transformation(extent={{80,-20},{120,20}}),
+              iconTransformation(extent={{74,20},{114,60}})));
+        Physiolibrary.Types.RealIO.pHInput Brain_pH_intracellular
+          annotation (Placement(transformation(extent={{-100,40},{-60,80}}),
+              iconTransformation(extent={{-100,40},{-60,80}})));                                                //orginal data from Coleman {{6.60,0.0,0},{6.87,10.0,0},{7.22,1.0,-8.0},{7.50,0.0,0}}) was corrected, becase the normal intracellular pH in neuron cells is 7.16
+      Physiolibrary.Blocks.Interpolation.Curve curve(
+        x=data[:, 1],
+        y=data[:, 2],
+        slope=data[:, 3])
+        annotation (Placement(transformation(extent={{18,-10},{38,10}})));
+      equation
+
+        connect(curve.val, CentralChemoreceptors) annotation (Line(
+            points={{38,0},{100,0}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(Brain_pH_intracellular, curve.u) annotation (Line(
+            points={{-80,60},{-32,60},{-32,0},{18,0}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        annotation ( Icon(coordinateSystem(
+                preserveAspectRatio=true,  extent={{-100,-100},{100,100}}),
+              graphics={
+              Text(
+                extent={{-66,32},{76,-22}},
+                lineColor={0,0,0},
+                fillColor={213,255,170},
+                fillPattern=FillPattern.Solid,
+                textString="%name"),
+              Text(
+                extent={{-118,-104},{130,-130}},
+                lineColor={0,0,255},
+                textString="%name")}));
+      end CentralChemoreceptors;
+
+      model AfferentPath
+        extends Physiolibrary.Icons.RespiratoryCenter;
+        parameter Real RadiationTotalDrive[:,3]={{    0,  0.0,  0}, {  500,  3.5,  0.003}, { 1000,  4.0,  0}};
+        parameter Real OutputRate[:,3]={{  0,   0,  12}, {  1,  12,   4}, { 10,  40,   0}};
+
+        Physiolibrary.Types.RealIO.FractionOutput TotalDrive
+          annotation (Placement(transformation(extent={{80,-20},{120,20}}),
+              iconTransformation(extent={{74,20},{114,60}})));
+      Physiolibrary.Types.BusConnector busConnector annotation (Placement(
+            transformation(extent={{-42,82},{-22,102}}), iconTransformation(
+              extent={{-62,62},{-22,102}})));
+        Physiolibrary.Types.RealIO.FractionInput Chemoreceptors_FiringRate
+          annotation (Placement(transformation(extent={{-100,40},{-60,80}}),
+              iconTransformation(extent={{-100,40},{-60,80}})));
+      Physiolibrary.Blocks.Interpolation.Curve Radiation(
+        x=RadiationTotalDrive[:, 1],
+        y=RadiationTotalDrive[:, 2],
+        slope=RadiationTotalDrive[:, 3])
+        annotation (Placement(transformation(extent={{-10,12},{10,32}})));
+        Modelica.Blocks.Math.Add RespiratoryCenterChemical_TotalDrive(k1=0.6,
+            k2=0.4)
+          annotation (Placement(transformation(extent={{36,52},{56,72}})));
+        Physiolibrary.Types.RealIO.FractionInput Metaboreflex
+          annotation (Placement(transformation(extent={{-120,0},{-80,40}}),
+              iconTransformation(extent={{-118,0},{-78,40}})));
+        Modelica.Blocks.Math.Add RespiratoryCenterExercise_TotalDrive
+          annotation (Placement(transformation(extent={{26,18},{46,38}})));
+        Modelica.Blocks.Math.Add RespiratoryCenterIntegration_TotalDrive
+          annotation (Placement(transformation(extent={{66,24},{86,44}})));
+        Physiolibrary.Types.RealIO.FractionInput CentralChemoreceptors
+          annotation (Placement(transformation(extent={{-100,66},{-60,106}}),
+              iconTransformation(extent={{-100,-50},{-60,-10}})));
+      equation
+        connect(Radiation.val, RespiratoryCenterExercise_TotalDrive.u2) annotation (
+            Line(
+            points={{10,22},{24,22}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(Metaboreflex, RespiratoryCenterExercise_TotalDrive.u1) annotation (
+            Line(
+            points={{-100,20},{-44,20},{-44,34},{24,34}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(RespiratoryCenterChemical_TotalDrive.y,
+          RespiratoryCenterIntegration_TotalDrive.u1) annotation (Line(
+            points={{57,62},{60,62},{60,40},{64,40}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(RespiratoryCenterExercise_TotalDrive.y,
+          RespiratoryCenterIntegration_TotalDrive.u2) annotation (Line(
+            points={{47,28},{64,28}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(RespiratoryCenterChemical_TotalDrive.u1, CentralChemoreceptors)
+          annotation (Line(
+            points={{34,68},{-18,68},{-18,86},{-80,86}},
+            color={0,0,127},
+            smooth=Smooth.None));
+
+        connect(RespiratoryCenterIntegration_TotalDrive.y, TotalDrive)
+          annotation (Line(
+            points={{87,34},{94,34},{94,0},{100,0}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(Chemoreceptors_FiringRate, RespiratoryCenterChemical_TotalDrive.u2)
+          annotation (Line(
+            points={{-80,60},{-23,60},{-23,56},{34,56}},
+            color={0,0,127},
+            smooth=Smooth.None));
+      connect(busConnector.Exercise_Metabolism_MotionWatts, Radiation.u)
+        annotation (Line(
+          points={{-32,92},{-32,22},{-10,22}},
+          color={0,0,255},
+          thickness=0.5,
+          smooth=Smooth.None), Text(
+          string="%first",
+          index=-1,
+          extent={{-6,3},{-6,3}}));
+        annotation ( Icon(coordinateSystem(
+                preserveAspectRatio=true,  extent={{-100,-100},{100,100}}),
+              graphics={
+              Text(
+                extent={{-66,32},{76,-22}},
+                lineColor={0,0,0},
+                fillColor={213,255,170},
+                fillPattern=FillPattern.Solid,
+                textString="%name"),
+              Text(
+                extent={{-124,-104},{124,-130}},
+                lineColor={0,0,255},
+                textString="%name")}));
+      end AfferentPath;
+
+      model EfferentPath
+        extends Physiolibrary.Icons.RespiratoryCenter;
+        parameter Real RadiationTotalDrive[:,3]={{    0,  0.0,  0}, {  500,  3.5,  0.003}, { 1000,  4.0,  0}};
+        parameter Real OutputRate[:,3]={{  0,   0,  12}, {  1,  12,   4}, { 10,  40,   0}};
+
+      Physiolibrary.Blocks.Interpolation.Curve RespiratoryCenterOutput(
+        x=OutputRate[:, 1],
+        y=OutputRate[:, 2],
+        slope=OutputRate[:, 3],
+        Yscale=1/60)
+        annotation (Placement(transformation(extent={{-10,-16},{10,4}})));
+        Physiolibrary.Types.RealIO.FrequencyOutput RespRate
+          annotation (Placement(transformation(extent={{80,-20},{120,20}}),
+              iconTransformation(extent={{74,20},{114,60}})));
+        Physiolibrary.Types.RealIO.FractionOutput
+          RespiratoryCenterOutput_MotorNerveActivity
+          annotation (Placement(transformation(extent={{54,-68},{94,-28}}),
+              iconTransformation(extent={{76,-60},{116,-20}})));
+      Physiolibrary.Types.BusConnector busConnector annotation (Placement(
+            transformation(extent={{-42,82},{-22,102}}), iconTransformation(
+              extent={{-62,62},{-22,102}})));
+        Physiolibrary.Types.RealIO.FractionInput TotalDrive(
+                                                 start=1)
+          annotation (Placement(transformation(extent={{-120,0},{-80,40}}),
+              iconTransformation(extent={{-118,0},{-78,40}})));
+        Modelica.Blocks.Math.Product Rate
+          annotation (Placement(transformation(extent={{62,-10},{82,10}})));
+      Physiolibrary.Blocks.Factors.Normalization FunctionEffect
+        annotation (Placement(transformation(extent={{14,-48},{34,-28}})));
+      Physiolibrary.Blocks.Factors.Normalization AnesthesiaEffect
+        annotation (Placement(transformation(extent={{14,-60},{34,-40}})));
+      equation
+        connect(RespiratoryCenterOutput.val, Rate.u2) annotation (Line(
+            points={{10,-6},{60,-6}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(Rate.y, RespRate) annotation (Line(
+            points={{83,0},{100,0}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(FunctionEffect.y, AnesthesiaEffect.yBase) annotation (Line(
+            points={{24,-42},{24,-48}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(AnesthesiaEffect.y, RespiratoryCenterOutput_MotorNerveActivity)
+          annotation (Line(
+            points={{24,-54},{24,-62},{64,-62},{64,-48},{74,-48}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(busConnector.AnesthesiaTidalVolume, AnesthesiaEffect.u)
+          annotation (Line(
+            points={{-32,92},{-32,-50},{16,-50}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(busConnector.brain_FunctionEffect, FunctionEffect.u) annotation (
+            Line(
+            points={{-32,92},{-32,-38},{16,-38}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+        connect(busConnector.brain_FunctionEffect, Rate.u1) annotation (Line(
+            points={{-32,92},{-32,6},{60,6}},
+            color={0,0,255},
+            thickness=0.5,
+            smooth=Smooth.None), Text(
+            string="%first",
+            index=-1,
+            extent={{-6,3},{-6,3}}));
+
+        connect(TotalDrive, RespiratoryCenterOutput.u) annotation (Line(
+            points={{-100,20},{-56,20},{-56,-6},{-10,-6}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(TotalDrive, FunctionEffect.yBase) annotation (Line(
+            points={{-100,20},{-56,20},{-56,-22},{24,-22},{24,-36}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        annotation ( Icon(coordinateSystem(
+                preserveAspectRatio=true,  extent={{-100,-100},{100,100}}),
+              graphics={
+              Text(
+                extent={{-66,32},{76,-22}},
+                lineColor={0,0,0},
+                fillColor={213,255,170},
+                fillPattern=FillPattern.Solid,
+                textString="%name"),
+              Text(
+                extent={{-122,-100},{126,-126}},
+                lineColor={0,0,255},
+                textString="%name")}));
+      end EfferentPath;
+
+      model SkeletalMuscleMetaboreflex
+        extends Physiolibrary.Icons.SkeletalMuscleAcidity;
+        Physiolibrary.Types.RealIO.pHInput skeletalMuscle_pH
+                                               annotation (Placement(transformation(
+                extent={{-120,-20},{-80,20}}), iconTransformation(extent={{-110,-10},
+                  {-90,10}})));
+      Physiolibrary.Blocks.Interpolation.Curve NerveActivity(
+        x=PhOnNerveActivity[:, 1],
+        y=PhOnNerveActivity[:, 2],
+        slope=PhOnNerveActivity[:, 3])
+        annotation (Placement(transformation(extent={{-10,-18},{26,18}})));
+        Physiolibrary.Types.RealIO.FractionOutput NA
+          annotation (Placement(transformation(extent={{80,-20},{120,20}})));
+         parameter Real PhOnNerveActivity[:,3]={{ 6.5,  5.0,  0}, { 6.9,  0.0,  0}};
+
+      equation
+        connect(NerveActivity.val, NA)      annotation (Line(
+            points={{26,0},{100,0}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        connect(skeletalMuscle_pH, NerveActivity.u) annotation (Line(
+            points={{-100,0},{-10,0}},
+            color={0,0,127},
+            smooth=Smooth.None));
+        annotation ( Icon(coordinateSystem(
+                preserveAspectRatio=true, extent={{-100,-100},{100,100}}),
+              graphics={
+              Text(
+                extent={{-128,-106},{120,-132}},
+                lineColor={0,0,255},
+                textString="%name")}));
+      end SkeletalMuscleMetaboreflex;
+
+      package Test
+
+        model test_ventilation
+          annotation (Icon(coordinateSystem(preserveAspectRatio=false)),
+              Diagram(coordinateSystem(preserveAspectRatio=false)));
+        end test_ventilation;
+      end Test;
+    end Ventilation;
+
     connector BloodPort
       "Hydraulical connector with pressure and volumetric flow"
 
@@ -16674,5 +17999,6 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
         experiment(StopTime=5));
     end HemodynamicsMeurs;
   end PulsatileCirculation;
-  annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2")));
+  annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
+      Physiomodel(version="1.0.1-beta")));
 end AcidBaseBalance;
