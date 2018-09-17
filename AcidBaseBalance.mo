@@ -4761,7 +4761,7 @@ algorithm
 */
 
         Modelica.Blocks.Interfaces.RealInput pH annotation (Placement(
-              transformation(extent={{-76,32},{-44,64}}), iconTransformation(
+              transformation(extent={{-104,32},{-72,64}}),iconTransformation(
                 extent={{-130,52},{-100,82}})));
         Modelica.Blocks.Interfaces.RealOutput HCO3p annotation (Placement(
               transformation(extent={{80,24},{100,44}}), iconTransformation(
@@ -4770,37 +4770,42 @@ algorithm
               transformation(extent={{-6,-12},{26,20}}), iconTransformation(
                 extent={{-130,6},{-100,36}})));
         Modelica.Blocks.Interfaces.RealInput T annotation (Placement(
-              transformation(extent={{-100,-8},{-68,24}}), iconTransformation(
+              transformation(extent={{-104,-8},{-72,24}}), iconTransformation(
                 extent={{-130,-38},{-100,-8}})));
         Modelica.Blocks.Math.Feedback feedback
-          annotation (Placement(transformation(extent={{-22,38},{-2,58}})));
+          annotation (Placement(transformation(extent={{-42,38},{-22,58}})));
         pKof_eq pKof_eq1
-          annotation (Placement(transformation(extent={{-40,-2},{-20,18}})));
+          annotation (Placement(transformation(extent={{-60,-2},{-40,18}})));
         aCO2of_eq aCO2of_eq1
-          annotation (Placement(transformation(extent={{-38,-32},{-18,-12}})));
+          annotation (Placement(transformation(extent={{-60,-32},{-40,-12}})));
         Modelica.Blocks.Math.Product product
-          annotation (Placement(transformation(extent={{16,30},{36,50}})));
+          annotation (Placement(transformation(extent={{18,32},{38,52}})));
         Modelica.Blocks.Math.Product product1
           annotation (Placement(transformation(extent={{48,24},{68,44}})));
+        antilg_eq antilg_eq1
+          annotation (Placement(transformation(extent={{-18,38},{2,58}})));
       equation
         connect(pH, feedback.u1)
-          annotation (Line(points={{-60,48},{-20,48}}, color={0,0,127}));
+          annotation (Line(points={{-88,48},{-40,48}}, color={0,0,127}));
         connect(T, pKof_eq1.T)
-          annotation (Line(points={{-84,8},{-41.6,8}}, color={0,0,127}));
-        connect(pKof_eq1.y, feedback.u2) annotation (Line(points={{-19,8},{-12,
-                8},{-12,40}}, color={0,0,127}));
-        connect(aCO2of_eq1.T, pKof_eq1.T) annotation (Line(points={{-39.4,-20.4},
-                {-54,-20.4},{-54,8},{-41.6,8}}, color={0,0,127}));
-        connect(feedback.y, product.u1) annotation (Line(points={{-3,48},{4,48},
-                {4,46},{14,46}}, color={0,0,127}));
-        connect(aCO2of_eq1.y, product.u2) annotation (Line(points={{-17,-22},{
-                -2,-22},{-2,34},{14,34}}, color={0,0,127}));
+          annotation (Line(points={{-88,8},{-61.6,8}}, color={0,0,127}));
+        connect(pKof_eq1.y, feedback.u2) annotation (Line(points={{-39,8},{-32,
+                8},{-32,40}}, color={0,0,127}));
+        connect(aCO2of_eq1.T, pKof_eq1.T) annotation (Line(points={{-61.4,-20.4},
+                {-70,-20.4},{-70,8},{-61.6,8}}, color={0,0,127}));
+        connect(aCO2of_eq1.y, product.u2) annotation (Line(points={{-39,-22},{
+                -2,-22},{-2,36},{16,36}}, color={0,0,127}));
         connect(product.y, product1.u1)
-          annotation (Line(points={{37,40},{46,40}}, color={0,0,127}));
+          annotation (Line(points={{39,42},{42,42},{42,40},{46,40}},
+                                                     color={0,0,127}));
         connect(product1.u2, pCO2) annotation (Line(points={{46,28},{36,28},{36,
                 4},{10,4}}, color={0,0,127}));
         connect(product1.y, HCO3p)
           annotation (Line(points={{69,34},{90,34}}, color={0,0,127}));
+        connect(feedback.y, antilg_eq1.x)
+          annotation (Line(points={{-23,48},{-18,48}}, color={0,0,127}));
+        connect(product.u1, antilg_eq1.y)
+          annotation (Line(points={{16,48},{3,48}}, color={0,0,127}));
         annotation (Icon(graphics={
               Rectangle(
                 extent={{-100,100},{100,-100}},
@@ -6422,6 +6427,403 @@ algorithm
                 horizontalAlignment=TextAlignment.Right,
                 textString="dydxc")}));
       end pO2fr_eq;
+
+      model pCO22of_eq_debug
+      /*  
+function pCO22of_eq
+  input Real pCO21;
+  input Real T1;
+  input Real T2;
+  input Real cHb;
+  input Real cAlb;
+  input Real pH1;
+  output Real result;
+protected 
+  Real betaX;
+  Real dpHdT1;
+  Real pH2;
+  Real cHCO3;
+  Real dlgpCO2dT1;
+  Real pCO22;
+  Real dpHdT2;
+  Real dlgpCO2dT2;
+  Real dpHdTmean;
+  Real dlgpCO2dTmean;
+  Real cAlbN = 0.66;
+algorithm 
+  betaX := 7.7 + 8 * (cAlb - cAlbN) + 2.3 * cHb;
+  dpHdT1 := ((-0.0026) - betaX*0.016*(1/(2.3*OSA.cHCO3of(
+    pH1,
+    pCO21,
+    T1)) + 1/(2.3*pCO21*OSA.aCO2of(T1))))/(1 + betaX*(1/(2.3
+    *OSA.cHCO3of(
+    pH1,
+    pCO21,
+    T1)) + 1/(2.3*pCO21*OSA.aCO2of(T1))));
+  pH2 := pH1 + dpHdT1 * (T2 - T1);
+  cHCO3 := OSA.cHCO3of(
+    pH1,
+    pCO21,
+    T1);
+  dlgpCO2dT1 := (-0.0026) - (-0.0092) - dpHdT1 + 1 / (2.3 * cHCO3) * (betaX * dpHdT1 + betaX * 0.016);
+  pCO22 := OSA.antilg(OSA.lg(pCO21) +
+    dlgpCO2dT1*(T2 - T1));
+  dpHdT2 := ((-0.0026) - betaX*0.016*(1/(2.3*OSA.cHCO3of(
+    pH2,
+    pCO22,
+    T2)) + 1/(2.3*pCO22*OSA.aCO2of(T2))))/(1 + betaX*(1/(2.3
+    *OSA.cHCO3of(
+    pH2,
+    pCO22,
+    T2)) + 1/(2.3*pCO22*OSA.aCO2of(T2))));
+  dpHdTmean := (dpHdT1 + dpHdT2) / 2;
+  pH2 := pH1 + dpHdTmean * (T2 - T1);
+  cHCO3 := OSA.cHCO3of(
+    pH2,
+    pCO22,
+    T2);
+  dlgpCO2dT2 := (-0.0026) - (-0.0092) - dpHdT2 + 1 / (2.3 * cHCO3) * (betaX * dpHdT2 + betaX * 0.016);
+  dlgpCO2dTmean := (dlgpCO2dT1 + dlgpCO2dT2) / 2;
+  result := OSA.antilg(OSA.lg(pCO21)
+  + dlgpCO2dTmean*(T2 - T1));
+  
+*/
+        Modelica.Blocks.Interfaces.RealInput pCO21 annotation (Placement(
+              transformation(extent={{-100,22},{-84,38}}), iconTransformation(extent={{-118,72},
+                  {-100,90}})));
+        Modelica.Blocks.Interfaces.RealOutput y annotation (Placement(transformation(
+                extent={{66,-6},{86,14}}),    iconTransformation(extent={{100,64},{120,
+                  84}})));
+        Modelica.Blocks.Interfaces.RealInput T1 annotation (Placement(transformation(
+                extent={{-94,12},{-78,28}}), iconTransformation(extent={{-118,44},{-100,
+                  62}})));
+        Modelica.Blocks.Interfaces.RealInput T2 annotation (Placement(transformation(
+                extent={{-44,40},{-24,60}}),    iconTransformation(extent={{-118,20},{
+                  -100,38}})));
+        Modelica.Blocks.Interfaces.RealInput cHb annotation (Placement(transformation(
+                extent={{-54,66},{-26,94}}),iconTransformation(extent={{-118,-8},{-100,
+                  10}})));
+        Modelica.Blocks.Interfaces.RealInput cAlb annotation (Placement(
+              transformation(extent={{-100,56},{-78,78}}), iconTransformation(extent={
+                  {-118,-34},{-100,-16}})));
+        Modelica.Blocks.Interfaces.RealInput pH1 annotation (Placement(transformation(
+                extent={{-90,34},{-72,52}}),    iconTransformation(extent={{-118,-60},
+                  {-100,-42}})));
+        Real betaX;
+        Real dpHdT1;
+        Real pH2;
+        Real pH22;
+        Real cHCO3;
+        Real dlgpCO2dT1;
+        Real pCO22;
+        Real dpHdT2;
+        Real dlgpCO2dT2;
+        Real dpHdTmean;
+        Real dlgpCO2dTmean;
+        Real aCO2_T1;
+        Real x;
+        Real xx;
+        Real HCO3_T2;
+        Real aCO2_T2;
+        parameter Real cAlbN = 0.66;
+        cHCO3of_eq cHCO3of_1
+          annotation (Placement(transformation(extent={{-54,22},{-32,44}})));
+        aCO2of_eq aCO2of_1
+          annotation (Placement(transformation(extent={{-56,-6},{-36,14}})));
+        cHCO3of_eq cHCO3of_2
+          annotation (Placement(transformation(extent={{-4,50},{18,72}})));
+        aCO2of_eq aCO2of_2
+          annotation (Placement(transformation(extent={{-4,22},{16,42}})));
+        Modelica.Blocks.Interfaces.RealOutput y_debug annotation (Placement(
+              transformation(extent={{66,-6},{86,14}}), iconTransformation(extent={{100,
+                  18},{120,38}})));
+        Modelica.Blocks.Interfaces.RealOutput dpHdT1_eq  annotation (Placement(
+              transformation(extent={{66,-6},{86,14}}), iconTransformation(extent={{100,-6},
+                  {120,14}})));
+        Modelica.Blocks.Interfaces.RealOutput dpHdT1_debug annotation (Placement(
+              transformation(extent={{66,-6},{86,14}}), iconTransformation(extent={{100,
+                  -30},{120,-10}})));
+        Modelica.Blocks.Interfaces.RealOutput pH2_eq annotation (Placement(
+              transformation(extent={{66,-6},{86,14}}), iconTransformation(extent={{100,-60},
+                  {120,-40}})));
+        Modelica.Blocks.Interfaces.RealOutput pH2_debug    annotation (Placement(
+              transformation(extent={{66,-6},{86,14}}), iconTransformation(extent={{100,-84},
+                  {120,-64}})));
+      equation
+        betaX = 7.7 + 8 * (cAlb - cAlbN) + 2.3 * cHb;
+
+        //cHCO3 = OSA.cHCO3of(pH1, pCO21,T1);
+        cHCO3 = cHCO3of_1.HCO3p;
+        //cHCO3_eq=cHCO3;
+
+        //aCO2_T1=aCO2of_1(T1);
+        aCO2_T1=aCO2of_1.y;
+        dpHdT1 = ((-0.0026) - betaX*0.016*(1/(2.3*cHCO3)
+        + 1/(2.3*pCO21*aCO2_T1)))/(1 + betaX*(1/(2.3
+          *cHCO3) + 1/(2.3*pCO21*aCO2_T1)));
+        dpHdT1_eq=dpHdT1;
+        pH2 = pH1 + dpHdT1 * (T2 - T1);
+        pH2_eq=pH2;
+
+        dlgpCO2dT1 = (-0.0026) - (-0.0092) - dpHdT1 + 1 / (2.3 * cHCO3) * (betaX * dpHdT1 + betaX * 0.016);
+        //pCO22 = OSA.antilg(OSA.lg(pCO21) + dlgpCO2dT1*(T2 - T1));
+        x=log10(pCO21) + dlgpCO2dT1*(T2 - T1);
+        //antilg(x)=exp(log(10) * x);
+        pCO22=exp(log(10)*x);
+
+        //HCO3_T2 = OSA.cHCO3of(pH22, pCO22,T2);
+        cHCO3of_2.pH=pH22;
+        cHCO3of_2.pCO2=pCO22;
+        HCO3_T2=cHCO3of_2.HCO3p;
+
+        //aCO2_T2=OSA.aCO2of(T2);
+        aCO2_T2=aCO2of_2.y;
+
+        dpHdT2 = ((-0.0026) - betaX*0.016*(1/(2.3*
+        HCO3_T2) + 1/(2.3*pCO22*aCO2_T2)))/(1 + betaX*(1/(2.3*
+        HCO3_T2) + 1/(2.3*pCO22*aCO2_T2)));
+        // OSA.cHCO3of( pH2,pCO22,T2)
+        //OSA.cHCO3of(pH2,pCO22,T2)
+        dpHdTmean = (dpHdT1 + dpHdT2) / 2;
+        pH22 = pH1 + dpHdTmean * (T2 - T1);
+
+        dlgpCO2dT2 = (-0.0026) - (-0.0092) - dpHdT2 + 1 / (2.3 * cHCO3) * (betaX * dpHdT2 + betaX * 0.016);
+        dlgpCO2dTmean = (dlgpCO2dT1 + dlgpCO2dT2) / 2;
+
+        //y = OSA.antilg(log10(pCO21)+ dlgpCO2dTmean*(T2 - T1));
+        xx=log10(pCO21)+ dlgpCO2dTmean*(T2 - T1);
+        //y=OSA.antilg(xx);
+        y=exp(log(10)*xx);
+
+        (y_debug,dpHdT1_debug,pH2_debug) =  pCO22of_debug(pCO21,T1,T2,cHb,cAlb,pH1);
+        connect(T1, cHCO3of_1.T) annotation (Line(points={{-86,20},{-68,20},{-68,30.47},
+                {-55.65,30.47}}, color={0,0,127}));
+        connect(pCO21, cHCO3of_1.pCO2) annotation (Line(points={{-92,30},{-72,30},{-72,
+                35.31},{-55.65,35.31}}, color={0,0,127}));
+        connect(pH1, cHCO3of_1.pH) annotation (Line(points={{-81,43},{-66,43},{-66,40.37},
+                {-55.65,40.37}}, color={0,0,127}));
+        connect(aCO2of_1.T, cHCO3of_1.T) annotation (Line(points={{-57.4,5.6},{-68,5.6},
+                {-68,30.47},{-55.65,30.47}}, color={0,0,127}));
+        connect(cHCO3of_2.T, T2) annotation (Line(points={{-5.65,58.47},{-20.825,58.47},
+                {-20.825,50},{-34,50}}, color={0,0,127}));
+        connect(aCO2of_2.T, T2) annotation (Line(points={{-5.4,33.6},{-20,33.6},{-20,50},
+                {-34,50}}, color={0,0,127}));
+        annotation (Icon(graphics={
+              Rectangle(
+                extent={{-100,100},{100,-100}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.Solid),
+              Text(
+                extent={{-98,94},{102,74}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.None,
+                horizontalAlignment=TextAlignment.Left,
+                textString="pCO21"),
+              Text(
+                extent={{-98,66},{102,46}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.None,
+                horizontalAlignment=TextAlignment.Left,
+                textString="T1"),
+              Text(
+                extent={{-98,42},{102,22}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.None,
+                horizontalAlignment=TextAlignment.Left,
+                textString="T2"),
+              Text(
+                extent={{-98,14},{102,-6}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.None,
+                horizontalAlignment=TextAlignment.Left,
+                textString="cHb"),
+              Text(
+                extent={{-98,-12},{102,-32}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.None,
+                horizontalAlignment=TextAlignment.Left,
+                textString="cAlb"),
+              Text(
+                extent={{-98,-38},{102,-58}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.None,
+                horizontalAlignment=TextAlignment.Left,
+                textString="pH1"),
+              Text(
+                extent={{-100,-70},{100,-94}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.Solid,
+                textString="pCO22of_eq"),
+              Text(
+                extent={{-100,-102},{102,-122}},
+                lineColor={28,108,200},
+                textString="%name")}),      Diagram(graphics={Text(
+                extent={{-90,-28},{74,-92}},
+                lineColor={28,108,200},
+                fillColor={255,213,170},
+                fillPattern=FillPattern.Solid,
+                horizontalAlignment=TextAlignment.Left,
+                textString="betaX = 7.7 + 8 * (cAlb - cAlbN) + 2.3 * cHb;
+dpHdT1 = ((-0.0026) - betaX*0.016*(1/(2.3*OSA.cHCO3of(pH1,pCO21,T1))
+           + 1/(2.3*pCO21*OSA.aCO2of(T1))))/(1 + betaX*(1/(2.3 *OSA.cHCO3of(pH1,pCO21,T1)) 
+           + 1/(2.3*pCO21*OSA.aCO2of(T1))));
+cHCO3 = OSA.cHCO3of(pH1, pCO21,T1);
+pH2 = pH1 + dpHdT1 * (T2 - T1);
+dlgpCO2dT1 = (-0.0026) - (-0.0092) - dpHdT1 + 1 / (2.3 * cHCO3) * (betaX * dpHdT1 + betaX * 0.016);
+pCO22 = OSA.antilg(OSA.lg(pCO21) + dlgpCO2dT1*(T2 - T1));
+dpHdT2 = ((-0.0026) - betaX*0.016*(1/(2.3*OSA.cHCO3of( pH2,pCO22,T2)) 
+        + 1/(2.3*pCO22*OSA.aCO2of(T2))))/(1 + betaX*(1/(2.3 *OSA.cHCO3of(pH2,pCO22, T2)) 
+        + 1/(2.3*pCO22*OSA.aCO2of(T2))));
+HCO3_T2 = OSA.cHCO3of(pH22, pCO22,T2);
+dpHdTmean = (dpHdT1 + dpHdT2) / 2;
+pH22 = pH1 + dpHdTmean * (T2 - T1);
+dlgpCO2dT2 = (-0.0026) - (-0.0092) - dpHdT2 + 1 / (2.3 * cHCO3) * (betaX * dpHdT2 + betaX * 0.016);
+dlgpCO2dTmean = (dlgpCO2dT1 + dlgpCO2dT2) / 2;
+y = OSA.antilg(OSA.lg(pCO21) + dlgpCO2dTmean*(T2 - T1));
+")}));
+      end pCO22of_eq_debug;
+
+      function pCO22of_debug
+        input Real pCO21;
+        input Real T1;
+        input Real T2;
+        input Real cHb;
+        input Real cAlb;
+        input Real pH1;
+        output Real result;
+        output Real dpHdT1;
+        output Real pH2;
+
+      protected
+        Real betaX;
+        //Real dpHdT1;
+        //Real pH2;
+        Real cHCO3;
+        Real dlgpCO2dT1;
+        Real pCO22;
+        Real dpHdT2;
+        Real dlgpCO2dT2;
+        Real dpHdTmean;
+        Real dlgpCO2dTmean;
+        Real cAlbN = 0.66;
+      algorithm
+        betaX := 7.7 + 8 * (cAlb - cAlbN) + 2.3 * cHb;
+        dpHdT1 := ((-0.0026) - betaX*0.016*(1/(2.3*OSA.cHCO3of(
+          pH1,
+          pCO21,
+          T1)) + 1/(2.3*pCO21*OSA.aCO2of(T1))))/(1 + betaX*(1/(2.3
+          *OSA.cHCO3of(
+          pH1,
+          pCO21,
+          T1)) + 1/(2.3*pCO21*OSA.aCO2of(T1))));
+        pH2 := pH1 + dpHdT1 * (T2 - T1);
+        cHCO3 := OSA.cHCO3of(
+          pH1,
+          pCO21,
+          T1);
+
+        dlgpCO2dT1 := (-0.0026) - (-0.0092) - dpHdT1 + 1 / (2.3 * cHCO3) * (betaX * dpHdT1 + betaX * 0.016);
+        pCO22 := OSA.antilg(OSA.lg(pCO21) +
+          dlgpCO2dT1*(T2 - T1));
+        dpHdT2 := ((-0.0026) - betaX*0.016*(1/(2.3*OSA.cHCO3of(
+          pH2,
+          pCO22,
+          T2)) + 1/(2.3*pCO22*OSA.aCO2of(T2))))/(1 + betaX*(1/(2.3
+          *OSA.cHCO3of(
+          pH2,
+          pCO22,
+          T2)) + 1/(2.3*pCO22*OSA.aCO2of(T2))));
+        dpHdTmean := (dpHdT1 + dpHdT2) / 2;
+        pH2 := pH1 + dpHdTmean * (T2 - T1);
+        cHCO3 := OSA.cHCO3of(
+          pH2,
+          pCO22,
+          T2);
+        dlgpCO2dT2 := (-0.0026) - (-0.0092) - dpHdT2 + 1 / (2.3 * cHCO3) * (betaX * dpHdT2 + betaX * 0.016);
+        dlgpCO2dTmean := (dlgpCO2dT1 + dlgpCO2dT2) / 2;
+        result := OSA.antilg(OSA.lg(pCO21)
+           + dlgpCO2dTmean*(T2 - T1));
+      end pCO22of_debug;
+
+      package testOsa
+        model TestpCO22of
+          pCO22of_eq_debug pCO22of_eq_debug1
+            annotation (Placement(transformation(extent={{-22,2},{48,72}})));
+          Modelica.Blocks.Sources.Constant pCO21(k=4.66628)
+            annotation (Placement(transformation(extent={{-86,52},{-66,72}})));
+          Modelica.Blocks.Sources.Constant T1(k=38)
+            annotation (Placement(transformation(extent={{-92,20},{-72,40}})));
+          Modelica.Blocks.Sources.Constant T2(k=37)
+            annotation (Placement(transformation(extent={{-94,-10},{-74,10}})));
+          Modelica.Blocks.Sources.Constant cHB(k=8.4) annotation (Placement(
+                transformation(extent={{-88,-42},{-68,-22}})));
+          Modelica.Blocks.Sources.Constant cAlb(k=0.66) annotation (Placement(
+                transformation(extent={{-86,-72},{-66,-52}})));
+          Modelica.Blocks.Sources.Constant pH1(k=7.2) annotation (Placement(
+                transformation(extent={{-82,-100},{-62,-80}})));
+        equation
+          connect(pH1.y, pCO22of_eq_debug1.pH1) annotation (Line(points={{-61,
+                  -90},{-42,-90},{-42,19.15},{-25.15,19.15}}, color={0,0,127}));
+          connect(cAlb.y, pCO22of_eq_debug1.cAlb) annotation (Line(points={{-65,
+                  -62},{-46,-62},{-46,28.25},{-25.15,28.25}}, color={0,0,127}));
+          connect(cHB.y, pCO22of_eq_debug1.cHb) annotation (Line(points={{-67,
+                  -32},{-48,-32},{-48,37.35},{-25.15,37.35}}, color={0,0,127}));
+          connect(T2.y, pCO22of_eq_debug1.T2) annotation (Line(points={{-73,0},
+                  {-50,0},{-50,47.15},{-25.15,47.15}}, color={0,0,127}));
+          connect(T1.y, pCO22of_eq_debug1.T1) annotation (Line(points={{-71,30},
+                  {-50,30},{-50,55.55},{-25.15,55.55}}, color={0,0,127}));
+          connect(pCO21.y, pCO22of_eq_debug1.pCO21) annotation (Line(points={{
+                  -65,62},{-46,62},{-46,65.35},{-25.15,65.35}}, color={0,0,127}));
+          annotation (Icon(coordinateSystem(preserveAspectRatio=false)),
+              Diagram(coordinateSystem(preserveAspectRatio=false)));
+        end TestpCO22of;
+
+        model TestCO2total
+          CO2totalSI_eq cO2totalSI_eq
+            annotation (Placement(transformation(extent={{-10,8},{58,76}})));
+          ctCO2content ctCO2content1
+            annotation (Placement(transformation(extent={{-22,-78},{46,-12}})));
+         inner ModelSettings modelSettings(Temperature=312.15)
+            annotation (Placement(transformation(extent={{-96,78},{-76,98}})));
+          Physiolibrary.Types.Constants.PressureConst pressure(k=3599.704460205)
+            annotation (Placement(transformation(extent={{-82,34},{-74,42}})));
+          Physiolibrary.Types.Constants.pHConst pH(k=7.2)
+            annotation (Placement(transformation(extent={{-78,-12},{-70,-4}})));
+          Physiolibrary.Types.Constants.FractionConst fraction(k=0.68)
+            annotation (Placement(transformation(extent={{-86,-68},{-78,-60}})));
+          Physiolibrary.Types.Constants.ConcentrationConst concentration(k=8.4)
+            annotation (Placement(transformation(extent={{-64,70},{-56,78}})));
+          Physiolibrary.Types.Constants.TemperatureConst temperature(k=312.15)
+            annotation (Placement(transformation(extent={{-86,8},{-78,16}})));
+        equation
+          connect(pH.y, ctCO2content1.pH) annotation (Line(points={{-69,-8},{-48,-8},{-48,
+                  -31.8},{-25.4,-31.8}}, color={0,0,127}));
+          connect(cO2totalSI_eq.pH, ctCO2content1.pH) annotation (Line(points={{-13.4,71.24},
+                  {-48,71.24},{-48,-31.8},{-25.4,-31.8}}, color={0,0,127}));
+          connect(pressure.y, cO2totalSI_eq.pCO2) annotation (Line(points={{-73,38},{-44,
+                  38},{-44,59.68},{-13.4,59.68}}, color={0,0,127}));
+          connect(ctCO2content1.pCO2, cO2totalSI_eq.pCO2) annotation (Line(points={{-25.4,
+                  -18.6},{-44,-18.6},{-44,59.68},{-13.4,59.68}}, color={0,0,127}));
+          connect(fraction.y, ctCO2content1.sO2) annotation (Line(points={{-77,-64},{-52,
+                  -64},{-52,-71.4},{-25.4,-71.4}}, color={0,0,127}));
+          connect(cO2totalSI_eq.sO2, ctCO2content1.sO2) annotation (Line(points={{-13.4,
+                  25},{-42,25},{-42,-72},{-25.4,-71.4}}, color={0,0,127}));
+          connect(cO2totalSI_eq.ctHb, concentration.y) annotation (Line(points={{-13.4,36.56},
+                  {-34,36.56},{-34,74},{-55,74}}, color={0,0,127}));
+          connect(temperature.y, cO2totalSI_eq.T) annotation (Line(points={{-77,12},{-60,
+                  12},{-60,48.12},{-13.4,48.12}}, color={0,0,127}));
+          annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+                coordinateSystem(preserveAspectRatio=false)));
+        end TestCO2total;
+      end testOsa;
     end OSA;
 
     package Nerves
