@@ -12298,11 +12298,12 @@ Ventilation"),
       alvEq.CvCO2=actualStream(bloodPort_in.conc[2]);
       alvEq.Q=bloodPort_in.bloodFlow;
       bloodPort_in.bloodFlow+bloodPort_out.bloodFlow=0;
+      bloodPort_in.pressure=bloodPort_out.pressure;
       actualStream(bloodPort_out.conc[1])=alvEq.ctO2;
       actualStream(bloodPort_out.conc[2])=alvEq.ctCO2;
       actualStream(bloodPort_out.conc[3])=alvEq.BEox;
 
-      //přidané rovnice - stále chybí 2 rovnice
+      //přidané rovnice - stále chybí 1 rovnice
       bloodPort_in.numberOfSubstances=bloodPort_out.numberOfSubstances;
       bloodPort_in.numberOfSubstances=3;
       actualStream(bloodPort_in.ions)=actualStream(bloodPort_out.ions);
@@ -12357,6 +12358,7 @@ Ventilation"),
       alvEq.CvCO2=actualStream(bloodPort_in.conc[2]);
       alvEq.Q=bloodPort_in.bloodFlow;
       bloodPort_in.bloodFlow+bloodPort_out.bloodFlow=0;
+      bloodPort_in.pressure=bloodPort_out.pressure;
       actualStream(bloodPort_out.conc[1])=alvEq.ctO2;
       actualStream(bloodPort_out.conc[2])=alvEq.ctCO2;
       actualStream(bloodPort_out.conc[3])=alvEq.BEox;
@@ -12367,6 +12369,7 @@ Ventilation"),
       //tady chci napojit ty ionty - nejsem si jistý jestli to takhle jde
       actualStream(bloodPort_in.ions)=actualStream(bloodPort_out.ions);
       size(bloodPort_in.ions,1)=size(bloodPort_out.ions,1);
+      //stále chybí 1 rovnice
 
       connect(VO2, VO2)
         annotation (Line(points={{96,-54},{96,-54}},   color={0,0,127}));
