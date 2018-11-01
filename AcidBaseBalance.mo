@@ -11398,7 +11398,7 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       parameter Physiolibrary.Types.Pressure PB= 101325.0144354
         "Barometric Pressure";
       parameter Physiolibrary.Types.Fraction FiO2= 0.21 "Frattion of O2";
-      parameter Physiolibrary.Types.Fraction FiCO2= 0.0004;
+      Physiolibrary.Types.Fraction FiCO2= if time < 10*60*60 then 0.0004 else 0.05;
       parameter Physiolibrary.Types.Concentration cAlb= 0.66;
       parameter Physiolibrary.Types.Concentration cAlbISF = cAlb/3;
       parameter Physiolibrary.Types.Concentration ctHb= 8.4;
@@ -12492,6 +12492,8 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       Physiolibrary.Types.RealIO.VolumeFlowRateInput VA0 annotation (Placement(
             transformation(extent={{-74,-100},{-34,-60}}), iconTransformation(
               extent={{-120,-84},{-80,-44}})));
+      Real VRD "VR delayed";
+      parameter Real VRD_T = 1;
     equation
       k1 = if PHA <= 7.4 then 0.22 else 0.0258;
       k6 = if PHA <= 7.4 then -12.734 else -5.003;
@@ -12502,9 +12504,12 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
 
       H = 10 ^ (9 - PHA);
       VR = k1 * H + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5) + k6;
-      VI= VR*VI0;
+      // simplified case
+      // VRD = VR;
+      der(VRD) = (VR - VRD)/VRD_T "Time delay in alveolar ventilation control";
+      VI= VRD*VI0;
       //der(VI) = (VR * VI0 - VI) / 2;
-      VRA=VR;
+      VRA=VRD;
       assert(VR >= 0, "VR out of bounds! Original LIMIT VR >= 0; ");
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}}),
@@ -14953,8 +14958,8 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       Physiolibrary.Chemical.Components.Substance O2Buffer(useNormalizedVolume=
             false, solute_start(displayUnit="mol") = 2e-11)
         annotation (Placement(transformation(extent={{312,-82},{320,-74}})));
-      Physiolibrary.Chemical.Components.Substance CO2buffer(useNormalizedVolume
-          =false, solute_start=1.6e-9)
+      Physiolibrary.Chemical.Components.Substance CO2buffer(useNormalizedVolume=
+           false, solute_start=1.6e-9)
         annotation (Placement(transformation(extent={{300,-84},{308,-76}})));
       Physiolibrary.Types.Constants.VolumeConst nearToZeroVolume(k=1e-9)
         annotation (Placement(transformation(extent={{280,-78},{294,-72}})));
@@ -15036,8 +15041,8 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
         annotation (Placement(transformation(extent={{-122,120},{-102,140}})));
       BloodPort_in bloodPort_in annotation (Placement(transformation(rotation=0,
               extent={{398,-26},{446,26}})));
-      BloodPort_out bloodPort_out annotation (Placement(transformation(rotation
-              =0, extent={{-142,-28},{-94,24}})));
+      BloodPort_out bloodPort_out annotation (Placement(transformation(rotation=
+               0, extent={{-142,-28},{-94,24}})));
     equation
       connect(molarFlowMeasure2.molarFlowRate,unlimitedSolutePumpOut1. soluteFlow)
         annotation (Line(points={{52,-85.6},{-4,-85.6},{-4,-88}}, color={0,0,
@@ -22564,7 +22569,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       Package.Alveolocapillary_2Units_with_shunts_and_mixing
         alveolocapillary_2Units_with_shunts_and_mixing
         annotation (Placement(transformation(extent={{-28,88},{6,116}})));
-      Package.AlveolarVentilation alveolarVentilation
+      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
         annotation (Placement(transformation(extent={{146,-10},{166,10}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
               "ml/min") = 8.19588e-5)
@@ -22731,7 +22736,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
 <p><i>2014</i></p>
 <p>Marek Matejak, Charles University, Prague, Czech Republic </p>
 </html>"),
-        experiment(StopTime=300),
+        experiment(StopTime=100000),
         Icon(coordinateSystem(extent={{-120,-80},{160,140}})));
     end Combination;
   end Test;
