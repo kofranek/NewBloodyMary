@@ -82,63 +82,76 @@ package AcidBaseBalance
 
     package Test
       model AmmoniumExcretion
-        Ammonium ammonium annotation(Placement(transformation(extent = {{44, 50}, {88, 90}})));
-        Physiolibrary.Types.Constants.ConcentrationConst Chloride(k = 100) annotation(Placement(transformation(extent = {{-70, 46}, {-54, 64}})));
-        Physiolibrary.Types.Constants.pHConst pH(k=7.2)   annotation(Placement(transformation(extent = {{-65.25, 74}, {-47.25, 88}}, origin={-30.75,4},   rotation = 0), visible = true));
-        Physiolibrary.Types.BusConnector busConnector annotation(Placement(transformation(extent = {{4, 38}, {44, 78}}), iconTransformation(extent = {{-118, 22}, {-78, 62}})));
-        TitratableAcid titratableAcid(HalfTime = 8280) annotation(Placement(transformation(extent = {{-50, -68}, {-8, -30}}, origin = {16.105, 0}, rotation = 0), visible = true));
+        Ammonium ammonium annotation(Placement(transformation(extent={{-32,50},
+                  {12,90}})));
+        Physiolibrary.Types.Constants.ConcentrationConst Chloride(k = 100) annotation(Placement(transformation(extent={{-98,62},
+                  {-82,80}})));
+        Physiolibrary.Types.Constants.pHConst pH(k=7.2)   annotation(Placement(transformation(extent={{-65.25,
+                  84.5754},{-47.25,100.576}},                                                                                        origin={-34.75,
+                  -94.5755},                                                                                                                              rotation = 0), visible = true));
+        Physiolibrary.Types.BusConnector busConnector annotation(Placement(transformation(extent={{-94,68},
+                  {-54,108}}),                                                                                           iconTransformation(extent = {{-118, 22}, {-78, 62}})));
+        TitratableAcid titratableAcid(HalfTime = 8280) annotation(Placement(transformation(extent = {{-50, -68}, {-8, -30}}, origin={12.105,
+                  24},                                                                                                                             rotation = 0), visible = true));
         Physiolibrary.Types.Constants.pHConst pHu(k = 6) annotation(Placement(transformation(extent = {{-94, -38}, {-86, -30}})));
-        Physiolibrary.Types.Constants.FractionConst fAld(k = 1) annotation(Placement(transformation(extent={{-92,-60},
-                  {-84,-52}})));
-        Physiolibrary.Types.Constants.ConcentrationConst Phosphate(k = 1.1) "1.1" annotation(Placement(transformation(extent = {{6, 0}, {22, 18}})));
-        Physiolibrary.Types.Constants.ConcentrationConst OrgAnions(k = 6) annotation(Placement(transformation(extent = {{4, -24}, {20, -6}})));
-        Physiolibrary.Types.Constants.VolumeFlowRateConst GFR(k(displayUnit = "l/min") = 1.6666666666667e-06) annotation(Placement(transformation(extent = {{-8, -7}, {8, 7}}, rotation = 180, origin={84,-10}),    visible = true));
+        Physiolibrary.Types.Constants.FractionConst fAld(k = 1) annotation(Placement(transformation(extent={{-56,-38},
+                  {-48,-30}})));
+        Physiolibrary.Types.Constants.ConcentrationConst Phosphate(k = 1.1) "1.1" annotation(Placement(transformation(extent={{116,50},
+                  {100,68}})));
+        Physiolibrary.Types.Constants.ConcentrationConst OrgAnions(k = 6) annotation(Placement(transformation(extent={{50,26},
+                  {66,44}})));
+        Physiolibrary.Types.Constants.VolumeFlowRateConst GFR(k(displayUnit = "l/min") = 1.6666666666667e-06) annotation(Placement(transformation(extent = {{-8, -7}, {8, 7}}, rotation = 180, origin={106,28}),    visible = true));
         Physiolibrary.Types.Constants.MolarFlowRateConst HCO3excretion(k=0)
-          annotation (Placement(transformation(extent={{42,16},{50,24}})));
+          annotation (Placement(transformation(extent={{48,66},{56,74}})));
         TotalAcidExcretion totalAcidExcretion
-          annotation (Placement(transformation(extent={{70,14},{90,34}})));
+          annotation (Placement(transformation(extent={{64,66},{84,86}})));
         pHUrine_New pHUrine_New1
-          annotation (Placement(transformation(extent={{48,-76},{80,-40}})));
+          annotation (Placement(transformation(extent={{64,-16},{96,20}})));
       equation
-        connect(pH.y, busConnector.pH_art) annotation(Line(points={{-75.75,83},
-                {2,83},{2,56},{24,56}},                                                                         color = {0, 0, 127}, visible = true, origin = {0, 2}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-        connect(Chloride.y, busConnector.Cl_art) annotation(Line(points = {{-52, 55}, {-26, 55}, {-26, 46}, {24, 46}, {24, 58}}, color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-        connect(busConnector, ammonium.busConnector) annotation(Line(points = {{24, 58}, {38, 58}, {38, 87.6}, {47.96, 87.6}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
-        connect(titratableAcid.pHa, pH.y) annotation(Line(visible = true, origin = {-40.201, 23.08}, points={{7.146,
-                -59.92},{0.201,-59.92},{0.201,61.92},{-35.549,61.92}},                                                                                                    color = {0, 0, 127}));
-        connect(titratableAcid.fald, fAld.y) annotation(Line(visible = true, origin = {-51.55, -57.585}, points={{17.865,
-                0.415},{-3.207,0.415},{-3.207,1.585},{-31.45,1.585}},                                                                                                    color = {0, 0, 127}));
+        connect(pH.y, busConnector.pH_art) annotation(Line(points={{-79.75,
+                0.0002},{-74,0.0002},{-74,90}},                                                                 color = {0, 0, 127}, visible = true, origin={0,-2}),   Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
+        connect(Chloride.y, busConnector.Cl_art) annotation(Line(points={{-80,71},
+                {-74,71},{-74,88}},                                                                                              color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
+        connect(busConnector, ammonium.busConnector) annotation(Line(points={{-74,88},
+                {-32,88},{-32,87.6},{-28.04,87.6}},                                                                            color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
+        connect(titratableAcid.fald, fAld.y) annotation(Line(visible = true, origin={-35.55,
+                -57.585},                                                                                points={{-2.135,
+                24.415},{-3.207,24.415},{-3.207,23.585},{-11.45,23.585}},                                                                                                color = {0, 0, 127}));
         connect(totalAcidExcretion.HCO3excretion, HCO3excretion.y) annotation (
-            Line(points={{70.6,18.4},{60,18.4},{60,20},{51,20}}, color={0,0,127}));
+            Line(points={{64.6,70.4},{62,70.4},{62,70},{57,70}}, color={0,0,127}));
         connect(totalAcidExcretion.NH4, ammonium.molarflowrate) annotation (
-            Line(points={{70.4,24.8},{62,24.8},{62,42},{96,42},{96,72.8},{88.44,
+            Line(points={{64.4,76.8},{64,76.8},{64,76},{34,76},{34,72.8},{12.44,
                 72.8}}, color={0,0,127}));
         connect(totalAcidExcretion.TA, titratableAcid.TA) annotation (Line(
-              points={{70.2,30.4},{-10,30.4},{-10,-32},{16,-32},{16,-48.62},{
-                7.685,-48.62}}, color={0,0,127}));
+              points={{64.2,82.4},{22,82.4},{22,-24.62},{3.685,-24.62}},
+                                color={0,0,127}));
         connect(pHUrine_New1.GlomerularFiltration, GFR.y) annotation (Line(
-              points={{74.24,-43.24},{74.24,-24},{60,-24},{60,-10},{74,-10}},
+              points={{90.24,16.76},{90.24,28},{96,28}},
               color={0,0,127}));
         connect(pHUrine_New1.PhosphateConc, Phosphate.y) annotation (Line(
-              points={{64.32,-43.24},{64.32,-28},{48,-28},{48,9},{24,9}},
+              points={{80.32,16.76},{80.32,34},{80,34},{80,59},{98,59}},
               color={0,0,127}));
         connect(pHUrine_New1.OrgAnionsConc, OrgAnions.y) annotation (Line(
-              points={{54.4,-42.88},{54.4,-30},{36,-30},{36,-15},{22,-15}},
+              points={{70.4,17.12},{70.4,34},{68,34},{68,35}},
               color={0,0,127}));
-        connect(titratableAcid.TA, pHUrine_New1.TA) annotation (Line(points={{7.685,
-                -48.62},{16,-48.62},{16,-50},{48,-50},{48,-50.8},{50.88,-50.8}},
+        connect(titratableAcid.TA, pHUrine_New1.TA) annotation (Line(points={{3.685,
+                -24.62},{22,-24.62},{22,9.2},{66.88,9.2}},
                          color={0,0,127}));
         connect(pHUrine_New1.NH4exretion, ammonium.molarflowrate) annotation (
-            Line(points={{50.24,-71.32},{46,-71.32},{46,-82},{96,-82},{96,72.8},
-                {88.44,72.8}},       color={0,0,127}));
-        connect(pHUrine_New1.pHu, titratableAcid.pHu) annotation (Line(points={{80,
-                -55.84},{80,-55.84},{98,-55.84},{98,-86},{-46,-86},{-46,-47.48},
-                {-33.055,-47.48}},         color={0,0,127}));
-        connect(pHUrine_New1.pHa, pH.y) annotation (Line(points={{50.88,-62.68},
-                {20,-62.68},{20,-74},{-40,-74},{-40,-36},{-40,85},{-75.75,85}},
+            Line(points={{66.24,-11.32},{34,-11.32},{34,72.8},{12.44,72.8}},
+                                     color={0,0,127}));
+        connect(pHUrine_New1.pHu, titratableAcid.pHu) annotation (Line(points={{96,4.16},
+                {96,4},{104,4},{104,-52},{-62,-52},{-62,-23.48},{-37.055,-23.48}},
+                                           color={0,0,127}));
+        connect(pHUrine_New1.pHa, pH.y) annotation (Line(points={{66.88,-2.68},
+                {-4.435,-2.68},{-4.435,-1.9998},{-79.75,-1.9998}},
               color={0,0,127}));
+        connect(pH.y, titratableAcid.pHa) annotation (Line(points={{-79.75,
+                -1.9998},{-62,-1.9998},{-62,-12.84},{-37.055,-12.84}}, color={0,
+                0,127}));
         annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
-                  -100},{100,100}})));
+                  -60},{160,100}})), Icon(coordinateSystem(extent={{-100,-60},{
+                  160,100}})));
       end AmmoniumExcretion;
 
       model testABflow
@@ -12464,8 +12477,10 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
                                         annotation (Placement(transformation(extent={{-120,
                 -90},{-80,-50}}),     iconTransformation(extent={{-122,0},{-100,
                 22}})));
-      Real VI "Ventilation"            annotation (Placement(transformation(extent={{60,-50},
+      Real VI_ss = VR*VI0 "Ventilation"            annotation (Placement(transformation(extent={{60,-50},
                 {100,-10}}),        iconTransformation(extent={{100,16},{128,44}})));
+      Real VI(start = 8.19588e-5*1000/60);
+      parameter Real t_VentilatoryCompensation = 1;
       Real VR annotation (Placement(transformation(extent={{60,-10},
                 {100,30}}),         iconTransformation(extent={{100,64},{128,92}})));
 
@@ -12502,8 +12517,8 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
 
       H = 10 ^ (9 - PHA);
       VR = k1 * H + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5) + k6;
-      VI= VR*VI0;
-      //der(VI) = (VR * VI0 - VI) / 2;
+      //VI= VR*VI0;
+      der(VI) = (VI_ss - VI) * t_VentilatoryCompensation;
       VRA=VR;
       assert(VR >= 0, "VR out of bounds! Original LIMIT VR >= 0; ");
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
@@ -15264,6 +15279,114 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       annotation (Diagram(coordinateSystem(extent={{-120,-260},{420,140}})),
           Icon(coordinateSystem(extent={{-120,-260},{420,140}})));
     end VeinsEquilibratedWithTissues;
+
+    package Infusions
+      model Infusion
+        BloodPort_out_Extension bloodPort_b_Extension
+          annotation (Placement(transformation(extent={{42,50},{62,70}})));
+        Physiolibrary.Chemical.Components.Stream O2flow(useSolutionFlowInput=true)
+          annotation (Placement(transformation(extent={{8,30},{28,50}})));
+        Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure
+          annotation (Placement(transformation(extent={{16,80},{36,60}})));
+        Physiolibrary.Chemical.Components.Stream CO2flow(useSolutionFlowInput=true)
+          annotation (Placement(transformation(extent={{8,0},{28,20}})));
+        Physiolibrary.Chemical.Components.Stream BEoxflow(useSolutionFlowInput=true)
+          annotation (Placement(transformation(extent={{8,-30},{28,-10}})));
+        Physiolibrary.Hydraulic.Sources.UnlimitedPump unlimitedPump(
+            useSolutionFlowInput=true, SolutionFlow=1.6666666666667e-5)
+          annotation (Placement(transformation(extent={{-24,60},{-4,80}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
+          unlimitedSolutionStorageO2(Conc=0)
+          annotation (Placement(transformation(extent={{-24,30},{-4,50}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
+          unlimitedSolutionStorageCO2(Conc=0)
+          annotation (Placement(transformation(extent={{-24,0},{-4,20}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
+          unlimitedSolutionStorageBEox(Conc=0)
+          annotation (Placement(transformation(extent={{-24,-30},{-4,-10}})));
+        Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Package.Ions](
+           each useSolutionFlowInput=true)
+          annotation (Placement(transformation(extent={{8,-60},{28,-40}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[AcidBaseBalance.Package.Ions](Conc = ion_start)
+          annotation (Placement(transformation(extent={{-24,-60},{-4,-40}})));
+        OneToMany oneToMany annotation (Placement(transformation(
+              extent={{-4,-4},{4,4}},
+              rotation=270,
+              origin={28,-36})));
+        BloodPort_out bloodPort_out annotation (Placement(transformation(rotation=0,
+                extent={{90,50},{110,70}})));
+        Physiolibrary.Types.RealIO.VolumeFlowRateInput solutionFlow(start=
+              unlimitedPump.SolutionFlow) annotation (Placement(transformation(
+                rotation=0, extent={{-70,90},{-50,110}})));
+
+      parameter Physiolibrary.Types.Concentration ion_start[AcidBaseBalance.Package.Ions];
+      equation
+        connect(flowMeasure.q_out,bloodPort_b_Extension. bloodFlow) annotation (
+            Line(
+            points={{36,70},{42,70}},
+            color={0,0,0},
+            thickness=1));
+        connect(O2flow.solutionFlow,flowMeasure. volumeFlow) annotation (Line(
+              points={{18,47},{18,48},{26,48},{26,58}},                  color={0,
+                0,127}));
+        connect(CO2flow.solutionFlow,flowMeasure. volumeFlow) annotation (Line(
+              points={{18,17},{18,18},{26,18},{26,58}},    color={0,0,127}));
+        connect(BEoxflow.solutionFlow,flowMeasure. volumeFlow) annotation (Line(
+              points={{18,-13},{18,-12},{26,-12},{26,58}},   color={0,0,127}));
+        connect(O2flow.q_out,bloodPort_b_Extension. O2) annotation (Line(
+            points={{28,40},{36,40},{36,62},{42,62}},
+            color={107,45,134},
+            thickness=1));
+        connect(CO2flow.q_out,bloodPort_b_Extension. CO2) annotation (Line(
+            points={{28,10},{38,10},{38,58},{42,58}},
+            color={107,45,134},
+            thickness=1));
+        connect(BEoxflow.q_out,bloodPort_b_Extension. BEox) annotation (Line(
+            points={{28,-20},{40,-20},{40,54},{42,54}},
+            color={107,45,134},
+            thickness=1));
+        connect(unlimitedPump.q_out,flowMeasure. q_in) annotation (Line(
+            points={{-4,70},{16,70}},
+            color={0,0,0},
+            thickness=1));
+        connect(unlimitedSolutionStorageO2.q_out,O2flow. q_in) annotation (Line(
+            points={{-4,40},{8,40}},
+            color={107,45,134},
+            thickness=1));
+        connect(unlimitedSolutionStorageCO2.q_out,CO2flow. q_in) annotation (Line(
+            points={{-4,10},{8,10}},
+            color={107,45,134},
+            thickness=1));
+        connect(unlimitedSolutionStorageBEox.q_out,BEoxflow. q_in) annotation (
+            Line(
+            points={{-4,-20},{8,-20}},
+            color={107,45,134},
+            thickness=1));
+        connect(ionUS.q_out,ionFlow. q_in) annotation (Line(
+            points={{-4,-50},{8,-50}},
+            color={107,45,134},
+            thickness=1));
+        connect(ionFlow.q_out,bloodPort_b_Extension. ions) annotation (Line(
+            points={{28,-50},{42,-50},{42,50}},
+            color={107,45,134},
+            thickness=1));
+        connect(flowMeasure.volumeFlow,oneToMany. u)
+          annotation (Line(points={{26,58},{26,-32}},     color={0,0,127}));
+        connect(ionFlow.solutionFlow,oneToMany. y) annotation (Line(points={{18,-43},{
+                18,-40},{26,-40}},      color={0,0,127}));
+        connect(solutionFlow, unlimitedPump.solutionFlow)
+          annotation (Line(points={{-60,100},{-14,100},{-14,77}}, color={0,0,127}));
+        connect(bloodPort_b_Extension.bloodPort_out, bloodPort_out) annotation
+          (Line(
+            points={{62,60},{100,60}},
+            color={28,108,200},
+            thickness=0.5));
+      end Infusion;
+
+      model SodiumLactate "Dummy type of infusion - it should contain presets, used in the simulators"
+        extends Infusion(ion_start={1});
+      end SodiumLactate;
+    end Infusions;
   end Package;
 
   package Test
@@ -15328,9 +15451,11 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
         annotation (Placement(transformation(extent={{124,-10},{104,10}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure1
         annotation (Placement(transformation(extent={{80,10},{100,-10}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Package.Ions](each useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Package.Ions]
+        (                                                                            each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{-68,-130},{-48,-110}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[AcidBaseBalance.Package.Ions](each Conc=0)
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[
+        AcidBaseBalance.Package.Ions](                                                            each Conc=0)
         annotation (Placement(transformation(extent={{-100,-130},{-80,-110}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS1[AcidBaseBalance.Package.Ions](each Conc=
            0)
@@ -15877,6 +16002,32 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             760)
         "At filling pressure -0.0029mmHg (because external thorax pressure is -4mmHg) is normal cardiac output (effect=1)."
         annotation (Placement(transformation(extent={{16,22},{36,42}})));
+      Physiolibrary.Blocks.Factors.Spline rightStarling1(data={{-6,0,0},{-3,
+            0.15,0.104},{-1,0.52,0.48},{2,1.96,0.48},{4,2.42,0.123},{8,2.7,0}},
+          Xscale=101325/760)
+        "At filling pressure 0mmHg (because external thorax pressure is -4mmHg) is normal cardiac output (effect=1)."
+        annotation (Placement(transformation(extent={{76,52},{96,72}})));
+      Physiolibrary.Blocks.Factors.Spline leftStarling1(data={{-4,0,0},{-1,0.72,
+            0.29},{0,1.01,0.29},{3,1.88,0.218333},{10,2.7,0}}, Xscale=101325/
+            760)
+        "At filling pressure -0.0029mmHg (because external thorax pressure is -4mmHg) is normal cardiac output (effect=1)."
+        annotation (Placement(transformation(extent={{76,32},{96,52}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst LNormalCO1(k(
+            displayUnit="l/min") = 8.3333333333333e-05)
+        annotation (Placement(transformation(extent={{74,74},{82,82}})));
+      Modelica.Blocks.Sources.Ramp ramp(
+        duration=100,
+        height=10000,
+        offset=-1000)
+        annotation (Placement(transformation(extent={{44,50},{64,70}})));
+      Hydraulic.Sources.UnlimitedVolume unlimitedVolume(usePressureInput=true)
+        annotation (Placement(transformation(extent={{60,-2},{80,18}})));
+      Hydraulic.Sources.UnlimitedOutflowPump unlimitedOutflowPump(
+          useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{92,16},{112,36}})));
+      Hydraulic.Sources.UnlimitedOutflowPump unlimitedOutflowPump1(
+          useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{108,44},{128,64}})));
     equation
       connect(pulmonaryArteries.q_in,pulmonary. q_in) annotation (Line(
           points={{-52,84},{-30,84}},
@@ -15958,6 +16109,28 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           points={{-84,2},{-84,18},{-72,18}},
           color={0,0,0},
           thickness=1));
+      connect(LNormalCO1.y, rightStarling1.yBase) annotation (Line(points={{83,
+              78},{86,78},{86,64},{86,64}}, color={0,0,127}));
+      connect(LNormalCO1.y, leftStarling1.yBase)
+        annotation (Line(points={{83,78},{86,78},{86,44}}, color={0,0,127}));
+      connect(ramp.y, rightStarling1.u) annotation (Line(points={{65,60},{70,60},
+              {70,62},{78,62}}, color={0,0,127}));
+      connect(ramp.y, leftStarling1.u) annotation (Line(points={{65,60},{72,60},
+              {72,42},{78,42}}, color={0,0,127}));
+      connect(ramp.y, unlimitedVolume.pressure) annotation (Line(points={{65,60},
+              {60,60},{60,8},{60,8}}, color={0,0,127}));
+      connect(unlimitedOutflowPump.solutionFlow, leftStarling1.y) annotation (
+          Line(points={{102,33},{94,33},{94,38},{86,38}}, color={0,0,127}));
+      connect(unlimitedVolume.y, unlimitedOutflowPump.q_in) annotation (Line(
+          points={{80,8},{88,8},{88,26},{92,26}},
+          color={0,0,0},
+          thickness=1));
+      connect(unlimitedVolume.y, unlimitedOutflowPump1.q_in) annotation (Line(
+          points={{80,8},{94,8},{94,54},{108,54}},
+          color={0,0,0},
+          thickness=1));
+      connect(rightStarling1.y, unlimitedOutflowPump1.solutionFlow) annotation
+        (Line(points={{86,58},{102,58},{102,61},{118,61}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}}), graphics={Text(
               extent={{-82,-80},{80,-100}},
@@ -16079,7 +16252,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           color={28,108,200},
           thickness=0.5));
       connect(leftHeart.bloodPort_out, arteries.bloodPort_in) annotation (Line(
-          points={{35,16},{60,16},{60,-36},{33.8,-36}},
+          points={{35,16},{48,16},{48,-36},{33.8,-36}},
           color={28,108,200},
           thickness=0.5));
       connect(arteries.bloodPort_out, muscle.bloodPort_in) annotation (Line(
@@ -16127,6 +16300,21 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
         experiment(StopTime=300),
         Icon(coordinateSystem(extent={{-100,-100},{100,120}})));
     end CardiovascularSystem_GCG_Extension_simple;
+
+    model CardiovascularSystem_Infusion
+      extends CardiovascularSystem_GCG_Extension_simple;
+      Physiolibrary.Types.Constants.VolumeFlowRateConst volumeFlowRate(k=1.6666666666667e-6)
+        annotation (Placement(transformation(extent={{-94,-58},{-86,-50}})));
+      Package.Infusions.SodiumLactate infusion annotation (Placement(transformation(
+              rotation=0, extent={{-80,-80},{-60,-60}})));
+    equation
+      connect(volumeFlowRate.y, infusion.solutionFlow)
+        annotation (Line(points={{-85,-54},{-76,-54},{-76,-60}}, color={0,0,127}));
+      connect(infusion.bloodPort_out, veins.bloodPort_in) annotation (Line(
+          points={{-60,-64},{-44.2,-64},{-44.2,-36}},
+          color={28,108,200},
+          thickness=0.5));
+    end CardiovascularSystem_Infusion;
 
     model TestAlvEq
       Package.AlvEqUnit_ alvEqUnit_
@@ -16380,28 +16568,28 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           thickness=0.5));
       connect(pressureMeasure1.bloodPort_out, leftHeart.bloodPort_in)
         annotation (Line(
-          points={{78.6,60.9},{78.6,54},{4,54},{4,16},{16,16}},
+          points={{78.6,60.9},{78.6,54},{4,54},{4,16},{17,16}},
           color={28,108,200},
           thickness=0.5));
       connect(pressureMeasure1.pressure, leftStarling.u) annotation (Line(
             points={{75.8,65.2},{84,65.2},{84,32},{34,32}}, color={0,0,127}));
       connect(nonMuscle.bloodPort_out, muscle.bloodPort_out) annotation (Line(
-          points={{6,-36},{-8,-36},{-8,-18},{6,-18}},
+          points={{7,-36},{-8,-36},{-8,-18},{7,-18}},
           color={28,108,200},
           thickness=0.5));
       connect(kidney.bloodPort_out, muscle.bloodPort_out) annotation (Line(
-          points={{6,-54},{-8,-54},{-8,-18},{6,-18}},
+          points={{7,-54},{-8,-54},{-8,-18},{7,-18}},
           color={28,108,200},
           thickness=0.5));
 
       connect(leftHeart.bloodPort_out, flowMeasure_art.bloodPort_in)
         annotation (Line(
-          points={{36,16},{72,16},{72,13}},
+          points={{35,16},{72,16},{72,13}},
           color={28,108,200},
           thickness=0.5));
       connect(largeVeins.bloodPort_out, rightAtrium.bloodPort_in) annotation (
           Line(
-          points={{-110,0},{-110,22},{-109.8,22}},
+          points={{-110,-1},{-110,22},{-109.8,22}},
           color={28,108,200},
           thickness=0.5));
       connect(veins.bloodPort_in, flowMeasure_tissue.bloodPort_out) annotation (
@@ -16433,23 +16621,23 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
               127}));
       connect(rightHeart.bloodPort_out, pulmonaryArteries.bloodPort_in)
         annotation (Line(
-          points={{-32,18},{-20,18},{-20,62},{-110,62},{-110,110},{-101.8,110}},
+          points={{-33,18},{-20,18},{-20,62},{-110,62},{-110,110},{-101.8,110}},
           color={28,108,200},
           thickness=0.5));
 
       connect(flowMeasure_ven.bloodPort_out, rightHeart.bloodPort_in)
         annotation (Line(
-          points={{-59,18},{-52,18}},
+          points={{-59,18},{-51,18}},
           color={28,108,200},
           thickness=0.5));
       connect(pulmonary.bloodPort_out, flowConcentrationMeasure.bloodPort_in)
         annotation (Line(
-          points={{-54,110},{-49,110}},
+          points={{-55,110},{-49,110}},
           color={28,108,200},
           thickness=0.5));
       connect(pulmonary1.bloodPort_out, flowMeasure_alv.bloodPort_in)
         annotation (Line(
-          points={{6,80},{10,80},{10,110},{11,110}},
+          points={{5,80},{10,80},{10,110},{11,110}},
           color={28,108,200},
           thickness=0.5));
       connect(pulmonary1.bloodPort_in, pulmonaryArteries.bloodPort_out)
@@ -16483,7 +16671,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           thickness=0.5));
       connect(venous_blood_ISF_Interface.bloodPort_in, muscle.bloodPort_out)
         annotation (Line(
-          points={{-19.4,-60},{-10,-60},{-10,-36},{-8,-36},{-8,-18},{6,-18}},
+          points={{-19.4,-60},{-10,-60},{-10,-36},{-8,-36},{-8,-18},{7,-18}},
           color={28,108,200},
           thickness=0.5));
 
@@ -16542,14 +16730,18 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
 
     equation
 
-      connect(volume.y, iSFBuffer.volume) annotation (Line(points={{-53,-22},{-40,-22},
-              {-40,-24.05},{-13.65,-24.05}}, color={0,0,127}));
-      connect(concentration.y, iSFBuffer.cAlb) annotation (Line(points={{-47,-36},{-34,
-              -36},{-34,-35.27},{-17.13,-35.27}}, color={0,0,127}));
-      connect(concentration1.y, iSFBuffer.cPi) annotation (Line(points={{-51,-48},{-34,
-              -48},{-34,-44.18},{-16.84,-44.18}}, color={0,0,127}));
-      connect(temperature.y, iSFBuffer.Temp) annotation (Line(points={{-67,-78},{-44,
-              -78},{-44,-53.75},{-17.13,-53.75}}, color={0,0,127}));
+      connect(volume.y, iSFBuffer.volume) annotation (Line(points={{-53,-22},{
+              -40,-22},{-40,-33.5833},{5.06818,-33.5833}},
+                                             color={0,0,127}));
+      connect(concentration.y, iSFBuffer.cAlb) annotation (Line(points={{-47,-36},
+              {-34,-36},{-34,-39.8167},{3.48636,-39.8167}},
+                                                  color={0,0,127}));
+      connect(concentration1.y, iSFBuffer.cPi) annotation (Line(points={{-51,-48},
+              {-34,-48},{-34,-44.7667},{3.61818,-44.7667}},
+                                                  color={0,0,127}));
+      connect(temperature.y, iSFBuffer.Temp) annotation (Line(points={{-67,-78},
+              {-44,-78},{-44,-50.0833},{3.48636,-50.0833}},
+                                                  color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end TestISFBuffer;
@@ -17400,28 +17592,32 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           thickness=0.5));
       connect(iSFBuffer.CO2_inflow, venous_blood_ISF_Interface.CO2_inflow)
         annotation (Line(
-          points={{-25.8,-78},{-25.8,-70},{-27.8,-70},{-27.8,-20}},
+          points={{-24.0909,-82},{-24.0909,-70},{-27.8,-70},{-27.8,-20}},
           color={107,45,134},
           thickness=1));
       connect(iSFBuffer.O2_inflow, venous_blood_ISF_Interface.O2_inflow)
         annotation (Line(
-          points={{-21,-78},{-21,-68},{-23.32,-68},{-23.32,-20}},
+          points={{-21.9091,-82},{-21.9091,-68},{-23.32,-68},{-23.32,-20}},
           color={107,45,134},
           thickness=1));
       connect(temperature.y, iSFBuffer.Temp) annotation (Line(points={{-97,-100},
-              {-66,-100},{-66,-89.5},{-35.7,-89.5}}, color={0,0,127}));
-      connect(iSFBuffer.cPi, Phosphate.y) annotation (Line(points={{-35.6,-86.6},
-              {-68,-86.6},{-68,-92},{-83,-92}}, color={0,0,127}));
-      connect(iSFBuffer.cAlb, albumin.y) annotation (Line(points={{-35.7,-83.9},
-              {-64,-83.9},{-64,-84},{-71,-84}}, color={0,0,127}));
+              {-66,-100},{-66,-88.3889},{-28.5909,-88.3889}},
+                                                     color={0,0,127}));
+      connect(iSFBuffer.cPi, Phosphate.y) annotation (Line(points={{-28.5455,
+              -86.7778},{-68,-86.7778},{-68,-92},{-83,-92}},
+                                                color={0,0,127}));
+      connect(iSFBuffer.cAlb, albumin.y) annotation (Line(points={{-28.5909,
+              -85.2778},{-64,-85.2778},{-64,-84},{-71,-84}},
+                                                color={0,0,127}));
       connect(volume.y, iSFBuffer.volume) annotation (Line(points={{-45,-76},{
-              -40,-76},{-40,-80.5},{-34.5,-80.5}}, color={0,0,127}));
+              -40,-76},{-40,-83.3889},{-28.0455,-83.3889}},
+                                                   color={0,0,127}));
       connect(iSFBuffer.O2_inflow, diffusion.q_in) annotation (Line(
-          points={{-21,-78},{-10,-78}},
+          points={{-21.9091,-82},{-16,-82},{-16,-78},{-10,-78}},
           color={107,45,134},
           thickness=1));
       connect(diffusion1.q_out, iSFBuffer.CO2_inflow) annotation (Line(
-          points={{-10,-98},{-25.8,-98},{-25.8,-78}},
+          points={{-10,-98},{-24.0909,-98},{-24.0909,-82}},
           color={107,45,134},
           thickness=1));
       connect(diffusion.q_out, O2Buffer.q_out) annotation (Line(
@@ -18389,28 +18585,32 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           thickness=0.5));
       connect(iSFBuffer.CO2_inflow, venous_blood_ISF_Interface.CO2_inflow)
         annotation (Line(
-          points={{-25.8,-78},{-25.8,-70},{-27.8,-70},{-27.8,-60}},
+          points={{-24.0909,-82},{-24.0909,-70},{-27.8,-70},{-27.8,-60}},
           color={107,45,134},
           thickness=1));
       connect(iSFBuffer.O2_inflow, venous_blood_ISF_Interface.O2_inflow)
         annotation (Line(
-          points={{-21,-78},{-21,-68},{-23.32,-68},{-23.32,-60}},
+          points={{-21.9091,-82},{-21.9091,-68},{-23.32,-68},{-23.32,-60}},
           color={107,45,134},
           thickness=1));
       connect(temperature.y, iSFBuffer.Temp) annotation (Line(points={{-97,-100},
-              {-66,-100},{-66,-89.5},{-35.7,-89.5}}, color={0,0,127}));
-      connect(iSFBuffer.cPi, Phosphate.y) annotation (Line(points={{-35.6,-86.6},
-              {-68,-86.6},{-68,-92},{-83,-92}}, color={0,0,127}));
-      connect(iSFBuffer.cAlb, albumin.y) annotation (Line(points={{-35.7,-83.9},
-              {-64,-83.9},{-64,-84},{-71,-84}}, color={0,0,127}));
+              {-66,-100},{-66,-88.3889},{-28.5909,-88.3889}},
+                                                     color={0,0,127}));
+      connect(iSFBuffer.cPi, Phosphate.y) annotation (Line(points={{-28.5455,
+              -86.7778},{-68,-86.7778},{-68,-92},{-83,-92}},
+                                                color={0,0,127}));
+      connect(iSFBuffer.cAlb, albumin.y) annotation (Line(points={{-28.5909,
+              -85.2778},{-64,-85.2778},{-64,-84},{-71,-84}},
+                                                color={0,0,127}));
       connect(volume.y, iSFBuffer.volume) annotation (Line(points={{-45,-76},{
-              -40,-76},{-40,-80.5},{-34.5,-80.5}}, color={0,0,127}));
+              -40,-76},{-40,-83.3889},{-28.0455,-83.3889}},
+                                                   color={0,0,127}));
       connect(iSFBuffer.O2_inflow, diffusion.q_in) annotation (Line(
-          points={{-21,-78},{-10,-78}},
+          points={{-21.9091,-82},{-16,-82},{-16,-78},{-10,-78}},
           color={107,45,134},
           thickness=1));
       connect(diffusion1.q_out, iSFBuffer.CO2_inflow) annotation (Line(
-          points={{-10,-98},{-25.8,-98},{-25.8,-78}},
+          points={{-10,-98},{-24.0909,-98},{-24.0909,-82}},
           color={107,45,134},
           thickness=1));
       connect(diffusion.q_out, O2Buffer.q_out) annotation (Line(
@@ -25196,5 +25396,5 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
     end HemodynamicsMeurs;
   end PulsatileCirculation;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
-      Physiomodel(version="1.0.1-beta")));
+      Physiomodel(version="1.0.0")));
 end AcidBaseBalance;
