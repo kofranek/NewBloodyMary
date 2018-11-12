@@ -8059,6 +8059,337 @@ and mixing"), Text(
                                     Diagram(coordinateSystem(preserveAspectRatio=false,
                 extent={{-200,-180},{260,140}})));
       end AlvEq_2units_with_shunts_and_mixing;
+
+      model AlvEq_2units_with_shunts_and_mixing_connectors
+
+        Physiolibrary.Types.RealIO.ConcentrationInput CvO2 annotation (Placement(
+              transformation(extent={{-170,33},{-154,50}}),
+                                                          iconTransformation(extent={{-202,10},
+                  {-190,22}})));
+        Physiolibrary.Types.RealIO.ConcentrationInput CvCO2 annotation (Placement(
+              transformation(extent={{-172,-26},{-154,-8}}),
+                                                          iconTransformation(extent={{-202,-2},
+                  {-190,10}})));
+        Physiolibrary.Types.RealIO.VolumeFlowRateInput Q annotation (Placement(
+              transformation(extent={{-198,106},{-180,124}}),
+                                                           iconTransformation(
+              extent={{-6,-6},{6,6}},
+              rotation=0,
+              origin={-196,40})));
+        Physiolibrary.Types.RealIO.VolumeFlowRateInput VAi annotation (Placement(
+              transformation(extent={{-194,32},{-178,48}}),iconTransformation(
+              extent={{-6,-6},{6,6}},
+              rotation=0,
+              origin={-196,52})));
+        Physiolibrary.Types.RealIO.VolumeFlowRateOutput VAe annotation (Placement(
+              transformation(extent={{196,-128},{210,-114}}),
+                                                          iconTransformation(
+                extent={{260,-94},{278,-76}})));
+        Physiolibrary.Types.RealIO.MolarFlowRateOutput VO2 annotation (Placement(
+              transformation(extent={{222,-154},{234,-142}}),
+                                                          iconTransformation(
+                extent={{260,-18},{278,0}})));
+        Physiolibrary.Types.RealIO.MolarFlowRateOutput VCO2 annotation (Placement(
+              transformation(extent={{224,-168},{234,-158}}),
+                                                          iconTransformation(
+                extent={{260,-36},{276,-20}})));
+
+        Physiolibrary.Types.RealIO.ConcentrationOutput ctCO2a annotation (
+            Placement(transformation(
+              extent={{-7,-7},{7,7}},
+              rotation=0,
+              origin={203,-170}), iconTransformation(
+              extent={{-9,-9},{9,9}},
+              rotation=0,
+              origin={269,-65})));
+        Physiolibrary.Types.RealIO.ConcentrationOutput ctO2a annotation (
+            Placement(transformation(
+              extent={{7.5,-7},{-7.5,7}},
+              rotation=180,
+              origin={203.5,-144}), iconTransformation(
+              extent={{-9,-9},{9,9}},
+              rotation=0,
+              origin={269,-47})));
+        Physiolibrary.Types.RealIO.ConcentrationInput BEox "BEox in mmol/l" annotation(Placement(transformation(extent={{-166,59},
+                  {-148,77}}),                                                                                                          iconTransformation(extent={{-210,70},
+                  {-190,90}})));
+        AlvEq alvEq1
+          annotation (Placement(transformation(extent={{-84,-36},{42,88}})));
+
+        Physiolibrary.Types.RealIO.FractionInput Fsh "shunt fraction" annotation (
+            Placement(transformation(extent={{-202,-76},{-162,-36}}),
+              iconTransformation(extent={{-206,-48},{-188,-30}})));
+
+        Physiolibrary.Types.RealIO.FractionInput F_q1 "alveolar perfusion fraction" annotation (
+            Placement(transformation(extent={{-202,-110},{-162,-70}}),
+              iconTransformation(extent={{-206,-84},{-188,-66}})));
+        Physiolibrary.Types.RealIO.FractionInput F_VAi1 "alveolar ventilation fraction" annotation (
+            Placement(transformation(extent={{-204,-140},{-164,-100}}),
+              iconTransformation(extent={{-208,-124},{-190,-106}})));
+        AlvEq alvEq2
+          annotation (Placement(transformation(extent={{-82,-170},{44,-46}})));
+
+        Physiolibrary.Types.VolumeFlowRate Qsh=Q*Fsh;
+        Physiolibrary.Types.VolumeFlowRate Qpulm=Q-Qsh;
+        Physiolibrary.Types.VolumeFlowRate Q_alv1 = Qpulm*F_q1;
+        Physiolibrary.Types.VolumeFlowRate VAi_alv1 = VAi*F_VAi1;
+        Physiolibrary.Types.VolumeFlowRate Q_alv2 = Qpulm-Q_alv1;
+        Physiolibrary.Types.VolumeFlowRate VAi_alv2 = VAi-VAi_alv1;
+        O2CO2 artBlood
+          annotation (Placement(transformation(extent={{92,-80},{196,60}})));
+        Physiolibrary.Types.RealIO.ConcentrationOutput HCO3a annotation (
+            Placement(transformation(
+              extent={{7.5,-7},{-7.5,7}},
+              rotation=180,
+              origin={247.5,-4}), iconTransformation(
+              extent={{-9,-9},{9,9}},
+              rotation=0,
+              origin={269,27})));
+        Physiolibrary.Types.RealIO.PressureOutput PaO2 annotation (Placement(
+              transformation(extent={{214,40},{234,60}}), iconTransformation(
+                extent={{260,74},{280,94}})));
+        Physiolibrary.Types.RealIO.PressureOutput PaCO2 annotation (Placement(
+              transformation(extent={{216,12},{236,32}}), iconTransformation(
+                extent={{260,54},{280,74}})));
+        Physiolibrary.Types.RealIO.pHOutput pHa annotation (Placement(
+              transformation(extent={{212,-8},{232,12}}), iconTransformation(
+                extent={{260,34},{280,54}})));
+        Physiolibrary.Types.RealIO.FractionOutput sO2a annotation (Placement(
+              transformation(extent={{228,-38},{248,-18}}), iconTransformation(
+                extent={{260,-2},{280,18}})));
+        BloodPort_in bloodPort_in
+          annotation (Placement(transformation(extent={{-210,-10},{-190,10}})));
+        BloodPort_out bloodPort_out
+          annotation (Placement(transformation(extent={{250,-10},{270,10}})));
+
+          Real p = bloodPort_in.pressure;
+         // Real BEox = inStream(bloodPort_in.BEox);
+         // Real CO2_c = bloodPort_in.conc;
+
+      initial equation
+      equation
+        // connector - hydraulics
+
+
+        alvEq1.Q = Q_alv1;
+        alvEq2.Q = Q_alv2;
+        alvEq1.VAi=VAi_alv1;
+        alvEq2.VAi=VAi_alv2;
+        alvEq1.ctO2*Q_alv1 + alvEq2.ctO2*Q_alv2 + CvO2*Qsh =Q*ctO2a;
+        alvEq1.ctCO2*Q_alv1 + alvEq2.ctCO2*Q_alv2 + CvCO2*Qsh =Q*ctCO2a;
+        alvEq1.VAe+alvEq2.VAe=VAe;
+        alvEq1.VO2+alvEq2.VO2=VO2;
+        alvEq1.VCO2+alvEq2.VCO2=VCO2;
+        artBlood.ctO2=ctO2a;
+        artBlood.ctCO2=ctCO2a;
+
+        connect(alvEq1.BEox, BEox) annotation (Line(points={{-84,64.75},{-104,64.75},{
+                -104,68},{-157,68}}, color={0,0,127}));
+        connect(alvEq1.CvCO2, CvCO2) annotation (Line(points={{-82.9043,35.3},{
+                -104,35.3},{-104,-17},{-163,-17}},
+                                        color={0,0,127}));
+        connect(alvEq2.BEox, BEox) annotation (Line(points={{-82,-69.25},{-126,-69.25},
+                {-126,68},{-157,68}}, color={0,0,127}));
+        connect(alvEq2.CvCO2, CvCO2) annotation (Line(points={{-80.9043,-98.7},
+                {-148,-98.7},{-148,-17},{-163,-17}},
+                                        color={0,0,127}));
+        connect(alvEq1.CvO2, CvO2) annotation (Line(points={{-82.9043,39.95},{
+                -138.452,39.95},{-138.452,41.5},{-162,41.5}},
+                                                     color={0,0,127}));
+        connect(alvEq2.CvO2, CvO2) annotation (Line(points={{-80.9043,-94.05},{
+                -138,-94.05},{-138,40},{-138.452,40},{-138.452,41.5},{-162,41.5}},
+                                                                      color={0,0,127}));
+        connect(artBlood.BEox, BEox) annotation (Line(points={{89.4,6.47059},{
+                66,6.47059},{66,118},{-126,118},{-126,68},{-157,68}},
+                                                          color={0,0,127}));
+        connect(artBlood.pO2, PaO2) annotation (Line(points={{198.6,19.6471},{
+                204,19.6471},{204,50},{224,50}}, color={0,0,127}));
+        connect(artBlood.pCO2, PaCO2) annotation (Line(points={{198.6,11.4118},
+                {210,11.4118},{210,22},{226,22}}, color={0,0,127}));
+        connect(artBlood.pH, pHa) annotation (Line(points={{198.6,1.52941},{
+                207.3,1.52941},{207.3,2},{222,2}}, color={0,0,127}));
+        connect(artBlood.sO2, sO2a) annotation (Line(points={{198.6,-14.9412},{
+                214.3,-14.9412},{214.3,-28},{238,-28}}, color={0,0,127}));
+        connect(artBlood.cHCO3, HCO3a) annotation (Line(points={{198.6,-6.70588},
+                {219.3,-6.70588},{219.3,-4},{247.5,-4}}, color={0,0,127}));
+        annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-200,
+                  -180},{260,140}}),
+                         graphics={
+              Rectangle(
+                extent={{-200,140},{260,-178}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid),
+              Text(
+                extent={{-100,126},{140,-164}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                textString="AlvEq
+2 units
+with
+shunts
+and mixing"), Text(
+                extent={{-24,6},{24,-6}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                origin={-160,14},
+                rotation=180,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Left,
+                textString="CvO2"),
+              Text(
+                extent={{-36,6},{36,-6}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                origin={-148,4},
+                rotation=180,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Left,
+                textString="CvCO2"),
+              Text(
+                extent={{-51,5},{51,-5}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                origin={203,-49},
+                rotation=180,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Right,
+                textString="CtO2"),
+              Text(
+                extent={{-52,9.5},{52,-9.5}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                origin={202,-69.5},
+                rotation=180,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Right,
+                textString="CtCO2"),
+              Text(
+                extent={{156,14},{254,2}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Right,
+                textString="sO2a"),
+              Text(
+                extent={{160,36},{254,16}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Right,
+                textString="HCO3a"),
+              Text(
+                extent={{138,52},{254,40}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Right,
+                textString="pHa"),
+              Text(
+                extent={{162,72},{254,56}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Right,
+                textString="PaCO2"),
+              Text(
+                extent={{154,86},{254,78}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Right,
+                textString="PaO2"),
+              Text(
+                extent={{-184,42},{-148,36}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Left,
+                textString="Q"),
+              Text(
+                extent={{-184,56},{-138,50}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Left,
+                textString="VAi"),
+              Text(
+                extent={{188,-82},{254,-92}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                fontSize=11,
+                horizontalAlignment=TextAlignment.Right,
+                textString="VAe"),
+              Text(
+                extent={{152,-6},{254,-16}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Right,
+                textString="VO2"),
+              Text(
+                extent={{132,-24},{254,-34}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Right,
+                textString="VCO2"),
+              Text(
+                extent={{-186,82},{-140,76}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Left,
+                textString="BEox"),
+              Text(
+                extent={{-36,6},{36,-6}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                origin={-144,-40},
+                rotation=180,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Left,
+                textString="Fsh"),
+              Text(
+                extent={{-36,6},{36,-6}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                origin={-146,-74},
+                rotation=180,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Left,
+                textString="F_q1"),
+              Text(
+                extent={{-36,6},{36,-6}},
+                lineColor={0,0,255},
+                fillColor={255,255,0},
+                fillPattern=FillPattern.Solid,
+                origin={-148,-114},
+                rotation=180,
+                fontSize=12,
+                horizontalAlignment=TextAlignment.Left,
+                textString="F_VAi1")}),
+                                    Diagram(coordinateSystem(preserveAspectRatio=false,
+                extent={{-200,-180},{260,140}})));
+      end AlvEq_2units_with_shunts_and_mixing_connectors;
     end OSA;
 
     package Nerves
@@ -11411,7 +11742,7 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       parameter Physiolibrary.Types.Pressure PB= 101325.0144354
         "Barometric Pressure";
       parameter Physiolibrary.Types.Fraction FiO2= 0.21 "Frattion of O2";
-      parameter Physiolibrary.Types.Fraction FiCO2= 0.0004;
+      Physiolibrary.Types.Fraction FiCO2= if time < 10*60*60 then 0.0004 else 0.05;
       parameter Physiolibrary.Types.Concentration cAlb= 0.66;
       parameter Physiolibrary.Types.Concentration cAlbISF = cAlb/3;
       parameter Physiolibrary.Types.Concentration ctHb= 8.4;
@@ -11637,14 +11968,14 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       connect(unlimitedSolutePump.soluteFlow, molarFlowMeasure.molarFlowRate)
         annotation (Line(points={{-74.8,-67.4},{-74.8,-62},{-100,-62},{-100,48},
               {-53,48},{-53,57.6}}, color={0,0,127}));
-      connect(plasmaO2CO2_by_integration.Temp, Temp) annotation (Line(points={{
-              4.05833,-65.0882},{-1.97083,-65.0882},{-1.97083,-66},{-14,-66}},
+      connect(plasmaO2CO2_by_integration.Temp, Temp) annotation (Line(points={{4.05833,
+              -65.0882},{-1.97083,-65.0882},{-1.97083,-66},{-14,-66}},
             color={0,0,127}));
-      connect(plasmaO2CO2_by_integration.cPi, cPi) annotation (Line(points={{
-              3.7,-49.6588},{-4.65,-49.6588},{-4.65,-49},{-13,-49}}, color={0,0,
+      connect(plasmaO2CO2_by_integration.cPi, cPi) annotation (Line(points={{3.7,
+              -49.6588},{-4.65,-49.6588},{-4.65,-49},{-13,-49}},     color={0,0,
               127}));
-      connect(cAlb, plasmaO2CO2_by_integration.cAlb) annotation (Line(points={{
-              -14,-34},{-4,-34},{-4,-33.5118},{4.05833,-33.5118}}, color={0,0,
+      connect(cAlb, plasmaO2CO2_by_integration.cAlb) annotation (Line(points={{-14,-34},
+              {-4,-34},{-4,-33.5118},{4.05833,-33.5118}},          color={0,0,
               127}));
       connect(concentrationMeasure.concentration, plasmaO2CO2_by_integration.BEox)
         annotation (Line(points={{-56,-65.4},{-56,-44},{-16,-44},{-16,-16.6471},
@@ -12507,6 +12838,8 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       Physiolibrary.Types.RealIO.VolumeFlowRateInput VA0 annotation (Placement(
             transformation(extent={{-74,-100},{-34,-60}}), iconTransformation(
               extent={{-120,-84},{-80,-44}})));
+      Real VRD "VR delayed";
+      parameter Real VRD_T = 1;
     equation
       k1 = if PHA <= 7.4 then 0.22 else 0.0258;
       k6 = if PHA <= 7.4 then -12.734 else -5.003;
@@ -12517,9 +12850,12 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
 
       H = 10 ^ (9 - PHA);
       VR = k1 * H + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5) + k6;
-      //VI= VR*VI0;
-      der(VI) = (VI_ss - VI) * t_VentilatoryCompensation;
-      VRA=VR;
+      // simplified case
+      // VRD = VR;
+      der(VRD) = (VR - VRD)/VRD_T "Time delay in alveolar ventilation control";
+      VI= VRD*VI0;
+      //der(VI) = (VR * VI0 - VI) / 2;
+      VRA=VRD;
       assert(VR >= 0, "VR out of bounds! Original LIMIT VR >= 0; ");
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}}),
@@ -14684,8 +15020,8 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           points={{34,74},{96,74}},
           color={28,108,200},
           thickness=0.5));
-      connect(alvEq_2units_with_shunts.F_VAi1, F_VAi1) annotation (Line(points=
-              {{-49.7783,-62.5},{-53.8892,-62.5},{-53.8892,-62},{-66,-62}},
+      connect(alvEq_2units_with_shunts.F_VAi1, F_VAi1) annotation (Line(points={{
+              -49.7783,-62.5},{-53.8892,-62.5},{-53.8892,-62},{-66,-62}},
             color={0,0,127}));
       connect(alvEq_2units_with_shunts.F_q1, F_q1) annotation (Line(points={{
               -49.3348,-50.5},{-60.6674,-50.5},{-60.6674,-49},{-77,-49}}, color=
@@ -14693,8 +15029,8 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       connect(alvEq_2units_with_shunts.Fsh, Fsh) annotation (Line(points={{
               -49.3348,-39.7},{-55.6674,-39.7},{-55.6674,-41},{-67,-41}}, color=
              {0,0,127}));
-      connect(alvEq_2units_with_shunts.VAi, VAi) annotation (Line(points={{
-              -49.113,-12.4},{-56.5565,-12.4},{-56.5565,-10},{-64,-10}}, color=
+      connect(alvEq_2units_with_shunts.VAi, VAi) annotation (Line(points={{-49.113,
+              -12.4},{-56.5565,-12.4},{-56.5565,-10},{-64,-10}},         color=
               {0,0,127}));
       connect(flowConcentrationMeasure.volumeFlow, alvEq_2units_with_shunts.Q)
         annotation (Line(points={{-66,86},{-66,90},{-84,90},{-84,-16},{-49.113,
@@ -14707,10 +15043,10 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       connect(alvEq_2units_with_shunts.CvCO2, flowConcentrationMeasure.CO2_conc)
         annotation (Line(points={{-49.113,-26.8},{-66,-26.8},{-66,62}}, color={
               0,0,127}));
-      connect(alvEq_2units_with_shunts.VO2, VO2) annotation (Line(points={{
-              53.7739,-31},{68,-31},{68,-54},{96,-54}}, color={0,0,127}));
-      connect(alvEq_2units_with_shunts.VCO2, VCO2) annotation (Line(points={{
-              53.7739,-36.4},{74,-36.4},{74,-72},{94,-72}}, color={0,0,127}));
+      connect(alvEq_2units_with_shunts.VO2, VO2) annotation (Line(points={{53.7739,
+              -31},{68,-31},{68,-54},{96,-54}},         color={0,0,127}));
+      connect(alvEq_2units_with_shunts.VCO2, VCO2) annotation (Line(points={{53.7739,
+              -36.4},{74,-36.4},{74,-72},{94,-72}},         color={0,0,127}));
       annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
             graphics={Text(
               extent={{-86,114},{-16,88}},
@@ -14968,8 +15304,8 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       Physiolibrary.Chemical.Components.Substance O2Buffer(useNormalizedVolume=
             false, solute_start(displayUnit="mol") = 2e-11)
         annotation (Placement(transformation(extent={{312,-82},{320,-74}})));
-      Physiolibrary.Chemical.Components.Substance CO2buffer(useNormalizedVolume
-          =false, solute_start=1.6e-9)
+      Physiolibrary.Chemical.Components.Substance CO2buffer(useNormalizedVolume=
+           false, solute_start=1.6e-9)
         annotation (Placement(transformation(extent={{300,-84},{308,-76}})));
       Physiolibrary.Types.Constants.VolumeConst nearToZeroVolume(k=1e-9)
         annotation (Placement(transformation(extent={{280,-78},{294,-72}})));
@@ -15051,8 +15387,8 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
         annotation (Placement(transformation(extent={{-122,120},{-102,140}})));
       BloodPort_in bloodPort_in annotation (Placement(transformation(rotation=0,
               extent={{398,-26},{446,26}})));
-      BloodPort_out bloodPort_out annotation (Placement(transformation(rotation
-              =0, extent={{-142,-28},{-94,24}})));
+      BloodPort_out bloodPort_out annotation (Placement(transformation(rotation=
+               0, extent={{-142,-28},{-94,24}})));
     equation
       connect(molarFlowMeasure2.molarFlowRate,unlimitedSolutePumpOut1. soluteFlow)
         annotation (Line(points={{52,-85.6},{-4,-85.6},{-4,-88}}, color={0,0,
@@ -15387,6 +15723,148 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
         extends Infusion(ion_start={1});
       end SodiumLactate;
     end Infusions;
+
+    model Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
+      extends Icons.Alveolus;
+
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput VCO2 annotation (Placement(
+            transformation(extent={{84,-82},{104,-62}}), iconTransformation(
+            extent={{-11,-11},{11,11}},
+            rotation=90,
+            origin={-13,101})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput VO2 annotation (Placement(
+            transformation(extent={{86,-64},{106,-44}}), iconTransformation(
+            extent={{-11,-11},{11,11}},
+            rotation=90,
+            origin={15,101})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput VAi annotation(Placement(transformation(extent={{-66,-2},
+                {-54,10}}),                                                                                                     iconTransformation(extent={{-13,-13},
+                {13,13}},                                                                                                    rotation = 0, origin={-59,27})));
+      BloodPort_in bloodPort_in annotation (Placement(transformation(extent={{-106,64},
+                {-86,84}}),          iconTransformation(extent={{-44,50},{-24,
+                70}})));
+      BloodPort_out bloodPort_out annotation (Placement(transformation(extent={{86,64},
+                {106,84}}),          iconTransformation(extent={{14,52},{34,72}})));
+
+      Physiolibrary.Types.RealIO.FractionInput Fsh "shunt fraction" annotation (
+         Placement(transformation(extent={{-68,-38},{-54,-24}}),
+            iconTransformation(extent={{-44,-86},{-26,-68}})));
+      Physiolibrary.Types.RealIO.FractionInput F_q1 "alveolar perfusion fraction" annotation (
+          Placement(transformation(extent={{-66,-52},{-52,-38}}),
+            iconTransformation(extent={{-80,-42},{-62,-24}})));
+      Physiolibrary.Types.RealIO.FractionInput F_VAi1 "alveolar ventilation fraction" annotation (
+          Placement(transformation(extent={{-68,-68},{-52,-52}}),
+            iconTransformation(extent={{-80,-22},{-62,-4}})));
+      OSA.AlvEq_2units_with_shunts_and_mixing alvEq_2units_with_shunts_and_mixing
+        annotation (Placement(transformation(extent={{-40,-82},{52,32}})));
+      Physiolibrary.Types.RealIO.PressureOutput PaO2( start=13333) annotation (Placement(
+            transformation(extent={{80,2},{100,22}}), iconTransformation(extent={{64,
+                12},{84,32}})));
+      Physiolibrary.Types.RealIO.PressureOutput PaCO2( start = 5333) annotation (Placement(
+            transformation(extent={{80,-8},{100,12}}), iconTransformation(extent={{64,
+                -12},{84,8}})));
+      Physiolibrary.Types.RealIO.pHOutput pHa( start=7.4) annotation (Placement(transformation(
+              extent={{80,-20},{100,0}}), iconTransformation(extent={{64,-36},{84,-16}})));
+    equation
+      // hydraulics
+      bloodPort_in.bloodFlow + bloodPort_out.bloodFlow = 0;
+      bloodPort_in.pressure = bloodPort_out.pressure;
+
+      assert(bloodPort_in.bloodFlow > 0, "backward flow in lungs detected - the computation of blood concentrations are not designed for that", AssertionLevel.error);
+
+
+      // output concetration - normal direction
+    //   bloodPort_out.conc[1] = alvEq_2units_with_shunts_and_mixing.ctO2a;
+    //   bloodPort_out.conc[2] = alvEq_2units_with_shunts_and_mixing.ctCO2a;
+      bloodPort_out.conc[1] = homotopy(alvEq_2units_with_shunts_and_mixing.ctO2a, 8);
+      bloodPort_out.conc[2] = homotopy(alvEq_2units_with_shunts_and_mixing.ctCO2a,20);
+
+      bloodPort_out.conc[3] =   inStream(bloodPort_in.conc[3]);
+      bloodPort_out.ions = inStream(bloodPort_in.ions);
+      // backwards direction - forbidden, yet we must write equations
+      bloodPort_in.conc[1] = alvEq_2units_with_shunts_and_mixing.ctO2a;
+      bloodPort_in.conc[2] = alvEq_2units_with_shunts_and_mixing.ctCO2a;
+      bloodPort_in.conc[3] =   inStream(bloodPort_out.conc[3]);
+      bloodPort_in.ions = inStream(bloodPort_out.ions);
+
+      // connecting the input connectors
+      alvEq_2units_with_shunts_and_mixing.Q = bloodPort_in.bloodFlow;
+      alvEq_2units_with_shunts_and_mixing.CvO2 = inStream(bloodPort_in.conc[1]);
+      alvEq_2units_with_shunts_and_mixing.CvCO2 = inStream(bloodPort_in.conc[2]);
+      alvEq_2units_with_shunts_and_mixing.BEox  = inStream(bloodPort_in.conc[3]);
+
+      connect(alvEq_2units_with_shunts_and_mixing.VAi, VAi) annotation (Line(points=
+             {{-39.2,0.65},{-50.6,0.65},{-50.6,4},{-60,4}}, color={0,0,127}));
+      connect(alvEq_2units_with_shunts_and_mixing.Fsh, Fsh) annotation (Line(points={{-39.4,
+              -31.7688},{-48.7,-31.7688},{-48.7,-31},{-61,-31}},        color={0,0,127}));
+      connect(alvEq_2units_with_shunts_and_mixing.F_q1, F_q1) annotation (Line(
+            points={{-39.4,-44.5938},{-48.7,-44.5938},{-48.7,-45},{-59,-45}}, color=
+             {0,0,127}));
+      connect(alvEq_2units_with_shunts_and_mixing.F_VAi1, F_VAi1) annotation (Line(
+            points={{-39.8,-58.8438},{-47.9,-58.8438},{-47.9,-60},{-60,-60}}, color=
+             {0,0,127}));
+      connect(alvEq_2units_with_shunts_and_mixing.VO2, VO2) annotation (Line(points={{53.8,
+              -21.0813},{68,-21.0813},{68,-54},{96,-54}},       color={0,0,127}));
+      connect(alvEq_2units_with_shunts_and_mixing.VCO2, VCO2) annotation (Line(
+            points={{53.6,-27.85},{74,-28},{74,-72},{94,-72}}, color={0,0,127}));
+      connect(PaO2, alvEq_2units_with_shunts_and_mixing.PaO2) annotation (Line(
+            points={{90,12},{62,12},{62,12.05},{54,12.05}}, color={0,0,127}));
+      connect(alvEq_2units_with_shunts_and_mixing.PaCO2, PaCO2) annotation (Line(
+            points={{54,4.925},{58,4.925},{58,2},{90,2}}, color={0,0,127}));
+      connect(alvEq_2units_with_shunts_and_mixing.pHa, pHa) annotation (Line(points=
+             {{54,-2.2},{56,-2.2},{56,-2},{58,-2},{58,-10},{90,-10}}, color={0,0,127}));
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
+            graphics={Text(
+              extent={{-86,114},{-16,88}},
+              lineColor={28,108,200},
+              textString="CO2"), Text(
+              extent={{14,114},{82,86}},
+              lineColor={28,108,200},
+              textString="O2")}),                                                                                                    Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
+            graphics={
+            Line(
+              points={{-42,-18},{-90,-18},{-90,62}},
+              color={238,46,47},
+              arrow={Arrow.Open,Arrow.None},
+              thickness=0.5,
+              pattern=LinePattern.Dash),
+            Line(
+              points={{-42,-12},{-86,-12},{-86,68}},
+              color={238,46,47},
+              arrow={Arrow.Open,Arrow.None},
+              thickness=0.5,
+              pattern=LinePattern.Dash),
+            Line(
+              points={{-42,-4},{-84,-4},{-84,74}},
+              color={238,46,47},
+              arrow={Arrow.Open,Arrow.None},
+              thickness=0.5,
+              pattern=LinePattern.Dash),
+            Line(
+              points={{-44,12},{-82,12},{-82,78}},
+              color={238,46,47},
+              arrow={Arrow.Open,Arrow.None},
+              thickness=0.5,
+              pattern=LinePattern.Dash),
+            Line(
+              points={{58,-34},{96,-34},{96,66}},
+              color={238,46,47},
+              arrow={Arrow.None,Arrow.Open},
+              thickness=0.5,
+              pattern=LinePattern.Dash),
+            Line(
+              points={{58,-42},{100,-42},{100,66}},
+              color={238,46,47},
+              arrow={Arrow.None,Arrow.Open},
+              thickness=0.5,
+              pattern=LinePattern.Dash),
+            Line(
+              points={{-78,74},{90,74}},
+              color={238,46,47},
+              arrow={Arrow.None,Arrow.Open},
+              thickness=0.5,
+              pattern=LinePattern.Dash)}));
+    end Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors;
   end Package;
 
   package Test
@@ -22764,7 +23242,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       Package.Alveolocapillary_2Units_with_shunts_and_mixing
         alveolocapillary_2Units_with_shunts_and_mixing
         annotation (Placement(transformation(extent={{-28,88},{6,116}})));
-      Package.AlveolarVentilation alveolarVentilation
+      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
         annotation (Placement(transformation(extent={{146,-10},{166,10}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
               "ml/min") = 8.19588e-5)
@@ -22931,9 +23409,280 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
 <p><i>2014</i></p>
 <p>Marek Matejak, Charles University, Prague, Czech Republic </p>
 </html>"),
-        experiment(StopTime=300),
+        experiment(StopTime=100000),
         Icon(coordinateSystem(extent={{-120,-80},{160,140}})));
     end Combination;
+
+    model Combination_alvVentDirect
+      "Cardiovascular part of Guyton-Coleman-Granger's model from 1972"
+       extends Modelica.Icons.Example;
+       import Physiolibrary.Hydraulic;
+      Package.BloodElasticVesselCompliance pulmonaryArteries(
+        ZeroPressureVolume(displayUnit="l") = 0.00030625,
+        volume_start(displayUnit="l") = 0.00038,
+        Compliance(displayUnit="l/mmHg") = 3.6002955640592e-8,
+        O2_concentration=6.02579,
+        CO2_concentration=23.6461)
+        annotation (Placement(transformation(extent={{-102,100},{-82,120}})));
+    Package.BloodElasticVesselCompliance pulmonaryVeinsAndLeftAtrium(
+        volume_start(displayUnit="l") = 0.0004,
+        ZeroPressureVolume(displayUnit="l") = 0.0004,
+        Compliance(displayUnit="l/mmHg") = 7.5006157584566e-8,
+        O2_concentration=8.29769,
+        CO2_concentration=21.6053)
+        annotation (Placement(transformation(extent={{40,100},{60,120}})));
+      Package.BloodConductor
+               pulmonary(Conductance(displayUnit="l/(mmHg.min)")=
+          4.1665920538226e-8, useConductanceInput=false)
+        annotation (Placement(transformation(extent={{6,120},{26,100}})));
+      Package.BloodElasticVesselCompliance arteries(
+        volume_start(displayUnit="l") = 0.00085,
+        ZeroPressureVolume(displayUnit="l") = 0.000495,
+        Compliance(displayUnit="l/mmHg") = 2.6627185942521e-8,
+        O2_concentration=8.29769,
+        CO2_concentration=21.6053)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={54,-36})));
+      Package.BloodConductor
+               nonMuscle(Conductance(displayUnit="l/(mmHg.min)") = 3.5627924852669e-09)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={16,-36})));
+      Package.Pump              rightHeart
+        annotation (Placement(transformation(extent={{-52,8},{-32,28}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst RNormalCO(k(displayUnit="l/min")=
+             8.3333333333333e-05)
+        annotation (Placement(transformation(extent={{-56,40},{-48,48}})));
+      Package.Pump              leftHeart
+        annotation (Placement(transformation(extent={{16,6},{36,26}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst LNormalCO(k(displayUnit="l/min")=
+             8.3333333333333e-05)
+        annotation (Placement(transformation(extent={{12,42},{20,50}})));
+      Package.BloodConductor
+               kidney(Conductance(displayUnit="l/(mmHg.min)") = 1.4126159678427e-09)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={16,-54})));
+      Package.BloodConductor
+               muscle(Conductance(displayUnit="l/(mmHg.min)")=
+          1.3001067314658e-9)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=180,
+            origin={16,-18})));
+      Package.BloodConductor
+               largeVeins(Conductance(displayUnit="l/(mmHg.min)") = 1.6888886482791e-07)
+        annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+            rotation=90,
+            origin={-110,-10})));
+      Package.BloodElasticVesselCompliance rightAtrium(
+        volume_start(displayUnit="l") = 0.0001,
+        ZeroPressureVolume(displayUnit="l") = 0.0001,
+        Compliance(displayUnit="l/mmHg") = 3.7503078792283e-8,
+        O2_concentration=6.02579,
+        CO2_concentration=23.6461)
+        annotation (Placement(transformation(extent={{-110,12},{-90,32}})));
+      Physiolibrary.Blocks.Factors.Spline rightStarling(data={{-6,0,0},{-3,0.15,0.104},
+            {-1,0.52,0.48},{2,1.96,0.48},{4,2.42,0.123},{8,2.7,0}}, Xscale=101325/760)
+        "At filling pressure 0mmHg (because external thorax pressure is -4mmHg) is normal cardiac output (effect=1)."
+        annotation (Placement(transformation(extent={{-50,22},{-30,42}})));
+      Physiolibrary.Blocks.Factors.Spline leftStarling(data={{-4,0,0},{-1,0.72,0.29},
+            {0,1.01,0.29},{3,1.88,0.218333},{10,2.7,0}}, Xscale=101325/760)
+        "At filling pressure -0.0029mmHg (because external thorax pressure is -4mmHg) is normal cardiac output (effect=1)."
+        annotation (Placement(transformation(extent={{36,22},{16,42}})));
+      Package.PressureMeasure pressureMeasure1
+        annotation (Placement(transformation(extent={{60,58},{80,78}})));
+      Package.PressureMeasure pressureMeasure2
+        annotation (Placement(transformation(extent={{-90,44},{-76,58}})));
+      Package.FlowConcentrationMeasure
+                          flowConcentrationMeasure1
+                                          annotation (Placement(transformation(
+            extent={{-10,10},{10,-10}},
+            rotation=270,
+            origin={72,4})));
+      Package.FlowMeasure flowMeasure_ven annotation (Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=0,
+            origin={-68,18})));
+      inner Package.ModelSettings modelSettings(PB(displayUnit="Pa"),
+          ISFHCO3_start=22)
+        annotation (Placement(transformation(extent={{-122,120},{-102,140}})));
+      Package.VeinsEquilibratedWithTissues veinsEquilibratedWithTissues
+        annotation (Placement(transformation(rotation=0, extent={{-90,-62},{-36,
+                -22}})));
+      Package.OSA.O2CO2
+                o2CO2
+        annotation (Placement(transformation(extent={{92,-24},{136,20}})));
+      Physiolibrary.Types.Constants.FractionConst VAi_fraction(k=0.5)
+        annotation (Placement(transformation(extent={{-60,90},{-52,98}})));
+      Physiolibrary.Types.Constants.FractionConst Perfusion_fraction(k=0.5)
+        annotation (Placement(transformation(extent={{-42,82},{-34,90}})));
+      Physiolibrary.Types.Constants.FractionConst shuntFraction(k=0.02)
+        annotation (Placement(transformation(extent={{-36,72},{-28,80}})));
+      Package.Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
+        alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
+        annotation (Placement(transformation(extent={{-28,88},{6,116}})));
+      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+        annotation (Placement(transformation(extent={{146,-10},{166,10}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
+              "ml/min") = 8.19588e-5)
+        annotation (Placement(transformation(extent={{133,-38},{141,-32}})));
+    equation
+      connect(RNormalCO.y, rightStarling.yBase) annotation (Line(
+          points={{-47,44},{-40,44},{-40,34}},
+          color={0,0,127}));
+      connect(LNormalCO.y, leftStarling.yBase) annotation (Line(
+          points={{21,46},{26,46},{26,34}},
+          color={0,0,127}));
+      connect(leftStarling.y,leftHeart.volumeFlowRate)
+        annotation (Line(points={{26,28},{26,20}}, color={0,0,127}));
+      connect(rightStarling.y,rightHeart.volumeFlowRate)
+        annotation (Line(points={{-40,28},{-40,26},{-42,26},{-42,22}},
+                                                     color={0,0,127}));
+      connect(arteries.bloodPort_out, muscle.bloodPort_in) annotation (Line(
+          points={{44,-36},{34,-36},{34,-18},{25,-18}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(arteries.bloodPort_out, nonMuscle.bloodPort_in) annotation (Line(
+          points={{44,-36},{25,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(arteries.bloodPort_out, kidney.bloodPort_in) annotation (Line(
+          points={{44,-36},{34,-36},{34,-54},{25,-54}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pulmonaryVeinsAndLeftAtrium.bloodPort_out, pressureMeasure1.bloodPort_in)
+        annotation (Line(
+          points={{60,110},{60,61},{65.1,61}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pressureMeasure1.bloodPort_out, leftHeart.bloodPort_in)
+        annotation (Line(
+          points={{78.6,60.9},{78.6,54},{4,54},{4,16},{17,16}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pressureMeasure1.pressure, leftStarling.u) annotation (Line(
+            points={{75.8,65.2},{84,65.2},{84,32},{34,32}}, color={0,0,127}));
+      connect(nonMuscle.bloodPort_out, muscle.bloodPort_out) annotation (Line(
+          points={{7,-36},{-8,-36},{-8,-18},{7,-18}},
+          color={28,108,200},
+          thickness=0.5));
+
+      connect(leftHeart.bloodPort_out, flowConcentrationMeasure1.bloodPort_in)
+        annotation (Line(
+          points={{35,16},{72,16},{72,13}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(largeVeins.bloodPort_out, rightAtrium.bloodPort_in) annotation (
+          Line(
+          points={{-110,-1},{-110,22},{-109.8,22}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(veinsEquilibratedWithTissues.bloodPort_out,
+                                   largeVeins.bloodPort_in) annotation (Line(
+          points={{-89.8,-36.2},{-110,-36.2},{-110,-19}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(rightAtrium.bloodPort_out, pressureMeasure2.bloodPort_in)
+        annotation (Line(
+          points={{-90,22},{-88,22},{-88,46.1},{-86.43,46.1}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(flowMeasure_ven.bloodPort_in, pressureMeasure2.bloodPort_out)
+        annotation (Line(
+          points={{-77,18},{-80,18},{-80,46.03},{-76.98,46.03}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pressureMeasure2.pressure, rightStarling.u) annotation (Line(
+            points={{-78.94,49.04},{-66,49.04},{-66,32},{-48,32}}, color={0,0,
+              127}));
+      connect(rightHeart.bloodPort_out, pulmonaryArteries.bloodPort_in)
+        annotation (Line(
+          points={{-33,18},{-20,18},{-20,62},{-110,62},{-110,110},{-101.8,110}},
+          color={28,108,200},
+          thickness=0.5));
+
+      connect(flowMeasure_ven.bloodPort_out, rightHeart.bloodPort_in)
+        annotation (Line(
+          points={{-59,18},{-51,18}},
+          color={28,108,200},
+          thickness=0.5));
+
+      connect(arteries.bloodPort_in, flowConcentrationMeasure1.bloodPort_out)
+        annotation (Line(
+          points={{63.8,-36},{72,-36},{72,-5}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(veinsEquilibratedWithTissues.bloodPort_in,
+                                  nonMuscle.bloodPort_out) annotation (Line(
+          points={{-35.8,-36},{7,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(kidney.bloodPort_out, nonMuscle.bloodPort_out) annotation (Line(
+          points={{7,-54},{-8,-54},{-8,-36},{7,-36}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(flowConcentrationMeasure1.O2_conc, o2CO2.ctO2) annotation (Line(
+            points={{84,12},{98,12},{98,8.35294},{90.9,8.35294}}, color={0,0,
+              127}));
+      connect(o2CO2.ctCO2, flowConcentrationMeasure1.CO2_conc) annotation (Line(
+            points={{90.9,5.76471},{98.45,5.76471},{98.45,4},{84,4}}, color={0,
+              0,127}));
+      connect(o2CO2.BEox, flowConcentrationMeasure1.BEox_conc) annotation (Line(
+            points={{90.9,3.17647},{90.9,-4},{84,-4}}, color={0,0,127}));
+      connect(Perfusion_fraction.y,
+        alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.F_q1)
+        annotation (Line(points={{-33,86},{-26,86},{-26,97.38},{-23.07,97.38}},
+            color={0,0,127}));
+      connect(VAi_fraction.y,
+        alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.F_VAi1)
+        annotation (Line(points={{-51,94},{-30,94},{-30,100.18},{-23.07,100.18}},
+            color={0,0,127}));
+      connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.Fsh,
+        shuntFraction.y) annotation (Line(points={{-16.95,91.22},{-24,91.22},{-24,
+              76},{-27,76}}, color={0,0,127}));
+      connect(alveolarVentilation.VA,
+        alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.VAi)
+        annotation (Line(points={{167,3},{168,3},{168,134},{-22,134},{-22,
+              105.78},{-21.03,105.78}}, color={0,0,127}));
+      connect(VAi.y,alveolarVentilation. VA0) annotation (Line(points={{142,-35},
+              {144,-35},{144,-6.4},{146,-6.4}},   color={0,0,127}));
+      connect(alveolarVentilation.pO2a, o2CO2.pO2) annotation (Line(points={{
+              146,8},{142,8},{142,7.31765},{137.1,7.31765}}, color={0,0,127}));
+      connect(o2CO2.pCO2, alveolarVentilation.pCO2a) annotation (Line(points={{
+              137.1,4.72941},{141.55,4.72941},{141.55,3.8},{146,3.8}}, color={0,
+              0,127}));
+      connect(o2CO2.pH, alveolarVentilation.pHa) annotation (Line(points={{
+              137.1,1.62353},{141.55,1.62353},{141.55,-1.2},{146,-1.2}}, color=
+              {0,0,127}));
+      connect(pulmonaryVeinsAndLeftAtrium.bloodPort_in, pulmonary.bloodPort_out)
+        annotation (Line(
+          points={{40.2,110},{25,110}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.bloodPort_out,
+        pulmonary.bloodPort_in) annotation (Line(
+          points={{-6.92,110.68},{0,110.68},{0,110},{7,110}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(pulmonaryArteries.bloodPort_out,
+        alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.bloodPort_in)
+        annotation (Line(
+          points={{-82,110},{-50,110},{-50,110.4},{-16.78,110.4}},
+          color={28,108,200},
+          thickness=0.5));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
+                -80},{160,140}})),            Documentation(info="<html>
+<p>Cardiovascular subsystem in famous Guyton-Coleman-Granger model from 1972. </p>
+<p><br/>Model, all parameters and all initial values are from article: </p>
+<p>A.C. Guyton, T.G. Coleman, H.J. Granger (1972). &quot;Circulation: overall regulation.&quot; Annual review of physiology 34(1): 13-44.</p>
+</html>", revisions="<html>
+<p><i>2014</i></p>
+<p>Marek Matejak, Charles University, Prague, Czech Republic </p>
+</html>"),
+        experiment(StopTime=100000),
+        Icon(coordinateSystem(extent={{-120,-80},{160,140}})));
+    end Combination_alvVentDirect;
   end Test;
 
   package Trash
