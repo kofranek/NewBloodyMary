@@ -20,19 +20,31 @@ package AcidBaseBalance
       Physiolibrary.Types.Constants.MolarFlowRateConst electrolytesFlowConstant(k=
             6.6666666666667e-07)                                                                         annotation(Placement(transformation(extent = {{-36, 70}, {-24, 82}})));
       Physiolibrary.Blocks.Factors.Spline ChloridePoolEffect(data = {{0.00, 0.0, 0}, {80, 1.0, 0.0}})
-        "electroneutrality does not allow to extract cation without anion"                                                                                               annotation(Placement(transformation(extent = {{-28, -6}, {-8, 14}})));
-      Physiolibrary.Types.BusConnector busConnector annotation(Placement(transformation(extent = {{-96, 62}, {-64, 94}}), iconTransformation(extent = {{-102, 68}, {-62, 108}})));
+        "electroneutrality does not allow to extract cation without anion"                                                                                               annotation(Placement(transformation(extent={{-28,-10},
+                {-8,10}})));
       Physiolibrary.Types.RealIO.MolarFlowRateOutput molarflowrate annotation(Placement(transformation(extent = {{0, -32}, {20, -12}}), iconTransformation(extent = {{92, 4}, {112, 24}})));
+      Physiolibrary.Types.RealIO.pHInput             pH            annotation(Placement(transformation(extent={{-74,70},
+                {-54,90}}),                                                                                                             iconTransformation(extent={{-100,90},
+                {-80,110}})));
+      Physiolibrary.Types.RealIO.ConcentrationInput Cl annotation (Placement(
+            transformation(extent={{-92,-10},{-72,10}}), iconTransformation(
+              extent={{-100,-10},{-80,10}})));
     equation
       connect(PT_NH3_AcuteEffect.y, PT_NH3_ChronicEffect.yBase) annotation(Line(points = {{-18, 54}, {-18, 48}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(PT_NH3_ChronicEffect.y, CD_NH4_PhOnFlux.yBase) annotation(Line(points = {{-18, 42}, {-18, 32}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(electrolytesFlowConstant.y, PT_NH3_AcuteEffect.yBase) annotation(Line(points = {{-22.5, 76}, {-18, 76}, {-18, 60}}, color = {0, 0, 127}, smooth = Smooth.None));
-      connect(CD_NH4_PhOnFlux.y, ChloridePoolEffect.yBase) annotation(Line(points = {{-18, 26}, {-18, 6}}, color = {0, 0, 127}, smooth = Smooth.None));
-      connect(busConnector.pH_art, PT_NH3_AcuteEffect.u) annotation(Line(points = {{-80, 78}, {-80, 58}, {-78, 58}, {-26, 58}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
-      connect(busConnector.pH_art, PT_NH3_ChronicEffect.u) annotation(Line(points = {{-80, 78}, {-80, 46}, {-26, 46}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
-      connect(busConnector.pH_art, CD_NH4_PhOnFlux.u) annotation(Line(points = {{-80, 78}, {-80, 78}, {-80, 30}, {-26, 30}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
-      connect(busConnector.Cl_art, ChloridePoolEffect.u) annotation(Line(points = {{-80, 78}, {-80, 78}, {-80, 12}, {-80, 4}, {-26, 4}}, color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
-      connect(ChloridePoolEffect.y, molarflowrate) annotation(Line(points = {{-18, 0}, {-18, 0}, {-18, -22}, {10, -22}}, color = {0, 0, 127}));
+      connect(CD_NH4_PhOnFlux.y, ChloridePoolEffect.yBase) annotation(Line(points={{-18,26},
+              {-18,2}},                                                                                    color = {0, 0, 127}, smooth = Smooth.None));
+      connect(ChloridePoolEffect.y, molarflowrate) annotation(Line(points={{-18,-4},
+              {-18,-22},{10,-22}},                                                                                       color = {0, 0, 127}));
+      connect(Cl, ChloridePoolEffect.u)
+        annotation (Line(points={{-82,0},{-26,0}}, color={0,0,127}));
+      connect(PT_NH3_AcuteEffect.u, pH) annotation (Line(points={{-26,58},{-60,
+              58},{-60,80},{-64,80}}, color={0,0,127}));
+      connect(PT_NH3_ChronicEffect.u, pH) annotation (Line(points={{-26,46},{
+              -60,46},{-60,80},{-64,80}}, color={0,0,127}));
+      connect(CD_NH4_PhOnFlux.u, pH) annotation (Line(points={{-26,30},{-60,30},
+              {-60,80},{-64,80}}, color={0,0,127}));
       annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-112, -102}, {108, -128}}, lineColor = {0, 0, 255}, textString = "%name")}), Documentation(revisions = "<html>
 
 <table>
@@ -81,110 +93,49 @@ package AcidBaseBalance
     end Ammonium;
 
     package Test
-      model AmmoniumExcretion
-        parameter Physiolibrary.Types.Fraction UAClRatio = 1;
-        Ammonium ammonium annotation(Placement(transformation(extent={{-32,50},
-                  {12,90}})));
-        Physiolibrary.Types.Constants.ConcentrationConst Chloride(k = 100) annotation(Placement(transformation(extent={{-98,62},
-                  {-82,80}})));
-        Physiolibrary.Types.Constants.pHConst pH(k=7.2)   annotation(Placement(transformation(extent={{-65.25,
-                  84.5754},{-47.25,100.576}},                                                                                        origin={-34.75,
-                  -94.5755},                                                                                                                              rotation = 0), visible = true));
-        Physiolibrary.Types.BusConnector busConnector annotation(Placement(transformation(extent={{-94,68},
-                  {-54,108}}),                                                                                           iconTransformation(extent = {{-118, 22}, {-78, 62}})));
-        TitratableAcid titratableAcid(HalfTime = 8280) annotation(Placement(transformation(extent = {{-50, -68}, {-8, -30}}, origin={12.105,
-                  24},                                                                                                                             rotation = 0), visible = true));
-        Physiolibrary.Types.Constants.pHConst pHu(k = 6) annotation(Placement(transformation(extent = {{-94, -38}, {-86, -30}})));
-        Physiolibrary.Types.Constants.FractionConst fAld(k = 1) annotation(Placement(transformation(extent={{-56,-38},
-                  {-48,-30}})));
-        Physiolibrary.Types.Constants.ConcentrationConst Phosphate(k = 1.1) "1.1" annotation(Placement(transformation(extent={{108,38},
-                  {92,56}})));
-        Physiolibrary.Types.Constants.ConcentrationConst OrgAnions(k = 6) annotation(Placement(transformation(extent={{50,26},
-                  {66,44}})));
-        Physiolibrary.Types.Constants.VolumeFlowRateConst GFR(k(displayUnit = "l/min") = 1.6666666666667e-06) annotation(Placement(transformation(extent = {{-8, -7}, {8, 7}}, rotation = 180, origin={106,18}),    visible = true));
-        Physiolibrary.Types.Constants.MolarFlowRateConst HCO3excretion(k=0)
-          annotation (Placement(transformation(extent={{48,66},{56,74}})));
-        TotalAcidExcretion totalAcidExcretion
-          annotation (Placement(transformation(extent={{64,66},{84,86}})));
-        pHUrine_New pHUrine_New1
-          annotation (Placement(transformation(extent={{64,-30},{96,6}})));
-        Physiolibrary.Types.RealIO.MolarFlowRateOutput hco3_outflow
-          annotation (Placement(transformation(extent={{150,90},{170,110}})));
-        Modelica.Blocks.Math.Gain gain(k=-UAClRatio)
-          annotation (Placement(transformation(extent={{114,78},{126,90}})));
-        Modelica.Blocks.Math.Gain gain1(k=-(1 - UAClRatio))
-          annotation (Placement(transformation(extent={{114,56},{126,68}})));
-        Physiolibrary.Types.RealIO.MolarFlowRateOutput UA_outflow
-          annotation (Placement(transformation(extent={{150,74},{170,94}})));
-        Physiolibrary.Types.RealIO.MolarFlowRateOutput Cl_outflow
-          annotation (Placement(transformation(extent={{150,52},{170,72}})));
-      equation
-        connect(pH.y, busConnector.pH_art) annotation(Line(points={{-79.75,
-                0.0002},{-74,0.0002},{-74,90}},                                                                 color = {0, 0, 127}, visible = true, origin={0,-2}),   Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-        connect(Chloride.y, busConnector.Cl_art) annotation(Line(points={{-80,71},
-                {-74,71},{-74,88}},                                                                                              color = {0, 0, 127}), Text(string = "%second", index = 1, extent = {{6, 3}, {6, 3}}));
-        connect(busConnector, ammonium.busConnector) annotation(Line(points={{-74,88},
-                {-32,88},{-32,87.6},{-28.04,87.6}},                                                                            color = {0, 0, 255}, thickness = 0.5), Text(string = "%first", index = -1, extent = {{-6, 3}, {-6, 3}}));
-        connect(titratableAcid.fald, fAld.y) annotation(Line(visible = true, origin={-35.55,
-                -57.585},                                                                                points={{-2.135,
-                24.415},{-3.207,24.415},{-3.207,23.585},{-11.45,23.585}},                                                                                                color = {0, 0, 127}));
-        connect(totalAcidExcretion.HCO3excretion, HCO3excretion.y) annotation (
-            Line(points={{64.6,70.4},{62,70.4},{62,70},{57,70}}, color={0,0,127}));
-        connect(totalAcidExcretion.NH4, ammonium.molarflowrate) annotation (
-            Line(points={{64.4,76.8},{64,76.8},{64,76},{34,76},{34,72.8},{12.44,
-                72.8}}, color={0,0,127}));
-        connect(totalAcidExcretion.TA, titratableAcid.TA) annotation (Line(
-              points={{64.2,82.4},{22,82.4},{22,-24.62},{3.685,-24.62}},
-                                color={0,0,127}));
-        connect(pHUrine_New1.GlomerularFiltration, GFR.y) annotation (Line(
-              points={{90.24,2.76},{90.24,18},{96,18}},
-              color={0,0,127}));
-        connect(pHUrine_New1.PhosphateConc, Phosphate.y) annotation (Line(
-              points={{80.32,2.76},{80.32,34},{80,34},{80,47},{90,47}},
-              color={0,0,127}));
-        connect(pHUrine_New1.OrgAnionsConc, OrgAnions.y) annotation (Line(
-              points={{70.4,3.12},{70.4,34},{68,34},{68,35}},
-              color={0,0,127}));
-        connect(titratableAcid.TA, pHUrine_New1.TA) annotation (Line(points={{3.685,-24.62},
-                {22,-24.62},{22,-4.8},{66.88,-4.8}},
-                         color={0,0,127}));
-        connect(pHUrine_New1.NH4exretion, ammonium.molarflowrate) annotation (
-            Line(points={{66.24,-25.32},{34,-25.32},{34,72.8},{12.44,72.8}},
-                                     color={0,0,127}));
-        connect(pHUrine_New1.pHu, titratableAcid.pHu) annotation (Line(points={{96,-9.84},
-                {96,-10},{104,-10},{104,-40},{-62,-40},{-62,-23.48},{-37.055,-23.48}},
-                                           color={0,0,127}));
-        connect(pHUrine_New1.pHa, pH.y) annotation (Line(points={{66.88,-16.68},{-4.435,
-                -16.68},{-4.435,-1.9998},{-79.75,-1.9998}},
-              color={0,0,127}));
-        connect(pH.y, titratableAcid.pHa) annotation (Line(points={{-79.75,
-                -1.9998},{-62,-1.9998},{-62,-12.84},{-37.055,-12.84}}, color={0,
-                0,127}));
-        connect(totalAcidExcretion.TotalFlowRate, hco3_outflow) annotation (Line(
-              points={{84.6,76.8},{90,76.8},{90,100},{160,100}}, color={0,0,127}));
-        connect(totalAcidExcretion.TotalFlowRate, gain.u) annotation (Line(points={{84.6,
-                76.8},{103.3,76.8},{103.3,84},{112.8,84}}, color={0,0,127}));
-        connect(totalAcidExcretion.TotalFlowRate, gain1.u) annotation (Line(points={{84.6,
-                76.8},{104,76.8},{104,62},{112.8,62}}, color={0,0,127}));
-        connect(gain1.y, Cl_outflow)
-          annotation (Line(points={{126.6,62},{160,62}}, color={0,0,127}));
-        connect(gain.y, UA_outflow)
-          annotation (Line(points={{126.6,84},{160,84}}, color={0,0,127}));
-        annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
-                  -60},{160,100}})), Icon(coordinateSystem(extent={{-100,-60},{
-                  160,100}})));
-      end AmmoniumExcretion;
 
-      model testABflow
-        Package.BloodPort bloodGasesAcidBase annotation (Placement(
-              transformation(extent={{-84,-2},{-64,18}}), iconTransformation(
-                extent={{-76,-10},{-56,10}})));
-        Package.BloodPort bloodGasesAcidBase1 annotation (Placement(
-              transformation(extent={{56,-18},{76,2}}), iconTransformation(
-                extent={{12,-12},{32,8}})));
+      model UrineAcidificationTest
+        AmmoniumExcretion ammoniumExcretion
+          annotation (Placement(transformation(extent={{-46,-20},{20,20}})));
+        Physiolibrary.Types.Constants.ConcentrationConst Chloride(k=100)   annotation(Placement(transformation(extent={{100,-26},
+                  {80,-6}})));
+        Physiolibrary.Types.Constants.pHConst pHConst(k=7.2) annotation (
+            Placement(transformation(
+              extent={{-58,84.5754},{-42,100.576}},
+              origin={-36,-72.576},
+              rotation=0), visible=true));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
+          unlimitedSolutionStorage
+          annotation (Placement(transformation(extent={{100,10},{80,30}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
+          unlimitedSolutionStorage1(Conc=6)
+          annotation (Placement(transformation(extent={{74,-6},{54,14}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
+          unlimitedSolutionStorage2(useConcentrationInput=true)
+          annotation (Placement(transformation(extent={{50,-26},{30,-6}})));
+      equation
+        connect(pHConst.y, ammoniumExcretion.pH) annotation (Line(points={{-76,
+                19.9997},{-62,19.9997},{-62,20},{-43.4615,20}}, color={0,0,127}));
+        connect(unlimitedSolutionStorage.q_out, ammoniumExcretion.hco3_outflow)
+          annotation (Line(
+            points={{80,20},{20,20}},
+            color={107,45,134},
+            thickness=1));
+        connect(unlimitedSolutionStorage1.q_out, ammoniumExcretion.UA_outflow)
+          annotation (Line(
+            points={{54,4},{48,4},{48,5},{19.4923,5}},
+            color={107,45,134},
+            thickness=1));
+        connect(ammoniumExcretion.Cl_outflow, unlimitedSolutionStorage2.q_out)
+          annotation (Line(
+            points={{19.4923,-5},{24,-5},{24,-16},{30,-16}},
+            color={107,45,134},
+            thickness=1));
+        connect(Chloride.y, unlimitedSolutionStorage2.concentration)
+          annotation (Line(points={{77.5,-16},{50,-16}}, color={0,0,127}));
         annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
               coordinateSystem(preserveAspectRatio=false)));
-      end testABflow;
+      end UrineAcidificationTest;
     end Test;
 
     model F62
@@ -422,7 +373,7 @@ package AcidBaseBalance
       Real FNH3=NH3Resorb*YNH34*YTA
         "Flow NH3 to medullar connective duckts through intercallar cells";
 
-      Physiolibrary.Types.RealIO.pHOutput pHu annotation (Placement(transformation(
+      Physiolibrary.Types.RealIO.pHOutput pHu( start = 7) annotation (Placement(transformation(
               extent={{90,2},{110,22}}), iconTransformation(extent={{90,2},{110,22}})));
     equation
 
@@ -493,6 +444,135 @@ package AcidBaseBalance
               textString="pHu")}), Diagram(coordinateSystem(preserveAspectRatio=false,
               extent={{-100,-100},{100,100}})));
     end pHUrine_New;
+
+    model AmmoniumExcretion
+      parameter Physiolibrary.Types.Fraction UAClRatio = 1;
+      Ammonium ammonium annotation(Placement(transformation(extent={{-32,50},
+                {12,90}})));
+      Physiolibrary.Types.Constants.ConcentrationConst Chloride(k = 100) annotation(Placement(transformation(extent={{-98,44},
+                {-82,62}})));
+      TitratableAcid titratableAcid(HalfTime = 8280) annotation(Placement(transformation(extent = {{-50, -68}, {-8, -30}}, origin={12.105,
+                12},                                                                                                                             rotation = 0), visible = true));
+      Physiolibrary.Types.Constants.pHConst pHu(k = 6) annotation(Placement(transformation(extent = {{-94, -38}, {-86, -30}})));
+      Physiolibrary.Types.Constants.FractionConst fAld(k = 1) annotation(Placement(transformation(extent={{-56,-48},
+                {-48,-40}})));
+      Physiolibrary.Types.Constants.ConcentrationConst Phosphate(k = 1.1) "1.1" annotation(Placement(transformation(extent={{102,32},
+                {86,50}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst GFR(k(displayUnit = "l/min") = 1.6666666666667e-06) annotation(Placement(transformation(extent = {{-8, -7}, {8, 7}}, rotation = 180, origin={106,12}),    visible = true));
+      Physiolibrary.Types.Constants.MolarFlowRateConst HCO3excretion(k=0)
+        annotation (Placement(transformation(extent={{48,66},{56,74}})));
+      TotalAcidExcretion totalAcidExcretion
+        annotation (Placement(transformation(extent={{64,66},{84,86}})));
+      pHUrine_New pHUrine_New1
+        annotation (Placement(transformation(extent={{64,-30},{96,6}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump pump_hco3(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{122,110},{142,90}})));
+      Modelica.Blocks.Math.Gain gain(k=UAClRatio)
+        annotation (Placement(transformation(extent={{102,78},{114,90}})));
+      Modelica.Blocks.Math.Gain gain1(k=(1 - UAClRatio))
+        annotation (Placement(transformation(extent={{102,60},{114,72}})));
+      Physiolibrary.Types.RealIO.pHInput pH annotation (Placement(
+            transformation(extent={{-110,-26},{-90,-6}}), iconTransformation(
+              extent={{-100,90},{-80,110}})));
+      Physiolibrary.Types.Constants.pHConst pHConst(k=7.2) annotation (
+          Placement(transformation(
+            extent={{-58,84.5754},{-42,100.576}},
+            origin={-40,-12.576},
+            rotation=0), visible=true));
+      Physiolibrary.Types.Constants.ConcentrationConst OrgAnions(k=6)   annotation(Placement(transformation(extent={{-98,16},
+                {-82,34}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b hco3_outflow annotation
+        (Placement(transformation(extent={{150,90},{170,110}}),
+            iconTransformation(extent={{150,90},{170,110}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a UA_outflow annotation (
+          Placement(transformation(extent={{150,70},{170,90}}),
+            iconTransformation(extent={{148,30},{168,50}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a Cl_outflow annotation (
+          Placement(transformation(extent={{152,50},{172,70}}),
+            iconTransformation(extent={{148,-10},{168,10}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut pump_hco1(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{142,70},{122,90}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut pump_hco2(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{142,50},{122,70}})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure
+        annotation (Placement(transformation(extent={{-54,68},{-34,88}})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
+        annotation (Placement(transformation(extent={{60,34},{80,54}})));
+    equation
+      connect(titratableAcid.fald, fAld.y) annotation(Line(visible = true, origin={-35.55,
+              -57.585},                                                                                points={{-2.135,
+              12.415},{-3.207,12.415},{-3.207,13.585},{-11.45,13.585}},                                                                                                color = {0, 0, 127}));
+      connect(totalAcidExcretion.HCO3excretion, HCO3excretion.y) annotation (
+          Line(points={{64.6,70.4},{62,70.4},{62,70},{57,70}}, color={0,0,127}));
+      connect(totalAcidExcretion.NH4, ammonium.molarflowrate) annotation (
+          Line(points={{64.4,76.8},{64,76.8},{64,76},{34,76},{34,72.8},{12.44,
+              72.8}}, color={0,0,127}));
+      connect(totalAcidExcretion.TA, titratableAcid.TA) annotation (Line(
+            points={{64.2,82.4},{22,82.4},{22,-36.62},{3.685,-36.62}},
+                              color={0,0,127}));
+      connect(pHUrine_New1.GlomerularFiltration, GFR.y) annotation (Line(
+            points={{90.24,2.76},{90.24,12},{96,12}},
+            color={0,0,127}));
+      connect(pHUrine_New1.PhosphateConc, Phosphate.y) annotation (Line(
+            points={{80.32,2.76},{80.32,34},{80,34},{80,41},{84,41}},
+            color={0,0,127}));
+      connect(titratableAcid.TA, pHUrine_New1.TA) annotation (Line(points={{3.685,
+              -36.62},{22,-36.62},{22,-4.8},{66.88,-4.8}},
+                       color={0,0,127}));
+      connect(pHUrine_New1.NH4exretion, ammonium.molarflowrate) annotation (
+          Line(points={{66.24,-25.32},{34,-25.32},{34,72.8},{12.44,72.8}},
+                                   color={0,0,127}));
+      connect(pHUrine_New1.pHu, titratableAcid.pHu) annotation (Line(points={{96,
+              -9.84},{96,-10},{106,-10},{106,-60},{-60,-60},{-60,-35.48},{
+              -37.055,-35.48}},          color={0,0,127}));
+      connect(totalAcidExcretion.TotalFlowRate, gain.u) annotation (Line(points={{84.6,
+              76.8},{91.3,76.8},{91.3,84},{100.8,84}},   color={0,0,127}));
+      connect(totalAcidExcretion.TotalFlowRate, gain1.u) annotation (Line(points={{84.6,
+              76.8},{92,76.8},{92,66},{100.8,66}},   color={0,0,127}));
+      connect(pH, titratableAcid.pHa) annotation (Line(points={{-100,-16},{-66,
+              -16},{-66,-24.84},{-37.055,-24.84}}, color={0,0,127}));
+      connect(pHUrine_New1.pHa, pH) annotation (Line(points={{66.88,-16.68},{
+              66.44,-16.68},{66.44,-16},{-100,-16}}, color={0,0,127}));
+      connect(pH, ammonium.pH) annotation (Line(points={{-100,-16},{-66,-16},{
+              -66,90},{-29.8,90}}, color={0,0,127}));
+      connect(pump_hco3.q_out, hco3_outflow) annotation (Line(
+          points={{142,100},{152,100},{152,100},{160,100}},
+          color={107,45,134},
+          thickness=1));
+      connect(totalAcidExcretion.TotalFlowRate, pump_hco3.soluteFlow)
+        annotation (Line(points={{84.6,76.8},{92,76.8},{92,96},{136,96}}, color
+            ={0,0,127}));
+      connect(Cl_outflow, pump_hco2.q_in) annotation (Line(
+          points={{162,60},{142,60}},
+          color={107,45,134},
+          thickness=1));
+      connect(UA_outflow, pump_hco1.q_in) annotation (Line(
+          points={{160,80},{142,80}},
+          color={107,45,134},
+          thickness=1));
+      connect(gain.y, pump_hco1.soluteFlow)
+        annotation (Line(points={{114.6,84},{128,84}}, color={0,0,127}));
+      connect(gain1.y, pump_hco2.soluteFlow) annotation (Line(points={{114.6,66},
+              {122,66},{122,64},{128,64}}, color={0,0,127}));
+      connect(Cl_outflow, concentrationMeasure.q_in) annotation (Line(
+          points={{162,60},{170,60},{170,114},{-44,114},{-44,78}},
+          color={107,45,134},
+          thickness=1));
+      connect(ammonium.Cl, concentrationMeasure.concentration)
+        annotation (Line(points={{-29.8,70},{-44,70}}, color={0,0,127}));
+      connect(concentrationMeasure1.concentration, pHUrine_New1.OrgAnionsConc)
+        annotation (Line(points={{70,36},{70,3.12},{70.4,3.12}}, color={0,0,127}));
+      connect(concentrationMeasure1.q_in, UA_outflow) annotation (Line(
+          points={{70,44},{114,44},{114,80},{160,80}},
+          color={107,45,134},
+          thickness=1));
+      annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
+                -60},{160,100}})), Icon(coordinateSystem(extent={{-100,-60},{
+                160,100}})));
+    end AmmoniumExcretion;
   end Kidney;
 
   package Package
@@ -13777,7 +13857,8 @@ Ventilation"),
             rotation=180,
             origin={90,80})));        /*start=37,*/
 
-       Physiolibrary.Types.RealIO.pHOutput pH "outgoing plasma pH"
+       Physiolibrary.Types.RealIO.pHOutput pH(start = 7.4)
+                                                          "outgoing plasma pH"
                                                             annotation (Placement(transformation(extent={{-120,50},
                 {-80,90}}),           iconTransformation(extent={{-100,70},{-80,90}})));
      Physiolibrary.Types.RealIO.PressureOutput pCO2(start=6000,       displayUnit="mmHg")
@@ -15897,6 +15978,117 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
               pattern=LinePattern.Dash)}));
     end Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors;
   end Package;
+
+  package Tissues
+    model tissuesOrganicAcidProduction "Tissues produce around 60 meq UA per day, which is balanced by the same amount of H+. This recomibnes with the same amount of HCO3"
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a HCO3
+        annotation (Placement(transformation(extent={{-90,-32},{-70,-12}}),
+            iconTransformation(extent={{-108,32},{-88,52}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b UA
+        annotation (Placement(transformation(extent={{-90,10},{-70,30}}),
+            iconTransformation(extent={{-108,-52},{-88,-32}})));
+            parameter Physiolibrary.Types.MolarFlowRate UAMetabolismRate(
+          displayUnit="mmol/day")=6.9444444444444e-7;
+    equation
+      HCO3.q = UAMetabolismRate;
+      UA.q + UAMetabolismRate = 0;
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end tissuesOrganicAcidProduction;
+
+    package Tests
+      model testTissuesAndKidneys
+        tissuesOrganicAcidProduction tissuesOrganicAcidProduction1
+          annotation (Placement(transformation(extent={{34,-30},{100,30}})));
+        Kidney.AmmoniumExcretion ammoniumExcretion
+          annotation (Placement(transformation(extent={{-82,-26},{0,24}})));
+        Physiolibrary.Types.Constants.pHConst pHConst(k=7.2) annotation (
+            Placement(transformation(
+              extent={{-58,84.5754},{-42,100.576}},
+              origin={-42,-36.576},
+              rotation=0), visible=true));
+        Physiolibrary.Chemical.Components.Substance substanceHCO3(
+            useNormalizedVolume=false, solute_start(displayUnit="mol") = 0.0233
+            *15)
+          annotation (Placement(transformation(extent={{12,30},{32,50}})));
+        Physiolibrary.Chemical.Components.Substance substanceUA(
+            useNormalizedVolume=false, solute_start=0.006)
+          annotation (Placement(transformation(extent={{2,-64},{22,-44}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
+          unlimitedSolutionStorage(Conc=100)
+          annotation (Placement(transformation(extent={{-66,-50},{-46,-30}})));
+        Physiolibrary.Types.Constants.VolumeConst volume(k(displayUnit="l") =
+            0.015) annotation (Placement(transformation(
+              extent={{-72.5,105.715},{-52.5,125.715}},
+              origin={46.5,-71.7155},
+              rotation=0), visible=true));
+        Physiolibrary.Chemical.Sensors.ConcentrationMeasure
+          concentrationMeasure
+          annotation (Placement(transformation(extent={{12,70},{32,50}})));
+        Physiolibrary.Types.Constants.ConcentrationConst ctCO2(k=24.6)
+          annotation (Placement(transformation(extent={{-60,82},{-44,100}})));
+        inner Package.ModelSettings modelSettings(PB(displayUnit="Pa"),
+            ISFHCO3_start=22)
+          annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+        Package.TissueHCO3
+                   tissueHCO3_2
+          annotation (Placement(transformation(extent={{0,80},{20,100}})));
+        Physiolibrary.Types.Constants.TemperatureConst temperature2(k=
+              modelSettings.Temperature)
+          annotation (Placement(transformation(extent={{80,100},{60,80}})));
+      equation
+        connect(substanceHCO3.q_out, ammoniumExcretion.hco3_outflow)
+          annotation (Line(
+            points={{22,40},{22,24},{-7.10543e-15,24}},
+            color={107,45,134},
+            thickness=1));
+        connect(tissuesOrganicAcidProduction1.HCO3, substanceHCO3.q_out)
+          annotation (Line(
+            points={{34.66,12.6},{22,12.6},{22,40}},
+            color={107,45,134},
+            thickness=1));
+        connect(substanceUA.q_out, tissuesOrganicAcidProduction1.UA)
+          annotation (Line(
+            points={{12,-54},{12,-12.6},{34.66,-12.6}},
+            color={107,45,134},
+            thickness=1));
+        connect(substanceUA.q_out, ammoniumExcretion.UA_outflow) annotation (
+            Line(
+            points={{12,-54},{12,5.25},{-0.630769,5.25}},
+            color={107,45,134},
+            thickness=1));
+        connect(unlimitedSolutionStorage.q_out, ammoniumExcretion.Cl_outflow)
+          annotation (Line(
+            points={{-46,-40},{-0.630769,-40},{-0.630769,-7.25}},
+            color={107,45,134},
+            thickness=1));
+        connect(volume.y, substanceUA.solutionVolume) annotation (Line(points={
+                {-3.5,43.9995},{-3.5,44},{8,44},{8,-50}}, color={0,0,127}));
+        connect(volume.y, substanceHCO3.solutionVolume) annotation (Line(points
+              ={{-3.5,43.9995},{6,43.9995},{6,44},{18,44}}, color={0,0,127}));
+        connect(concentrationMeasure.q_in, substanceHCO3.q_out) annotation (
+            Line(
+            points={{22,60},{22,40}},
+            color={107,45,134},
+            thickness=1));
+        connect(tissueHCO3_2.cHCO3, concentrationMeasure.concentration)
+          annotation (Line(points={{18,78},{16,78},{16,68},{22,68}}, color={0,0,
+                127}));
+        connect(tissueHCO3_2.tCO2, ctCO2.y) annotation (Line(points={{1,94.2},{
+                -28.5,94.2},{-28.5,91},{-42,91}}, color={0,0,127}));
+        connect(temperature2.y, tissueHCO3_2.T) annotation (Line(points={{57.5,
+                90},{57.5,98},{19,98}}, color={0,0,127}));
+        connect(tissueHCO3_2.pH, ammoniumExcretion.pH) annotation (Line(points=
+                {{1,98},{0,98},{0,110},{-68,110},{-68,102},{-78.8462,102},{
+                -78.8462,24}}, color={0,0,127}));
+        annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+              coordinateSystem(preserveAspectRatio=false)));
+      end testTissuesAndKidneys;
+    end Tests;
+  end Tissues;
+
+  package Interfaces
+  end Interfaces;
 
   package Test
 
