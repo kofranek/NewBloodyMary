@@ -482,14 +482,14 @@ package AcidBaseBalance
             rotation=0), visible=true));
       Physiolibrary.Types.Constants.ConcentrationConst OrgAnions(k=6)   annotation(Placement(transformation(extent={{-98,16},
                 {-82,34}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_b hco3_outflow annotation
-        (Placement(transformation(extent={{150,90},{170,110}}),
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b hco3_outflow annotation (
+         Placement(transformation(extent={{150,90},{170,110}}),
             iconTransformation(extent={{150,90},{170,110}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a UA_outflow annotation (
           Placement(transformation(extent={{150,70},{170,90}}),
             iconTransformation(extent={{148,30},{168,50}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a Cl_outflow annotation (
-          Placement(transformation(extent={{152,50},{172,70}}),
+          Placement(transformation(extent={{150,50},{170,70}}),
             iconTransformation(extent={{148,-10},{168,10}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut pump_hco1(
           useSoluteFlowInput=true)
@@ -543,10 +543,10 @@ package AcidBaseBalance
           color={107,45,134},
           thickness=1));
       connect(totalAcidExcretion.TotalFlowRate, pump_hco3.soluteFlow)
-        annotation (Line(points={{84.6,76.8},{92,76.8},{92,96},{136,96}}, color
-            ={0,0,127}));
+        annotation (Line(points={{84.6,76.8},{92,76.8},{92,96},{136,96}}, color=
+             {0,0,127}));
       connect(Cl_outflow, pump_hco2.q_in) annotation (Line(
-          points={{162,60},{142,60}},
+          points={{160,60},{142,60}},
           color={107,45,134},
           thickness=1));
       connect(UA_outflow, pump_hco1.q_in) annotation (Line(
@@ -558,7 +558,7 @@ package AcidBaseBalance
       connect(gain1.y, pump_hco2.soluteFlow) annotation (Line(points={{114.6,66},
               {122,66},{122,64},{128,64}}, color={0,0,127}));
       connect(Cl_outflow, concentrationMeasure.q_in) annotation (Line(
-          points={{162,60},{170,60},{170,114},{-44,114},{-44,78}},
+          points={{160,60},{170,60},{170,114},{-44,114},{-44,78}},
           color={107,45,134},
           thickness=1));
       connect(ammonium.Cl, concentrationMeasure.concentration)
@@ -16013,11 +16013,11 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           annotation (Placement(transformation(extent={{12,30},{32,50}})));
         Physiolibrary.Chemical.Components.Substance substanceUA(
             useNormalizedVolume=false, solute_start=0.006)
-          annotation (Placement(transformation(extent={{2,-64},{22,-44}})));
+          annotation (Placement(transformation(extent={{4,-60},{24,-40}})));
         Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
           unlimitedSolutionStorage(Conc=100)
-          annotation (Placement(transformation(extent={{-66,-50},{-46,-30}})));
-        Physiolibrary.Types.Constants.VolumeConst volume(k(displayUnit="l") =
+          annotation (Placement(transformation(extent={{-60,-60},{-40,-40}})));
+        Physiolibrary.Types.Constants.VolumeConst volume(k(displayUnit="l")=
             0.015) annotation (Placement(transformation(
               extent={{-72.5,105.715},{-52.5,125.715}},
               origin={46.5,-71.7155},
@@ -16049,23 +16049,23 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             thickness=1));
         connect(substanceUA.q_out, tissuesOrganicAcidProduction1.UA)
           annotation (Line(
-            points={{12,-54},{12,-12.6},{34.66,-12.6}},
+            points={{14,-50},{14,-12.6},{34.66,-12.6}},
             color={107,45,134},
             thickness=1));
         connect(substanceUA.q_out, ammoniumExcretion.UA_outflow) annotation (
             Line(
-            points={{12,-54},{12,5.25},{-0.630769,5.25}},
+            points={{14,-50},{14,5.25},{-0.630769,5.25}},
             color={107,45,134},
             thickness=1));
         connect(unlimitedSolutionStorage.q_out, ammoniumExcretion.Cl_outflow)
           annotation (Line(
-            points={{-46,-40},{-0.630769,-40},{-0.630769,-7.25}},
+            points={{-40,-50},{-0.630769,-50},{-0.630769,-7.25}},
             color={107,45,134},
             thickness=1));
-        connect(volume.y, substanceUA.solutionVolume) annotation (Line(points={
-                {-3.5,43.9995},{-3.5,44},{8,44},{8,-50}}, color={0,0,127}));
-        connect(volume.y, substanceHCO3.solutionVolume) annotation (Line(points
-              ={{-3.5,43.9995},{6,43.9995},{6,44},{18,44}}, color={0,0,127}));
+        connect(volume.y, substanceUA.solutionVolume) annotation (Line(points={{-3.5,
+                43.9995},{-3.5,44},{10,44},{10,-46}},     color={0,0,127}));
+        connect(volume.y, substanceHCO3.solutionVolume) annotation (Line(points=
+               {{-3.5,43.9995},{6,43.9995},{6,44},{18,44}}, color={0,0,127}));
         connect(concentrationMeasure.q_in, substanceHCO3.q_out) annotation (
             Line(
             points={{22,60},{22,40}},
@@ -16078,9 +16078,9 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
                 -28.5,94.2},{-28.5,91},{-42,91}}, color={0,0,127}));
         connect(temperature2.y, tissueHCO3_2.T) annotation (Line(points={{57.5,
                 90},{57.5,98},{19,98}}, color={0,0,127}));
-        connect(tissueHCO3_2.pH, ammoniumExcretion.pH) annotation (Line(points=
-                {{1,98},{0,98},{0,110},{-68,110},{-68,102},{-78.8462,102},{
-                -78.8462,24}}, color={0,0,127}));
+        connect(tissueHCO3_2.pH, ammoniumExcretion.pH) annotation (Line(points={{1,98},{
+                0,98},{0,110},{-68,110},{-68,102},{-78.8462,102},{-78.8462,24}},
+                               color={0,0,127}));
         annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
               coordinateSystem(preserveAspectRatio=false)));
       end testTissuesAndKidneys;
@@ -23707,7 +23707,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       Physiolibrary.Blocks.Factors.Spline rightStarling(data={{-6,0,0},{-3,0.15,0.104},
             {-1,0.52,0.48},{2,1.96,0.48},{4,2.42,0.123},{8,2.7,0}}, Xscale=101325/760)
         "At filling pressure 0mmHg (because external thorax pressure is -4mmHg) is normal cardiac output (effect=1)."
-        annotation (Placement(transformation(extent={{-50,22},{-30,42}})));
+        annotation (Placement(transformation(extent={{-52,22},{-32,42}})));
       Physiolibrary.Blocks.Factors.Spline leftStarling(data={{-4,0,0},{-1,0.72,0.29},
             {0,1.01,0.29},{3,1.88,0.218333},{10,2.7,0}}, Xscale=101325/760)
         "At filling pressure -0.0029mmHg (because external thorax pressure is -4mmHg) is normal cardiac output (effect=1)."
@@ -23751,7 +23751,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
         annotation (Placement(transformation(extent={{133,-38},{141,-32}})));
     equation
       connect(RNormalCO.y, rightStarling.yBase) annotation (Line(
-          points={{-47,44},{-40,44},{-40,34}},
+          points={{-47,44},{-42,44},{-42,34}},
           color={0,0,127}));
       connect(LNormalCO.y, leftStarling.yBase) annotation (Line(
           points={{21,46},{26,46},{26,34}},
@@ -23759,8 +23759,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
       connect(leftStarling.y,leftHeart.volumeFlowRate)
         annotation (Line(points={{26,28},{26,20}}, color={0,0,127}));
       connect(rightStarling.y,rightHeart.volumeFlowRate)
-        annotation (Line(points={{-40,28},{-40,26},{-42,26},{-42,22}},
-                                                     color={0,0,127}));
+        annotation (Line(points={{-42,28},{-42,22}}, color={0,0,127}));
       connect(arteries.bloodPort_out, muscle.bloodPort_in) annotation (Line(
           points={{44,-36},{34,-36},{34,-18},{25,-18}},
           color={28,108,200},
@@ -23816,7 +23815,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           color={28,108,200},
           thickness=0.5));
       connect(pressureMeasure2.pressure, rightStarling.u) annotation (Line(
-            points={{-78.94,49.04},{-66,49.04},{-66,32},{-48,32}}, color={0,0,
+            points={{-78.94,49.04},{-66,49.04},{-66,32},{-50,32}}, color={0,0,
               127}));
       connect(rightHeart.bloodPort_out, pulmonaryArteries.bloodPort_in)
         annotation (Line(
