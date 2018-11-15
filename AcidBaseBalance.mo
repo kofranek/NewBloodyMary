@@ -7884,6 +7884,181 @@ and mixing"), Text(
                 extent={{-200,-180},{260,140}})));
       end AlvEq_2units_with_shunts_and_mixing_connectors;
     end OSA;
+
+    model MembraneVariableCharges
+      "Donnan's equilibrium of electrolytes usable for glomerular membrane, open/leak membrane channels, pores, ..."
+      extends Physiolibrary.Icons.Membrane;
+      extends Physiolibrary.Chemical.Interfaces.ConditionalHeatPort;
+
+      parameter Integer NumberOfParticles = 1
+        "Number of penetrating particle types";
+
+      parameter Integer Charges[NumberOfParticles] = zeros(NumberOfParticles)
+        "Elementary charges of particles"
+        annotation (Dialog(enable=not useChargesInput));
+      parameter AcidBaseBalance.Interfaces.IonChargeTypesEnum FixedCharges[:] = AcidBaseBalance.Interfaces.IonChargeTypes "TODO - when not useChargesInput then use charges as a default"
+        annotation (Dialog(enable= useChargesInput));
+
+      parameter Boolean useChargesInput = false
+        "=true, if external permeability value is used"
+        annotation(Evaluate=true, HideResult=true, choices(checkBox=true),Dialog(group="External inputs/outputs"));
+      Physiolibrary.Types.RealIO.ConcentrationInput charge[NumberOfParticles]=chrgs if
+           useChargesInput
+        "The charges in meq/l, which is numerically equal to concentrations mmol/l"
+        annotation (Placement(transformation(
+            extent={{20,-20},{-20,20}},
+            rotation=270,
+            origin={0,-100})));
+
+      parameter Physiolibrary.Types.DiffusionPermeability Permeabilities[
+        NumberOfParticles]=zeros(NumberOfParticles)
+        "Permeabilities of particles through membrane chanel"
+        annotation (Dialog(enable=not usePermeabilityInput));
+      parameter Boolean usePermeabilityInput = false
+        "=true, if external permeability value is used"
+        annotation(Evaluate=true, HideResult=true, choices(checkBox=true),Dialog(group="External inputs/outputs"));
+      Physiolibrary.Types.RealIO.DiffusionPermeabilityInput permeability[
+        NumberOfParticles]=p if usePermeabilityInput annotation (Placement(
+            transformation(
+            extent={{-20,-20},{20,20}},
+            rotation=270,
+            origin={0,100})));
+
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a particlesInside[
+        NumberOfParticles] "inner side of membrane, solution"
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b particlesOutside[
+        NumberOfParticles] "outer side of membrane, solution"
+        annotation (Placement(transformation(extent={{90,-10},{110,10}})));
+
+      Physiolibrary.Types.GasSolubility kH[NumberOfParticles]
+        "Concentration ratio at equilibrium";
+
+      parameter Physiolibrary.Types.GasSolubility kH_T0[NumberOfParticles]=ones(
+          NumberOfParticles)
+        "Equilibrated concentration ratio at temperature T0 - can be estimated by Henry's law coefficient ratios (kH1/kH2)"
+        annotation (HideResult=true, Dialog(tab="Different solubilities"));
+      parameter Physiolibrary.Types.Temperature T0=298.15
+        "Base temperature for kH_T0"
+        annotation (HideResult=true, Dialog(tab="Temperature dependence"));
+      parameter Physiolibrary.Types.Temperature C[NumberOfParticles](displayUnit="K")=
+         zeros(NumberOfParticles)
+        "Specific constant difference (C1-C2) for Van't Hoff's change of kH"
+        annotation (HideResult=true, Dialog(tab="Temperature dependence"));
+
+      parameter Physiolibrary.Types.Fraction solventFractionInside=1
+        "Free solvent fraction inside (i.e. 'mol/mol' ratio between current solution and pure solvent in one liter; e.g. in plasma=0.96, in RBC=0.717)";
+      parameter Physiolibrary.Types.Fraction solventFractionOutside=1
+        "Free solvent fraction outside (i.e. 'mol/mol' ratio between current solution and pure solvent in one liter; e.g. in plasma=0.96, in RBC=0.717)";
+
+    protected
+       Real KAdjustment
+        "=(Cations-AnionLessProteins)/(Cations+AnionLessProteins)";
+       Physiolibrary.Types.DiffusionPermeability p[NumberOfParticles];
+       Real chrgs[NumberOfParticles] "[meq/mol] charge of the particle in meq";
+    equation
+      if not usePermeabilityInput then
+        p=Permeabilities;
+      end if;
+      if not useChargesInput then
+        chrgs = Charges;
+      end if;
+
+        //no accumulation of particles:
+       particlesInside.q + particlesOutside.q = zeros(NumberOfParticles); //nothing lost inside
+
+       //electroneutrality:
+       if abs(chrgs.*chrgs*p)<=Modelica.Constants.eps then
+         KAdjustment=0; //no penetrating electrolytes => KAdjustment and electroneutrality of flux is not needed
+       else
+         chrgs*particlesInside.q = 0; //electroneutrality of flux through membrane
+       end if;
+
+       //diffusion, penetration, particle movement:
+       for i in 1:NumberOfParticles loop
+         if FixedCharges[i]== AcidBaseBalance.Interfaces.IonChargeTypesEnum.NoCharge then //normal diffusion only if the particle is of no charge type
+           particlesInside[i].q = p[i] * (particlesInside[i].conc/solventFractionInside - kH[i]*particlesOutside[i].conc/solventFractionOutside);
+         else
+           // if it is charged, then it can depend on chrgs input
+           if chrgs[i]>0 then //cation goes to Donnan's equilibrium
+             particlesInside[i].q = p[i] * (particlesInside[i].conc/solventFractionInside - (1+KAdjustment)*kH[i]*particlesOutside[i].conc/solventFractionOutside);
+           else //anion goes to Donnan's equilibrium
+             particlesInside[i].q = p[i] * (particlesInside[i].conc/solventFractionInside - (1-KAdjustment)*kH[i]*particlesOutside[i].conc/solventFractionOutside);
+           end if;
+         end if;
+       end for;
+
+       //different solubilities:
+       kH = kH_T0 .* Modelica.Math.exp(C * (1/T_heatPort - 1/T0));
+       lossHeat = Modelica.Constants.R* C*particlesOutside.q; //negative = heat are comsumed when change from liquid to gas
+
+      annotation ( Documentation(info="<html>
+<p><u><b><font style=\"color: #008000; \">Filtration throught semipermeable membrane.</font></b></u></p>
+<p>The penetrating particles are driven by electric and chemical gradient to reach Donnan&apos;s equilibrium. The permeabilities of particles are used only in dynamic simulation with non-zero fluxes. If zero-flow Donnan&apos;s equilibrium is reached, it is independent on the permeabilities. </p>
+<p>This class can be used for glomerular membrane, open(leak) channels (pores) of cellular (or any lipid bilayer) membrane, chloride schift, ...</p>
+<p><br>The membrane permeabilities depends on <code>(D/membrameThicknes)*membraneArea</code>, where D is Fick&apos;s diffusion coefficient.<code> </code></p>
+<p>................................</p>
+<h4><span style=\"color:#008000\">Filtration example of tree particles</span></h4>
+<p>ALP .. small penetrating anion</p>
+<p>P .. nonpenetrating protein with negative charge</p>
+<p>C .. small penetrating cation</p>
+<p>In outer side of membrane are not protein P (it leaves inside). </p>
+<p>In equilibrium 4 concentration are unknown:</p>
+<p>ALP_in, ALP_out, C_in, C_out.</p>
+<p>Closed system equilibrium equations:</p>
+<p>tALP = ALP_in + ALP_out ... total amount of ALP </p>
+<p>tC = C_in + C_out ... total amount of C</p>
+<p>P + ALP_in = C_in ... electroneutrality inside</p>
+<p>ALP_out = C_out ... electroneutrality outside</p>
+<p>----------------------------------------------------</p>
+<p>It is possible to write these equations also in form of KAdjustment, which connect also more than tree type of particles with Donnan&apos;s equilibrium equations:</p>
+<p>ALP_in/ALP_out = (1-KAdjustment) </p>
+<p>C_in/C_out = (1+KAdjustment) </p>
+<p>where KAdjustment = P/(2*C_in-P) and C_out=ALP_out=(2*C_in-P)/2, because ALP_in/ALP_out = (C_in - P)/C_out = (2C_in-2P)/(2C_in-P) = 1 - P/(2C_in-P) = 1-KAdjustment and C_in/C_out = (2C_in)/(2C_in-P) = 1 + P/(2C_in-P) = 1+KAdjustment .</p>
+<p><br><h4><span style=\"color:#008000\">Problem with different solubilities/Henry constants/ (kH1, kH2)</span></h4></p>
+<p>Equilibrated is chemical potential, not concentrations (c1,c2)!</p>
+<p>Equality of chemical potential is approximated by equality of partial pressure (p1,p2): </p>
+<p>p1=kH1*c1 </p>
+<p>p2=kH2*c2</p>
+<p><br>c2 = (kH1/kH2) * c1</p>
+<p>Henry constant between both side can be defined as<b> kH_T0 = kH1/kH2</b> at temperature T0, where kH1 is Henry constant in first side of membrane and kH2 is Henry constant in second side of membrane.</p>
+<h4><span style=\"color:#008000\">Temperature dependence of Henry constants by Van't Hoff</span></h4>
+<p><code>kH1&nbsp;=&nbsp;kH1_T0&nbsp;*<font style=\"color: #ff0000; \">&nbsp;Modelica.Math.exp</font>(C1*&nbsp;(1/T&nbsp;-&nbsp;1/T0))</code></p>
+<p><code>kH2&nbsp;=&nbsp;kH2_T0&nbsp;*<font style=\"color: #ff0000; \">&nbsp;Modelica.Math.exp</font>(C2*&nbsp;(1/T&nbsp;-&nbsp;1/T0))</code></p>
+<p>kH1/kH2 = <code>kH_T0&nbsp;*<font style=\"color: #ff0000; \">&nbsp;Modelica.Math.exp</font>(C *&nbsp;(1/T&nbsp;-&nbsp;1/T0))</code></p>
+<p>Specific&nbsp;constant&nbsp;for&nbsp;Van&apos;t&nbsp;Hoff&apos;s&nbsp;change&nbsp;of&nbsp;kH_T0 can be defined as<b> C = C1-C2</b>, where C1 is specific constant in first side of membrane and C2 is specific constant in second side of membrane.</p>
+</html>"));
+    end MembraneVariableCharges;
+
+    model Donnan
+      Physiolibrary.Chemical.Components.Substance plasma[Interfaces.IonsEnum](
+          each useNormalizedVolume=true, solute_start={0.001,0.002,0,0.001})
+        annotation (Placement(transformation(extent={{-60,0},{-40,20}})));
+      Physiolibrary.Chemical.Components.Substance ISF[Interfaces.IonsEnum](
+          each useNormalizedVolume=true)
+        annotation (Placement(transformation(extent={{40,0},{60,20}})));
+      Acidbase.MembraneVariableCharges membraneVariableCharges(
+        useChargesInput=true,
+        NumberOfParticles=4,
+        Permeabilities={1.6666666666667e-8,1.6666666666667e-8,0,0})
+        annotation (Placement(transformation(extent={{-6,4},{14,24}})));
+      Interfaces.IonCharges ionCharges
+        annotation (Placement(transformation(extent={{-32,-52},{-12,-32}})));
+    equation
+      connect(ionCharges.concentration, membraneVariableCharges.charge)
+        annotation (Line(points={{-12,-42},{4,-42},{4,4}}, color={0,0,127}));
+      connect(plasma.q_out, membraneVariableCharges.particlesInside) annotation (
+          Line(
+          points={{-50,10},{-28,10},{-28,14},{-6,14}},
+          color={107,45,134},
+          thickness=1));
+      connect(membraneVariableCharges.particlesOutside, ISF.q_out) annotation (Line(
+          points={{14,14},{32,14},{32,10},{50,10}},
+          color={107,45,134},
+          thickness=1));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end Donnan;
   end Acidbase;
 
   package BloodComponents
@@ -8617,14 +8792,14 @@ and mixing"), Text(
         annotation (Placement(transformation(extent={{36,-64},{56,-44}})));
       Interfaces.BloodPort_out_Extension bloodPort_out_Extension
         annotation (Placement(transformation(extent={{72,-10},{92,10}})));
-      Physiolibrary.Chemical.Components.Stream ionsFlow[Interfaces.Ions](each
-          useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionsFlow[Interfaces.IonsEnum](
+          each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{-28,-102},{-8,-82}})));
-      Physiolibrary.Chemical.Components.Substance ions[Interfaces.Ions](each
-          useNormalizedVolume=false, solute_start=ion_start*volume_start)
+      Physiolibrary.Chemical.Components.Substance ions[Interfaces.IonsEnum](
+          each useNormalizedVolume=false, solute_start=ion_start*volume_start)
         annotation (Placement(transformation(extent={{4,-102},{24,-82}})));
-      Physiolibrary.Chemical.Components.Stream ionsFlow1[Interfaces.Ions](each
-          useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionsFlow1[Interfaces.IonsEnum](
+          each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{36,-102},{56,-82}})));
       Interfaces.OneToMany oneToMany
         annotation (Placement(transformation(extent={{-10,-78},{-18,-70}})));
@@ -8650,17 +8825,17 @@ and mixing"), Text(
         annotation (
           Placement(transformation(extent={{0,-136},{20,-116}}),
             iconTransformation(extent={{10,-108},{30,-88}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_ions[Interfaces.Ions] if
-           useIons_input annotation (Placement(transformation(extent={{-18,-136},{2,
-                -116}}), iconTransformation(extent={{88,-108},{108,-88}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_ions[Interfaces.IonsEnum]
+        if useIons_input annotation (Placement(transformation(extent={{-18,-136},
+                {2,-116}}), iconTransformation(extent={{88,-108},{108,-88}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure
         annotation (Placement(transformation(extent={{-16,41},{6,19}})));
       Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a port_Flow if useFlow_input
        annotation (
           Placement(transformation(extent={{14,90},{34,110}}),
             iconTransformation(extent={{-112,-110},{-88,-86}})));
-      parameter Physiolibrary.Types.Concentration ion_start[Interfaces.Ions]=zeros(
-          size(ion_start, 1));
+      parameter Physiolibrary.Types.Concentration ion_start[Interfaces.IonsEnum]
+        =zeros(size(ion_start, 1));
       parameter Physiolibrary.Types.Volume volume_start=1e-3;
       parameter Physiolibrary.Types.Concentration O2_concentration = 0;
       parameter Physiolibrary.Types.Concentration CO2_concentration = 0;
@@ -8858,11 +9033,11 @@ and mixing"), Text(
         Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
           unlimitedSolutionStorageBEox(Conc=0)
           annotation (Placement(transformation(extent={{-24,-30},{-4,-10}})));
-        Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.Ions]
+        Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.IonsEnum]
           (each useSolutionFlowInput=true)
           annotation (Placement(transformation(extent={{8,-60},{28,-40}})));
         Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[
-          AcidBaseBalance.Interfaces.Ions](Conc=ion_start)
+          AcidBaseBalance.Interfaces.IonsEnum](Conc=ion_start)
           annotation (Placement(transformation(extent={{-24,-60},{-4,-40}})));
         Interfaces.OneToMany oneToMany annotation (Placement(transformation(
               extent={{-4,-4},{4,4}},
@@ -8874,7 +9049,7 @@ and mixing"), Text(
               unlimitedPump.SolutionFlow) annotation (Placement(transformation(
                 rotation=0, extent={{-70,90},{-50,110}})));
 
-        parameter Physiolibrary.Types.Concentration ion_start[AcidBaseBalance.Interfaces.Ions];
+        parameter Physiolibrary.Types.Concentration ion_start[AcidBaseBalance.Interfaces.IonsEnum];
       equation
         connect(flowMeasure.q_out,bloodPort_b_Extension. bloodFlow) annotation (
             Line(
@@ -9726,15 +9901,17 @@ and mixing"), Text(
             color={28,108,200},
             thickness=0.5));
         connect(leftAtrium.compliance, LAtrialElastance.Ct) annotation (Line(
-              points={{76,48},{78,48},{78,70},{108,70},{108,107.84},{97.61,107.84}},
+              points={{76,50},{78,50},{78,70},{108,70},{108,107.84},{97.61,
+                107.84}},
               color={0,0,127}));
         connect(LVentricularElastance.Ct, LeftVentricle.compliance) annotation (
-            Line(points={{161.42,111.68},{170,111.68},{170,48}}, color={0,0,127}));
+            Line(points={{161.42,111.68},{170,111.68},{170,50}}, color={0,0,127}));
         connect(RightVentricle.compliance, RVentricularElastance.Ct) annotation (
-            Line(points={{-168,48},{-168,76},{-130,76},{-130,108.91},{-147.15,
+            Line(points={{-168,50},{-168,76},{-130,76},{-130,108.91},{-147.15,
                 108.91}}, color={0,0,127}));
         connect(RightAtrium.compliance, RAtrialElastance.Ct) annotation (Line(
-              points={{-242,48},{-242,70},{-196,70},{-196,101.84},{-202.39,101.84}},
+              points={{-242,50},{-242,70},{-196,70},{-196,101.84},{-202.39,
+                101.84}},
               color={0,0,127}));
         connect(VAi.y,alveolocapillaryUnit. VAi) annotation (Line(points={{-44,41},
                 {-44,53.3},{-37.7,53.3}},   color={0,0,127}));
@@ -10015,7 +10192,7 @@ and mixing"), Text(
                                                                        extent={{25.5,
                   -10.5},{-25.5,10.5}},
               origin={-34.5,36.5})));
-        Interfaces.IonSelector ionSelector(selectedIon=AcidBaseBalance.Interfaces.Ions.UA)
+        Interfaces.IonSelector ionSelector(selectedIon=AcidBaseBalance.Interfaces.IonsEnum.UA)
           annotation (Placement(transformation(
               extent={{8,-7},{-8,7}},
               rotation=270,
@@ -10175,7 +10352,7 @@ and mixing"), Text(
       stream Physiolibrary.Types.Concentration conc[numberOfSubstances]
         "Solute concentration";
 
-      stream Physiolibrary.Types.Concentration ions[Ions];
+      stream Physiolibrary.Types.Concentration ions[IonsEnum];
 
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)),
                                                 Diagram(coordinateSystem(
@@ -10248,8 +10425,8 @@ and mixing"), Text(
 
      // Physiolibrary.Types.Concentration O2_concentration, CO2_concentration, BEox_concentration;
 
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a ions[Ions] annotation (
-          Placement(transformation(extent={{86,-114},{106,-94}}),
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a ions[IonsEnum] annotation (
+         Placement(transformation(extent={{86,-114},{106,-94}}),
             iconTransformation(extent={{90,-110},{110,-90}})));
     equation
       //  O2_concentration =actualStream(bloodPort_in.conc[1]);
@@ -10318,8 +10495,8 @@ and mixing"), Text(
           Placement(transformation(extent={{-94,-82},{-74,-62}}),
             iconTransformation(extent={{-110,-70},{-90,-50}})));
       Physiolibrary.Types.Concentration O2_concentration, CO2_concentration, BEox_concentration;
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_b ions[Ions] annotation (
-          Placement(transformation(extent={{-94,-104},{-74,-84}}),
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b ions[IonsEnum] annotation (
+         Placement(transformation(extent={{-94,-104},{-74,-84}}),
             iconTransformation(extent={{-110,-110},{-90,-90}})));
     //  Ions ionType = Ions.Na;
 
@@ -10422,9 +10599,19 @@ and mixing"), Text(
   type IonsExtended = enumeration(
         Na,
         Cl,
-        UA);
+        Ua,
+        Albumin);
 
-  type Ions = IonsExtended;
+  type IonsEnum =
+              IonsExtended;
+    type IonChargeTypesEnum = enumeration(
+        Positive1,
+        Negative1,
+        NoCharge,
+        VariableCharge);
+    constant IonChargeTypesEnum IonChargeTypes[:]={IonChargeTypesEnum.Positive1,
+        IonChargeTypesEnum.Negative1,IonChargeTypesEnum.Negative1,
+        IonChargeTypesEnum.VariableCharge};
 
     model ModelSettings
       parameter Physiolibrary.Types.Pressure PB= 101325.0144354
@@ -10478,9 +10665,9 @@ and mixing"), Text(
       Modelica.Blocks.Interfaces.RealInput u annotation (Placement(transformation(
               extent={{-60,-20},{-20,20}}),  iconTransformation(extent={{-60,-20},
                 {-20,20}})));
-      Modelica.Blocks.Interfaces.RealOutput y[Interfaces.Ions] annotation (
-          Placement(transformation(extent={{30,-10},{50,10}}), iconTransformation(
-              extent={{30,-10},{50,10}})));
+      Modelica.Blocks.Interfaces.RealOutput y[IonsEnum] annotation (Placement(
+            transformation(extent={{30,-10},{50,10}}), iconTransformation(extent={
+                {30,-10},{50,10}})));
     equation
       for i in 1:size(y,1) loop
         connect(u, y[i]) annotation (Line(
@@ -10505,8 +10692,8 @@ and mixing"), Text(
     end OneToMany;
 
     model IonSelector
-      parameter Ions selectedIon;
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_a[Ions]
+      parameter IonsEnum selectedIon;
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_a[IonsEnum]
         annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_b port_b
         annotation (Placement(transformation(extent={{90,-10},{110,10}})));
@@ -10514,7 +10701,7 @@ and mixing"), Text(
     //  port_a[selectedIon].conc = port_b.conc;
       connect(port_a[selectedIon], port_b);
 
-      for i in Ions loop
+      for i in IonsEnum loop
         if i <> selectedIon then
           port_a[i].q = 0;
         end if;
@@ -10547,6 +10734,49 @@ and mixing"), Text(
               textString="[:]")}),                                   Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end IonSelector;
+
+    model IonCharges
+      /*
+  Modelica.Blocks.Interfaces.RealInput pH
+    annotation (Placement(transformation(extent={{-100,60},{-60,100}}),
+        iconTransformation(
+        extent={{-20,-20},{20,20}},
+        rotation=270,
+        origin={0,100})));
+   */
+       Real pH = 7.4;
+      Physiolibrary.Types.RealIO.ConcentrationOutput concentration[:] = charges annotation (
+          Placement(transformation(extent={{80,-20},{120,20}}), iconTransformation(
+              extent={{80,-20},{120,20}})));
+
+    //  Real charges[:] = {if i == Ions.Albumin then albuminCharge else DefaultIonCharges[i] for i in Ions};
+      constant IonsEnum ions[:]={j for j in IonsEnum};
+    //  constant IonChargeTypesEnum ie[:]={j for j in IonChargeTypesEnum};
+      Real charges[:]={
+      if IonChargeTypes[i] == IonChargeTypesEnum.Positive1 then 1
+      elseif IonChargeTypes[i] ==      IonChargeTypesEnum.Negative1 then -1
+      elseif IonChargeTypes[i] == IonChargeTypesEnum.NoCharge       then 0
+      else
+        (if i == IonsEnum.Albumin then albuminCharge
+      else Modelica.Constants.inf)
+          for i in IonsEnum}
+        "A default charges of ions, complementary to as specified in the AcidBaseBalance.Interfaces.IonChargeTypes constant. Exceptions, such as Albumin, must be defined here!";
+      Real albuminCharge = -1/1000*6500*(0.123*pH - 0.631) "[meq/l] according to Figge";
+    //  String s[:] = {String(i) for i in Ions};
+    equation
+          assert(size(ions, 1) == size(IonChargeTypes, 1), "Some problem in the definition of ion charges in AcidBaseBalance.Interfaces.IonCharges");
+          assert(max(charges) < Modelica.Constants.inf, "Some problem in the definition of ion charges in AcidBaseBalance.Interfaces.IonCharges");
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+            Text(
+              extent={{-60,20},{100,80}},
+              lineColor={0,0,127},
+              fillColor={240,233,6},
+              fillPattern=FillPattern.Solid,
+              horizontalAlignment=TextAlignment.Right,
+              textString="meq/l")}),            Diagram(coordinateSystem(
+              preserveAspectRatio=false)));
+    end IonCharges;
+
   end Interfaces;
 
   package Kidney
@@ -14259,8 +14489,8 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       Physiolibrary.Chemical.Components.Stream BEoxflow(useSolutionFlowInput=
             true)
         annotation (Placement(transformation(extent={{6,-78},{26,-58}})));
-      Physiolibrary.Chemical.Components.Stream ionsFlow[Interfaces.Ions](each
-          useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionsFlow[Interfaces.IonsEnum](
+          each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{6,-102},{26,-82}})));
       Interfaces.OneToMany oneToMany
         annotation (Placement(transformation(extent={{24,-84},{16,-76}})));
@@ -17942,6 +18172,42 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             Icon(coordinateSystem(extent={{-120,-260},{420,140}})));
       end VeinsEquilibratedWithTissues;
     end Deprecated;
+
+    model albuminRecirculation
+      Physiolibrary.Chemical.Components.Substance plasmaAlbumin(solute_start=
+            0.0013)
+        annotation (Placement(transformation(extent={{-82,0},{-62,20}})));
+      Physiolibrary.Chemical.Components.Substance ISFAlbumin(solute_start=0)
+        annotation (Placement(transformation(extent={{0,0},{20,20}})));
+      Physiolibrary.Chemical.Components.Diffusion diffusion(Conductance=2.5E-08)
+        annotation (Placement(transformation(extent={{-40,0},{-20,20}})));
+      Physiolibrary.Chemical.Components.Stream Stream(SolutionFlow(displayUnit=
+              "l/day") = 5.787037037037e-8)
+        annotation (Placement(transformation(extent={{-20,40},{-40,60}})));
+    equation
+      connect(Stream.q_in, ISFAlbumin.q_out) annotation (Line(
+          points={{-20,50},{10,50},{10,10}},
+          color={107,45,134},
+          thickness=1));
+      connect(Stream.q_out, plasmaAlbumin.q_out) annotation (Line(
+          points={{-40,50},{-72,50},{-72,10}},
+          color={107,45,134},
+          thickness=1));
+      connect(plasmaAlbumin.q_out, diffusion.q_in) annotation (Line(
+          points={{-72,10},{-40,10}},
+          color={107,45,134},
+          thickness=1));
+      connect(diffusion.q_out, ISFAlbumin.q_out) annotation (Line(
+          points={{-20,10},{10,10}},
+          color={107,45,134},
+          thickness=1));
+      annotation (
+        Icon(coordinateSystem(preserveAspectRatio=false)),
+        Diagram(coordinateSystem(preserveAspectRatio=false)),
+        Documentation(info="<html>
+<p>Albumin recirulation through lymph - given the lymph flow of 5 l/day (<span style=\"font-family: sans-serif; color: #222222; background-color: #eaf3ff;\">&nbsp;</span><i>Guyton and Hall Textbook of Medical Physiology. Saunders. 2010. pp.&nbsp;186, 187.&nbsp;<span style=\"font-family: sans-serif;\"><a href=\"https://en.wikipedia.org/wiki/International_Standard_Book_Number\">ISBN</a><span style=\"color: #222222;\">&nbsp;<a href=\"https://en.wikipedia.org/wiki/Special:BookSources/978-1416045748\">978-1416045748</a>.</span></i> ) and the ISF content of albumin around 1/3 of the plasmatic concentration, the tissue diffusion has been identified to be 1.5 ml/min.</p>
+</html>"));
+    end albuminRecirculation;
   end Tissues;
 
   package Test
@@ -18006,16 +18272,16 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{124,-10},{104,10}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure1
         annotation (Placement(transformation(extent={{80,10},{100,-10}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.Ions]
+      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.IonsEnum]
         (each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{-68,-130},{-48,-110}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[
-        AcidBaseBalance.Interfaces.Ions](each Conc=0)
+        AcidBaseBalance.Interfaces.IonsEnum](each Conc=0)
         annotation (Placement(transformation(extent={{-100,-130},{-80,-110}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS1[
-        AcidBaseBalance.Interfaces.Ions](each Conc=0)
+        AcidBaseBalance.Interfaces.IonsEnum](each Conc=0)
         annotation (Placement(transformation(extent={{124,-130},{104,-110}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Interfaces.Ions]
+      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Interfaces.IonsEnum]
         (each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{78,-130},{98,-110}})));
       Interfaces.OneToMany oneToMany annotation (Placement(transformation(
@@ -23281,16 +23547,16 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{156,-10},{136,10}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure1
         annotation (Placement(transformation(extent={{112,10},{132,-10}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.Ions]
+      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.IonsEnum]
         (each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{-112,-130},{-92,-110}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[
-        AcidBaseBalance.Interfaces.Ions](each Conc=0) annotation (Placement(
+        AcidBaseBalance.Interfaces.IonsEnum](each Conc=0) annotation (Placement(
             transformation(extent={{-144,-130},{-124,-110}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS1[
-        AcidBaseBalance.Interfaces.Ions](each Conc=0)
+        AcidBaseBalance.Interfaces.IonsEnum](each Conc=0)
         annotation (Placement(transformation(extent={{156,-130},{136,-110}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Interfaces.Ions]
+      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Interfaces.IonsEnum]
         (each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{110,-130},{130,-110}})));
       Interfaces.OneToMany oneToMany annotation (Placement(transformation(
