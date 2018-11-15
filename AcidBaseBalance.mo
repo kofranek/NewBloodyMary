@@ -8636,8 +8636,8 @@ and mixing"), Text(
           Placement(transformation(extent={{-108,-10},{-88,10}}),
             iconTransformation(extent={{-108,-10},{-88,10}})));
       Interfaces.BloodPort_out bloodPort_out(numberOfSubstances=3) annotation (
-          Placement(transformation(extent={{90,-10},{110,10}}),
-            iconTransformation(extent={{90,-10},{110,10}})));
+          Placement(transformation(extent={{90,-10},{110,10}}), iconTransformation(
+              extent={{90,-10},{110,10}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_O2 if useO2_input
         annotation (
           Placement(transformation(extent={{34,-134},{54,-114}}),
@@ -8650,26 +8650,31 @@ and mixing"), Text(
         annotation (
           Placement(transformation(extent={{0,-136},{20,-116}}),
             iconTransformation(extent={{10,-108},{30,-88}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_ions[Interfaces.Ions]
-        if useIons_input annotation (Placement(transformation(extent={{-18,-136},
-                {2,-116}}), iconTransformation(extent={{88,-108},{108,-88}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_ions[Interfaces.Ions] if
+           useIons_input annotation (Placement(transformation(extent={{-18,-136},{2,
+                -116}}), iconTransformation(extent={{88,-108},{108,-88}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure
         annotation (Placement(transformation(extent={{-16,41},{6,19}})));
       Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a port_Flow if useFlow_input
        annotation (
           Placement(transformation(extent={{14,90},{34,110}}),
             iconTransformation(extent={{-112,-110},{-88,-86}})));
-      parameter Physiolibrary.Types.Concentration ion_start[Interfaces.Ions]=
-          zeros(size(ion_start, 1));
+      parameter Physiolibrary.Types.Concentration ion_start[Interfaces.Ions]=zeros(
+          size(ion_start, 1));
       parameter Physiolibrary.Types.Volume volume_start=1e-3;
       parameter Physiolibrary.Types.Concentration O2_concentration = 0;
       parameter Physiolibrary.Types.Concentration CO2_concentration = 0;
       parameter Physiolibrary.Types.Concentration BEox_concentration = 0;
-      parameter Boolean useO2_input=false;
-      parameter Boolean useCO2_input=false;
-      parameter Boolean useBEox_input=false;
-      parameter Boolean useFlow_input=false;
-      parameter Boolean useIons_input=false;
+      parameter Boolean useO2_input=false
+        annotation(Evaluate=true, HideResult=true, choices(checkBox=true),Dialog(group="External inputs/outputs"));
+      parameter Boolean useCO2_input=false
+        annotation(Evaluate=true, HideResult=true, choices(checkBox=true),Dialog(group="External inputs/outputs"));
+      parameter Boolean useBEox_input=false
+        annotation(Evaluate=true, HideResult=true, choices(checkBox=true),Dialog(group="External inputs/outputs"));
+      parameter Boolean useFlow_input=false
+        annotation(Evaluate=true, HideResult=true, choices(checkBox=true),Dialog(group="External inputs/outputs"));
+      parameter Boolean useIons_input=false
+        annotation(Evaluate=true, HideResult=true, choices(checkBox=true),Dialog(group="External inputs/outputs"));
 
     equation
       connect(bloodPort_in,bloodPort_in_Extension. bloodPort_in) annotation (
@@ -9942,6 +9947,209 @@ and mixing"), Text(
         experiment(StopTime=100000),
         Icon(coordinateSystem(extent={{-120,-80},{160,140}})));
     end SimplestCirc;
+
+    model SimplestCircWithUA
+        "Cardiovascular part of Guyton-Coleman-Granger's model from 1972"
+       extends Modelica.Icons.Example;
+       import Physiolibrary.Hydraulic;
+        BloodComponents.BloodVesselConstVolume pulmonaryVeinsAndLeftAtrium(
+          volume_start(displayUnit="l") = 0.0004,
+          O2_concentration=8.29769,
+          CO2_concentration=21.6053,
+          useFlow_input=false)
+          annotation (Placement(transformation(extent={{40,100},{60,120}})));
+        BloodComponents.BloodConductor pulmonary(Conductance(displayUnit=
+                "l/(mmHg.min)") = 4.1665920538226e-8, useConductanceInput=false)
+          annotation (Placement(transformation(extent={{6,120},{26,100}})));
+        BloodComponents.BloodConductor nonMuscle(Conductance(displayUnit=
+                "l/(mmHg.min)") = 3.5627924852669e-09) annotation (Placement(
+              transformation(
+              extent={{-10,-10},{10,10}},
+              rotation=180,
+              origin={16,-36})));
+        BloodComponents.Pump leftHeart
+          annotation (Placement(transformation(extent={{16,6},{36,26}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst LNormalCO(k(displayUnit="l/min")=
+             8.3333333333333e-05)
+        annotation (Placement(transformation(extent={{12,42},{20,50}})));
+        BloodComponents.FlowConcentrationMeasure flowConcentrationMeasure1
+          annotation (Placement(transformation(
+              extent={{-10,10},{10,-10}},
+              rotation=270,
+              origin={72,4})));
+        inner Interfaces.ModelSettings modelSettings(PB(displayUnit="Pa"),
+            ISFHCO3_start=22) annotation (Placement(transformation(extent={{-122,
+                  120},{-102,140}})));
+        Acidbase.OSA.O2CO2 o2CO2
+          annotation (Placement(transformation(extent={{92,-24},{136,20}})));
+      Physiolibrary.Types.Constants.FractionConst VAi_fraction(k=0.5)
+        annotation (Placement(transformation(extent={{-60,90},{-52,98}})));
+      Physiolibrary.Types.Constants.FractionConst Perfusion_fraction(k=0.5)
+        annotation (Placement(transformation(extent={{-42,82},{-34,90}})));
+      Physiolibrary.Types.Constants.FractionConst shuntFraction(k=0.02)
+        annotation (Placement(transformation(extent={{-36,72},{-28,80}})));
+      Package.Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
+        alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
+        annotation (Placement(transformation(extent={{-28,88},{6,116}})));
+      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+        annotation (Placement(transformation(extent={{146,-10},{166,10}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
+              "ml/min") = 8.19588e-5)
+        annotation (Placement(transformation(extent={{129,-32},{137,-26}})));
+        BloodComponents.BloodElasticVesselCompliance veins(
+          volume_start(displayUnit="l") = 0.00325,
+          ZeroPressureVolume(displayUnit="l") = 0.00295,
+          Compliance(displayUnit="l/mmHg") = 6.1880080007267e-7,
+          O2_concentration=6.02579,
+          CO2_concentration=23.6461,
+          useO2_input=true,
+          useCO2_input=true,
+          useBEox_input=true,
+          useIons_input=true) annotation (Placement(transformation(
+              extent={{-10,-10},{10,10}},
+              rotation=180,
+              origin={-32,-36})), __Dymola_choicesAllMatching=true);
+      Tissues.TissuesWithUAProduction
+              tissuesWithUAProduction
+                      annotation (Placement(transformation(rotation=270,
+                                                                       extent={{25.5,
+                  -10.5},{-25.5,10.5}},
+              origin={-34.5,36.5})));
+        Interfaces.IonSelector ionSelector(selectedIon=AcidBaseBalance.Interfaces.Ions.UA)
+          annotation (Placement(transformation(
+              extent={{8,-7},{-8,7}},
+              rotation=270,
+              origin={-42,-13})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
+        unlimitedSolutionStorage(Conc=100)
+        annotation (Placement(transformation(extent={{-78,-26},{-70,-18}})));
+      Kidney.AmmoniumExcretion ammoniumExcretion
+        annotation (Placement(transformation(extent={{-98,-14},{-62,8}})));
+    equation
+
+      connect(leftHeart.bloodPort_out, flowConcentrationMeasure1.bloodPort_in)
+        annotation (Line(
+          points={{35,16},{72,16},{72,13}},
+          color={28,108,200},
+          thickness=0.5));
+
+      connect(flowConcentrationMeasure1.O2_conc, o2CO2.ctO2) annotation (Line(
+            points={{84,12},{98,12},{98,8.35294},{90.9,8.35294}}, color={0,0,
+              127}));
+      connect(o2CO2.ctCO2, flowConcentrationMeasure1.CO2_conc) annotation (Line(
+            points={{90.9,5.76471},{98.45,5.76471},{98.45,4},{84,4}}, color={0,
+              0,127}));
+      connect(o2CO2.BEox, flowConcentrationMeasure1.BEox_conc) annotation (Line(
+            points={{90.9,3.17647},{90.9,-4},{84,-4}}, color={0,0,127}));
+      connect(Perfusion_fraction.y,
+        alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.F_q1)
+        annotation (Line(points={{-33,86},{-26,86},{-26,97.38},{-23.07,97.38}},
+            color={0,0,127}));
+      connect(VAi_fraction.y,
+        alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.F_VAi1)
+        annotation (Line(points={{-51,94},{-30,94},{-30,100.18},{-23.07,100.18}},
+            color={0,0,127}));
+      connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.Fsh,
+        shuntFraction.y) annotation (Line(points={{-16.95,91.22},{-24,91.22},{-24,
+              76},{-27,76}}, color={0,0,127}));
+      connect(alveolarVentilation.VA,
+        alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.VAi)
+        annotation (Line(points={{167,3},{168,3},{168,134},{-22,134},{-22,
+              105.78},{-21.03,105.78}}, color={0,0,127}));
+      connect(VAi.y,alveolarVentilation. VA0) annotation (Line(points={{138,-29},
+                {144,-29},{144,-6.4},{146,-6.4}}, color={0,0,127}));
+      connect(alveolarVentilation.pO2a, o2CO2.pO2) annotation (Line(points={{
+              146,8},{142,8},{142,7.31765},{137.1,7.31765}}, color={0,0,127}));
+      connect(o2CO2.pCO2, alveolarVentilation.pCO2a) annotation (Line(points={{
+              137.1,4.72941},{141.55,4.72941},{141.55,3.8},{146,3.8}}, color={0,
+              0,127}));
+      connect(o2CO2.pH, alveolarVentilation.pHa) annotation (Line(points={{
+              137.1,1.62353},{141.55,1.62353},{141.55,-1.2},{146,-1.2}}, color=
+              {0,0,127}));
+      connect(pulmonaryVeinsAndLeftAtrium.bloodPort_in, pulmonary.bloodPort_out)
+        annotation (Line(
+          points={{40.2,110},{25,110}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.bloodPort_out,
+        pulmonary.bloodPort_in) annotation (Line(
+          points={{-6.92,110.68},{0,110.68},{0,110},{7,110}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(LNormalCO.y, leftHeart.volumeFlowRate)
+        annotation (Line(points={{21,46},{26,46},{26,20}}, color={0,0,127}));
+      connect(leftHeart.bloodPort_in, pulmonaryVeinsAndLeftAtrium.bloodPort_out)
+        annotation (Line(
+          points={{17,16},{4,16},{4,86},{76,86},{76,110},{60,110}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(nonMuscle.bloodPort_in, flowConcentrationMeasure1.bloodPort_out)
+        annotation (Line(
+          points={{25,-36},{72,-36},{72,-5}},
+          color={28,108,200},
+          thickness=0.5));
+        connect(
+          alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.bloodPort_in,
+          veins.bloodPort_out) annotation (Line(
+            points={{-16.78,110.4},{-108,110.4},{-108,-36},{-42,-36}},
+            color={28,108,200},
+            thickness=0.5));
+        connect(veins.bloodPort_in, nonMuscle.bloodPort_out) annotation (Line(
+            points={{-22.2,-36},{7,-36}},
+            color={28,108,200},
+            thickness=0.5));
+        connect(veins.port_O2, tissuesWithUAProduction.tO2) annotation (Line(
+            points={{-26.2,-26.2},{-26,-26.2},{-26,11},{-26.1,11}},
+            color={107,45,134},
+            thickness=1));
+        connect(tissuesWithUAProduction.tCO2, veins.port_CO2) annotation (Line(
+            points={{-30.3,11},{-29.8,11},{-29.8,-26.2}},
+            color={107,45,134},
+            thickness=1));
+        connect(tissuesWithUAProduction.BE, veins.port_BEox) annotation (Line(
+            points={{-34.5,11},{-34,11},{-34,-26.2}},
+            color={107,45,134},
+            thickness=1));
+        connect(ionSelector.port_a, veins.port_ions) annotation (Line(
+            points={{-42,-21},{-42,-26.2},{-41.8,-26.2}},
+            color={107,45,134},
+            thickness=1));
+      connect(unlimitedSolutionStorage.q_out,ammoniumExcretion. Cl_outflow)
+        annotation (Line(
+          points={{-70,-22},{-62.2769,-22},{-62.2769,-5.75}},
+          color={107,45,134},
+          thickness=1));
+        connect(ionSelector.port_b, tissuesWithUAProduction.UA) annotation (
+            Line(
+            points={{-42,-5},{-42,11},{-40.8,11}},
+            color={107,45,134},
+            thickness=1));
+        connect(ammoniumExcretion.UA_outflow, tissuesWithUAProduction.UA)
+          annotation (Line(
+            points={{-62.2769,-0.25},{-56,-0.25},{-56,0},{-42,0},{-42,11},{
+                -40.8,11}},
+            color={107,45,134},
+            thickness=1));
+        connect(ammoniumExcretion.hco3_outflow, veins.port_BEox) annotation (
+            Line(
+            points={{-62,8},{-34,8},{-34,-26.2}},
+            color={107,45,134},
+            thickness=1));
+        connect(o2CO2.pH, ammoniumExcretion.pH) annotation (Line(points={{137.1,
+                1.62353},{142,1.62353},{142,-58},{-118,-58},{-118,8},{-96.6154,
+                8}}, color={0,0,127}));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
+                -80},{160,140}})),            Documentation(info="<html>
+<p>Cardiovascular subsystem in famous Guyton-Coleman-Granger model from 1972. </p>
+<p><br/>Model, all parameters and all initial values are from article: </p>
+<p>A.C. Guyton, T.G. Coleman, H.J. Granger (1972). &quot;Circulation: overall regulation.&quot; Annual review of physiology 34(1): 13-44.</p>
+</html>", revisions="<html>
+<p><i>2014</i></p>
+<p>Marek Matejak, Charles University, Prague, Czech Republic </p>
+</html>"),
+        experiment(StopTime=100000),
+        Icon(coordinateSystem(extent={{-120,-80},{160,140}})));
+    end SimplestCircWithUA;
     end SimpleCirculation;
   end Circulation;
 
@@ -10208,8 +10416,16 @@ and mixing"), Text(
                 -120},{100,100}})));
     end BloodPort_out_Extension;
 
-    type Ions = enumeration(
+  type IonsDummy = enumeration(
         dummy);
+
+  type IonsExtended = enumeration(
+        Na,
+        Cl,
+        UA);
+
+  type Ions = IonsExtended;
+
     model ModelSettings
       parameter Physiolibrary.Types.Pressure PB= 101325.0144354
         "Barometric Pressure";
@@ -10263,8 +10479,8 @@ and mixing"), Text(
               extent={{-60,-20},{-20,20}}),  iconTransformation(extent={{-60,-20},
                 {-20,20}})));
       Modelica.Blocks.Interfaces.RealOutput y[Interfaces.Ions] annotation (
-          Placement(transformation(extent={{30,-10},{50,10}}),
-            iconTransformation(extent={{30,-10},{50,10}})));
+          Placement(transformation(extent={{30,-10},{50,10}}), iconTransformation(
+              extent={{30,-10},{50,10}})));
     equation
       for i in 1:size(y,1) loop
         connect(u, y[i]) annotation (Line(
@@ -10287,6 +10503,50 @@ and mixing"), Text(
             coordinateSystem(preserveAspectRatio=false, extent={{-40,-20},{40,
                 60}})));
     end OneToMany;
+
+    model IonSelector
+      parameter Ions selectedIon;
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_a[Ions]
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b port_b
+        annotation (Placement(transformation(extent={{90,-10},{110,10}})));
+    equation
+    //  port_a[selectedIon].conc = port_b.conc;
+      connect(port_a[selectedIon], port_b);
+
+      for i in Ions loop
+        if i <> selectedIon then
+          port_a[i].q = 0;
+        end if;
+      end for;
+
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+            Line(points={{-88,0},{84,0}},         color={0,0,127},
+              arrow={Arrow.None,Arrow.Filled}),
+            Line(
+              points={{-88,0},{0,-80}},
+              color={0,0,127},
+              arrow={Arrow.None,Arrow.Half}),
+            Line(
+              points={{-88,0},{0,-40}},
+              color={0,0,127},
+              arrow={Arrow.None,Arrow.Half}),
+            Text(
+              extent={{-40,20},{100,80}},
+              lineColor={0,0,127},
+              fillColor={240,233,6},
+              fillPattern=FillPattern.Solid,
+              textString="%selectedIon",
+              horizontalAlignment=TextAlignment.Right),
+            Text(
+              extent={{-90,20},{-50,80}},
+              lineColor={0,0,127},
+              fillColor={240,233,6},
+              fillPattern=FillPattern.Solid,
+              horizontalAlignment=TextAlignment.Left,
+              textString="[:]")}),                                   Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end IonSelector;
   end Interfaces;
 
   package Kidney
