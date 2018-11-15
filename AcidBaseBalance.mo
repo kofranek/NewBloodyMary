@@ -482,8 +482,8 @@ package AcidBaseBalance
             rotation=0), visible=true));
       Physiolibrary.Types.Constants.ConcentrationConst OrgAnions(k=6)   annotation(Placement(transformation(extent={{-98,16},
                 {-82,34}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_b hco3_outflow annotation
-        (Placement(transformation(extent={{150,90},{170,110}}),
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b hco3_outflow annotation (
+         Placement(transformation(extent={{150,90},{170,110}}),
             iconTransformation(extent={{150,90},{170,110}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a UA_outflow annotation (
           Placement(transformation(extent={{150,70},{170,90}}),
@@ -543,8 +543,8 @@ package AcidBaseBalance
           color={107,45,134},
           thickness=1));
       connect(totalAcidExcretion.TotalFlowRate, pump_hco3.soluteFlow)
-        annotation (Line(points={{84.6,76.8},{92,76.8},{92,96},{136,96}}, color
-            ={0,0,127}));
+        annotation (Line(points={{84.6,76.8},{92,76.8},{92,96},{136,96}}, color=
+             {0,0,127}));
       connect(Cl_outflow, pump_hco2.q_in) annotation (Line(
           points={{162,60},{142,60}},
           color={107,45,134},
@@ -10214,14 +10214,9 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
     end BloodValve;
 
     model BloodElasticVesselCompliance
+      extends BloodVessel;
       extends Physiolibrary.Icons.ElasticBalloon;
-      parameter Boolean useO2_input=false;
-      parameter Boolean useCO2_input=false;
-      parameter Boolean useBEox_input=false;
-      parameter Boolean useFlow_input=false;
-      parameter Boolean useIons_input=false;
 
-      parameter Physiolibrary.Types.Concentration ion_start[Ions] = zeros(size(ion_start, 1));
       parameter Physiolibrary.Types.Volume ZeroPressureVolume = 0;
       parameter Physiolibrary.Types.Pressure ExternalPressure=0
         "External pressure. Set zero if internal pressure is relative to external. Valid only if useExternalPressureInput=false."
@@ -10249,16 +10244,11 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
             rotation=270,
             origin={0,100})));
 
-      parameter Physiolibrary.Types.Volume volume_start=1e-3;
      // parameter Physiolibrary.Types.Concentration O2_startConcentration;
      // parameter Physiolibrary.Types.Concentration CO2_startConcentration;
      // parameter Physiolibrary.Types.Concentration BEox_startConcentration;
-      parameter Physiolibrary.Types.Concentration O2_concentration = 0;
-      parameter Physiolibrary.Types.Concentration CO2_concentration = 0;//=Blood_volume_start* CO2_startConcentration;
-      parameter Physiolibrary.Types.Concentration BEox_concentration = 0;//=Blood_volume_start* BEox_startConcentration;
-
-      BloodPort_in_Extension bloodPort_in_Extension
-        annotation (Placement(transformation(extent={{-70,-10},{-50,10}})));
+                                                                        //=Blood_volume_start* CO2_startConcentration;
+                                                                         //=Blood_volume_start* BEox_startConcentration;
 
       Physiolibrary.Hydraulic.Components.ElasticVessel elasticVesselCompliance(
         ZeroPressureVolume=ZeroPressureVolume,
@@ -10266,75 +10256,9 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
         useExternalPressureInput=true,
         useComplianceInput=true)
         annotation (Placement(transformation(extent={{14,38},{34,58}})));
-      Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
-          solute_start=O2_concentration*volume_start)
-        annotation (Placement(transformation(extent={{4,-16},{24,4}})));
-      Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
-          solute_start=CO2_concentration*volume_start)
-        annotation (Placement(transformation(extent={{4,-40},{24,-20}})));
-      Physiolibrary.Chemical.Components.Substance BEox(useNormalizedVolume=false,
-          solute_start=BEox_concentration*volume_start)
-        annotation (Placement(transformation(extent={{4,-64},{24,-44}})));
-      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure
-        annotation (Placement(transformation(extent={{-16,41},{6,19}})));
-      Physiolibrary.Chemical.Components.Stream O2flow(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{-28,-16},{-8,4}})));
-      Physiolibrary.Chemical.Components.Stream CO2flow(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{-28,-40},{-8,-20}})));
-      Physiolibrary.Chemical.Components.Stream BEoxflow(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{-28,-64},{-8,-44}})));
-      Physiolibrary.Chemical.Components.Stream O2flow1(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{36,-16},{56,4}})));
-      Physiolibrary.Chemical.Components.Stream CO2flow1(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{36,-40},{56,-20}})));
-      Physiolibrary.Chemical.Components.Stream BEoxflow1(useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{36,-64},{56,-44}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure3
         annotation (Placement(transformation(extent={{42,41},{64,19}})));
-      BloodPort_in bloodPort_in(numberOfSubstances=3) annotation (Placement(
-            transformation(extent={{-108,-10},{-88,10}}), iconTransformation(
-              extent={{-108,-10},{-88,10}})));
-      BloodPort_out bloodPort_out(numberOfSubstances=3) annotation (Placement(
-            transformation(extent={{90,-10},{110,10}}), iconTransformation(
-              extent={{90,-10},{110,10}})));
-      BloodPort_out_Extension bloodPort_out_Extension
-        annotation (Placement(transformation(extent={{72,-10},{92,10}})));
 
-      Physiolibrary.Chemical.Components.Stream ionsFlow[Ions](each useSolutionFlowInput=true)
-        annotation (Placement(transformation(extent={{-28,-102},{-8,-82}})));
-      Physiolibrary.Chemical.Components.Substance ions[Ions](each useNormalizedVolume=false,
-          solute_start=ion_start*volume_start)
-        annotation (Placement(transformation(extent={{4,-102},{24,-82}})));
-      Physiolibrary.Chemical.Components.Stream ionsFlow1[Ions](each useSolutionFlowInput=
-           true) annotation (Placement(transformation(extent={{36,-102},{56,-82}})));
-      OneToMany oneToMany
-        annotation (Placement(transformation(extent={{-10,-78},{-18,-70}})));
-      OneToMany oneToMany1
-        annotation (Placement(transformation(extent={{20,-78},{12,-70}})));
-      OneToMany oneToMany2
-        annotation (Placement(transformation(extent={{52,-78},{44,-70}})));
-
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_O2 if useO2_input
-        annotation (
-          Placement(transformation(extent={{34,-134},{54,-114}}),
-            iconTransformation(extent={{-68,-108},{-48,-88}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_CO2 if useCO2_input
-        annotation (
-          Placement(transformation(extent={{20,-136},{40,-116}}),
-            iconTransformation(extent={{-32,-108},{-12,-88}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_BEox if useBEox_input
-        annotation (
-          Placement(transformation(extent={{0,-136},{20,-116}}),
-            iconTransformation(extent={{10,-108},{30,-88}})));
-      Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a port_Flow if useFlow_input
-       annotation (
-          Placement(transformation(extent={{14,90},{34,110}}),
-            iconTransformation(extent={{-112,-110},{-88,-86}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_ions[Ions] if
-                                                                    useIons_input
-        annotation (
-          Placement(transformation(extent={{-18,-136},{2,-116}}),
-            iconTransformation(extent={{88,-108},{108,-88}})));
     protected
       Physiolibrary.Types.Pressure ep;
       Physiolibrary.Types.HydraulicCompliance c;
@@ -10348,64 +10272,12 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       elasticVesselCompliance.externalPressure =  ep;
       elasticVesselCompliance.compliance = c;
 
-      connect(bloodPort_in, bloodPort_in_Extension.bloodPort_in) annotation (
-          Line(
-          points={{-98,0},{-70,0}},
-          color={28,108,200},
-          thickness=0.5));
       connect(elasticVesselCompliance.volume, O2.solutionVolume) annotation (Line(
             points={{30,38},{30,-2},{10,-2}},            color={0,0,127}));
-      connect(bloodPort_in_Extension.bloodFlow, flowMeasure.q_in) annotation (
-          Line(
-          points={{-50,10},{-34,10},{-34,30},{-16,30}},
-          color={0,0,0},
-          thickness=1));
-      connect(bloodPort_in_Extension.O2, O2flow.q_in) annotation (Line(
-          points={{-50,2},{-36,2},{-36,-6},{-28,-6}},
-          color={107,45,134},
-          thickness=1));
-      connect(O2flow.q_out, O2.q_out) annotation (Line(
-          points={{-8,-6},{14,-6}},
-          color={107,45,134},
-          thickness=1));
-      connect(bloodPort_in_Extension.CO2, CO2flow.q_in) annotation (Line(
-          points={{-50,-2.2},{-38,-2.2},{-38,-30},{-28,-30}},
-          color={107,45,134},
-          thickness=1));
-      connect(CO2flow.q_out, CO2.q_out) annotation (Line(
-          points={{-8,-30},{14,-30}},
-          color={107,45,134},
-          thickness=1));
-      connect(BEoxflow.q_out, BEox.q_out) annotation (Line(
-          points={{-8,-54},{14,-54}},
-          color={107,45,134},
-          thickness=1));
-      connect(BEoxflow.q_in, bloodPort_in_Extension.BEox) annotation (Line(
-          points={{-28,-54},{-40,-54},{-40,-6},{-50,-6}},
-          color={107,45,134},
-          thickness=1));
-      connect(flowMeasure.volumeFlow, O2flow.solutionFlow) annotation (Line(points={{-5,16.8},
-              {-5,-4},{-18,-4},{-18,1}},               color={0,0,127}));
-      connect(flowMeasure.volumeFlow, CO2flow.solutionFlow)
-        annotation (Line(points={{-5,16.8},{-5,-23},{-18,-23}}, color={0,0,127}));
-      connect(flowMeasure.volumeFlow, BEoxflow.solutionFlow)
-        annotation (Line(points={{-5,16.8},{-5,-47},{-18,-47}}, color={0,0,127}));
       connect(elasticVesselCompliance.volume, CO2.solutionVolume)
         annotation (Line(points={{30,38},{30,-26},{10,-26}}, color={0,0,127}));
       connect(elasticVesselCompliance.volume, BEox.solutionVolume)
         annotation (Line(points={{30,38},{30,-50},{10,-50}}, color={0,0,127}));
-      connect(O2.q_out, O2flow1.q_in) annotation (Line(
-          points={{14,-6},{36,-6}},
-          color={107,45,134},
-          thickness=1));
-      connect(CO2.q_out, CO2flow1.q_in) annotation (Line(
-          points={{14,-30},{36,-30}},
-          color={107,45,134},
-          thickness=1));
-      connect(BEox.q_out, BEoxflow1.q_in) annotation (Line(
-          points={{14,-54},{36,-54}},
-          color={107,45,134},
-          thickness=1));
       connect(flowMeasure.q_out, flowMeasure3.q_in) annotation (Line(
           points={{6,30},{42,30}},
           color={0,0,0},
@@ -10420,76 +10292,15 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
             points={{53,16.8},{53,-21.6},{46,-21.6},{46,-23}}, color={0,0,127}));
       connect(flowMeasure3.volumeFlow, BEoxflow1.solutionFlow) annotation (Line(
             points={{53,16.8},{53,-46.6},{46,-46.6},{46,-47}}, color={0,0,127}));
-      connect(bloodPort_out, bloodPort_out_Extension.bloodPort_out) annotation (
-         Line(
-          points={{100,0},{92,0}},
-          color={28,108,200},
-          thickness=0.5));
       connect(flowMeasure3.q_out, bloodPort_out_Extension.bloodFlow)
         annotation (Line(
           points={{64,30},{68,30},{68,10},{72,10}},
           color={0,0,0},
           thickness=1));
-      connect(bloodPort_out_Extension.O2, O2flow1.q_out) annotation (Line(
-          points={{72,2},{64,2},{64,-6},{56,-6}},
-          color={107,45,134},
-          thickness=1));
-      connect(bloodPort_out_Extension.CO2, CO2flow1.q_out) annotation (Line(
-          points={{72,-2},{66,-2},{66,-30},{56,-30}},
-          color={107,45,134},
-          thickness=1));
-      connect(bloodPort_out_Extension.BEox, BEoxflow1.q_out) annotation (Line(
-          points={{72,-6},{68,-6},{68,-54},{56,-54}},
-          color={107,45,134},
-          thickness=1));
-      connect(oneToMany.y, ionsFlow.solutionFlow)
-        annotation (Line(points={{-18,-76},{-18,-85}}, color={0,0,127}));
-      connect(oneToMany1.y, ions.solutionVolume)
-        annotation (Line(points={{12,-76},{12,-88},{10,-88}}, color={0,0,127}));
-      connect(oneToMany2.y, ionsFlow1.solutionFlow) annotation (Line(points={{44,-76},
-              {44,-80},{46,-80},{46,-85}}, color={0,0,127}));
-      connect(oneToMany.u, flowMeasure.volumeFlow) annotation (Line(points={{-10,-76},
-              {-8,-76},{-8,-78},{-5,-78},{-5,16.8}}, color={0,0,127}));
       connect(oneToMany1.u, elasticVesselCompliance.volume)
         annotation (Line(points={{20,-76},{30,-76},{30,38}}, color={0,0,127}));
       connect(flowMeasure3.volumeFlow, oneToMany2.u) annotation (Line(points={{53,16.8},
               {53,-64},{52,-64},{52,-76}}, color={0,0,127}));
-      connect(ionsFlow.q_out, ions.q_out) annotation (Line(
-          points={{-8,-92},{14,-92}},
-          color={107,45,134},
-          thickness=1));
-      connect(ions.q_out, ionsFlow1.q_in) annotation (Line(
-          points={{14,-92},{36,-92}},
-          color={107,45,134},
-          thickness=1));
-      connect(ionsFlow1.q_out, bloodPort_out_Extension.ions) annotation (Line(
-          points={{56,-92},{72,-92},{72,-10}},
-          color={107,45,134},
-          thickness=1));
-      connect(ionsFlow.q_in, bloodPort_in_Extension.ions) annotation (Line(
-          points={{-28,-92},{-50,-92},{-50,-10}},
-          color={107,45,134},
-          thickness=1));
-      connect(flowMeasure.q_out, port_Flow) annotation (Line(
-          points={{6,30},{24,30},{24,100}},
-          color={0,0,0},
-          thickness=1));
-      connect(port_O2, O2flow1.q_in) annotation (Line(
-          points={{44,-124},{44,-66},{36,-66},{36,-6}},
-          color={107,45,134},
-          thickness=1));
-      connect(port_CO2, CO2.q_out) annotation (Line(
-          points={{30,-126},{26,-126},{26,-30},{14,-30}},
-          color={107,45,134},
-          thickness=1));
-      connect(port_BEox, BEox.q_out) annotation (Line(
-          points={{10,-126},{10,-54},{14,-54}},
-          color={107,45,134},
-          thickness=1));
-      connect(ions.q_out, port_ions) annotation (Line(
-          points={{14,-92},{-4,-92},{-4,-126},{-8,-126}},
-          color={107,45,134},
-          thickness=1));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
                 -100,-100},{100,100}}), graphics={
                                       Text(
@@ -15325,164 +15136,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
     end Alveolocapillary_2Units_with_shunts_and_mixing;
 
     model VeinsEquilibratedWithTissues
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure
-        annotation (Placement(transformation(
-            extent={{-8,8},{8,-8}},
-            rotation=0,
-            origin={52,-118})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
-        unlimitedSolutePumpOut2(useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{-18,-118},{2,-98}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage hCO3_inflow(
-          useConcentrationInput=true) annotation (Placement(transformation(
-            extent={{6,-6},{-6,6}},
-            rotation=180,
-            origin={28,-118})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
-        unlimitedSolutePumpOut3(useSoluteFlowInput=true) annotation (Placement(
-            transformation(
-            extent={{10,12},{-10,-12}},
-            rotation=180,
-            origin={-8,-128})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage o2_inflow(
-          useConcentrationInput=true) annotation (Placement(transformation(
-            extent={{6,-6},{-6,6}},
-            rotation=180,
-            origin={28,-76})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure1
-        annotation (Placement(transformation(
-            extent={{8,-8},{-8,8}},
-            rotation=180,
-            origin={52,-76})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
-        unlimitedSolutePumpOut(useSoluteFlowInput=true) annotation (Placement(
-            transformation(
-            extent={{9.5,10.5},{-9.5,-10.5}},
-            rotation=180,
-            origin={-8.5,-75.5})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage co2_inflow(
-          useConcentrationInput=true) annotation (Placement(transformation(
-            extent={{6,-6},{-6,6}},
-            rotation=180,
-            origin={28,-92})));
-      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure2
-        annotation (Placement(transformation(
-            extent={{8,-8},{-8,8}},
-            rotation=180,
-            origin={52,-92})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
-        unlimitedSolutePumpOut1(useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{-18,-102},{2,-82}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure3
-        annotation (Placement(transformation(
-            extent={{-4,4},{4,-4}},
-            rotation=180,
-            origin={-50,-76})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure4
-        annotation (Placement(transformation(
-            extent={{-4,4},{4,-4}},
-            rotation=180,
-            origin={-54,-108})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure5
-        annotation (Placement(transformation(
-            extent={{-4,4},{4,-4}},
-            rotation=180,
-            origin={-58,-128})));
-      OSA.BloodABB_OSA bloodABB_OSA annotation (Placement(transformation(
-              rotation=0, extent={{-54,-218},{-34,-198}})));
-      Physiolibrary.Chemical.Components.Diffusion iSFMembraneHco3(Conductance(
-            displayUnit="m3/s") = 1000)
-        annotation (Placement(transformation(extent={{100,-128},{80,-108}})));
-      Physiolibrary.Chemical.Components.Diffusion iSFMembraneCO2(Conductance(
-            displayUnit="l/min") = 0.016666666666667)
-        annotation (Placement(transformation(extent={{100,-102},{80,-82}})));
-      Physiolibrary.Chemical.Components.Diffusion iSFMembraneO2(Conductance(
-            displayUnit="l/min") = 0.016666666666667)
-        annotation (Placement(transformation(extent={{100,-86},{80,-66}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump
-        CO2_MetabolicProduction(useSoluteFlowInput=true, SoluteFlow=
-            0.00016666666666667)
-        annotation (Placement(transformation(extent={{380,-96},{360,-76}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
-        O2_MetabolicConsumption(useSoluteFlowInput=true, SoluteFlow=
-            0.00018333333333333)
-        annotation (Placement(transformation(extent={{360,-76},{380,-56}})));
-      Physiolibrary.Types.Constants.VolumeConst volume(k=modelSettings.ISFvolume_start)
-        annotation (Placement(transformation(extent={{166,-44},{174,-36}})));
-      Physiolibrary.Chemical.Components.Diffusion diffusion(Conductance=0.005)
-        annotation (Placement(transformation(extent={{268,-76},{288,-56}})));
-      Physiolibrary.Chemical.Components.Diffusion diffusion1(Conductance=0.005)
-        annotation (Placement(transformation(extent={{288,-96},{268,-76}})));
-      Physiolibrary.Chemical.Components.Substance O2Buffer(useNormalizedVolume=
-            false, solute_start(displayUnit="mol") = 2e-11)
-        annotation (Placement(transformation(extent={{312,-82},{320,-74}})));
-      Physiolibrary.Chemical.Components.Substance CO2buffer(useNormalizedVolume=
-           false, solute_start=1.6e-9)
-        annotation (Placement(transformation(extent={{300,-84},{308,-76}})));
-      Physiolibrary.Types.Constants.VolumeConst nearToZeroVolume(k=1e-9)
-        annotation (Placement(transformation(extent={{280,-78},{294,-72}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure TissueO2Concentration
-        annotation (Placement(transformation(extent={{332,-48},{348,-62}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure
-        TissueCO2Concentration
-        annotation (Placement(transformation(extent={{334,-70},{350,-84}})));
-      ComputationpO2pCO2 computationpO2pCO2_1
-        annotation (Placement(transformation(extent={{328,-46},{348,-32}})));
-      AcidBaseBalance.Package.limitO2Metabolism limitO2Metabolism(
-          limiterEnabled=true, metabolismFlowRate=0.00019166666666667)
-        annotation (Placement(transformation(extent={{356,-50},{376,-30}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISFO2(
-          useConcentrationInput=true)
-        annotation (Placement(transformation(extent={{132,-82},{120,-70}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump4(
-          useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{144,-92},{160,-76}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump5(
-          useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{144,-122},{160,-106}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISFHCO3(
-          useConcentrationInput=true)
-        annotation (Placement(transformation(extent={{132,-124},{120,-112}})));
-      Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
-          solute_start=modelSettings.ISFCO2solute_start)
-        annotation (Placement(transformation(extent={{180,-94},{200,-74}})));
-      Physiolibrary.Chemical.Components.Substance HCO3(useNormalizedVolume=
-            false, solute_start=modelSettings.ISFHCO3solute_start)
-        annotation (Placement(transformation(extent={{180,-124},{200,-104}})));
-      Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
-          solute_start=modelSettings.ISFO2solute_start)
-        annotation (Placement(transformation(extent={{180,-68},{200,-48}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump6(
-          useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{142,-48},{162,-68}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISFCO2(
-          useConcentrationInput=true)
-        annotation (Placement(transformation(extent={{132,-98},{120,-86}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure
-        annotation (Placement(transformation(
-            extent={{-6,6},{6,-6}},
-            rotation=270,
-            origin={216,-114})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
-        annotation (Placement(transformation(
-            extent={{-8,-8},{8,8}},
-            rotation=90,
-            origin={216,-94})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure2
-        annotation (Placement(transformation(
-            extent={{-8,8},{8,-8}},
-            rotation=270,
-            origin={216,-66})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump7(
-          useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{144,-92},{160,-108}})));
-      TissueHCO3 tissueHCO3_2
-        annotation (Placement(transformation(extent={{234,-154},{254,-134}})));
-      Physiolibrary.Types.Constants.TemperatureConst temperature2(k=
-            modelSettings.Temperature)
-        annotation (Placement(transformation(extent={{266,-140},{258,-132}})));
-      ComputationpO2pCO2 computationpO2pCO2_2
-        annotation (Placement(transformation(extent={{228,-42},{248,-28}})));
+      replaceable
       BloodElasticVesselCompliance veins(
         volume_start(displayUnit="l") = 0.00325,
         ZeroPressureVolume(displayUnit="l") = 0.00295,
@@ -15491,235 +15145,30 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
         CO2_concentration=23.6461,
         useO2_input=true,
         useCO2_input=true,
-        useBEox_input=true) annotation (Placement(transformation(
+        useBEox_input=true) constrainedby BloodVessel
+                            annotation (Placement(transformation(
             extent={{-10,10},{10,-10}},
             rotation=180,
-            origin={-56,-2})));
-      outer ModelSettings         modelSettings
-        annotation (Placement(transformation(extent={{-122,120},{-102,140}})));
+            origin={-56,-2})), __Dymola_choicesAllMatching=true);
       BloodPort_in bloodPort_in annotation (Placement(transformation(rotation=0,
               extent={{398,-26},{446,26}})));
       BloodPort_out bloodPort_out annotation (Placement(transformation(rotation=
                0, extent={{-142,-28},{-94,24}})));
+      Tissues tissues annotation (Placement(transformation(rotation=0, extent={{-40,
+                -44},{-20,-24}})));
     equation
-      connect(molarFlowMeasure2.molarFlowRate,unlimitedSolutePumpOut1. soluteFlow)
-        annotation (Line(points={{52,-85.6},{-4,-85.6},{-4,-88}}, color={0,0,
-              127}));
-      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePumpOut2. soluteFlow)
-        annotation (Line(points={{52,-111.6},{52,-104},{-4,-104}},
-                                                                 color={0,0,127}));
-      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePumpOut3. soluteFlow)
-        annotation (Line(points={{52,-111.6},{52,-104},{4,-104},{4,-120},{-4,
-              -120},{-4,-123.2}},
-                            color={0,0,127}));
-      connect(co2_inflow.concentration,bloodABB_OSA. dCO2) annotation (Line(
-            points={{22,-92},{18,-92},{18,-140},{-39.8,-140},{-39.8,-202}},
-            color={0,0,127}));
-      connect(bloodABB_OSA.dO2,o2_inflow. concentration) annotation (Line(
-            points={{-41.6,-202},{-41.6,-182},{14,-182},{14,-76},{22,-76}},
-            color={0,0,127}));
-      connect(bloodABB_OSA.cHCO3,hCO3_inflow. concentration) annotation (Line(
-            points={{-37.8,-202},{24,-202},{24,-118},{22,-118}}, color={0,0,127}));
-      connect(veins.port_O2,concentrationMeasure3. q_in) annotation (Line(
-          points={{-50.2,-11.8},{-50,-11.8},{-50,-76}},
+      connect(veins.port_O2, tissues.tO2) annotation (Line(
+          points={{-50.2,-11.8},{-50,-11.8},{-50,-26},{-40,-26}},
           color={107,45,134},
           thickness=1));
-      connect(bloodABB_OSA.tO2_input,concentrationMeasure3. concentration)
-        annotation (Line(points={{-47.4,-201},{-47.4,-138},{-50,-138},{-50,
-              -79.2}}, color={0,0,127}));
-      connect(bloodABB_OSA._BEox,concentrationMeasure5. concentration)
-        annotation (Line(points={{-50,-201},{-50,-146},{-58,-146},{-58,-131.2}},
-            color={0,0,127}));
-      connect(bloodABB_OSA.tCO2_input,concentrationMeasure4. concentration)
-        annotation (Line(points={{-45.8,-201},{-45.8,-142},{-54,-142},{-54,
-              -111.2}}, color={0,0,127}));
-      connect(o2_inflow.q_out,molarFlowMeasure1. q_in) annotation (Line(
-          points={{34,-76},{44,-76}},
+      connect(tissues.tCO2, veins.port_CO2) annotation (Line(
+          points={{-40,-30},{-53.8,-30},{-53.8,-11.8}},
           color={107,45,134},
           thickness=1));
-      connect(molarFlowMeasure1.q_out,iSFMembraneO2. q_out) annotation (Line(
-          points={{60,-76},{80,-76}},
+      connect(tissues.BE, veins.port_BEox) annotation (Line(
+          points={{-40,-34},{-58,-34},{-58,-11.8}},
           color={107,45,134},
           thickness=1));
-      connect(hCO3_inflow.q_out,molarFlowMeasure. q_in) annotation (Line(
-          points={{34,-118},{44,-118}},
-          color={107,45,134},
-          thickness=1));
-      connect(co2_inflow.q_out,molarFlowMeasure2. q_in) annotation (Line(
-          points={{34,-92},{44,-92}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePumpOut.soluteFlow,molarFlowMeasure1. molarFlowRate)
-        annotation (Line(points={{-4.7,-71.3},{-4.35,-71.3},{-4.35,-69.6},{52,
-              -69.6}}, color={0,0,127}));
-      connect(unlimitedSolutePumpOut.q_in,concentrationMeasure3. q_in)
-        annotation (Line(
-          points={{-18,-75.5},{-34,-75.5},{-34,-76},{-50,-76}},
-          color={107,45,134},
-          thickness=1));
-      connect(molarFlowMeasure2.q_out,iSFMembraneCO2. q_out) annotation (Line(
-          points={{60,-92},{80,-92}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePumpOut1.q_in,veins. port_CO2) annotation (Line(
-          points={{-18,-92},{-53.8,-92},{-53.8,-11.8}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePumpOut2.q_in,concentrationMeasure4. q_in)
-        annotation (Line(
-          points={{-18,-108},{-54,-108}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePumpOut2.q_in,veins. port_CO2) annotation (Line(
-          points={{-18,-108},{-54,-108},{-54,-11.8},{-53.8,-11.8}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePumpOut3.q_in,concentrationMeasure5. q_in)
-        annotation (Line(
-          points={{-18,-128},{-58,-128}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePumpOut3.q_in,veins. port_BEox) annotation (Line(
-          points={{-18,-128},{-58,-128},{-58,-11.8}},
-          color={107,45,134},
-          thickness=1));
-      connect(molarFlowMeasure.q_out,iSFMembraneHco3. q_out) annotation (Line(
-          points={{60,-118},{80,-118}},
-          color={107,45,134},
-          thickness=1));
-      connect(nearToZeroVolume.y,CO2buffer. solutionVolume) annotation (Line(
-            points={{295.75,-75},{302.4,-75},{302.4,-78.4}},
-                                                          color={0,0,127}));
-      connect(O2Buffer.solutionVolume,nearToZeroVolume. y) annotation (Line(
-            points={{314.4,-76.4},{314.4,-76},{295.75,-76},{295.75,-75}},
-                                                                    color={0,0,
-              127}));
-      connect(O2_MetabolicConsumption.q_in,TissueO2Concentration. q_in)
-        annotation (Line(
-          points={{360,-66},{350,-66},{350,-55},{340,-55}},
-          color={107,45,134},
-          thickness=1));
-      connect(TissueCO2Concentration.q_in,CO2_MetabolicProduction. q_out)
-        annotation (Line(
-          points={{342,-77},{356,-77},{356,-86},{360,-86}},
-          color={107,45,134},
-          thickness=1));
-      connect(TissueO2Concentration.concentration,computationpO2pCO2_1. ctO2)
-        annotation (Line(points={{340,-49.4},{340,-33.1667},{329.818,-33.1667}},
-            color={0,0,127}));
-      connect(computationpO2pCO2_1.ctCO2,TissueCO2Concentration. concentration)
-        annotation (Line(points={{329.818,-44.8333},{346.5,-44.8333},{346.5,
-              -71.4},{342,-71.4}},
-                           color={0,0,127}));
-      connect(limitO2Metabolism.CO2FlowRate,CO2_MetabolicProduction. soluteFlow)
-        annotation (Line(points={{374,-32},{402,-32},{402,-82},{366,-82}},color=
-             {0,0,127}));
-      connect(O2_MetabolicConsumption.soluteFlow,limitO2Metabolism. O2FlowRate)
-        annotation (Line(points={{374,-62},{396,-62},{396,-48},{374,-48}},color=
-             {0,0,127}));
-      connect(computationpO2pCO2_1.pO2,limitO2Metabolism. pO2) annotation (Line(
-            points={{346.182,-40.1667},{346.091,-40.1667},{346.091,-40},{358,
-              -40}},
-            color={0,0,127}));
-      connect(concentrationMeasure.q_in,HCO3. q_out) annotation (Line(
-          points={{216,-114},{190,-114}},
-          color={107,45,134},
-          thickness=1));
-      connect(concentrationMeasure1.q_in,CO2. q_out) annotation (Line(
-          points={{216,-94},{204,-94},{204,-84},{190,-84}},
-          color={107,45,134},
-          thickness=1));
-      connect(concentrationMeasure2.q_in,O2. q_out) annotation (Line(
-          points={{216,-66},{216,-58},{190,-58}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePump7.q_out,CO2. q_out) annotation (Line(
-          points={{160,-100},{190,-100},{190,-84}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePump6.q_out,O2. q_out) annotation (Line(
-          points={{162,-58},{190,-58}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePump4.q_out,CO2. q_out) annotation (Line(
-          points={{160,-84},{190,-84}},
-          color={107,45,134},
-          thickness=1));
-      connect(unlimitedSolutePump5.q_out,HCO3. q_out) annotation (Line(
-          points={{160,-114},{190,-114}},
-          color={107,45,134},
-          thickness=1));
-      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePump5. soluteFlow)
-        annotation (Line(points={{52,-111.6},{52,-106},{155.2,-106},{155.2,
-              -110.8}},
-            color={0,0,127}));
-      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePump7. soluteFlow)
-        annotation (Line(points={{52,-111.6},{52,-106},{156,-106},{156,-103.2},
-              {155.2,-103.2}},
-                             color={0,0,127}));
-      connect(volume.y,O2. solutionVolume) annotation (Line(points={{175,-40},{
-              186,-40},{186,-54}}, color={0,0,127}));
-      connect(volume.y,CO2. solutionVolume) annotation (Line(points={{175,-40},
-              {186,-40},{186,-80}}, color={0,0,127}));
-      connect(volume.y,HCO3. solutionVolume) annotation (Line(points={{175,-40},
-              {186,-40},{186,-110}}, color={0,0,127}));
-      connect(molarFlowMeasure2.molarFlowRate,unlimitedSolutePump4. soluteFlow)
-        annotation (Line(points={{52,-85.6},{52,-80.8},{155.2,-80.8}}, color={0,
-              0,127}));
-      connect(molarFlowMeasure1.molarFlowRate,unlimitedSolutePump6. soluteFlow)
-        annotation (Line(points={{52,-69.6},{156,-69.6},{156,-62}}, color={0,0,
-              127}));
-      connect(O2.q_out,diffusion. q_in) annotation (Line(
-          points={{190,-58},{268,-58},{268,-66}},
-          color={107,45,134},
-          thickness=1));
-      connect(CO2.q_out,diffusion1. q_out) annotation (Line(
-          points={{190,-84},{230,-84},{230,-86},{268,-86}},
-          color={107,45,134},
-          thickness=1));
-      connect(diffusion.q_out,O2_MetabolicConsumption. q_in) annotation (Line(
-          points={{288,-66},{360,-66}},
-          color={107,45,134},
-          thickness=1));
-      connect(diffusion1.q_in,CO2_MetabolicProduction. q_out) annotation (Line(
-          points={{288,-86},{360,-86}},
-          color={107,45,134},
-          thickness=1));
-      connect(ISFO2.concentration,concentrationMeasure2. concentration)
-        annotation (Line(points={{132,-76},{232,-76},{232,-66},{222.4,-66}},
-            color={0,0,127}));
-      connect(tissueHCO3_2.tCO2,concentrationMeasure1. concentration)
-        annotation (Line(points={{235,-139.8},{230,-139.8},{230,-94},{222.4,-94}},
-            color={0,0,127}));
-      connect(concentrationMeasure.concentration,tissueHCO3_2. cHCO3)
-        annotation (Line(points={{220.8,-114},{266,-114},{266,-156},{252,-156}},
-            color={0,0,127}));
-      connect(tissueHCO3_2.T,temperature2. y)
-        annotation (Line(points={{253,-136},{257,-136}}, color={0,0,127}));
-      connect(ISFCO2.concentration,tissueHCO3_2. cdCO2_) annotation (Line(
-            points={{132,-92},{176,-92},{176,-144.8},{235,-144.8}}, color={0,0,
-              127}));
-      connect(concentrationMeasure.concentration,ISFHCO3. concentration)
-        annotation (Line(points={{220.8,-114},{222,-114},{222,-118},{132,-118}},
-            color={0,0,127}));
-      connect(ISFHCO3.q_out,iSFMembraneHco3. q_in) annotation (Line(
-          points={{120,-118},{100,-118}},
-          color={107,45,134},
-          thickness=1));
-      connect(ISFCO2.q_out,iSFMembraneCO2. q_in) annotation (Line(
-          points={{120,-92},{100,-92}},
-          color={107,45,134},
-          thickness=1));
-      connect(ISFO2.q_out,iSFMembraneO2. q_in) annotation (Line(
-          points={{120,-76},{100,-76}},
-          color={107,45,134},
-          thickness=1));
-      connect(computationpO2pCO2_2.ctCO2,concentrationMeasure1. concentration)
-        annotation (Line(points={{229.818,-40.8333},{229.818,-93.417},{222.4,
-              -93.417},{222.4,-94}},  color={0,0,127}));
-      connect(concentrationMeasure2.concentration,computationpO2pCO2_2. ctO2)
-        annotation (Line(points={{222.4,-66},{222,-66},{222,-29.1667},{229.818,
-              -29.1667}}, color={0,0,127}));
       connect(bloodPort_in, veins.bloodPort_in) annotation (Line(points={{422,0},
               {30,0},{30,-2},{-46.2,-2}}, color={28,108,200}));
       connect(bloodPort_out, veins.bloodPort_out)
@@ -15977,6 +15426,621 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
               thickness=0.5,
               pattern=LinePattern.Dash)}));
     end Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors;
+
+    partial model BloodVessel
+      BloodPort_in_Extension bloodPort_in_Extension
+        annotation (Placement(transformation(extent={{-70,-10},{-50,10}})));
+      Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
+          solute_start=O2_concentration*volume_start)
+        annotation (Placement(transformation(extent={{4,-16},{24,4}})));
+      Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
+          solute_start=CO2_concentration*volume_start)
+        annotation (Placement(transformation(extent={{4,-40},{24,-20}})));
+      Physiolibrary.Chemical.Components.Substance BEox(useNormalizedVolume=false,
+          solute_start=BEox_concentration*volume_start)
+        annotation (Placement(transformation(extent={{4,-64},{24,-44}})));
+      Physiolibrary.Chemical.Components.Stream O2flow(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-28,-16},{-8,4}})));
+      Physiolibrary.Chemical.Components.Stream CO2flow(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-28,-40},{-8,-20}})));
+      Physiolibrary.Chemical.Components.Stream BEoxflow(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-28,-64},{-8,-44}})));
+      Physiolibrary.Chemical.Components.Stream O2flow1(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{36,-16},{56,4}})));
+      Physiolibrary.Chemical.Components.Stream CO2flow1(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{36,-40},{56,-20}})));
+      Physiolibrary.Chemical.Components.Stream BEoxflow1(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{36,-64},{56,-44}})));
+      BloodPort_out_Extension bloodPort_out_Extension
+        annotation (Placement(transformation(extent={{72,-10},{92,10}})));
+      Physiolibrary.Chemical.Components.Stream ionsFlow[Ions](each useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{-28,-102},{-8,-82}})));
+      Physiolibrary.Chemical.Components.Substance ions[Ions](each useNormalizedVolume=false,
+          solute_start=ion_start*volume_start)
+        annotation (Placement(transformation(extent={{4,-102},{24,-82}})));
+      Physiolibrary.Chemical.Components.Stream ionsFlow1[Ions](each useSolutionFlowInput=
+           true) annotation (Placement(transformation(extent={{36,-102},{56,-82}})));
+      OneToMany oneToMany
+        annotation (Placement(transformation(extent={{-10,-78},{-18,-70}})));
+      OneToMany oneToMany1
+        annotation (Placement(transformation(extent={{20,-78},{12,-70}})));
+      OneToMany oneToMany2
+        annotation (Placement(transformation(extent={{52,-78},{44,-70}})));
+      BloodPort_in bloodPort_in(numberOfSubstances=3) annotation (Placement(
+            transformation(extent={{-108,-10},{-88,10}}), iconTransformation(
+              extent={{-108,-10},{-88,10}})));
+      BloodPort_out bloodPort_out(numberOfSubstances=3) annotation (Placement(
+            transformation(extent={{90,-10},{110,10}}), iconTransformation(
+              extent={{90,-10},{110,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_O2 if useO2_input
+        annotation (
+          Placement(transformation(extent={{34,-134},{54,-114}}),
+            iconTransformation(extent={{-68,-108},{-48,-88}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_CO2 if useCO2_input
+        annotation (
+          Placement(transformation(extent={{20,-136},{40,-116}}),
+            iconTransformation(extent={{-32,-108},{-12,-88}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_BEox if useBEox_input
+        annotation (
+          Placement(transformation(extent={{0,-136},{20,-116}}),
+            iconTransformation(extent={{10,-108},{30,-88}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_ions[Ions] if
+                                                                    useIons_input
+        annotation (
+          Placement(transformation(extent={{-18,-136},{2,-116}}),
+            iconTransformation(extent={{88,-108},{108,-88}})));
+      Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure
+        annotation (Placement(transformation(extent={{-16,41},{6,19}})));
+      Physiolibrary.Hydraulic.Interfaces.HydraulicPort_a port_Flow if useFlow_input
+       annotation (
+          Placement(transformation(extent={{14,90},{34,110}}),
+            iconTransformation(extent={{-112,-110},{-88,-86}})));
+      parameter Physiolibrary.Types.Concentration ion_start[Ions] = zeros(size(ion_start, 1));
+      parameter Physiolibrary.Types.Volume volume_start=1e-3;
+      parameter Physiolibrary.Types.Concentration O2_concentration = 0;
+      parameter Physiolibrary.Types.Concentration CO2_concentration = 0;
+      parameter Physiolibrary.Types.Concentration BEox_concentration = 0;
+      parameter Boolean useO2_input=false;
+      parameter Boolean useCO2_input=false;
+      parameter Boolean useBEox_input=false;
+      parameter Boolean useFlow_input=false;
+      parameter Boolean useIons_input=false;
+
+    equation
+      connect(bloodPort_in,bloodPort_in_Extension. bloodPort_in) annotation (
+          Line(
+          points={{-98,0},{-70,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(bloodPort_in_Extension.O2,O2flow. q_in) annotation (Line(
+          points={{-50,2},{-36,2},{-36,-6},{-28,-6}},
+          color={107,45,134},
+          thickness=1));
+      connect(O2flow.q_out,O2. q_out) annotation (Line(
+          points={{-8,-6},{14,-6}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_in_Extension.CO2,CO2flow. q_in) annotation (Line(
+          points={{-50,-2.2},{-38,-2.2},{-38,-30},{-28,-30}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2flow.q_out,CO2. q_out) annotation (Line(
+          points={{-8,-30},{14,-30}},
+          color={107,45,134},
+          thickness=1));
+      connect(BEoxflow.q_out,BEox. q_out) annotation (Line(
+          points={{-8,-54},{14,-54}},
+          color={107,45,134},
+          thickness=1));
+      connect(BEoxflow.q_in,bloodPort_in_Extension. BEox) annotation (Line(
+          points={{-28,-54},{-40,-54},{-40,-6},{-50,-6}},
+          color={107,45,134},
+          thickness=1));
+      connect(flowMeasure.volumeFlow,O2flow. solutionFlow) annotation (Line(points={{-5,16.8},
+              {-5,-4},{-18,-4},{-18,1}},               color={0,0,127}));
+      connect(flowMeasure.volumeFlow,CO2flow. solutionFlow)
+        annotation (Line(points={{-5,16.8},{-5,-23},{-18,-23}}, color={0,0,127}));
+      connect(flowMeasure.volumeFlow,BEoxflow. solutionFlow)
+        annotation (Line(points={{-5,16.8},{-5,-47},{-18,-47}}, color={0,0,127}));
+      connect(O2.q_out,O2flow1. q_in) annotation (Line(
+          points={{14,-6},{36,-6}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2.q_out,CO2flow1. q_in) annotation (Line(
+          points={{14,-30},{36,-30}},
+          color={107,45,134},
+          thickness=1));
+      connect(BEox.q_out,BEoxflow1. q_in) annotation (Line(
+          points={{14,-54},{36,-54}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_out,bloodPort_out_Extension. bloodPort_out) annotation (
+         Line(
+          points={{100,0},{92,0}},
+          color={28,108,200},
+          thickness=0.5));
+      connect(bloodPort_out_Extension.O2,O2flow1. q_out) annotation (Line(
+          points={{72,2},{64,2},{64,-6},{56,-6}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_out_Extension.CO2,CO2flow1. q_out) annotation (Line(
+          points={{72,-2},{66,-2},{66,-30},{56,-30}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_out_Extension.BEox,BEoxflow1. q_out) annotation (Line(
+          points={{72,-6},{68,-6},{68,-54},{56,-54}},
+          color={107,45,134},
+          thickness=1));
+      connect(oneToMany.y,ionsFlow. solutionFlow)
+        annotation (Line(points={{-18,-76},{-18,-85}}, color={0,0,127}));
+      connect(oneToMany1.y,ions. solutionVolume)
+        annotation (Line(points={{12,-76},{12,-88},{10,-88}}, color={0,0,127}));
+      connect(oneToMany2.y,ionsFlow1. solutionFlow) annotation (Line(points={{44,-76},
+              {44,-80},{46,-80},{46,-85}}, color={0,0,127}));
+      connect(oneToMany.u,flowMeasure. volumeFlow) annotation (Line(points={{-10,-76},
+              {-8,-76},{-8,-78},{-5,-78},{-5,16.8}}, color={0,0,127}));
+      connect(ionsFlow.q_out,ions. q_out) annotation (Line(
+          points={{-8,-92},{14,-92}},
+          color={107,45,134},
+          thickness=1));
+      connect(ions.q_out,ionsFlow1. q_in) annotation (Line(
+          points={{14,-92},{36,-92}},
+          color={107,45,134},
+          thickness=1));
+      connect(ionsFlow1.q_out,bloodPort_out_Extension. ions) annotation (Line(
+          points={{56,-92},{72,-92},{72,-10}},
+          color={107,45,134},
+          thickness=1));
+      connect(ionsFlow.q_in,bloodPort_in_Extension. ions) annotation (Line(
+          points={{-28,-92},{-50,-92},{-50,-10}},
+          color={107,45,134},
+          thickness=1));
+      connect(port_O2,O2flow1. q_in) annotation (Line(
+          points={{44,-124},{44,-66},{36,-66},{36,-6}},
+          color={107,45,134},
+          thickness=1));
+      connect(port_CO2,CO2. q_out) annotation (Line(
+          points={{30,-126},{26,-126},{26,-30},{14,-30}},
+          color={107,45,134},
+          thickness=1));
+      connect(port_BEox,BEox. q_out) annotation (Line(
+          points={{10,-126},{10,-54},{14,-54}},
+          color={107,45,134},
+          thickness=1));
+      connect(ions.q_out,port_ions)  annotation (Line(
+          points={{14,-92},{-4,-92},{-4,-126},{-8,-126}},
+          color={107,45,134},
+          thickness=1));
+      connect(bloodPort_in_Extension.bloodFlow,flowMeasure. q_in) annotation (
+          Line(
+          points={{-50,10},{-34,10},{-34,30},{-16,30}},
+          color={0,0,0},
+          thickness=1));
+      connect(flowMeasure.q_out,port_Flow)  annotation (Line(
+          points={{6,30},{24,30},{24,100}},
+          color={0,0,0},
+          thickness=1));
+    end BloodVessel;
+
+    model BloodVesselConstVolume
+      extends BloodVessel;
+    //  parameter Physiolibrary.Types.Volume vesselVolume;
+
+
+      Physiolibrary.Types.Constants.VolumeConst volume(k=volume_start)
+        annotation (Placement(transformation(extent={{-8,50},{0,58}})));
+    equation
+      connect(flowMeasure.q_out, bloodPort_out_Extension.bloodFlow) annotation (
+          Line(
+          points={{6,30},{72,30},{72,10}},
+          color={0,0,0},
+          thickness=1));
+      connect(volume.y, O2.solutionVolume)
+        annotation (Line(points={{1,54},{10,54},{10,-2}}, color={0,0,127}));
+      connect(volume.y, CO2.solutionVolume)
+        annotation (Line(points={{1,54},{10,54},{10,-26}}, color={0,0,127}));
+      connect(volume.y, BEox.solutionVolume)
+        annotation (Line(points={{1,54},{10,54},{10,-50}}, color={0,0,127}));
+      connect(volume.y, oneToMany1.u) annotation (Line(points={{1,54},{10,54},{10,-70},
+              {20,-70},{20,-76}}, color={0,0,127}));
+      connect(flowMeasure.volumeFlow, O2flow1.solutionFlow)
+        annotation (Line(points={{-5,16.8},{46,16.8},{46,1}}, color={0,0,127}));
+      connect(CO2flow1.solutionFlow, O2flow1.solutionFlow)
+        annotation (Line(points={{46,-23},{46,1}}, color={0,0,127}));
+      connect(BEoxflow1.solutionFlow, O2flow1.solutionFlow)
+        annotation (Line(points={{46,-47},{46,1}}, color={0,0,127}));
+      connect(oneToMany2.u, O2flow1.solutionFlow) annotation (Line(points={{52,-76},
+              {54,-76},{54,-66},{46,-66},{46,1}}, color={0,0,127}));
+      annotation (Icon(graphics={Rectangle(
+              extent={{-80,80},{80,-80}},
+              fillColor={162,29,33},
+              fillPattern=FillPattern.Solid,
+              lineThickness=1,
+              pattern=LinePattern.None),
+                                 Rectangle(
+              extent={{-60,60},{60,-60}},
+              fillColor={240,233,6},
+              fillPattern=FillPattern.Solid,
+              lineThickness=1,
+              pattern=LinePattern.None)}));
+    end BloodVesselConstVolume;
+
+    model Tissues
+
+      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure annotation (
+          Placement(transformation(
+            extent={{-8,8},{8,-8}},
+            rotation=0,
+            origin={52,-118})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut2(
+         useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{-18,-118},{2,-98}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage hCO3_inflow(
+          useConcentrationInput=true) annotation (Placement(transformation(
+            extent={{6,-6},{-6,6}},
+            rotation=180,
+            origin={28,-118})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut3(
+         useSoluteFlowInput=true) annotation (Placement(transformation(
+            extent={{10,12},{-10,-12}},
+            rotation=180,
+            origin={-8,-128})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage o2_inflow(
+          useConcentrationInput=true) annotation (Placement(transformation(
+            extent={{6,-6},{-6,6}},
+            rotation=180,
+            origin={28,-76})));
+      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure1 annotation (
+         Placement(transformation(
+            extent={{8,-8},{-8,8}},
+            rotation=180,
+            origin={52,-76})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut(
+          useSoluteFlowInput=true) annotation (Placement(transformation(
+            extent={{9.5,10.5},{-9.5,-10.5}},
+            rotation=180,
+            origin={-8.5,-75.5})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage co2_inflow(
+          useConcentrationInput=true) annotation (Placement(transformation(
+            extent={{6,-6},{-6,6}},
+            rotation=180,
+            origin={28,-92})));
+      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure2 annotation (
+         Placement(transformation(
+            extent={{8,-8},{-8,8}},
+            rotation=180,
+            origin={52,-92})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut1(
+         useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{-18,-102},{2,-82}})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure3
+        annotation (Placement(transformation(
+            extent={{-4,4},{4,-4}},
+            rotation=180,
+            origin={-50,-76})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure4
+        annotation (Placement(transformation(
+            extent={{-4,4},{4,-4}},
+            rotation=180,
+            origin={-54,-108})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure5
+        annotation (Placement(transformation(
+            extent={{-4,4},{4,-4}},
+            rotation=180,
+            origin={-58,-128})));
+      OSA.BloodABB_OSA bloodABB_OSA annotation (Placement(transformation(rotation=0,
+              extent={{-54,-212},{-34,-192}})));
+      Physiolibrary.Chemical.Components.Diffusion iSFMembraneHco3(Conductance(
+            displayUnit="m3/s") = 1000)
+        annotation (Placement(transformation(extent={{100,-128},{80,-108}})));
+      Physiolibrary.Chemical.Components.Diffusion iSFMembraneCO2(Conductance(
+            displayUnit="l/min") = 0.016666666666667)
+        annotation (Placement(transformation(extent={{100,-102},{80,-82}})));
+      Physiolibrary.Chemical.Components.Diffusion iSFMembraneO2(Conductance(
+            displayUnit="l/min") = 0.016666666666667)
+        annotation (Placement(transformation(extent={{100,-86},{80,-66}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump CO2_MetabolicProduction(
+          useSoluteFlowInput=true, SoluteFlow=0.00016666666666667)
+        annotation (Placement(transformation(extent={{380,-96},{360,-76}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut O2_MetabolicConsumption(
+          useSoluteFlowInput=true, SoluteFlow=0.00018333333333333)
+        annotation (Placement(transformation(extent={{360,-76},{380,-56}})));
+      Physiolibrary.Types.Constants.VolumeConst volume(k=modelSettings.ISFvolume_start)
+        annotation (Placement(transformation(extent={{166,-44},{174,-36}})));
+      Physiolibrary.Chemical.Components.Diffusion diffusion(Conductance=0.005)
+        annotation (Placement(transformation(extent={{268,-76},{288,-56}})));
+      Physiolibrary.Chemical.Components.Diffusion diffusion1(Conductance=0.005)
+        annotation (Placement(transformation(extent={{288,-96},{268,-76}})));
+      Physiolibrary.Chemical.Components.Substance O2Buffer(useNormalizedVolume=false,
+          solute_start(displayUnit="mol") = 2e-11)
+        annotation (Placement(transformation(extent={{312,-82},{320,-74}})));
+      Physiolibrary.Chemical.Components.Substance CO2buffer(useNormalizedVolume=false,
+          solute_start=1.6e-9)
+        annotation (Placement(transformation(extent={{300,-84},{308,-76}})));
+      Physiolibrary.Types.Constants.VolumeConst nearToZeroVolume(k=1e-9)
+        annotation (Placement(transformation(extent={{280,-78},{294,-72}})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure TissueO2Concentration
+        annotation (Placement(transformation(extent={{332,-48},{348,-62}})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure TissueCO2Concentration
+        annotation (Placement(transformation(extent={{334,-70},{350,-84}})));
+      ComputationpO2pCO2 computationpO2pCO2_1
+        annotation (Placement(transformation(extent={{328,-46},{348,-32}})));
+      AcidBaseBalance.Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+          metabolismFlowRate=0.00019166666666667)
+        annotation (Placement(transformation(extent={{356,-50},{376,-30}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISFO2(
+          useConcentrationInput=true)
+        annotation (Placement(transformation(extent={{132,-82},{120,-70}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump4(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{144,-92},{160,-76}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump5(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{144,-122},{160,-106}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISFHCO3(
+          useConcentrationInput=true)
+        annotation (Placement(transformation(extent={{132,-124},{120,-112}})));
+      Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
+          solute_start=modelSettings.ISFCO2solute_start)
+        annotation (Placement(transformation(extent={{180,-94},{200,-74}})));
+      Physiolibrary.Chemical.Components.Substance HCO3(useNormalizedVolume=false,
+          solute_start=modelSettings.ISFHCO3solute_start)
+        annotation (Placement(transformation(extent={{180,-124},{200,-104}})));
+      Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
+          solute_start=modelSettings.ISFO2solute_start)
+        annotation (Placement(transformation(extent={{180,-68},{200,-48}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump6(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{142,-48},{162,-68}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISFCO2(
+          useConcentrationInput=true)
+        annotation (Placement(transformation(extent={{132,-98},{120,-86}})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure
+        annotation (Placement(transformation(
+            extent={{-6,6},{6,-6}},
+            rotation=270,
+            origin={216,-114})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
+        annotation (Placement(transformation(
+            extent={{-8,-8},{8,8}},
+            rotation=90,
+            origin={216,-94})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure2
+        annotation (Placement(transformation(
+            extent={{-8,8},{8,-8}},
+            rotation=270,
+            origin={216,-66})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump7(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{144,-92},{160,-108}})));
+      TissueHCO3 tissueHCO3_2
+        annotation (Placement(transformation(extent={{234,-154},{254,-134}})));
+      Physiolibrary.Types.Constants.TemperatureConst temperature2(k=modelSettings.Temperature)
+        annotation (Placement(transformation(extent={{266,-140},{258,-132}})));
+      ComputationpO2pCO2 computationpO2pCO2_2
+        annotation (Placement(transformation(extent={{228,-42},{248,-28}})));
+      outer ModelSettings         modelSettings
+        annotation (Placement(transformation(extent={{-60,-40},{-40,-20}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a tO2 annotation (Placement(
+            transformation(rotation=0, extent={{-80,-50},{-60,-30}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a tCO2 annotation (Placement(
+            transformation(rotation=0, extent={{-80,-90},{-60,-70}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a BE annotation (Placement(
+            transformation(rotation=0, extent={{-80,-130},{-60,-110}})));
+    equation
+      connect(molarFlowMeasure2.molarFlowRate,unlimitedSolutePumpOut1. soluteFlow)
+        annotation (Line(points={{52,-85.6},{-4,-85.6},{-4,-88}}, color={0,0,
+              127}));
+      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePumpOut2. soluteFlow)
+        annotation (Line(points={{52,-111.6},{52,-104},{-4,-104}},
+                                                                 color={0,0,127}));
+      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePumpOut3. soluteFlow)
+        annotation (Line(points={{52,-111.6},{52,-104},{4,-104},{4,-120},{-4,
+              -120},{-4,-123.2}},
+                            color={0,0,127}));
+      connect(co2_inflow.concentration,bloodABB_OSA. dCO2) annotation (Line(
+            points={{22,-92},{18,-92},{18,-140},{-39.8,-140},{-39.8,-196}},
+            color={0,0,127}));
+      connect(bloodABB_OSA.dO2,o2_inflow. concentration) annotation (Line(
+            points={{-41.6,-196},{-41.6,-182},{14,-182},{14,-76},{22,-76}},
+            color={0,0,127}));
+      connect(bloodABB_OSA.cHCO3,hCO3_inflow. concentration) annotation (Line(
+            points={{-37.8,-196},{24,-196},{24,-118},{22,-118}}, color={0,0,127}));
+      connect(bloodABB_OSA.tO2_input,concentrationMeasure3. concentration)
+        annotation (Line(points={{-47.4,-195},{-47.4,-138},{-50,-138},{-50,-79.2}},
+                       color={0,0,127}));
+      connect(bloodABB_OSA._BEox,concentrationMeasure5. concentration)
+        annotation (Line(points={{-50,-195},{-50,-146},{-58,-146},{-58,-131.2}},
+            color={0,0,127}));
+      connect(bloodABB_OSA.tCO2_input,concentrationMeasure4. concentration)
+        annotation (Line(points={{-45.8,-195},{-45.8,-142},{-54,-142},{-54,-111.2}},
+                        color={0,0,127}));
+      connect(o2_inflow.q_out,molarFlowMeasure1. q_in) annotation (Line(
+          points={{34,-76},{44,-76}},
+          color={107,45,134},
+          thickness=1));
+      connect(molarFlowMeasure1.q_out,iSFMembraneO2. q_out) annotation (Line(
+          points={{60,-76},{80,-76}},
+          color={107,45,134},
+          thickness=1));
+      connect(hCO3_inflow.q_out,molarFlowMeasure. q_in) annotation (Line(
+          points={{34,-118},{44,-118}},
+          color={107,45,134},
+          thickness=1));
+      connect(co2_inflow.q_out,molarFlowMeasure2. q_in) annotation (Line(
+          points={{34,-92},{44,-92}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePumpOut.soluteFlow,molarFlowMeasure1. molarFlowRate)
+        annotation (Line(points={{-4.7,-71.3},{-4.35,-71.3},{-4.35,-69.6},{52,
+              -69.6}}, color={0,0,127}));
+      connect(unlimitedSolutePumpOut.q_in,concentrationMeasure3. q_in)
+        annotation (Line(
+          points={{-18,-75.5},{-34,-75.5},{-34,-76},{-50,-76}},
+          color={107,45,134},
+          thickness=1));
+      connect(molarFlowMeasure2.q_out,iSFMembraneCO2. q_out) annotation (Line(
+          points={{60,-92},{80,-92}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePumpOut2.q_in,concentrationMeasure4. q_in)
+        annotation (Line(
+          points={{-18,-108},{-54,-108}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePumpOut3.q_in,concentrationMeasure5. q_in)
+        annotation (Line(
+          points={{-18,-128},{-58,-128}},
+          color={107,45,134},
+          thickness=1));
+      connect(molarFlowMeasure.q_out,iSFMembraneHco3. q_out) annotation (Line(
+          points={{60,-118},{80,-118}},
+          color={107,45,134},
+          thickness=1));
+      connect(nearToZeroVolume.y,CO2buffer. solutionVolume) annotation (Line(
+            points={{295.75,-75},{302.4,-75},{302.4,-78.4}},
+                                                          color={0,0,127}));
+      connect(O2Buffer.solutionVolume,nearToZeroVolume. y) annotation (Line(
+            points={{314.4,-76.4},{314.4,-76},{295.75,-76},{295.75,-75}},
+                                                                    color={0,0,
+              127}));
+      connect(O2_MetabolicConsumption.q_in,TissueO2Concentration. q_in)
+        annotation (Line(
+          points={{360,-66},{350,-66},{350,-55},{340,-55}},
+          color={107,45,134},
+          thickness=1));
+      connect(TissueCO2Concentration.q_in,CO2_MetabolicProduction. q_out)
+        annotation (Line(
+          points={{342,-77},{356,-77},{356,-86},{360,-86}},
+          color={107,45,134},
+          thickness=1));
+      connect(TissueO2Concentration.concentration,computationpO2pCO2_1. ctO2)
+        annotation (Line(points={{340,-49.4},{340,-33.1667},{329.818,-33.1667}},
+            color={0,0,127}));
+      connect(computationpO2pCO2_1.ctCO2,TissueCO2Concentration. concentration)
+        annotation (Line(points={{329.818,-44.8333},{346.5,-44.8333},{346.5,
+              -71.4},{342,-71.4}},
+                           color={0,0,127}));
+      connect(limitO2Metabolism.CO2FlowRate,CO2_MetabolicProduction. soluteFlow)
+        annotation (Line(points={{374,-32},{402,-32},{402,-82},{366,-82}},color=
+             {0,0,127}));
+      connect(O2_MetabolicConsumption.soluteFlow,limitO2Metabolism. O2FlowRate)
+        annotation (Line(points={{374,-62},{396,-62},{396,-48},{374,-48}},color=
+             {0,0,127}));
+      connect(computationpO2pCO2_1.pO2,limitO2Metabolism. pO2) annotation (Line(
+            points={{346.182,-40.1667},{346.091,-40.1667},{346.091,-40},{358,
+              -40}},
+            color={0,0,127}));
+      connect(concentrationMeasure.q_in,HCO3. q_out) annotation (Line(
+          points={{216,-114},{190,-114}},
+          color={107,45,134},
+          thickness=1));
+      connect(concentrationMeasure1.q_in,CO2. q_out) annotation (Line(
+          points={{216,-94},{204,-94},{204,-84},{190,-84}},
+          color={107,45,134},
+          thickness=1));
+      connect(concentrationMeasure2.q_in,O2. q_out) annotation (Line(
+          points={{216,-66},{216,-58},{190,-58}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePump7.q_out,CO2. q_out) annotation (Line(
+          points={{160,-100},{190,-100},{190,-84}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePump6.q_out,O2. q_out) annotation (Line(
+          points={{162,-58},{190,-58}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePump4.q_out,CO2. q_out) annotation (Line(
+          points={{160,-84},{190,-84}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePump5.q_out,HCO3. q_out) annotation (Line(
+          points={{160,-114},{190,-114}},
+          color={107,45,134},
+          thickness=1));
+      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePump5. soluteFlow)
+        annotation (Line(points={{52,-111.6},{52,-106},{155.2,-106},{155.2,
+              -110.8}},
+            color={0,0,127}));
+      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePump7. soluteFlow)
+        annotation (Line(points={{52,-111.6},{52,-106},{156,-106},{156,-103.2},
+              {155.2,-103.2}},
+                             color={0,0,127}));
+      connect(volume.y,O2. solutionVolume) annotation (Line(points={{175,-40},{
+              186,-40},{186,-54}}, color={0,0,127}));
+      connect(volume.y,CO2. solutionVolume) annotation (Line(points={{175,-40},
+              {186,-40},{186,-80}}, color={0,0,127}));
+      connect(volume.y,HCO3. solutionVolume) annotation (Line(points={{175,-40},
+              {186,-40},{186,-110}}, color={0,0,127}));
+      connect(molarFlowMeasure2.molarFlowRate,unlimitedSolutePump4. soluteFlow)
+        annotation (Line(points={{52,-85.6},{52,-80.8},{155.2,-80.8}}, color={0,
+              0,127}));
+      connect(molarFlowMeasure1.molarFlowRate,unlimitedSolutePump6. soluteFlow)
+        annotation (Line(points={{52,-69.6},{156,-69.6},{156,-62}}, color={0,0,
+              127}));
+      connect(O2.q_out,diffusion. q_in) annotation (Line(
+          points={{190,-58},{268,-58},{268,-66}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2.q_out,diffusion1. q_out) annotation (Line(
+          points={{190,-84},{230,-84},{230,-86},{268,-86}},
+          color={107,45,134},
+          thickness=1));
+      connect(diffusion.q_out,O2_MetabolicConsumption. q_in) annotation (Line(
+          points={{288,-66},{360,-66}},
+          color={107,45,134},
+          thickness=1));
+      connect(diffusion1.q_in,CO2_MetabolicProduction. q_out) annotation (Line(
+          points={{288,-86},{360,-86}},
+          color={107,45,134},
+          thickness=1));
+      connect(ISFO2.concentration,concentrationMeasure2. concentration)
+        annotation (Line(points={{132,-76},{232,-76},{232,-66},{222.4,-66}},
+            color={0,0,127}));
+      connect(tissueHCO3_2.tCO2,concentrationMeasure1. concentration)
+        annotation (Line(points={{235,-139.8},{230,-139.8},{230,-94},{222.4,-94}},
+            color={0,0,127}));
+      connect(concentrationMeasure.concentration,tissueHCO3_2. cHCO3)
+        annotation (Line(points={{220.8,-114},{266,-114},{266,-156},{252,-156}},
+            color={0,0,127}));
+      connect(tissueHCO3_2.T,temperature2. y)
+        annotation (Line(points={{253,-136},{257,-136}}, color={0,0,127}));
+      connect(ISFCO2.concentration,tissueHCO3_2. cdCO2_) annotation (Line(
+            points={{132,-92},{176,-92},{176,-144.8},{235,-144.8}}, color={0,0,
+              127}));
+      connect(concentrationMeasure.concentration,ISFHCO3. concentration)
+        annotation (Line(points={{220.8,-114},{222,-114},{222,-118},{132,-118}},
+            color={0,0,127}));
+      connect(ISFHCO3.q_out,iSFMembraneHco3. q_in) annotation (Line(
+          points={{120,-118},{100,-118}},
+          color={107,45,134},
+          thickness=1));
+      connect(ISFCO2.q_out,iSFMembraneCO2. q_in) annotation (Line(
+          points={{120,-92},{100,-92}},
+          color={107,45,134},
+          thickness=1));
+      connect(ISFO2.q_out,iSFMembraneO2. q_in) annotation (Line(
+          points={{120,-76},{100,-76}},
+          color={107,45,134},
+          thickness=1));
+      connect(computationpO2pCO2_2.ctCO2,concentrationMeasure1. concentration)
+        annotation (Line(points={{229.818,-40.8333},{229.818,-93.417},{222.4,
+              -93.417},{222.4,-94}},  color={0,0,127}));
+      connect(concentrationMeasure2.concentration,computationpO2pCO2_2. ctO2)
+        annotation (Line(points={{222.4,-66},{222,-66},{222,-29.1667},{229.818,
+              -29.1667}}, color={0,0,127}));
+      connect(tO2, concentrationMeasure3.q_in) annotation (Line(points={{-70,-40},{-70,
+              -58},{-50,-58},{-50,-76}}, color={107,45,134}));
+      connect(tCO2, unlimitedSolutePumpOut1.q_in) annotation (Line(points={{-70,-80},
+              {-70,-92},{-18,-92}}, color={107,45,134}));
+      connect(tCO2, unlimitedSolutePumpOut2.q_in) annotation (Line(points={{-70,-80},
+              {-70,-108},{-18,-108}}, color={107,45,134}));
+      connect(BE, unlimitedSolutePumpOut3.q_in) annotation (Line(points={{-70,-120},
+              {-70,-128},{-18,-128}}, color={107,45,134}));
+      annotation (Diagram(coordinateSystem(extent={{-70,-220},{410,-20}})), Icon(
+            coordinateSystem(extent={{-70,-220},{410,-20}})));
+    end Tissues;
   end Package;
 
   package Tissues
@@ -16017,7 +16081,7 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
         Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
           unlimitedSolutionStorage(Conc=100)
           annotation (Placement(transformation(extent={{-66,-50},{-46,-30}})));
-        Physiolibrary.Types.Constants.VolumeConst volume(k(displayUnit="l") =
+        Physiolibrary.Types.Constants.VolumeConst volume(k(displayUnit="l")=
             0.015) annotation (Placement(transformation(
               extent={{-72.5,105.715},{-52.5,125.715}},
               origin={46.5,-71.7155},
@@ -16064,8 +16128,8 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
             thickness=1));
         connect(volume.y, substanceUA.solutionVolume) annotation (Line(points={
                 {-3.5,43.9995},{-3.5,44},{8,44},{8,-50}}, color={0,0,127}));
-        connect(volume.y, substanceHCO3.solutionVolume) annotation (Line(points
-              ={{-3.5,43.9995},{6,43.9995},{6,44},{18,44}}, color={0,0,127}));
+        connect(volume.y, substanceHCO3.solutionVolume) annotation (Line(points=
+               {{-3.5,43.9995},{6,43.9995},{6,44},{18,44}}, color={0,0,127}));
         connect(concentrationMeasure.q_in, substanceHCO3.q_out) annotation (
             Line(
             points={{22,60},{22,40}},
@@ -16078,9 +16142,9 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
                 -28.5,94.2},{-28.5,91},{-42,91}}, color={0,0,127}));
         connect(temperature2.y, tissueHCO3_2.T) annotation (Line(points={{57.5,
                 90},{57.5,98},{19,98}}, color={0,0,127}));
-        connect(tissueHCO3_2.pH, ammoniumExcretion.pH) annotation (Line(points=
-                {{1,98},{0,98},{0,110},{-68,110},{-68,102},{-78.8462,102},{
-                -78.8462,24}}, color={0,0,127}));
+        connect(tissueHCO3_2.pH, ammoniumExcretion.pH) annotation (Line(points={{1,98},{
+                0,98},{0,106},{-78.8462,106},{-78.8462,24}},
+                               color={0,0,127}));
         annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
               coordinateSystem(preserveAspectRatio=false)));
       end testTissuesAndKidneys;
@@ -26365,7 +26429,290 @@ Temperature")}),     Diagram(coordinateSystem(preserveAspectRatio=false)));
 </html>"),
         experiment(StopTime=5));
     end HemodynamicsMeurs;
+
   end PulsatileCirculation;
+
+  package SimpleCirculation
+  model SimplestCirc
+      "Cardiovascular part of Guyton-Coleman-Granger's model from 1972"
+     extends Modelica.Icons.Example;
+     import Physiolibrary.Hydraulic;
+  Package.BloodVesselConstVolume       pulmonaryVeinsAndLeftAtrium(
+      volume_start(displayUnit="l") = 0.0004,
+      O2_concentration=8.29769,
+      CO2_concentration=21.6053,
+        useFlow_input=false)
+      annotation (Placement(transformation(extent={{40,100},{60,120}})));
+    Package.BloodConductor
+             pulmonary(Conductance(displayUnit="l/(mmHg.min)")=
+        4.1665920538226e-8, useConductanceInput=false)
+      annotation (Placement(transformation(extent={{6,120},{26,100}})));
+    Package.BloodConductor
+             nonMuscle(Conductance(displayUnit="l/(mmHg.min)") = 3.5627924852669e-09)
+      annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+          rotation=180,
+          origin={16,-36})));
+    Package.Pump              leftHeart
+      annotation (Placement(transformation(extent={{16,6},{36,26}})));
+    Physiolibrary.Types.Constants.VolumeFlowRateConst LNormalCO(k(displayUnit="l/min")=
+           8.3333333333333e-05)
+      annotation (Placement(transformation(extent={{12,42},{20,50}})));
+    Package.FlowConcentrationMeasure
+                        flowConcentrationMeasure1
+                                        annotation (Placement(transformation(
+          extent={{-10,10},{10,-10}},
+          rotation=270,
+          origin={72,4})));
+    inner Package.ModelSettings modelSettings(PB(displayUnit="Pa"),
+        ISFHCO3_start=22)
+      annotation (Placement(transformation(extent={{-122,120},{-102,140}})));
+    Package.VeinsEquilibratedWithTissues veinsEquilibratedWithTissues
+      annotation (Placement(transformation(rotation=0, extent={{-90,-62},{-36,
+              -22}})));
+    Package.OSA.O2CO2
+              o2CO2
+      annotation (Placement(transformation(extent={{92,-24},{136,20}})));
+    Physiolibrary.Types.Constants.FractionConst VAi_fraction(k=0.5)
+      annotation (Placement(transformation(extent={{-60,90},{-52,98}})));
+    Physiolibrary.Types.Constants.FractionConst Perfusion_fraction(k=0.5)
+      annotation (Placement(transformation(extent={{-42,82},{-34,90}})));
+    Physiolibrary.Types.Constants.FractionConst shuntFraction(k=0.02)
+      annotation (Placement(transformation(extent={{-36,72},{-28,80}})));
+    Package.Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
+      alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
+      annotation (Placement(transformation(extent={{-28,88},{6,116}})));
+    Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+      annotation (Placement(transformation(extent={{146,-10},{166,10}})));
+    Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
+            "ml/min") = 8.19588e-5)
+      annotation (Placement(transformation(extent={{133,-38},{141,-32}})));
+  equation
+
+    connect(leftHeart.bloodPort_out, flowConcentrationMeasure1.bloodPort_in)
+      annotation (Line(
+        points={{35,16},{72,16},{72,13}},
+        color={28,108,200},
+        thickness=0.5));
+
+    connect(veinsEquilibratedWithTissues.bloodPort_in,
+                                nonMuscle.bloodPort_out) annotation (Line(
+        points={{-35.8,-36},{7,-36}},
+        color={28,108,200},
+        thickness=0.5));
+    connect(flowConcentrationMeasure1.O2_conc, o2CO2.ctO2) annotation (Line(
+          points={{84,12},{98,12},{98,8.35294},{90.9,8.35294}}, color={0,0,
+            127}));
+    connect(o2CO2.ctCO2, flowConcentrationMeasure1.CO2_conc) annotation (Line(
+          points={{90.9,5.76471},{98.45,5.76471},{98.45,4},{84,4}}, color={0,
+            0,127}));
+    connect(o2CO2.BEox, flowConcentrationMeasure1.BEox_conc) annotation (Line(
+          points={{90.9,3.17647},{90.9,-4},{84,-4}}, color={0,0,127}));
+    connect(Perfusion_fraction.y,
+      alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.F_q1)
+      annotation (Line(points={{-33,86},{-26,86},{-26,97.38},{-23.07,97.38}},
+          color={0,0,127}));
+    connect(VAi_fraction.y,
+      alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.F_VAi1)
+      annotation (Line(points={{-51,94},{-30,94},{-30,100.18},{-23.07,100.18}},
+          color={0,0,127}));
+    connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.Fsh,
+      shuntFraction.y) annotation (Line(points={{-16.95,91.22},{-24,91.22},{-24,
+            76},{-27,76}}, color={0,0,127}));
+    connect(alveolarVentilation.VA,
+      alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.VAi)
+      annotation (Line(points={{167,3},{168,3},{168,134},{-22,134},{-22,
+            105.78},{-21.03,105.78}}, color={0,0,127}));
+    connect(VAi.y,alveolarVentilation. VA0) annotation (Line(points={{142,-35},
+            {144,-35},{144,-6.4},{146,-6.4}},   color={0,0,127}));
+    connect(alveolarVentilation.pO2a, o2CO2.pO2) annotation (Line(points={{
+            146,8},{142,8},{142,7.31765},{137.1,7.31765}}, color={0,0,127}));
+    connect(o2CO2.pCO2, alveolarVentilation.pCO2a) annotation (Line(points={{
+            137.1,4.72941},{141.55,4.72941},{141.55,3.8},{146,3.8}}, color={0,
+            0,127}));
+    connect(o2CO2.pH, alveolarVentilation.pHa) annotation (Line(points={{
+            137.1,1.62353},{141.55,1.62353},{141.55,-1.2},{146,-1.2}}, color=
+            {0,0,127}));
+    connect(pulmonaryVeinsAndLeftAtrium.bloodPort_in, pulmonary.bloodPort_out)
+      annotation (Line(
+        points={{40.2,110},{25,110}},
+        color={28,108,200},
+        thickness=0.5));
+    connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.bloodPort_out,
+      pulmonary.bloodPort_in) annotation (Line(
+        points={{-6.92,110.68},{0,110.68},{0,110},{7,110}},
+        color={28,108,200},
+        thickness=0.5));
+    connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.bloodPort_in,
+      veinsEquilibratedWithTissues.bloodPort_out) annotation (Line(
+        points={{-16.78,110.4},{-106,110.4},{-106,-36.2},{-89.8,-36.2}},
+        color={28,108,200},
+        thickness=0.5));
+    connect(LNormalCO.y, leftHeart.volumeFlowRate)
+      annotation (Line(points={{21,46},{26,46},{26,20}}, color={0,0,127}));
+    connect(leftHeart.bloodPort_in, pulmonaryVeinsAndLeftAtrium.bloodPort_out)
+      annotation (Line(
+        points={{17,16},{4,16},{4,86},{76,86},{76,110},{60,110}},
+        color={28,108,200},
+        thickness=0.5));
+    connect(nonMuscle.bloodPort_in, flowConcentrationMeasure1.bloodPort_out)
+      annotation (Line(
+        points={{25,-36},{72,-36},{72,-5}},
+        color={28,108,200},
+        thickness=0.5));
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
+              -80},{160,140}})),            Documentation(info="<html>
+<p>Cardiovascular subsystem in famous Guyton-Coleman-Granger model from 1972. </p>
+<p><br/>Model, all parameters and all initial values are from article: </p>
+<p>A.C. Guyton, T.G. Coleman, H.J. Granger (1972). &quot;Circulation: overall regulation.&quot; Annual review of physiology 34(1): 13-44.</p>
+</html>",
+        revisions="<html>
+<p><i>2014</i></p>
+<p>Marek Matejak, Charles University, Prague, Czech Republic </p>
+</html>"),
+      experiment(StopTime=100000),
+      Icon(coordinateSystem(extent={{-120,-80},{160,140}})));
+  end SimplestCirc;
+
+  model SimplestCircWithKidneys
+      "Cardiovascular part of Guyton-Coleman-Granger's model from 1972"
+     extends Modelica.Icons.Example;
+     import Physiolibrary.Hydraulic;
+  Package.BloodVesselConstVolume       pulmonaryVeinsAndLeftAtrium(
+      volume_start(displayUnit="l") = 0.0004,
+      O2_concentration=8.29769,
+      CO2_concentration=21.6053,
+        useFlow_input=false)
+      annotation (Placement(transformation(extent={{40,100},{60,120}})));
+    Package.BloodConductor
+             pulmonary(Conductance(displayUnit="l/(mmHg.min)")=
+        4.1665920538226e-8, useConductanceInput=false)
+      annotation (Placement(transformation(extent={{6,120},{26,100}})));
+    Package.BloodConductor
+             nonMuscle(Conductance(displayUnit="l/(mmHg.min)") = 3.5627924852669e-09)
+      annotation (Placement(transformation(extent={{-10,-10},{10,10}},
+          rotation=180,
+          origin={16,-36})));
+    Package.Pump              leftHeart
+      annotation (Placement(transformation(extent={{16,6},{36,26}})));
+    Physiolibrary.Types.Constants.VolumeFlowRateConst LNormalCO(k(displayUnit="l/min")=
+           8.3333333333333e-05)
+      annotation (Placement(transformation(extent={{12,42},{20,50}})));
+    Package.FlowConcentrationMeasure
+                        flowConcentrationMeasure1
+                                        annotation (Placement(transformation(
+          extent={{-10,10},{10,-10}},
+          rotation=270,
+          origin={72,4})));
+    inner Package.ModelSettings modelSettings(PB(displayUnit="Pa"),
+        ISFHCO3_start=22)
+      annotation (Placement(transformation(extent={{-122,120},{-102,140}})));
+    Package.VeinsEquilibratedWithTissues veinsEquilibratedWithTissues
+      annotation (Placement(transformation(rotation=0, extent={{-90,-62},{-36,
+              -22}})));
+    Package.OSA.O2CO2
+              o2CO2
+      annotation (Placement(transformation(extent={{92,-24},{136,20}})));
+    Physiolibrary.Types.Constants.FractionConst VAi_fraction(k=0.5)
+      annotation (Placement(transformation(extent={{-60,90},{-52,98}})));
+    Physiolibrary.Types.Constants.FractionConst Perfusion_fraction(k=0.5)
+      annotation (Placement(transformation(extent={{-42,82},{-34,90}})));
+    Physiolibrary.Types.Constants.FractionConst shuntFraction(k=0.02)
+      annotation (Placement(transformation(extent={{-36,72},{-28,80}})));
+    Package.Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
+      alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
+      annotation (Placement(transformation(extent={{-28,88},{6,116}})));
+    Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+      annotation (Placement(transformation(extent={{146,-10},{166,10}})));
+    Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
+            "ml/min") = 8.19588e-5)
+      annotation (Placement(transformation(extent={{133,-38},{141,-32}})));
+  equation
+
+    connect(leftHeart.bloodPort_out, flowConcentrationMeasure1.bloodPort_in)
+      annotation (Line(
+        points={{35,16},{72,16},{72,13}},
+        color={28,108,200},
+        thickness=0.5));
+
+    connect(veinsEquilibratedWithTissues.bloodPort_in,
+                                nonMuscle.bloodPort_out) annotation (Line(
+        points={{-35.8,-36},{7,-36}},
+        color={28,108,200},
+        thickness=0.5));
+    connect(flowConcentrationMeasure1.O2_conc, o2CO2.ctO2) annotation (Line(
+          points={{84,12},{98,12},{98,8.35294},{90.9,8.35294}}, color={0,0,
+            127}));
+    connect(o2CO2.ctCO2, flowConcentrationMeasure1.CO2_conc) annotation (Line(
+          points={{90.9,5.76471},{98.45,5.76471},{98.45,4},{84,4}}, color={0,
+            0,127}));
+    connect(o2CO2.BEox, flowConcentrationMeasure1.BEox_conc) annotation (Line(
+          points={{90.9,3.17647},{90.9,-4},{84,-4}}, color={0,0,127}));
+    connect(Perfusion_fraction.y,
+      alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.F_q1)
+      annotation (Line(points={{-33,86},{-26,86},{-26,97.38},{-23.07,97.38}},
+          color={0,0,127}));
+    connect(VAi_fraction.y,
+      alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.F_VAi1)
+      annotation (Line(points={{-51,94},{-30,94},{-30,100.18},{-23.07,100.18}},
+          color={0,0,127}));
+    connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.Fsh,
+      shuntFraction.y) annotation (Line(points={{-16.95,91.22},{-24,91.22},{-24,
+            76},{-27,76}}, color={0,0,127}));
+    connect(alveolarVentilation.VA,
+      alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.VAi)
+      annotation (Line(points={{167,3},{168,3},{168,134},{-22,134},{-22,
+            105.78},{-21.03,105.78}}, color={0,0,127}));
+    connect(VAi.y,alveolarVentilation. VA0) annotation (Line(points={{142,-35},
+            {144,-35},{144,-6.4},{146,-6.4}},   color={0,0,127}));
+    connect(alveolarVentilation.pO2a, o2CO2.pO2) annotation (Line(points={{
+            146,8},{142,8},{142,7.31765},{137.1,7.31765}}, color={0,0,127}));
+    connect(o2CO2.pCO2, alveolarVentilation.pCO2a) annotation (Line(points={{
+            137.1,4.72941},{141.55,4.72941},{141.55,3.8},{146,3.8}}, color={0,
+            0,127}));
+    connect(o2CO2.pH, alveolarVentilation.pHa) annotation (Line(points={{
+            137.1,1.62353},{141.55,1.62353},{141.55,-1.2},{146,-1.2}}, color=
+            {0,0,127}));
+    connect(pulmonaryVeinsAndLeftAtrium.bloodPort_in, pulmonary.bloodPort_out)
+      annotation (Line(
+        points={{40.2,110},{25,110}},
+        color={28,108,200},
+        thickness=0.5));
+    connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.bloodPort_out,
+      pulmonary.bloodPort_in) annotation (Line(
+        points={{-6.92,110.68},{0,110.68},{0,110},{7,110}},
+        color={28,108,200},
+        thickness=0.5));
+    connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.bloodPort_in,
+      veinsEquilibratedWithTissues.bloodPort_out) annotation (Line(
+        points={{-16.78,110.4},{-106,110.4},{-106,-36.2},{-89.8,-36.2}},
+        color={28,108,200},
+        thickness=0.5));
+    connect(LNormalCO.y, leftHeart.volumeFlowRate)
+      annotation (Line(points={{21,46},{26,46},{26,20}}, color={0,0,127}));
+    connect(leftHeart.bloodPort_in, pulmonaryVeinsAndLeftAtrium.bloodPort_out)
+      annotation (Line(
+        points={{17,16},{4,16},{4,86},{76,86},{76,110},{60,110}},
+        color={28,108,200},
+        thickness=0.5));
+    connect(nonMuscle.bloodPort_in, flowConcentrationMeasure1.bloodPort_out)
+      annotation (Line(
+        points={{25,-36},{72,-36},{72,-5}},
+        color={28,108,200},
+        thickness=0.5));
+    annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
+              -80},{160,140}})),            Documentation(info="<html>
+<p>Cardiovascular subsystem in famous Guyton-Coleman-Granger model from 1972. </p>
+<p><br/>Model, all parameters and all initial values are from article: </p>
+<p>A.C. Guyton, T.G. Coleman, H.J. Granger (1972). &quot;Circulation: overall regulation.&quot; Annual review of physiology 34(1): 13-44.</p>
+</html>",
+        revisions="<html>
+<p><i>2014</i></p>
+<p>Marek Matejak, Charles University, Prague, Czech Republic </p>
+</html>"),
+      experiment(StopTime=100000),
+      Icon(coordinateSystem(extent={{-120,-80},{160,140}})));
+  end SimplestCircWithKidneys;
+  end SimpleCirculation;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
       Physiomodel(version="1.0.0")));
 end AcidBaseBalance;
