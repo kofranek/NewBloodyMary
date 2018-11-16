@@ -10870,7 +10870,8 @@ and mixing"), Text(
     package Test
 
       model UrineAcidificationTest
-        AmmoniumExcretion ammoniumExcretion
+        AmmoniumExcretion ammoniumExcretion(anionExcrection(UAlimit=0,
+              Clextrection0=0))
           annotation (Placement(transformation(extent={{-46,-20},{20,20}})));
         Physiolibrary.Types.Constants.ConcentrationConst Chloride(k=100)   annotation(Placement(transformation(extent={{100,-26},
                   {80,-6}})));
@@ -10884,10 +10885,10 @@ and mixing"), Text(
           annotation (Placement(transformation(extent={{100,10},{80,30}})));
         Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
           unlimitedSolutionStorage1(Conc=6)
-          annotation (Placement(transformation(extent={{74,-6},{54,14}})));
+          annotation (Placement(transformation(extent={{76,-4},{56,16}})));
         Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
           unlimitedSolutionStorage2(useConcentrationInput=true)
-          annotation (Placement(transformation(extent={{50,-26},{30,-6}})));
+          annotation (Placement(transformation(extent={{50,-28},{30,-8}})));
       equation
         connect(pHConst.y, ammoniumExcretion.pH) annotation (Line(points={{-76,
                 19.9997},{-62,19.9997},{-62,20},{-43.4615,20}}, color={0,0,127}));
@@ -10898,16 +10899,17 @@ and mixing"), Text(
             thickness=1));
         connect(unlimitedSolutionStorage1.q_out, ammoniumExcretion.UA_outflow)
           annotation (Line(
-            points={{54,4},{48,4},{48,5},{19.4923,5}},
+            points={{56,6},{48,6},{48,5},{19.4923,5}},
             color={107,45,134},
             thickness=1));
         connect(ammoniumExcretion.Cl_outflow, unlimitedSolutionStorage2.q_out)
           annotation (Line(
-            points={{19.4923,-5},{24,-5},{24,-16},{30,-16}},
+            points={{19.4923,-5},{24,-5},{24,-18},{30,-18}},
             color={107,45,134},
             thickness=1));
         connect(Chloride.y, unlimitedSolutionStorage2.concentration)
-          annotation (Line(points={{77.5,-16},{50,-16}}, color={0,0,127}));
+          annotation (Line(points={{77.5,-16},{64,-16},{64,-18},{50,-18}},
+                                                         color={0,0,127}));
         annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
               coordinateSystem(preserveAspectRatio=false)));
       end UrineAcidificationTest;
@@ -11268,6 +11270,8 @@ and mixing"), Text(
         annotation (Placement(transformation(extent={{60,34},{80,54}})));
       AnionExcrection anionExcrection annotation (Placement(transformation(
               rotation=0, extent={{118,62},{138,82}})));
+      Physiolibrary.Types.Constants.MolarFlowRateConst HCO3excretion1(k=0)
+        annotation (Placement(transformation(extent={{96,68},{104,76}})));
     equation
       connect(titratableAcid.fald, fAld.y) annotation(Line(visible = true, origin={-35.55,
               -57.585},                                                                                points={{-2.135,
@@ -11320,28 +11324,83 @@ and mixing"), Text(
           points={{70,44},{184,44},{184,78},{160,78}},
           color={107,45,134},
           thickness=1));
+      connect(anionExcrection.HCO3molarflowrate, HCO3excretion1.y)
+        annotation (Line(points={{119.5,72},{105,72}}, color={0,0,127}));
+      connect(anionExcrection.UA, UA_outflow) annotation (Line(
+          points={{138,82},{148,82},{148,78},{160,78}},
+          color={107,45,134},
+          thickness=1));
+      connect(anionExcrection.Cl, Cl_outflow) annotation (Line(
+          points={{138,62},{150,62},{150,58},{160,58}},
+          color={107,45,134},
+          thickness=1));
       annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
                 -60},{160,100}})), Icon(coordinateSystem(extent={{-100,-60},{
                 160,100}})));
     end AmmoniumExcretion;
 
     model AnionExcrection "To maintain electroneutrality, the total amount of excreted anions must be outweighted by the same amount of excrected cations or resorbed anions."
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a UA annotation (
-          Placement(transformation(extent={{128,70},{148,90}}), iconTransformation(
-              extent={{30,30},{50,50}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a Cl annotation (
-          Placement(transformation(extent={{128,50},{148,70}}), iconTransformation(
-              extent={{28,-50},{48,-30}})));
       Physiolibrary.Types.RealIO.MolarFlowRateInput HCO3molarflowrate annotation (
-          Placement(transformation(extent={{100,66},{120,86}}), iconTransformation(
+          Placement(transformation(extent={{-30,-2},{-10,18}}), iconTransformation(
               extent={{-44,-10},{-24,10}})));
-      parameter Physiolibrary.Types.Concentration UAlimit "Minimal concentration of UA, below which the Cl starts to get exchanged for UA";
-      Real UAClRatio = UA.conc/UAlimit;
+      parameter Physiolibrary.Types.Concentration UAlimit = 10 "Minimal concentration of UA, below which the Cl starts to get exchanged for UA";
+      Physiolibrary.Types.MolarFlowRate UAClExchange = HCO3molarflowrate - UAExtrection "The amount of UA, which is NOT excreted and must be exchanged for Cl";
+      parameter Physiolibrary.Types.MolarFlowRate Clextrection0 = 4.6296296296296e-7;
+      Physiolibrary.Types.MolarFlowRate ClExtrection = Clextrection0 + UAClExchange;
+      Physiolibrary.Types.MolarFlowRate UAExtrection = (UA.conc / UAlimit)*HCO3molarflowrate;
+
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a UA annotation (Placement(
+            transformation(extent={{30,30},{50,50}}), iconTransformation(extent={{30,
+                30},{50,50}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a Cl annotation (
+          Placement(transformation(extent={{30,-50},{50,-30}}), iconTransformation(
+              extent={{30,-50},{50,-30}})));
     equation
-    //  UA.q +
+      UA.q + UAExtrection = 0;
+      Cl.q + ClExtrection = 0;
+      assert(ClExtrection > 0, "Cl could not be resorbed from the urine!");
+      assert(UAExtrection > 0, "UA could not be resorbed from the urine!");
       annotation (Diagram(coordinateSystem(extent={{-40,-40},{40,40}})), Icon(
             coordinateSystem(extent={{-40,-40},{40,40}})));
     end AnionExcrection;
+
+    model TestAnionExcretion
+      AnionExcrection anionExcrection(UAlimit=10, Clextrection0(displayUnit=
+              "mmol/day") = 4.6296296296296e-7)
+        annotation (Placement(transformation(extent={{-54,-4},{-46,4}})));
+      Modelica.Blocks.Sources.Ramp ramp(
+        height=0,
+        duration=1,
+        offset=2e-6)
+        annotation (Placement(transformation(extent={{-90,-10},{-70,10}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage UA(
+          useConcentrationInput=true)
+        annotation (Placement(transformation(extent={{-6,0},{-26,20}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage Cl
+        annotation (Placement(transformation(extent={{-8,-32},{-28,-12}})));
+      Modelica.Blocks.Sources.Ramp ramp1(
+        height=10,
+        duration=1,
+        offset=5)
+        annotation (Placement(transformation(extent={{42,0},{22,20}})));
+    equation
+      connect(anionExcrection.UA, UA.q_out) annotation (Line(
+          points={{-46,4},{-36,4},{-36,10},{-26,10}},
+          color={107,45,134},
+          thickness=1));
+      connect(anionExcrection.Cl, Cl.q_out) annotation (Line(
+          points={{-46,-4},{-38,-4},{-38,-22},{-28,-22}},
+          color={107,45,134},
+          thickness=1));
+      connect(UA.concentration, ramp1.y)
+        annotation (Line(points={{-6,10},{21,10}}, color={0,0,127}));
+      connect(anionExcrection.HCO3molarflowrate, ramp.y)
+        annotation (Line(points={{-53.4,0},{-69,0}}, color={0,0,127}));
+      annotation (
+        Icon(coordinateSystem(preserveAspectRatio=false)),
+        Diagram(coordinateSystem(preserveAspectRatio=false)),
+        experiment);
+    end TestAnionExcretion;
   end Kidney;
 
   package Package
