@@ -8407,8 +8407,8 @@ and mixing"), Text(
       Interfaces.BloodPort_in_Extension bloodPort_in_Extension
         annotation (Placement(transformation(extent={{-48,-10},{-28,10}})));
       Interfaces.BloodPort_out bloodPort_out annotation (Placement(
-            transformation(extent={{70,-2},{92,22}}), iconTransformation(extent
-              ={{72,-84},{100,-58}})));
+            transformation(extent={{70,-2},{92,22}}), iconTransformation(extent=
+               {{72,-84},{100,-58}})));
       Interfaces.BloodPort_out_Extension bloodPort_out_Extension
         annotation (Placement(transformation(extent={{34,-10},{58,12}})));
       Physiolibrary.Hydraulic.Sensors.PressureMeasure pressureMeasure
@@ -8506,8 +8506,8 @@ and mixing"), Text(
               extent={{-102,-8},{-82,12}}), iconTransformation(extent={{-100,-10},
                 {-80,10}})));
       Interfaces.BloodPort_out bloodPort_out annotation (Placement(
-            transformation(extent={{64,-14},{84,6}}), iconTransformation(extent
-              ={{80,-10},{100,10}})));
+            transformation(extent={{64,-14},{84,6}}), iconTransformation(extent=
+               {{80,-10},{100,10}})));
       Physiolibrary.Types.RealIO.MolarFlowRateOutput O2flow annotation (Placement(
             transformation(extent={{4,-34},{24,-14}}), iconTransformation(
             extent={{-17,-17},{17,17}},
@@ -8627,8 +8627,8 @@ and mixing"), Text(
               extent={{-102,-8},{-82,12}}), iconTransformation(extent={{-100,-10},
                 {-80,10}})));
       Interfaces.BloodPort_out bloodPort_out annotation (Placement(
-            transformation(extent={{64,-14},{84,6}}), iconTransformation(extent
-              ={{80,-10},{100,10}})));
+            transformation(extent={{64,-14},{84,6}}), iconTransformation(extent=
+               {{80,-10},{100,10}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure
         annotation (Placement(transformation(extent={{-26,30},{-6,50}})));
       Interfaces.BloodPort_in_Extension bloodPort_in_Extension
@@ -8825,8 +8825,8 @@ and mixing"), Text(
         annotation (
           Placement(transformation(extent={{0,-136},{20,-116}}),
             iconTransformation(extent={{10,-108},{30,-88}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_ions[Interfaces.IonsEnum]
-        if useIons_input annotation (Placement(transformation(extent={{-18,-136},
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_ions[Interfaces.IonsEnum] if
+           useIons_input annotation (Placement(transformation(extent={{-18,-136},
                 {2,-116}}), iconTransformation(extent={{88,-108},{108,-88}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure
         annotation (Placement(transformation(extent={{-16,41},{6,19}})));
@@ -8834,8 +8834,8 @@ and mixing"), Text(
        annotation (
           Placement(transformation(extent={{14,90},{34,110}}),
             iconTransformation(extent={{-112,-110},{-88,-86}})));
-      parameter Physiolibrary.Types.Concentration ion_start[Interfaces.IonsEnum]
-        =zeros(size(ion_start, 1));
+      parameter Physiolibrary.Types.Concentration ion_start[Interfaces.IonsEnum]=
+         zeros(size(ion_start, 1));
       parameter Physiolibrary.Types.Volume volume_start=1e-3;
       parameter Physiolibrary.Types.Concentration O2_concentration = 0;
       parameter Physiolibrary.Types.Concentration CO2_concentration = 0;
@@ -9033,8 +9033,8 @@ and mixing"), Text(
         Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
           unlimitedSolutionStorageBEox(Conc=0)
           annotation (Placement(transformation(extent={{-24,-30},{-4,-10}})));
-        Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.IonsEnum]
-          (each useSolutionFlowInput=true)
+        Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.IonsEnum](
+           each useSolutionFlowInput=true)
           annotation (Placement(transformation(extent={{8,-60},{28,-40}})));
         Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[
           AcidBaseBalance.Interfaces.IonsEnum](Conc=ion_start)
@@ -9135,8 +9135,8 @@ and mixing"), Text(
           O2_concentration=arterialO2_start,
           volume_start=0.0001241,
           CO2_concentration=arterialCO2_start,
-          Elastance=92165766.41999) annotation (Placement(transformation(extent
-                ={{-156,-40},{-136,-20}})));
+          Elastance=92165766.41999) annotation (Placement(transformation(extent=
+                 {{-156,-40},{-136,-20}})));
         BloodComponents.BloodElasticVesselElastance venaCava(
           ZeroPressureVolume=0,
           Elastance(displayUnit="mmHg/ml") = 786602.0857485,
@@ -9147,24 +9147,24 @@ and mixing"), Text(
         BloodComponents.BloodValve aorticValve(Pknee=0, _Ron(displayUnit=
                 "(mmHg.s)/ml") = 2399802.97347) annotation (Placement(
               transformation(extent={{-106,-40},{-126,-20}})));
-        BloodComponents.BloodResistor Rsys(Resistance(displayUnit="(mmHg.s)/ml")
-             = 145054757.50752) annotation (Placement(transformation(
+        BloodComponents.BloodResistor Rsys(Resistance(displayUnit="(mmHg.s)/ml")=
+               145054757.50752) annotation (Placement(transformation(
               extent={{-10,-10},{10,10}},
               rotation=90,
               origin={-170,-18})));
         BloodComponents.BloodValve tricuspidValve(Pknee=0, _Ron(displayUnit=
                 "(mmHg.s)/ml") = 3159740.5817355)
           annotation (Placement(transformation(extent={{-92,22},{-72,42}})));
-        BloodComponents.BloodInertia Lav(I(displayUnit="mmHg.s2/ml") =
+        BloodComponents.BloodInertia Lav(I(displayUnit="mmHg.s2/ml")=
             16250.665802014, volumeFlow_start(displayUnit="m3/s") = -1.4e-8)
           annotation (Placement(transformation(
               extent={{-10,-10},{10,10}},
               rotation=180,
               origin={-84,-30})));
-        BloodComponents.BloodInertia Ltc(I(displayUnit="mmHg.s2/ml") =
+        BloodComponents.BloodInertia Ltc(I(displayUnit="mmHg.s2/ml")=
             10678.18997523, volumeFlow_start(displayUnit="m3/s") = 0.0001372)
           annotation (Placement(transformation(extent={{-122,22},{-102,42}})));
-        BloodComponents.BloodInertia Lpv(I(displayUnit="mmHg.s2/ml") =
+        BloodComponents.BloodInertia Lpv(I(displayUnit="mmHg.s2/ml")=
             19822.372560862, volumeFlow_start(displayUnit="m3/s") = -1.9e-9)
           annotation (Placement(transformation(extent={{140,34},{160,54}})));
         BloodComponents.BloodValve pulmonaryValve(Pknee=0, _Ron(displayUnit=
@@ -9178,8 +9178,8 @@ and mixing"), Text(
           O2_concentration=venousO2_start,
           CO2_concentration=venousCO2_start)
           annotation (Placement(transformation(extent={{202,34},{222,54}})));
-        BloodComponents.BloodResistor Rpul(Resistance(displayUnit="(mmHg.s)/ml")
-             = 20691634.526808) annotation (Placement(transformation(
+        BloodComponents.BloodResistor Rpul(Resistance(displayUnit="(mmHg.s)/ml")=
+               20691634.526808) annotation (Placement(transformation(
               extent={{-10,-10},{10,10}},
               rotation=270,
               origin={250,30})));
@@ -9195,7 +9195,7 @@ and mixing"), Text(
         BloodComponents.BloodValve mitralValve(Pknee=0, _Ron(displayUnit=
                 "(mmHg.s)/ml") = 2106493.721157)
           annotation (Placement(transformation(extent={{158,-40},{138,-20}})));
-        BloodComponents.BloodInertia Lmt(I(displayUnit="mmHg.s2/ml") =
+        BloodComponents.BloodInertia Lmt(I(displayUnit="mmHg.s2/ml")=
             10261.557514558, volumeFlow_start(displayUnit="m3/s") = 0.0001141)
           annotation (Placement(transformation(
               extent={{-10,-10},{10,10}},
@@ -11243,10 +11243,6 @@ and mixing"), Text(
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump pump_hco3(
           useSoluteFlowInput=true)
         annotation (Placement(transformation(extent={{122,110},{142,90}})));
-      Modelica.Blocks.Math.Gain gain(k=UAClRatio)
-        annotation (Placement(transformation(extent={{102,78},{114,90}})));
-      Modelica.Blocks.Math.Gain gain1(k=(1 - UAClRatio))
-        annotation (Placement(transformation(extent={{102,60},{114,72}})));
       Physiolibrary.Types.RealIO.pHInput pH annotation (Placement(
             transformation(extent={{-110,-26},{-90,-6}}), iconTransformation(
               extent={{-100,90},{-80,110}})));
@@ -11261,21 +11257,17 @@ and mixing"), Text(
          Placement(transformation(extent={{150,90},{170,110}}),
             iconTransformation(extent={{150,90},{170,110}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a UA_outflow annotation (
-          Placement(transformation(extent={{150,70},{170,90}}),
+          Placement(transformation(extent={{150,68},{170,88}}),
             iconTransformation(extent={{148,30},{168,50}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a Cl_outflow annotation (
-          Placement(transformation(extent={{152,50},{172,70}}),
+          Placement(transformation(extent={{150,48},{170,68}}),
             iconTransformation(extent={{148,-10},{168,10}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut pump_hco1(
-          useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{142,70},{122,90}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut pump_hco2(
-          useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{142,50},{122,70}})));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure
         annotation (Placement(transformation(extent={{-54,68},{-34,88}})));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
         annotation (Placement(transformation(extent={{60,34},{80,54}})));
+      AnionExcrection anionExcrection annotation (Placement(transformation(
+              rotation=0, extent={{118,62},{138,82}})));
     equation
       connect(titratableAcid.fald, fAld.y) annotation(Line(visible = true, origin={-35.55,
               -57.585},                                                                                points={{-2.135,
@@ -11303,10 +11295,6 @@ and mixing"), Text(
       connect(pHUrine_New1.pHu, titratableAcid.pHu) annotation (Line(points={{96,
               -9.84},{96,-10},{106,-10},{106,-60},{-60,-60},{-60,-35.48},{
               -37.055,-35.48}},          color={0,0,127}));
-      connect(totalAcidExcretion.TotalFlowRate, gain.u) annotation (Line(points={{84.6,
-              76.8},{91.3,76.8},{91.3,84},{100.8,84}},   color={0,0,127}));
-      connect(totalAcidExcretion.TotalFlowRate, gain1.u) annotation (Line(points={{84.6,
-              76.8},{92,76.8},{92,66},{100.8,66}},   color={0,0,127}));
       connect(pH, titratableAcid.pHa) annotation (Line(points={{-100,-16},{-66,
               -16},{-66,-24.84},{-37.055,-24.84}}, color={0,0,127}));
       connect(pHUrine_New1.pHa, pH) annotation (Line(points={{66.88,-16.68},{
@@ -11320,20 +11308,8 @@ and mixing"), Text(
       connect(totalAcidExcretion.TotalFlowRate, pump_hco3.soluteFlow)
         annotation (Line(points={{84.6,76.8},{92,76.8},{92,96},{136,96}}, color=
              {0,0,127}));
-      connect(Cl_outflow, pump_hco2.q_in) annotation (Line(
-          points={{162,60},{142,60}},
-          color={107,45,134},
-          thickness=1));
-      connect(UA_outflow, pump_hco1.q_in) annotation (Line(
-          points={{160,80},{142,80}},
-          color={107,45,134},
-          thickness=1));
-      connect(gain.y, pump_hco1.soluteFlow)
-        annotation (Line(points={{114.6,84},{128,84}}, color={0,0,127}));
-      connect(gain1.y, pump_hco2.soluteFlow) annotation (Line(points={{114.6,66},
-              {122,66},{122,64},{128,64}}, color={0,0,127}));
       connect(Cl_outflow, concentrationMeasure.q_in) annotation (Line(
-          points={{162,60},{170,60},{170,114},{-44,114},{-44,78}},
+          points={{160,58},{170,58},{170,114},{-44,114},{-44,78}},
           color={107,45,134},
           thickness=1));
       connect(ammonium.Cl, concentrationMeasure.concentration)
@@ -11341,13 +11317,31 @@ and mixing"), Text(
       connect(concentrationMeasure1.concentration, pHUrine_New1.OrgAnionsConc)
         annotation (Line(points={{70,36},{70,3.12},{70.4,3.12}}, color={0,0,127}));
       connect(concentrationMeasure1.q_in, UA_outflow) annotation (Line(
-          points={{70,44},{114,44},{114,80},{160,80}},
+          points={{70,44},{184,44},{184,78},{160,78}},
           color={107,45,134},
           thickness=1));
       annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
                 -60},{160,100}})), Icon(coordinateSystem(extent={{-100,-60},{
                 160,100}})));
     end AmmoniumExcretion;
+
+    model AnionExcrection "To maintain electroneutrality, the total amount of excreted anions must be outweighted by the same amount of excrected cations or resorbed anions."
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a UA annotation (
+          Placement(transformation(extent={{128,70},{148,90}}), iconTransformation(
+              extent={{30,30},{50,50}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a Cl annotation (
+          Placement(transformation(extent={{128,50},{148,70}}), iconTransformation(
+              extent={{28,-50},{48,-30}})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput HCO3molarflowrate annotation (
+          Placement(transformation(extent={{100,66},{120,86}}), iconTransformation(
+              extent={{-44,-10},{-24,10}})));
+      parameter Physiolibrary.Types.Concentration UAlimit "Minimal concentration of UA, below which the Cl starts to get exchanged for UA";
+      Real UAClRatio = UA.conc/UAlimit;
+    equation
+    //  UA.q +
+      annotation (Diagram(coordinateSystem(extent={{-40,-40},{40,40}})), Icon(
+            coordinateSystem(extent={{-40,-40},{40,40}})));
+    end AnionExcrection;
   end Kidney;
 
   package Package
@@ -18272,8 +18266,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{124,-10},{104,10}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure1
         annotation (Placement(transformation(extent={{80,10},{100,-10}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.IonsEnum]
-        (each useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.IonsEnum](
+         each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{-68,-130},{-48,-110}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[
         AcidBaseBalance.Interfaces.IonsEnum](each Conc=0)
@@ -18281,8 +18275,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS1[
         AcidBaseBalance.Interfaces.IonsEnum](each Conc=0)
         annotation (Placement(transformation(extent={{124,-130},{104,-110}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Interfaces.IonsEnum]
-        (each useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Interfaces.IonsEnum](
+         each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{78,-130},{98,-110}})));
       Interfaces.OneToMany oneToMany annotation (Placement(transformation(
             extent={{-4,-4},{4,4}},
@@ -18448,8 +18442,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             extent={{-10,-10},{10,10}},
             rotation=180,
             origin={188,0})));
-      BloodComponents.BloodInertia aorticFlowInertia(I(displayUnit="mmHg.s2/ml")
-           = 93325.6711905, volumeFlow_start(displayUnit="ml/min") = 5e-9)
+      BloodComponents.BloodInertia aorticFlowInertia(I(displayUnit="mmHg.s2/ml")=
+             93325.6711905, volumeFlow_start(displayUnit="ml/min") = 5e-9)
         annotation (Placement(transformation(
             extent={{12,-8},{-12,8}},
             rotation=0,
@@ -18529,8 +18523,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         _Goff=0,
         Pknee=0)
         annotation (Placement(transformation(extent={{-218,51},{-194,29}})));
-      BloodComponents.BloodValve PulmonaryValve(_Ron(displayUnit="(mmHg.s)/ml")
-           = 399967.162245)
+      BloodComponents.BloodValve PulmonaryValve(_Ron(displayUnit="(mmHg.s)/ml")=
+             399967.162245)
         annotation (Placement(transformation(extent={{-140,30},{-120,50}})));
       BloodComponents.BloodElasticVesselElastance pulmonaryArteries(
         ZeroPressureVolume=5e-5,
@@ -23547,8 +23541,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{156,-10},{136,10}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure1
         annotation (Placement(transformation(extent={{112,10},{132,-10}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.IonsEnum]
-        (each useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Interfaces.IonsEnum](
+         each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{-112,-130},{-92,-110}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[
         AcidBaseBalance.Interfaces.IonsEnum](each Conc=0) annotation (Placement(
@@ -23556,8 +23550,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS1[
         AcidBaseBalance.Interfaces.IonsEnum](each Conc=0)
         annotation (Placement(transformation(extent={{156,-130},{136,-110}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Interfaces.IonsEnum]
-        (each useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Interfaces.IonsEnum](
+         each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{110,-130},{130,-110}})));
       Interfaces.OneToMany oneToMany annotation (Placement(transformation(
             extent={{-4,-4},{4,4}},
@@ -26967,8 +26961,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               extent={{80,24},{100,44}})));
 
       Interfaces.BloodPort_out bloodPortShunt_out annotation (Placement(
-            transformation(extent={{34,44},{54,64}}), iconTransformation(extent
-              ={{82,-42},{102,-22}})));
+            transformation(extent={{34,44},{54,64}}), iconTransformation(extent=
+               {{82,-42},{102,-22}})));
       Package.Shunt shuntCalculation(G_total=1/Resistance)
         annotation (Placement(transformation(extent={{-42,10},{-22,30}})));
       BloodComponents.BloodConductor bloodConductorMain(useConductanceInput=
