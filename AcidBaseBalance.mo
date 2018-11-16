@@ -8059,6 +8059,31 @@ and mixing"), Text(
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end Donnan;
+
+    model DonnanInit
+     extends Donnan( ISF(each Simulation=Physiolibrary.Types.SimulationType.NoInit));
+     Real p[:] = {12, 3, 0, 9};
+     Real isf[size(p, 1)](start = isf_default);
+     constant Real isf_default[:] = {3, 3, 0, 0};
+     constant Real charges[:] = {1, -1, 0, -1};
+     constant Real permeant[:] = {1, 1, 0, 0};
+     Real r "THE ratio";
+    initial equation
+     ISF.state = isf;
+    equation
+      for i in 1:size(p, 1) loop
+        if permeant[i] == 0 or charges[i] == 0 then
+          isf[i] = isf_default[i];
+        elseif charges[i] > 0 then
+          p[i]/isf[i] = r;
+        else
+          isf[i]/p[i] = r;
+        end if;
+      end for;
+      sum(charges.*isf) = 0;
+
+
+    end DonnanInit;
   end Acidbase;
 
   package BloodComponents
