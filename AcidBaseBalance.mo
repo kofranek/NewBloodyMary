@@ -19222,10 +19222,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
           solute_start=iSF_initialization2_1.isf_hco3_solute + 1)
         annotation (Placement(transformation(extent={{140,-94},{160,-74}})));
-      Physiolibrary.Chemical.Components.Substance HCO3(
-        useNormalizedVolume=false,
-        Simulation=Physiolibrary.Types.SimulationType.NoInit,
-        solute_start=iSF_initialization2_1.isf_hco3_solute)
+      Physiolibrary.Chemical.Components.Substance HCO3(useNormalizedVolume=false,
+          Simulation=Physiolibrary.Types.SimulationType.NoInit)
         annotation (Placement(transformation(extent={{140,-130},{160,-110}})));
       Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
           solute_start=modelSettings.ISFO2solute_start)
@@ -19309,8 +19307,11 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         elementary_charges=modelSettings.IonElemChrgs,
         ISFvolume_start=modelSettings.ISFvolume_start)
         annotation (Placement(transformation(extent={{180,-220},{200,-200}})));
+      Ions.ISF_initialization iSF_initialization(permeabilities=modelSettings.IonPermeabilities,
+          elementary_charges=modelSettings.IonElemChrgs)
+        annotation (Placement(transformation(extent={{40,-220},{60,-200}})));
     initial equation
-       // HCO3.state = iSF_initialization.HCO3InitialConcentration*10;
+       HCO3.state = iSF_initialization.HCO3InitialConcentration*modelSettings.ISFvolume_start;
     equation
     //    when initial() then
     //      reinit(HCO3.state,iSF_initialization.HCO3InitialConcentration*10);
@@ -19507,6 +19508,15 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           thickness=1));
       connect(isf_ionChargeCorrection.port_a, ions.q_out) annotation (Line(
           points={{108,-180},{150,-180}},
+          color={107,45,134},
+          thickness=1));
+      connect(iSF_initialization.HCO3, molarFlowMeasure.q_out) annotation (Line(
+          points={{40,-200},{36,-200},{36,-198},{30,-198},{30,-160},{54,-160},{54,-118}},
+          color={107,45,134},
+          thickness=1));
+
+      connect(iSF_initialization.plasma_conc, ions_plasma) annotation (Line(
+          points={{40,-210},{20,-210},{20,-180},{-70,-180}},
           color={107,45,134},
           thickness=1));
       annotation (Diagram(coordinateSystem(extent={{-70,-220},{240,-20}})), Icon(
