@@ -8047,7 +8047,7 @@ and mixing"), Text(
         NumberOfParticles=4,
         Permeabilities={1.6666666666667e-8,1.6666666666667e-8,0,0})
         annotation (Placement(transformation(extent={{-6,4},{14,24}})));
-      Interfaces.IonCharges ionCharges
+      Ions.IonCharges ionCharges
         annotation (Placement(transformation(extent={{-32,-52},{-12,-32}})));
     equation
       connect(ionCharges.concentration, membraneVariableCharges.charge)
@@ -8090,64 +8090,53 @@ and mixing"), Text(
 
     end DonnanInit;
 
-    model ISF_initialization
-      import AcidBaseBalance.Ions.*;
-    // output Real IonsInitialConcentrations[:] = isf[1:end-1];
-     output Real HCO3InitialConcentration;
-     Real isf[:](start = isf_default);
-      parameter Physiolibrary.Types.pH pH = 7.2;
-     parameter Real permeabilities[IonsEnum] "to know additional zero permeabilities. Otherwise specified separately";
-     parameter Integer elementary_charges[IonsEnum] "Elementary charges of the particles AND HCO3";
-     Real r "THE ratio";
+    model SAoriginal
+      "Our complex polynomial fit to original SA data (Jezek & Kofranek, Theor Biol Med Model 2018)"
+      parameter Real Hb(unit="g/dl") = Hct*33.34;
+      parameter Real Hct(unit="1") = 15/33.34;
+      parameter Real BEox(displayUnit="meq/l") = 0;
+      parameter Real sO2(unit="1") = 1;
+      parameter Real pCO2torr(displayUnit="mmHg") = 40;
+      parameter Physiolibrary.Types.Pressure pCO2 = pCO2torr*133.32;
+      parameter Real pH(start=7.4, fixed = false);
 
-      Real ionCharges[:]= plasma_conc.conc .* elementary_charges "Charges in mEq/l";
-      Real totalCharges[IonsEnum];
-
-    //   {if i == IonsEnum.Albumin then elementary_charges[i]*
-    //       albumin.charge else elementary_charges[i] for i in IonsEnum};
-      AcidBaseBalance.Ions.AlbuminCharge albumin( pH = pH);
-
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a plasma_conc[IonsEnum]
-        annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
-
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a HCO3
-        annotation (Placement(transformation(extent={{-110,90},{-90,110}})));
     protected
-      parameter Real isf_default[:]=ones(NumberOfIons)
-        "lets start in positive numbers to avoid initialization error warnings";
-      parameter Integer NumberOfIons=size(plasma_conc, 1)
-        "Number of ions plus HCO3 ";
-    equation
-      plasma_conc.q = zeros(NumberOfIons);
-      HCO3.q = 0;
+      constant Real pco2BBCoef[:]={2.1125e-009,-640.9926e-009,72.7649e-006,-3.2862e-003,
+          -38.1749e-003,8.2352e+000,-97.0551e+000};
+      constant Real pco2BECoef[:]={8.3975e-009,-513.9503e-009,3.8105e-006,
+          231.6888e-006,-46.5581e-003,353.7105e-003,39.9871e+000};
+      constant Real pHBBCoef[:]={40.8936e-012,-13.0063e-009,1.6780e-006,-111.7919e-006,
+          4.0776e-003,-67.8274e-003,7.2888e+000};
+      constant Real pHBECoef[:]={131.3315e-009,2.5027e-006,175.6144e-006,
+          11.9273e-003,7.4001e+000};
+    public
+      parameter Real pCO2BB(start=96) = pco2BBCoef[1]*BB^6 + pco2BBCoef[2]*BB^5 +
+        pco2BBCoef[3]*BB^4 + pco2BBCoef[4]*BB^3 + pco2BBCoef[5]*BB^2 +
+        pco2BBCoef[6]*BB + pco2BBCoef[7];
+      parameter Real pCO2BE(start=40) = pco2BECoef[1]*BE^6 + pco2BECoef[2]*BE^5 +
+        pco2BECoef[3]*BE^4 + pco2BECoef[4]*BE^3 + pco2BECoef[5]*BE^2 +
+        pco2BECoef[6]*BE + pco2BECoef[7];
+      parameter Real pHBB(start=7) = pHBBCoef[1]*BB^6 + pHBBCoef[2]*BB^5 + pHBBCoef[3]*BB
+        ^4 + pHBBCoef[4]*BB^3 + pHBBCoef[5]*BB^2 + pHBBCoef[6]*BB + pHBBCoef[7];
+      parameter Real pHBE(start=7) = pHBECoef[1]*BE^4 + pHBECoef[2]*BE^3 + pHBECoef[3]*BE
+        ^2 + pHBECoef[4]*BE + pHBECoef[5];
 
-      // the fro loop is only for the ions, the HCO3 is separate below
-      for i in IonsEnum loop
-        if i == IonsEnum.Albumin then
-            isf[i] = plasma_conc[i].conc/3;
-            totalCharges[i] = albumin.charge * isf[i];
-        elseif permeabilities[i] == 0 then
-            isf[i] = isf_default[i];
-            totalCharges[i] = elementary_charges[i]*isf[i];
-        elseif elementary_charges[i] == 0 then
-            isf[i] = isf_default[i];
-            totalCharges[i] = 0;
-        elseif elementary_charges[i] > 0 then
-          ionCharges[i]/isf[i] = r;
-            totalCharges[i] = elementary_charges[i]*isf[i];
-        else
-          isf[i]/ionCharges[i] = r;
-            totalCharges[i] = elementary_charges[i]*isf[i];
-        end if;
-      end for;
+      parameter Real BB=BE + 0.42*Hb + 41.7;
+      parameter Real BE=BEox + 0.2*(1 - sO2)*Hb;
 
-      // HCO3 is a negative ion, therefore same as for negatives
-      HCO3InitialConcentration/HCO3.conc = r;
+      parameter Real pK= 6.1 + (-0.0026)*(T-310.15);
+      parameter Real aCO2 = 0.00023 * 10^(-0.0092*(T-310.15)); //solubility depends on temperature
+      parameter Physiolibrary.Types.Concentration cdCO2(displayUnit="mmol/l")=
+        aCO2*pCO2;
+      parameter Real cHCO3(displayUnit="mmol/l") = cdCO2 * 10^(pH-pK) "outgoing concentration of HCO3";
+      parameter Real T = 37+273.15;
+      parameter Real tCO2 = cHCO3 + cdCO2;
 
+    initial equation
+      pH =(log10(pCO2torr) - log10(pCO2BB))*(pHBB - pHBE)/(log10(pCO2BB) - log10(
+        pCO2BE)) + pHBB;
 
-      sum(totalCharges) + HCO3InitialConcentration * (-1) = 0;
-
-    end ISF_initialization;
+    end SAoriginal;
   end Acidbase;
 
   package BloodComponents
@@ -8914,8 +8903,8 @@ and mixing"), Text(
         annotation (
           Placement(transformation(extent={{0,-136},{20,-116}}),
             iconTransformation(extent={{10,-108},{30,-88}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_ions[Ions.IonsEnum]
-        if useIons_input annotation (Placement(transformation(extent={{-18,-136},
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_ions[Ions.IonsEnum] if
+           useIons_input annotation (Placement(transformation(extent={{-18,-136},
                 {2,-116}}), iconTransformation(extent={{88,-108},{108,-88}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure
         annotation (Placement(transformation(extent={{-16,41},{6,19}})));
@@ -9122,8 +9111,8 @@ and mixing"), Text(
         Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
           unlimitedSolutionStorageBEox(Conc=0)
           annotation (Placement(transformation(extent={{-24,-30},{-4,-10}})));
-        Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Ions.IonsEnum]
-          (each useSolutionFlowInput=true)
+        Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Ions.IonsEnum](
+           each useSolutionFlowInput=true)
           annotation (Placement(transformation(extent={{8,-60},{28,-40}})));
         Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[
           AcidBaseBalance.Ions.IonsEnum](Conc=ion_start)
@@ -10631,17 +10620,14 @@ and mixing"), Text(
               extent={{-10,-10},{10,10}},
               rotation=180,
               origin={-32,-36})), __Dymola_choicesAllMatching=true);
-        Tissues.Tissues2 tissues(
-          isf_ionChargeCorrection(elementaryCharges=modelSettings.IonElemChrgs),
-
-          plasma_ionChargeCorrection(elementaryCharges=modelSettings.IonElemChrgs),
-
-          iSF_initialization(permeabilities=modelSettings.IonPermeabilities,
-              elementary_charges=modelSettings.IonElemChrgs)) annotation (
+        Tissues.Tissues2 tissues(isf_ionChargeCorrection(elementaryCharges=
+                modelSettings.IonElemChrgs), plasma_ionChargeCorrection(
+              elementaryCharges=modelSettings.IonElemChrgs)) annotation (
             Placement(transformation(
               rotation=270,
               extent={{13.5,-8.5},{-13.5,8.5}},
               origin={-34.5,24.5})));
+
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
         unlimitedSolutionStorage(Conc=100)
         annotation (Placement(transformation(extent={{-78,-30},{-70,-22}})));
@@ -10810,6 +10796,195 @@ and mixing"), Text(
   end Icons;
 
   package Ions
+    package Tests
+
+      model TestISFInit
+        ISF_initialization iSF_initialization(permeabilities=modelSettings.IonPermeabilities,
+            elementary_charges=modelSettings.IonElemChrgs)
+          annotation (Placement(transformation(extent={{0,-100},{20,-80}})));
+          inner Interfaces.ModelSettings modelSettings(PB(displayUnit="Pa"),
+            ISFHCO3_start=22)   annotation (Placement(transformation(extent={{-100,80},
+                  {-80,100}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ions[IonsEnum](
+            useConcentrationInput=false, Conc=modelSettings.IonConcentration)
+          annotation (Placement(transformation(
+              extent={{10,10},{-10,-10}},
+              rotation=180,
+              origin={-90,-68})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage HCO3(
+            useConcentrationInput=false, Conc=26) annotation (Placement(
+              transformation(
+              extent={{10,10},{-10,-10}},
+              rotation=180,
+              origin={-90,-28})));
+        IonChargeCorrection ionChargeCorrection(elementaryCharges=modelSettings.IonElemChrgs)
+          annotation (Placement(transformation(extent={{-40,-60},{-20,-40}})));
+        Physiolibrary.Types.Constants.pHConst     pH(k=7.2)
+          annotation (Placement(transformation(extent={{-74,-50},{-66,-42}})));
+        Tissues.Tissues2 tissues
+          annotation (Placement(transformation(extent={{32,-72},{62,-52}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage tCO2(
+            useConcentrationInput=false, Conc=modelSettings.venousCO2conc_start)
+          annotation (Placement(transformation(
+              extent={{10,10},{-10,-10}},
+              rotation=180,
+              origin={-90,30})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage tO2(
+            useConcentrationInput=false, Conc=modelSettings.venousO2conc_start)
+          annotation (Placement(transformation(
+              extent={{10,10},{-10,-10}},
+              rotation=180,
+              origin={-90,60})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage BE(
+            useConcentrationInput=false, Conc=0) annotation (Placement(
+              transformation(
+              extent={{10,10},{-10,-10}},
+              rotation=180,
+              origin={-90,0})));
+        ISF_initialization2 iSF_initialization2_1(
+          plasma_HCO3=26,
+          plasma_conc=modelSettings.IonConcentration,
+          permeabilities=modelSettings.IonPermeabilities,
+          elementary_charges=modelSettings.IonElemChrgs,
+          ISFvolume_start=modelSettings.ISFvolume_start)
+          annotation (Placement(transformation(extent={{40,-20},{60,0}})));
+      equation
+        connect(ions.q_out, iSF_initialization.plasma_conc) annotation (Line(
+            points={{-80,-68},{-60,-68},{-60,-90},{0,-90}},
+            color={107,45,134},
+            thickness=1));
+        connect(HCO3.q_out, iSF_initialization.HCO3) annotation (Line(
+            points={{-80,-28},{0,-28},{0,-80}},
+            color={107,45,134},
+            thickness=1));
+        connect(ionChargeCorrection.port_a, ions.q_out) annotation (Line(
+            points={{-40,-50},{-60,-50},{-60,-68},{-80,-68}},
+            color={107,45,134},
+            thickness=1));
+        connect(ionChargeCorrection.HCO3, HCO3.q_out) annotation (Line(
+            points={{-40,-40},{-60,-40},{-60,-28},{-80,-28}},
+            color={107,45,134},
+            thickness=1));
+        connect(ionChargeCorrection.pH, pH.y)
+          annotation (Line(points={{-40,-46},{-65,-46}}, color={0,0,127}));
+        connect(tO2.q_out, tissues.tO2) annotation (Line(
+            points={{-80,60},{26,60},{26,-54},{32,-54}},
+            color={107,45,134},
+            thickness=1));
+        connect(tCO2.q_out, tissues.tCO2) annotation (Line(
+            points={{-80,30},{22,30},{22,-58},{32,-58}},
+            color={107,45,134},
+            thickness=1));
+        connect(BE.q_out, tissues.BE) annotation (Line(
+            points={{-80,0},{18,0},{18,-62},{32,-62}},
+            color={107,45,134},
+            thickness=1));
+        connect(ions.q_out, tissues.ions_plasma) annotation (Line(
+            points={{-80,-68},{32,-68}},
+            color={107,45,134},
+            thickness=1));
+        annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+              coordinateSystem(preserveAspectRatio=false)));
+      end TestISFInit;
+
+      model TestIonValues
+        Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure3
+          annotation (Placement(transformation(
+              extent={{-4,4},{4,-4}},
+              rotation=180,
+              origin={-80,26})));
+        Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure4
+          annotation (Placement(transformation(
+              extent={{-4,4},{4,-4}},
+              rotation=180,
+              origin={-76,-28})));
+        Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure5
+          annotation (Placement(transformation(
+              extent={{-4,4},{4,-4}},
+              rotation=180,
+              origin={-88,-48})));
+        Acidbase.OSA.BloodABB_OSA bloodABB_OSA annotation (Placement(
+              transformation(rotation=0, extent={{-84,-84},{-64,-64}})));
+        inner Interfaces.ModelSettings modelSettings
+          annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+        IonValues ionValues(
+          Ions=modelSettings.IonConcentration,
+          elem_chrgs=modelSettings.IonElemChrgs,
+          unknownIon=AcidBaseBalance.Ions.IonsEnum.Ua)
+          annotation (Placement(transformation(extent={{-22,-52},{-2,-72}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage plasma_dO2(
+            useConcentrationInput=false, Conc=modelSettings.venousO2conc_start)
+          "dissolved O2" annotation (Placement(transformation(
+              extent={{6,-6},{-6,6}},
+              rotation=180,
+              origin={-98,40})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage plasma_dCO2(
+            useConcentrationInput=false, Conc=modelSettings.venousCO2conc_start)
+          "dissolved CO2" annotation (Placement(transformation(
+              extent={{6,-6},{-6,6}},
+              rotation=180,
+              origin={-98,20})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage plasma_BE(
+            useConcentrationInput=false, Conc=0) annotation (Placement(
+              transformation(
+              extent={{6,-6},{-6,6}},
+              rotation=180,
+              origin={-98,-2})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ions[IonsEnum](
+            useConcentrationInput=false, Conc=modelSettings.IonConcentration)
+          annotation (Placement(transformation(
+              extent={{6,-6},{-6,6}},
+              rotation=180,
+              origin={6,-30})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage plasma_HCO3(Conc=0,
+            useConcentrationInput=true) annotation (Placement(transformation(
+              extent={{6,-6},{-6,6}},
+              rotation=180,
+              origin={-44,-20})));
+        ISF_initialization iSF_initialization(permeabilities=modelSettings.IonPermeabilities,
+            elementary_charges=modelSettings.IonElemChrgs)
+          annotation (Placement(transformation(extent={{40,-40},{60,-20}})));
+      equation
+        connect(bloodABB_OSA.tO2_input,concentrationMeasure3. concentration)
+          annotation (Line(points={{-79.6,-64},{-79.6,-58},{-80,-58},{-80,22.8}},
+                         color={0,0,127}));
+        connect(bloodABB_OSA._BEox,concentrationMeasure5. concentration)
+          annotation (Line(points={{-83.6,-64},{-83.6,-66},{-88,-66},{-88,-51.2}},
+              color={0,0,127}));
+        connect(bloodABB_OSA.tCO2_input,concentrationMeasure4. concentration)
+          annotation (Line(points={{-75.8,-64},{-75.8,-62},{-76,-62},{-76,-31.2}},
+                          color={0,0,127}));
+        connect(ionValues.HCO3, bloodABB_OSA.cHCO3) annotation (Line(points={{
+                -21.8,-62},{-64,-62},{-64,-64}}, color={0,0,127}));
+        connect(bloodABB_OSA.pH, ionValues.pH) annotation (Line(points={{-64,
+                -74},{-44,-74},{-44,-70},{-21.8,-70}}, color={0,0,127}));
+        connect(concentrationMeasure5.q_in, plasma_BE.q_out) annotation (Line(
+            points={{-88,-48},{-88,-2},{-92,-2}},
+            color={107,45,134},
+            thickness=1));
+        connect(plasma_dO2.q_out, concentrationMeasure3.q_in) annotation (Line(
+            points={{-92,40},{-80,40},{-80,26}},
+            color={107,45,134},
+            thickness=1));
+        connect(plasma_dCO2.q_out, concentrationMeasure4.q_in) annotation (Line(
+            points={{-92,20},{-76,20},{-76,-28}},
+            color={107,45,134},
+            thickness=1));
+        connect(bloodABB_OSA.cHCO3, plasma_HCO3.concentration) annotation (Line(
+              points={{-64,-64},{-64,-20},{-50,-20}}, color={0,0,127}));
+        connect(ions.q_out, iSF_initialization.plasma_conc) annotation (Line(
+            points={{12,-30},{40,-30}},
+            color={107,45,134},
+            thickness=1));
+        connect(plasma_HCO3.q_out, iSF_initialization.HCO3) annotation (Line(
+            points={{-38,-20},{40,-20}},
+            color={107,45,134},
+            thickness=1));
+        annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+              coordinateSystem(preserveAspectRatio=false)));
+      end TestIonValues;
+    end Tests;
+
       block AlbuminCharge
       input Physiolibrary.Types.pH pH;
       output Real charge = -1/1000*6500*(0.123*pH - 0.631) "[meq/l] according to Figge";
@@ -10820,6 +10995,255 @@ and mixing"), Text(
         Cl,
         Ua,
         Albumin);
+    model ISF_initialization
+      import AcidBaseBalance.Ions.*;
+    // output Real IonsInitialConcentrations[:] = isf[1:end-1];
+     output Real HCO3InitialConcentration;
+     Real isf[IonsEnum](start = isf_default);
+     parameter Physiolibrary.Types.pH pH = 7.2;
+     parameter Real permeabilities[IonsEnum] "to know additional zero permeabilities. Otherwise specified separately";
+     parameter Integer elementary_charges[IonsEnum] "Elementary charges of the particles AND HCO3";
+     Real r(start = 1)  "THE ratio";
+      Real totalCharges[IonsEnum];
+      AcidBaseBalance.Ions.AlbuminCharge albumin( pH = pH);
+
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a plasma_conc[IonsEnum]
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
+
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a HCO3
+        annotation (Placement(transformation(extent={{-110,90},{-90,110}})));
+
+    Real totalCharge = 0;
+
+    protected
+      parameter Real isf_default[:]=ones(NumberOfIons)
+        "lets start in positive numbers to avoid initialization error warnings";
+      parameter Integer NumberOfIons=size(plasma_conc, 1)
+        "Number of ions plus HCO3 ";
+    equation
+      plasma_conc.q = zeros(NumberOfIons);
+      HCO3.q = 0;
+
+      // the fro loop is only for the ions, the HCO3 is separate below
+      for i in IonsEnum loop
+        if i == IonsEnum.Albumin then
+            isf[i] = plasma_conc[i].conc/3;
+            totalCharges[i] = albumin.charge * isf[i];
+        elseif permeabilities[i] == 0 then
+            isf[i] = isf_default[i];
+            totalCharges[i] = elementary_charges[i]*isf[i];
+        elseif elementary_charges[i] == 0 then
+            isf[i] = isf_default[i];
+            totalCharges[i] = 0;
+        elseif elementary_charges[i] > 0 then
+          plasma_conc[i].conc/isf[i] = r;
+            totalCharges[i] = elementary_charges[i]*isf[i];
+        else
+          isf[i]/plasma_conc[i].conc = r;
+            totalCharges[i] = elementary_charges[i]*isf[i];
+        end if;
+      end for;
+
+      // HCO3 is a negative ion, therefore same as for negatives
+      HCO3InitialConcentration/HCO3.conc = r;
+
+      sum(totalCharges) + HCO3InitialConcentration * (-1) = totalCharge;
+
+    end ISF_initialization;
+
+    model IonCharges
+      /*
+  Modelica.Blocks.Interfaces.RealInput pH
+    annotation (Placement(transformation(extent={{-100,60},{-60,100}}),
+        iconTransformation(
+        extent={{-20,-20},{20,20}},
+        rotation=270,
+        origin={0,100})));
+   */
+       Real pH = 7.4;
+      Physiolibrary.Types.RealIO.ConcentrationOutput concentration[:] = charges annotation (
+          Placement(transformation(extent={{80,-20},{120,20}}), iconTransformation(
+              extent={{80,-20},{120,20}})));
+
+    //  Real charges[:] = {if i == Ions.Albumin then albuminCharge else DefaultIonCharges[i] for i in Ions};
+      constant AcidBaseBalance.Ions.IonsEnum ions[:]={j for j in
+          AcidBaseBalance.Ions.IonsEnum};
+    //  constant IonChargeTypesEnum ie[:]={j for j in IonChargeTypesEnum};
+      Real charges[:]={if Interfaces.IonChargeTypes
+                                        [i] ==Interfaces.IonChargeTypesEnum.Positive1
+           then 1 elseif Interfaces.IonChargeTypes
+                                       [i] ==Interfaces.IonChargeTypesEnum.Negative1
+           then -1 elseif Interfaces.IonChargeTypes
+                                        [i] ==Interfaces.IonChargeTypesEnum.NoCharge
+           then 0 else (if i == AcidBaseBalance.Ions.IonsEnum.Albumin then
+          albuminCharge else Modelica.Constants.inf) for i in AcidBaseBalance.Ions.IonsEnum}
+        "A default charges of ions, complementary to as specified in the AcidBaseBalance.Interfaces.IonChargeTypes constant. Exceptions, such as Albumin, must be defined here!";
+      Real albuminCharge = -1/1000*6500*(0.123*pH - 0.631) "[meq/l] according to Figge";
+    //  String s[:] = {String(i) for i in Ions};
+    equation
+      assert(size(ions, 1) == size(Interfaces.IonChargeTypes, 1),
+        "Some problem in the definition of ion charges in AcidBaseBalance.Interfaces.IonCharges");
+          assert(max(charges) < Modelica.Constants.inf, "Some problem in the definition of ion charges in AcidBaseBalance.Interfaces.IonCharges");
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+            Text(
+              extent={{-60,20},{100,80}},
+              lineColor={0,0,127},
+              fillColor={240,233,6},
+              fillPattern=FillPattern.Solid,
+              horizontalAlignment=TextAlignment.Right,
+              textString="meq/l")}),            Diagram(coordinateSystem(
+              preserveAspectRatio=false)));
+    end IonCharges;
+
+    model IonChargeCorrection
+      "corrects the concentration of albumin (or other volatile substances) to absolute (non-negative) value of meq/l"
+      import AcidBaseBalance.Ions.*;
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_a[AcidBaseBalance.Ions.IonsEnum]
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b port_b[AcidBaseBalance.Ions.IonsEnum
+         + 1] annotation (Placement(transformation(extent={{90,-10},{110,10}})));
+      Modelica.Blocks.Interfaces.RealInput pH
+        annotation (Placement(transformation(extent={{-120,40},{-80,80}}),
+            iconTransformation(
+            extent={{-20,-20},{20,20}},
+            rotation=0,
+            origin={-100,40})));
+     //constant IonsEnum ions[:]={j for j in IonsEnum};
+    //  constant IonChargeTypesEnum ie[:]={j for j in IonChargeTypesEnum};
+      Real DABG[:]={if i == AcidBaseBalance.Ions.IonsEnum.Albumin then
+          abs(albuminCharge.charge) else 1 for i in AcidBaseBalance.Ions.IonsEnum}
+        "diassociated acid/base groups - correction concentration of the acid-groups/base groups, or correction to concentration so it equals it charge in meq/l";
+      //Real albuminCharge = -1/1000*6500*(0.123*pH - 0.631) "[meq/l] according to Figge";
+      AlbuminCharge albuminCharge(pH = pH);
+
+    //  String s[:] = {String(i) for i in Ions};
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a HCO3
+        annotation (Placement(transformation(extent={{-110,90},{-90,110}})));
+      parameter Real elementaryCharges[AcidBaseBalance.Ions.IonsEnum];
+        Real charges[:] = port_a.conc .* DABG .* elementaryCharges "control sum, should be zero or close to zero.";
+        Real charge = sum(charges) + HCO3.conc*(-1);
+    equation
+      // ions
+      for i in AcidBaseBalance.Ions.IonsEnum loop
+        port_b[i].conc = port_a[i].conc * DABG[i];
+        port_a[i].q + port_b[i].q = 0;
+      end for;
+
+    // HCO3 extension
+       port_b[end].conc = HCO3.conc;
+       HCO3.q + port_b[end].q = 0;
+
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+            Text(
+              extent={{-100,20},{0,80}},
+              lineColor={28,108,200},
+              textString="Conc"),
+            Text(
+              extent={{0,-80},{100,-20}},
+              lineColor={28,108,200},
+              textString="|meq/l|",
+              horizontalAlignment=TextAlignment.Right),
+            Rectangle(extent={{-100,100},{100,-100}}, lineColor={28,108,200}),
+            Line(
+              points={{-80,0},{80,0}},
+              color={102,44,145},
+              thickness=0.5,
+              arrow={Arrow.Open,Arrow.Open}),
+            Line(
+              points={{-80,100},{80,10}},
+              color={102,44,145},
+              thickness=0.5,
+              arrow={Arrow.Open,Arrow.Open})}),                      Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end IonChargeCorrection;
+
+    model IonValues "vAlues taken from http://book.bionumbers.org/what-are-the-concentrations-of-different-ions-in-cells/ "
+      Physiolibrary.Types.RealIO.pHInput  pH annotation (Placement(
+            transformation(rotation=0, extent={{-105,73},{-91,87}}),
+            iconTransformation(extent={{-105,73},{-91,87}})));
+      Physiolibrary.Types.RealIO.ConcentrationInput HCO3 annotation (Placement(
+            transformation(rotation=0, extent={{-105,73},{-91,87}}),
+            iconTransformation(extent={{-105,-7},{-91,7}})));
+      parameter Physiolibrary.Types.Concentration Ions[IonsEnum];
+      parameter Real elem_chrgs[IonsEnum];
+
+      AlbuminCharge albuminCharge(pH = pH);
+      Real DABG[:]={if i == IonsEnum.Albumin then
+          abs(albuminCharge.charge) else 1 for i in IonsEnum};
+
+      parameter IonsEnum unknownIon;
+      Real ionCharges[:] = elem_chrgs .* DABG .*IonCorrected;
+      Physiolibrary.Types.Concentration IonCorrected[:] = {if i == unknownIon then X else Ions[i] for i in IonsEnum};
+      output Physiolibrary.Types.Concentration X;
+
+
+
+    equation
+      sum(ionCharges) + HCO3*(-1) = 0;
+
+     // Physiolibrary.Types.pH pH;
+
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end IonValues;
+
+    model ISF_initialization2
+     import AcidBaseBalance.Ions.*;
+    // output Real IonsInitialConcentrations[:] = isf[1:end-1];
+     parameter Physiolibrary.Types.Concentration plasma_conc[IonsEnum] = ones(NumberOfIons);
+     parameter Physiolibrary.Types.Concentration plasma_HCO3 = 26;
+     parameter Real pH = 7.2;
+     parameter Real permeabilities[IonsEnum] "to know additional zero permeabilities. Otherwise specified separately";
+     parameter Integer elementary_charges[IonsEnum] "Elementary charges of the particles AND HCO3";
+     parameter Physiolibrary.Types.Volume ISFvolume_start "modelSettings.ISFvolume_start";
+
+
+
+     parameter Physiolibrary.Types.Concentration isf_hco3_solute = isf_HCO3 * ISFvolume_start;
+     parameter Physiolibrary.Types.Concentration isf_solute[:] = isf .* ISFvolume_start;
+
+
+    protected
+     parameter Real isf_HCO3(start=plasma_HCO3, fixed=false);
+     parameter Real isf[IonsEnum](start = isf_default, fixed = false);
+     parameter Real r(start = 1, fixed= false)  "THE ratio";
+     parameter Real totalCharges[IonsEnum](start = isf_default.*elementary_charges, fixed = false);
+
+     parameter Real albumin = -1* (-1/1000*6500*(0.123*pH - 0.631)) "[meq/l] according to Figge";
+
+    protected
+      parameter Real isf_default[:]=ones(NumberOfIons)
+        "lets start in positive numbers to avoid initialization error warnings";
+      parameter Integer NumberOfIons=size(plasma_conc, 1)
+        "Number of ions plus HCO3 ";
+
+    initial equation
+      // the fro loop is only for the ions, the HCO3 is separate below
+      for i in IonsEnum loop
+        if i == IonsEnum.Albumin then
+            isf[i] = plasma_conc[i]/3;
+            totalCharges[i] = albumin * isf[i];
+        elseif permeabilities[i] == 0 then
+            isf[i] = isf_default[i];
+            totalCharges[i] = elementary_charges[i]*isf[i];
+        elseif elementary_charges[i] == 0 then
+            isf[i] = isf_default[i];
+            totalCharges[i] = 0;
+        elseif elementary_charges[i] > 0 then
+          plasma_conc[i]/isf[i] = r;
+            totalCharges[i] = elementary_charges[i]*isf[i];
+        else
+          isf[i]/plasma_conc[i] = r;
+            totalCharges[i] = elementary_charges[i]*isf[i];
+        end if;
+      end for;
+
+      // HCO3 is a negative ion, therefore same as for negatives
+      isf_HCO3/plasma_HCO3 = r;
+
+      sum(totalCharges) + isf_HCO3*(-1) = 0;
+
+    end ISF_initialization2;
   end Ions;
 
   package Interfaces
@@ -11115,10 +11539,10 @@ and mixing"), Text(
       parameter Physiolibrary.Types.Concentration venousO2conc_start = 6.02579;
       parameter Physiolibrary.Types.Concentration venousCO2conc_start = 23.6461;
 
-      parameter Physiolibrary.Types.Concentration IonConcentration[Ions] = {9, 6, 1, 9} "Plasma ion concentrations";
+      parameter Physiolibrary.Types.Concentration IonConcentration[Ions] = {130, 100, 2.5, 0.65} "Plasma ion concentrations";
       constant Integer IonElemChrgs[:] = {1, -1, -1, -1} "elementary charges of ions";
-      constant Real IonPermeabilities[:] = {1000, 1000, 500, 500};
-      constant Real HCO3Permeability = 500;
+      constant Real IonPermeabilities[:] = {100, 100, 50, 2.5};
+      constant Real HCO3Permeability = 100;
 
 
 
@@ -11218,106 +11642,6 @@ and mixing"), Text(
             coordinateSystem(preserveAspectRatio=false)));
     end IonSelector;
 
-    model IonCharges
-      /*
-  Modelica.Blocks.Interfaces.RealInput pH
-    annotation (Placement(transformation(extent={{-100,60},{-60,100}}),
-        iconTransformation(
-        extent={{-20,-20},{20,20}},
-        rotation=270,
-        origin={0,100})));
-   */
-       Real pH = 7.4;
-      Physiolibrary.Types.RealIO.ConcentrationOutput concentration[:] = charges annotation (
-          Placement(transformation(extent={{80,-20},{120,20}}), iconTransformation(
-              extent={{80,-20},{120,20}})));
-
-    //  Real charges[:] = {if i == Ions.Albumin then albuminCharge else DefaultIonCharges[i] for i in Ions};
-      constant AcidBaseBalance.Ions.IonsEnum ions[:]={j for j in
-          AcidBaseBalance.Ions.IonsEnum};
-    //  constant IonChargeTypesEnum ie[:]={j for j in IonChargeTypesEnum};
-      Real charges[:]={if IonChargeTypes[i] == IonChargeTypesEnum.Positive1
-           then 1 elseif IonChargeTypes[i] == IonChargeTypesEnum.Negative1
-           then -1 elseif IonChargeTypes[i] == IonChargeTypesEnum.NoCharge
-           then 0 else (if i == AcidBaseBalance.Ions.IonsEnum.Albumin then
-          albuminCharge else Modelica.Constants.inf) for i in AcidBaseBalance.Ions.IonsEnum}
-        "A default charges of ions, complementary to as specified in the AcidBaseBalance.Interfaces.IonChargeTypes constant. Exceptions, such as Albumin, must be defined here!";
-      Real albuminCharge = -1/1000*6500*(0.123*pH - 0.631) "[meq/l] according to Figge";
-    //  String s[:] = {String(i) for i in Ions};
-    equation
-          assert(size(ions, 1) == size(IonChargeTypes, 1), "Some problem in the definition of ion charges in AcidBaseBalance.Interfaces.IonCharges");
-          assert(max(charges) < Modelica.Constants.inf, "Some problem in the definition of ion charges in AcidBaseBalance.Interfaces.IonCharges");
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-            Text(
-              extent={{-60,20},{100,80}},
-              lineColor={0,0,127},
-              fillColor={240,233,6},
-              fillPattern=FillPattern.Solid,
-              horizontalAlignment=TextAlignment.Right,
-              textString="meq/l")}),            Diagram(coordinateSystem(
-              preserveAspectRatio=false)));
-    end IonCharges;
-
-    model IonChargeCorrection "corrects the concentration of albumin (or other volatile substances) to absolute (non-negative) value of meq/l"
-      import AcidBaseBalance.Ions.*;
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_a[AcidBaseBalance.Ions.IonsEnum]
-        annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_b port_b[AcidBaseBalance.Ions.IonsEnum
-         + 1] annotation (Placement(transformation(extent={{90,-10},{110,10}})));
-      Modelica.Blocks.Interfaces.RealInput pH
-        annotation (Placement(transformation(extent={{-120,40},{-80,80}}),
-            iconTransformation(
-            extent={{-20,-20},{20,20}},
-            rotation=0,
-            origin={-100,40})));
-     //constant IonsEnum ions[:]={j for j in IonsEnum};
-    //  constant IonChargeTypesEnum ie[:]={j for j in IonChargeTypesEnum};
-      Real DABG[:]={if i == AcidBaseBalance.Ions.IonsEnum.Albumin then
-          albuminCharge.charge else 1 for i in AcidBaseBalance.Ions.IonsEnum}
-        "diassociated acid/base groups - correction concentration of the acid-groups/base groups, or correction to concentration so it equals it charge in meq/l";
-      //Real albuminCharge = -1/1000*6500*(0.123*pH - 0.631) "[meq/l] according to Figge";
-      AlbuminCharge albuminCharge(pH = pH);
-
-    //  String s[:] = {String(i) for i in Ions};
-      Physiolibrary.Chemical.Interfaces.ChemicalPort_a HCO3
-        annotation (Placement(transformation(extent={{-110,90},{-90,110}})));
-      parameter Real elementaryCharges[AcidBaseBalance.Ions.IonsEnum];
-        Real charges[:] = port_a.conc .* DABG .* elementaryCharges "control sum, should be zero or close to zero.";
-        Real charge = sum(charges) + HCO3.conc*(-1);
-    equation
-      // ions
-      for i in AcidBaseBalance.Ions.IonsEnum loop
-        port_b[i].conc = port_a[i].conc * DABG[i];
-        port_a[i].q + port_b[i].q = 0;
-      end for;
-
-    // HCO3 extension
-       port_b[end].conc = HCO3.conc;
-       HCO3.q + port_b[end].q = 0;
-
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
-            Text(
-              extent={{-100,20},{0,80}},
-              lineColor={28,108,200},
-              textString="Conc"),
-            Text(
-              extent={{0,-80},{100,-20}},
-              lineColor={28,108,200},
-              textString="|meq/l|",
-              horizontalAlignment=TextAlignment.Right),
-            Rectangle(extent={{-100,100},{100,-100}}, lineColor={28,108,200}),
-            Line(
-              points={{-80,0},{80,0}},
-              color={102,44,145},
-              thickness=0.5,
-              arrow={Arrow.Open,Arrow.Open}),
-            Line(
-              points={{-80,100},{80,10}},
-              color={102,44,145},
-              thickness=0.5,
-              arrow={Arrow.Open,Arrow.Open})}),                      Diagram(
-            coordinateSystem(preserveAspectRatio=false)));
-    end IonChargeCorrection;
   end Interfaces;
 
   package Kidney
@@ -18818,7 +19142,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut2(
          useSoluteFlowInput=true)
         annotation (Placement(transformation(extent={{-18,-118},{2,-98}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage hCO3_inflow(
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage plasma_HCO3(
           useConcentrationInput=true) annotation (Placement(transformation(
             extent={{6,-6},{-6,6}},
             rotation=180,
@@ -18828,8 +19152,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             extent={{10,12},{-10,-12}},
             rotation=180,
             origin={-8,-128})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage o2_inflow(
-          useConcentrationInput=true) annotation (Placement(transformation(
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage plasma_dO2(
+          useConcentrationInput=true) "dissolved O2" annotation (Placement(
+            transformation(
             extent={{6,-6},{-6,6}},
             rotation=180,
             origin={28,-76})));
@@ -18843,8 +19168,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             extent={{9.5,10.5},{-9.5,-10.5}},
             rotation=180,
             origin={-8.5,-75.5})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage co2_inflow(
-          useConcentrationInput=true) annotation (Placement(transformation(
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage plasma_dCO2(
+          useConcentrationInput=true) "dissolved CO2" annotation (Placement(
+            transformation(
             extent={{6,-6},{-6,6}},
             rotation=180,
             origin={28,-92})));
@@ -18881,7 +19207,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{78,-86},{58,-66}})));
       Physiolibrary.Types.Constants.VolumeConst volume(k=modelSettings.ISFvolume_start)
         annotation (Placement(transformation(extent={{126,-26},{134,-18}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISFO2(
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISF_O2(
           useConcentrationInput=true)
         annotation (Placement(transformation(extent={{92,-82},{80,-70}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump4(
@@ -18890,14 +19216,16 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump5(
           useSoluteFlowInput=true)
         annotation (Placement(transformation(extent={{104,-130},{120,-114}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISFHCO3(
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISF_HCO3(
           useConcentrationInput=true)
         annotation (Placement(transformation(extent={{92,-124},{80,-112}})));
       Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
-          solute_start=modelSettings.ISFCO2solute_start)
+          solute_start=iSF_initialization2_1.isf_hco3_solute + 1)
         annotation (Placement(transformation(extent={{140,-94},{160,-74}})));
-      Physiolibrary.Chemical.Components.Substance HCO3(useNormalizedVolume=false,
-          solute_start=modelSettings.ISFHCO3solute_start)
+      Physiolibrary.Chemical.Components.Substance HCO3(
+        useNormalizedVolume=false,
+        Simulation=Physiolibrary.Types.SimulationType.NoInit,
+        solute_start=iSF_initialization2_1.isf_hco3_solute)
         annotation (Placement(transformation(extent={{140,-130},{160,-110}})));
       Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
           solute_start=modelSettings.ISFO2solute_start)
@@ -18905,7 +19233,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump6(
           useSoluteFlowInput=true)
         annotation (Placement(transformation(extent={{102,-30},{122,-50}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISFCO2(
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISF_CO2(
           useConcentrationInput=true)
         annotation (Placement(transformation(extent={{92,-98},{80,-86}})));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure
@@ -18939,7 +19267,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a BE annotation (Placement(
             transformation(rotation=0, extent={{-80,-130},{-60,-110}})));
       Physiolibrary.Chemical.Components.Substance ions[AcidBaseBalance.Ions.IonsEnum](
-         each useNormalizedVolume=false, each Simulation=Physiolibrary.Types.SimulationType.NoInit)
+         each useNormalizedVolume=false, each Simulation=Physiolibrary.Types.SimulationType.NoInit,
+        solute_start=iSF_initialization2_1.isf_solute)
         annotation (Placement(transformation(extent={{140,-190},{160,-170}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a ions_plasma[AcidBaseBalance.Ions.IonsEnum]
         annotation (Placement(transformation(rotation=0, extent={{-80,-190},{-60,-170}})));
@@ -18959,21 +19288,33 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           Placement(transformation(rotation=0, extent={{230,-130},{250,-110}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a ions_ISF[AcidBaseBalance.Ions.IonsEnum]
         annotation (Placement(transformation(rotation=0, extent={{230,-190},{250,-170}})));
-      Interfaces.IonChargeCorrection plasma_ionChargeCorrection(elementaryCharges=
+      Ions.IonChargeCorrection plasma_ionChargeCorrection(elementaryCharges=
             modelSettings.IonElemChrgs)
         annotation (Placement(transformation(extent={{36,-190},{56,-170}})));
-      Interfaces.IonChargeCorrection isf_ionChargeCorrection(elementaryCharges=
+      Ions.IonChargeCorrection isf_ionChargeCorrection(elementaryCharges=
             modelSettings.IonElemChrgs)
         annotation (Placement(transformation(extent={{108,-190},{88,-170}})));
       Interfaces.OneToMany oneToMany annotation (Placement(transformation(
             extent={{-4,-4},{4,4}},
             rotation=270,
             origin={148,-164})));
-      Acidbase.ISF_initialization iSF_initialization(permeabilities=modelSettings.IonPermeabilities,
-          elementary_charges=modelSettings.IonElemChrgs)
-        annotation (Placement(transformation(extent={{60,-220},{80,-200}})));
-    equation
 
+
+      Acidbase.SAoriginal sAoriginal
+        annotation (Placement(transformation(extent={{120,-220},{140,-200}})));
+      Ions.ISF_initialization2 iSF_initialization2_1(
+        plasma_HCO3=26,
+        plasma_conc=modelSettings.IonConcentration,
+        permeabilities=modelSettings.IonPermeabilities,
+        elementary_charges=modelSettings.IonElemChrgs,
+        ISFvolume_start=modelSettings.ISFvolume_start)
+        annotation (Placement(transformation(extent={{180,-220},{200,-200}})));
+    initial equation
+       // HCO3.state = iSF_initialization.HCO3InitialConcentration*10;
+    equation
+    //    when initial() then
+    //      reinit(HCO3.state,iSF_initialization.HCO3InitialConcentration*10);
+    //    end when;
 
       connect(molarFlowMeasure2.molarFlowRate,unlimitedSolutePumpOut1. soluteFlow)
         annotation (Line(points={{46,-85.6},{-4,-85.6},{-4,-88}}, color={0,0,
@@ -18984,13 +19325,11 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePumpOut3. soluteFlow)
         annotation (Line(points={{46,-111.6},{46,-104},{-2,-104},{-2,-120},{-4,-120},
               {-4,-123.2}}, color={0,0,127}));
-      connect(co2_inflow.concentration,bloodABB_OSA. dCO2) annotation (Line(
-            points={{22,-92},{18,-92},{18,-140},{-37.8,-140},{-37.8,-144}},
-            color={0,0,127}));
-      connect(bloodABB_OSA.dO2,o2_inflow. concentration) annotation (Line(
-            points={{-41.8,-144},{-41.8,-138},{14,-138},{14,-76},{22,-76}},
-            color={0,0,127}));
-      connect(bloodABB_OSA.cHCO3,hCO3_inflow. concentration) annotation (Line(
+      connect(plasma_dCO2.concentration, bloodABB_OSA.dCO2) annotation (Line(points=
+             {{22,-92},{18,-92},{18,-140},{-37.8,-140},{-37.8,-144}}, color={0,0,127}));
+      connect(bloodABB_OSA.dO2, plasma_dO2.concentration) annotation (Line(points={{
+              -41.8,-144},{-41.8,-138},{14,-138},{14,-76},{22,-76}}, color={0,0,127}));
+      connect(bloodABB_OSA.cHCO3,plasma_HCO3. concentration) annotation (Line(
             points={{-34,-144},{20,-144},{20,-118},{22,-118}},   color={0,0,127}));
       connect(bloodABB_OSA.tO2_input,concentrationMeasure3. concentration)
         annotation (Line(points={{-49.6,-144},{-49.6,-138},{-50,-138},{-50,
@@ -19002,7 +19341,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       connect(bloodABB_OSA.tCO2_input,concentrationMeasure4. concentration)
         annotation (Line(points={{-45.8,-144},{-45.8,-142},{-46,-142},{-46,
               -111.2}}, color={0,0,127}));
-      connect(o2_inflow.q_out,molarFlowMeasure1. q_in) annotation (Line(
+      connect(plasma_dO2.q_out, molarFlowMeasure1.q_in) annotation (Line(
           points={{34,-76},{38,-76}},
           color={107,45,134},
           thickness=1));
@@ -19010,11 +19349,11 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           points={{54,-76},{58,-76}},
           color={107,45,134},
           thickness=1));
-      connect(hCO3_inflow.q_out,molarFlowMeasure. q_in) annotation (Line(
+      connect(plasma_HCO3.q_out,molarFlowMeasure. q_in) annotation (Line(
           points={{34,-118},{38,-118}},
           color={107,45,134},
           thickness=1));
-      connect(co2_inflow.q_out,molarFlowMeasure2. q_in) annotation (Line(
+      connect(plasma_dCO2.q_out, molarFlowMeasure2.q_in) annotation (Line(
           points={{34,-92},{38,-92}},
           color={107,45,134},
           thickness=1));
@@ -19081,9 +19420,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       connect(molarFlowMeasure1.molarFlowRate,unlimitedSolutePump6. soluteFlow)
         annotation (Line(points={{46,-69.6},{116,-69.6},{116,-44}}, color={0,0,
               127}));
-      connect(ISFO2.concentration,concentrationMeasure2. concentration)
-        annotation (Line(points={{92,-76},{174,-76},{174,-46.4}},
-            color={0,0,127}));
+      connect(ISF_O2.concentration, concentrationMeasure2.concentration)
+        annotation (Line(points={{92,-76},{174,-76},{174,-46.4}}, color={0,0,127}));
       connect(tissueHCO3_2.tCO2,concentrationMeasure1. concentration)
         annotation (Line(points={{195,-139.8},{190,-139.8},{190,-90.4}},
             color={0,0,127}));
@@ -19092,17 +19430,15 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             color={0,0,127}));
       connect(tissueHCO3_2.T,temperature2. y)
         annotation (Line(points={{213,-136},{217,-136}}, color={0,0,127}));
-      connect(ISFCO2.concentration,tissueHCO3_2. cdCO2_) annotation (Line(
-            points={{92,-92},{100,-92},{100,-144.8},{195,-144.8}},  color={0,0,
-              127}));
-      connect(concentrationMeasure.concentration,ISFHCO3. concentration)
-        annotation (Line(points={{176,-115.2},{176,-118},{92,-118}},
-            color={0,0,127}));
-      connect(ISFCO2.q_out,iSFMembraneCO2. q_in) annotation (Line(
+      connect(ISF_CO2.concentration, tissueHCO3_2.cdCO2_) annotation (Line(points={{
+              92,-92},{100,-92},{100,-144.8},{195,-144.8}}, color={0,0,127}));
+      connect(concentrationMeasure.concentration, ISF_HCO3.concentration)
+        annotation (Line(points={{176,-115.2},{176,-118},{92,-118}}, color={0,0,127}));
+      connect(ISF_CO2.q_out, iSFMembraneCO2.q_in) annotation (Line(
           points={{80,-92},{78,-92}},
           color={107,45,134},
           thickness=1));
-      connect(ISFO2.q_out,iSFMembraneO2. q_in) annotation (Line(
+      connect(ISF_O2.q_out, iSFMembraneO2.q_in) annotation (Line(
           points={{80,-76},{78,-76}},
           color={107,45,134},
           thickness=1));
@@ -19165,7 +19501,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           points={{36,-170},{30,-170},{30,-160},{54,-160},{54,-118}},
           color={107,45,134},
           thickness=1));
-      connect(isf_ionChargeCorrection.HCO3, ISFHCO3.q_out) annotation (Line(
+      connect(isf_ionChargeCorrection.HCO3, ISF_HCO3.q_out) annotation (Line(
           points={{108,-170},{108,-160},{80,-160},{80,-118}},
           color={107,45,134},
           thickness=1));
@@ -19173,48 +19509,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           points={{108,-180},{150,-180}},
           color={107,45,134},
           thickness=1));
-      connect(iSF_initialization.plasma_conc, ions_plasma) annotation (Line(
-          points={{60,-210},{30,-210},{30,-180},{-70,-180}},
-          color={107,45,134},
-          thickness=1));
-      connect(molarFlowMeasure.q_out, iSF_initialization.HCO3) annotation (Line(
-          points={{54,-118},{54,-200},{60,-200}},
-          color={107,45,134},
-          thickness=1));
-      annotation (Diagram(coordinateSystem(extent={{-70,-220},{240,-20}}),
-            graphics={
-            Line(
-              points={{84,-210},{176,-210},{176,-184},{166,-184}},
-              color={0,140,72},
-              thickness=1,
-              arrow={Arrow.None,Arrow.Filled},
-              pattern=LinePattern.Dash),
-            Line(
-              points={{84,-210},{176,-210},{176,-126},{164,-126}},
-              color={0,140,72},
-              thickness=1,
-              arrow={Arrow.None,Arrow.Filled},
-              pattern=LinePattern.Dash),
-            Text(
-              extent={{-13,3},{13,-3}},
-              lineColor={0,140,72},
-              pattern=LinePattern.Dash,
-              lineThickness=1,
-              fillColor={240,233,6},
-              fillPattern=FillPattern.Solid,
-              textString="Initialization",
-              origin={181,-161},
-              rotation=270),
-            Text(
-              extent={{-13,3},{13,-3}},
-              lineColor={0,140,72},
-              pattern=LinePattern.Dash,
-              lineThickness=1,
-              fillColor={240,233,6},
-              fillPattern=FillPattern.Solid,
-              textString="Initialization",
-              origin={97,-205},
-              rotation=360)}),                                              Icon(
+      annotation (Diagram(coordinateSystem(extent={{-70,-220},{240,-20}})), Icon(
             coordinateSystem(extent={{-70,-220},{240,-20}})));
     end Tissues2;
 
@@ -19317,6 +19612,416 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       annotation (Diagram(coordinateSystem(extent={{-100,-100},{100,100}})),
           Icon(coordinateSystem(extent={{-80,-100},{100,100}})));
     end Cells;
+
+    model Tissues3
+      import AcidBaseBalance.Interfaces.*;
+      import AcidBaseBalance.Ions.*;
+
+      constant Real IonAndHCO3Permeabilities[:] = cat(1,modelSettings.IonPermeabilities, {modelSettings.HCO3Permeability});
+      constant Integer IonAndHCO3Charges[:] = cat(1,modelSettings.IonElemChrgs, {-1});
+      parameter Integer NumberOfIonsAndHCO3 = size(modelSettings.IonElemChrgs, 1) + 1;
+
+      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure annotation (
+          Placement(transformation(
+            extent={{-8,8},{8,-8}},
+            rotation=0,
+            origin={46,-118})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut2(
+         useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{-18,-118},{2,-98}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage plasma_HCO3(
+          useConcentrationInput=true) annotation (Placement(transformation(
+            extent={{6,-6},{-6,6}},
+            rotation=180,
+            origin={28,-118})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut3(
+         useSoluteFlowInput=true) annotation (Placement(transformation(
+            extent={{10,12},{-10,-12}},
+            rotation=180,
+            origin={-8,-128})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage plasma_dO2(
+          useConcentrationInput=true) "dissolved O2" annotation (Placement(
+            transformation(
+            extent={{6,-6},{-6,6}},
+            rotation=180,
+            origin={28,-76})));
+      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure1 annotation (
+         Placement(transformation(
+            extent={{8,-8},{-8,8}},
+            rotation=180,
+            origin={46,-76})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut(
+          useSoluteFlowInput=true) annotation (Placement(transformation(
+            extent={{9.5,10.5},{-9.5,-10.5}},
+            rotation=180,
+            origin={-8.5,-75.5})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage plasma_dCO2(
+          useConcentrationInput=true) "dissolved CO2" annotation (Placement(
+            transformation(
+            extent={{6,-6},{-6,6}},
+            rotation=180,
+            origin={28,-92})));
+      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure2 annotation (
+         Placement(transformation(
+            extent={{8,-8},{-8,8}},
+            rotation=180,
+            origin={46,-92})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut1(
+         useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{-18,-102},{2,-82}})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure3
+        annotation (Placement(transformation(
+            extent={{-4,4},{4,-4}},
+            rotation=180,
+            origin={-50,-58})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure4
+        annotation (Placement(transformation(
+            extent={{-4,4},{4,-4}},
+            rotation=180,
+            origin={-46,-108})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure5
+        annotation (Placement(transformation(
+            extent={{-4,4},{4,-4}},
+            rotation=180,
+            origin={-58,-128})));
+      Acidbase.OSA.BloodABB_OSA bloodABB_OSA annotation (Placement(
+            transformation(rotation=0, extent={{-54,-164},{-34,-144}})));
+      Physiolibrary.Chemical.Components.Diffusion iSFMembraneCO2(Conductance(
+            displayUnit="l/min") = 0.016666666666667)
+        annotation (Placement(transformation(extent={{78,-102},{58,-82}})));
+      Physiolibrary.Chemical.Components.Diffusion iSFMembraneO2(Conductance(
+            displayUnit="l/min") = 0.016666666666667)
+        annotation (Placement(transformation(extent={{78,-86},{58,-66}})));
+      Physiolibrary.Types.Constants.VolumeConst volume(k=modelSettings.ISFvolume_start)
+        annotation (Placement(transformation(extent={{126,-26},{134,-18}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISF_O2(
+          useConcentrationInput=true)
+        annotation (Placement(transformation(extent={{92,-82},{80,-70}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump4(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{104,-92},{120,-76}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump5(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{104,-130},{120,-114}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISF_HCO3(
+          useConcentrationInput=true)
+        annotation (Placement(transformation(extent={{92,-124},{80,-112}})));
+      Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
+          solute_start=modelSettings.ISFCO2solute_start)
+        annotation (Placement(transformation(extent={{140,-94},{160,-74}})));
+      Physiolibrary.Chemical.Components.Substance HCO3(useNormalizedVolume=false,
+          solute_start=modelSettings.ISFHCO3solute_start)
+        annotation (Placement(transformation(extent={{140,-130},{160,-110}})));
+      Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
+          solute_start=modelSettings.ISFO2solute_start)
+        annotation (Placement(transformation(extent={{140,-50},{160,-30}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump6(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{102,-30},{122,-50}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISF_CO2(
+          useConcentrationInput=true)
+        annotation (Placement(transformation(extent={{92,-98},{80,-86}})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure
+        annotation (Placement(transformation(
+            extent={{-6,-6},{6,6}},
+            rotation=180,
+            origin={176,-120})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
+        annotation (Placement(transformation(
+            extent={{-8,-8},{8,8}},
+            rotation=0,
+            origin={190,-84})));
+      Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure2
+        annotation (Placement(transformation(
+            extent={{-8,-8},{8,8}},
+            rotation=0,
+            origin={174,-40})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump7(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{104,-92},{120,-108}})));
+      Physiolibrary.Types.Constants.TemperatureConst temperature2(k=modelSettings.Temperature)
+        annotation (Placement(transformation(extent={{226,-140},{218,-132}})));
+      outer Interfaces.ModelSettings modelSettings
+        annotation (Placement(transformation(extent={{-60,-40},{-40,-20}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a tO2 annotation (Placement(
+            transformation(rotation=0, extent={{-80,-50},{-60,-30}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a tCO2 annotation (Placement(
+            transformation(rotation=0, extent={{-80,-90},{-60,-70}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a BE annotation (Placement(
+            transformation(rotation=0, extent={{-80,-130},{-60,-110}})));
+      Physiolibrary.Chemical.Components.Substance ions[AcidBaseBalance.Ions.IonsEnum](
+         each useNormalizedVolume=false, each Simulation=Physiolibrary.Types.SimulationType.NoInit)
+        annotation (Placement(transformation(extent={{140,-190},{160,-170}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a ions_plasma[AcidBaseBalance.Ions.IonsEnum]
+        annotation (Placement(transformation(rotation=0, extent={{-80,-190},{-60,-170}})));
+      Physiolibrary.Chemical.Components.Membrane
+                                       membraneVariableCharges(
+        NumberOfParticles=NumberOfIonsAndHCO3,
+        Charges=IonAndHCO3Charges,
+        Permeabilities=IonAndHCO3Permeabilities,
+        solventFractionInside=0.96,
+        solventFractionOutside=0.96)
+        annotation (Placement(transformation(extent={{60,-190},{80,-170}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a tO2_ISF annotation (
+          Placement(transformation(rotation=0, extent={{230,-50},{250,-30}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a tCO2_ISF annotation (
+          Placement(transformation(rotation=0, extent={{230,-78},{250,-58}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a HCO3_ISF annotation (
+          Placement(transformation(rotation=0, extent={{230,-130},{250,-110}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a ions_ISF[AcidBaseBalance.Ions.IonsEnum]
+        annotation (Placement(transformation(rotation=0, extent={{230,-190},{250,-170}})));
+      Ions.IonChargeCorrection plasma_ionChargeCorrection(elementaryCharges=
+            modelSettings.IonElemChrgs)
+        annotation (Placement(transformation(extent={{36,-190},{56,-170}})));
+      Ions.IonChargeCorrection isf_ionChargeCorrection(elementaryCharges=
+            modelSettings.IonElemChrgs)
+        annotation (Placement(transformation(extent={{108,-190},{88,-170}})));
+      Interfaces.OneToMany oneToMany annotation (Placement(transformation(
+            extent={{-4,-4},{4,4}},
+            rotation=270,
+            origin={148,-164})));
+      Ions.ISF_initialization iSF_initialization(permeabilities=modelSettings.IonPermeabilities,
+          elementary_charges=modelSettings.IonElemChrgs)
+        annotation (Placement(transformation(extent={{60,-220},{80,-200}})));
+      Physiolibrary.Types.Constants.pHConst     pH(k=7.2)
+        annotation (Placement(transformation(extent={{12,-164},{20,-156}})));
+      Physiolibrary.Types.Constants.pHConst     pH1(k=7.2)
+        annotation (Placement(transformation(extent={{130,-168},{122,-160}})));
+    equation
+    //   when initial() then
+    //     reinit(HCO3.state,iSF_initialization.HCO3InitialConcentration);
+    //   end when;
+
+      connect(molarFlowMeasure2.molarFlowRate,unlimitedSolutePumpOut1. soluteFlow)
+        annotation (Line(points={{46,-85.6},{-4,-85.6},{-4,-88}}, color={0,0,
+              127}));
+      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePumpOut2. soluteFlow)
+        annotation (Line(points={{46,-111.6},{46,-104},{-4,-104}},
+                                                                 color={0,0,127}));
+      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePumpOut3. soluteFlow)
+        annotation (Line(points={{46,-111.6},{46,-104},{-2,-104},{-2,-120},{-4,-120},
+              {-4,-123.2}}, color={0,0,127}));
+      connect(plasma_dCO2.concentration, bloodABB_OSA.dCO2) annotation (Line(points=
+             {{22,-92},{18,-92},{18,-140},{-37.8,-140},{-37.8,-144}}, color={0,0,127}));
+      connect(bloodABB_OSA.dO2, plasma_dO2.concentration) annotation (Line(points={{
+              -41.8,-144},{-41.8,-138},{14,-138},{14,-76},{22,-76}}, color={0,0,127}));
+      connect(bloodABB_OSA.cHCO3,plasma_HCO3. concentration) annotation (Line(
+            points={{-34,-144},{20,-144},{20,-118},{22,-118}},   color={0,0,127}));
+      connect(bloodABB_OSA.tO2_input,concentrationMeasure3. concentration)
+        annotation (Line(points={{-49.6,-144},{-49.6,-138},{-50,-138},{-50,
+              -61.2}}, color={0,0,127}));
+      connect(bloodABB_OSA._BEox,concentrationMeasure5. concentration)
+        annotation (Line(points={{-53.6,-144},{-53.6,-146},{-58,-146},{-58,
+              -131.2}},
+            color={0,0,127}));
+      connect(bloodABB_OSA.tCO2_input,concentrationMeasure4. concentration)
+        annotation (Line(points={{-45.8,-144},{-45.8,-142},{-46,-142},{-46,
+              -111.2}}, color={0,0,127}));
+      connect(plasma_dO2.q_out, molarFlowMeasure1.q_in) annotation (Line(
+          points={{34,-76},{38,-76}},
+          color={107,45,134},
+          thickness=1));
+      connect(molarFlowMeasure1.q_out,iSFMembraneO2. q_out) annotation (Line(
+          points={{54,-76},{58,-76}},
+          color={107,45,134},
+          thickness=1));
+      connect(plasma_HCO3.q_out,molarFlowMeasure. q_in) annotation (Line(
+          points={{34,-118},{38,-118}},
+          color={107,45,134},
+          thickness=1));
+      connect(plasma_dCO2.q_out, molarFlowMeasure2.q_in) annotation (Line(
+          points={{34,-92},{38,-92}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePumpOut.soluteFlow,molarFlowMeasure1. molarFlowRate)
+        annotation (Line(points={{-4.7,-71.3},{-10.35,-71.3},{-10.35,-69.6},{46,-69.6}},
+                       color={0,0,127}));
+      connect(unlimitedSolutePumpOut.q_in,concentrationMeasure3. q_in)
+        annotation (Line(
+          points={{-18,-75.5},{-34,-75.5},{-34,-58},{-50,-58}},
+          color={107,45,134},
+          thickness=0.5));
+      connect(molarFlowMeasure2.q_out,iSFMembraneCO2. q_out) annotation (Line(
+          points={{54,-92},{58,-92}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePumpOut3.q_in,concentrationMeasure5. q_in)
+        annotation (Line(
+          points={{-18,-128},{-58,-128}},
+          color={107,45,134},
+          thickness=1));
+      connect(concentrationMeasure.q_in,HCO3. q_out) annotation (Line(
+          points={{176,-120},{170,-120},{170,-122},{164,-122},{164,-120},{150,-120}},
+          color={107,45,134},
+          thickness=1));
+      connect(concentrationMeasure1.q_in,CO2. q_out) annotation (Line(
+          points={{190,-84},{150,-84}},
+          color={107,45,134},
+          thickness=1));
+      connect(concentrationMeasure2.q_in,O2. q_out) annotation (Line(
+          points={{174,-40},{150,-40}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePump7.q_out,CO2. q_out) annotation (Line(
+          points={{120,-100},{150,-100},{150,-84}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePump6.q_out,O2. q_out) annotation (Line(
+          points={{122,-40},{150,-40}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePump4.q_out,CO2. q_out) annotation (Line(
+          points={{120,-84},{150,-84}},
+          color={107,45,134},
+          thickness=1));
+      connect(unlimitedSolutePump5.q_out,HCO3. q_out) annotation (Line(
+          points={{120,-122},{136,-122},{136,-120},{150,-120}},
+          color={107,45,134},
+          thickness=1));
+      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePump5. soluteFlow)
+        annotation (Line(points={{46,-111.6},{46,-106},{115.2,-106},{115.2,-118.8}},
+            color={0,0,127}));
+      connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePump7. soluteFlow)
+        annotation (Line(points={{46,-111.6},{46,-106},{108,-106},{108,-103.2},{115.2,
+              -103.2}},      color={0,0,127}));
+      connect(volume.y,O2. solutionVolume) annotation (Line(points={{135,-22},{146,-22},
+              {146,-36}},          color={0,0,127}));
+      connect(volume.y,CO2. solutionVolume) annotation (Line(points={{135,-22},{146,
+              -22},{146,-80}},      color={0,0,127}));
+      connect(volume.y,HCO3. solutionVolume) annotation (Line(points={{135,-22},{146,
+              -22},{146,-116}},      color={0,0,127}));
+      connect(molarFlowMeasure2.molarFlowRate,unlimitedSolutePump4. soluteFlow)
+        annotation (Line(points={{46,-85.6},{46,-80.8},{115.2,-80.8}}, color={0,
+              0,127}));
+      connect(molarFlowMeasure1.molarFlowRate,unlimitedSolutePump6. soluteFlow)
+        annotation (Line(points={{46,-69.6},{116,-69.6},{116,-44}}, color={0,0,
+              127}));
+      connect(ISF_O2.concentration, concentrationMeasure2.concentration)
+        annotation (Line(points={{92,-76},{174,-76},{174,-46.4}}, color={0,0,127}));
+      connect(concentrationMeasure.concentration, ISF_HCO3.concentration)
+        annotation (Line(points={{176,-115.2},{176,-118},{92,-118}}, color={0,0,127}));
+      connect(ISF_CO2.q_out, iSFMembraneCO2.q_in) annotation (Line(
+          points={{80,-92},{78,-92}},
+          color={107,45,134},
+          thickness=1));
+      connect(ISF_O2.q_out, iSFMembraneO2.q_in) annotation (Line(
+          points={{80,-76},{78,-76}},
+          color={107,45,134},
+          thickness=1));
+      connect(tO2, concentrationMeasure3.q_in) annotation (Line(points={{-70,-40},
+              {-70,-58},{-50,-58}},      color={107,45,134},
+          thickness=0.5));
+      connect(tCO2, unlimitedSolutePumpOut1.q_in) annotation (Line(points={{-70,-80},
+              {-70,-92},{-18,-92}}, color={107,45,134},
+          thickness=0.5));
+      connect(tCO2, unlimitedSolutePumpOut2.q_in) annotation (Line(points={{-70,-80},
+              {-70,-108},{-18,-108}}, color={107,45,134},
+          thickness=0.5));
+      connect(BE, unlimitedSolutePumpOut3.q_in) annotation (Line(points={{-70,-120},
+              {-70,-128},{-18,-128}}, color={107,45,134},
+          thickness=0.5));
+      connect(tCO2, concentrationMeasure4.q_in) annotation (Line(
+          points={{-70,-80},{-70,-108},{-46,-108}},
+          color={107,45,134},
+          thickness=0.5));
+      connect(O2.q_out, tO2_ISF) annotation (Line(
+          points={{150,-40},{240,-40}},
+          color={107,45,134},
+          thickness=1));
+      connect(CO2.q_out, tCO2_ISF) annotation (Line(
+          points={{150,-84},{206,-84},{206,-68},{240,-68}},
+          color={107,45,134},
+          thickness=1));
+      connect(HCO3.q_out, HCO3_ISF) annotation (Line(
+          points={{150,-120},{240,-120}},
+          color={107,45,134},
+          thickness=1));
+      connect(ions.q_out, ions_ISF) annotation (Line(
+          points={{150,-180},{240,-180}},
+          color={107,45,134},
+          thickness=1));
+      connect(plasma_ionChargeCorrection.port_a, ions_plasma) annotation (Line(
+          points={{36,-180},{-70,-180}},
+          color={107,45,134},
+          thickness=1));
+      connect(oneToMany.y, ions.solutionVolume)
+        annotation (Line(points={{146,-168},{146,-176}}, color={0,0,127}));
+      connect(oneToMany.u, O2.solutionVolume)
+        annotation (Line(points={{146,-160},{146,-36}}, color={0,0,127}));
+      connect(plasma_ionChargeCorrection.port_b, membraneVariableCharges.particlesInside)
+        annotation (Line(
+          points={{56,-180},{60,-180}},
+          color={107,45,134},
+          thickness=1));
+      connect(membraneVariableCharges.particlesOutside, isf_ionChargeCorrection.port_b)
+        annotation (Line(
+          points={{80,-180},{88,-180}},
+          color={107,45,134},
+          thickness=1));
+      connect(plasma_ionChargeCorrection.HCO3, molarFlowMeasure.q_out) annotation (
+          Line(
+          points={{36,-170},{30,-170},{30,-160},{54,-160},{54,-118}},
+          color={107,45,134},
+          thickness=1));
+      connect(isf_ionChargeCorrection.HCO3, ISF_HCO3.q_out) annotation (Line(
+          points={{108,-170},{108,-160},{80,-160},{80,-118}},
+          color={107,45,134},
+          thickness=1));
+      connect(isf_ionChargeCorrection.port_a, ions.q_out) annotation (Line(
+          points={{108,-180},{150,-180}},
+          color={107,45,134},
+          thickness=1));
+      connect(iSF_initialization.plasma_conc, ions_plasma) annotation (Line(
+          points={{60,-210},{30,-210},{30,-180},{-70,-180}},
+          color={107,45,134},
+          thickness=1));
+      connect(molarFlowMeasure.q_out, iSF_initialization.HCO3) annotation (Line(
+          points={{54,-118},{54,-200},{60,-200}},
+          color={107,45,134},
+          thickness=1));
+      connect(pH.y, plasma_ionChargeCorrection.pH) annotation (Line(points={{21,
+              -160},{24,-160},{24,-176},{36,-176}}, color={0,0,127}));
+      connect(pH1.y, isf_ionChargeCorrection.pH) annotation (Line(points={{121,
+              -164},{108,-164},{108,-176}}, color={0,0,127}));
+      connect(concentrationMeasure1.concentration, ISF_CO2.concentration)
+        annotation (Line(points={{190,-90.4},{178,-90.4},{178,-94},{94,-94},{94,
+              -92},{92,-92}}, color={0,0,127}));
+      annotation (Diagram(coordinateSystem(extent={{-70,-220},{240,-20}}),
+            graphics={
+            Line(
+              points={{84,-210},{176,-210},{176,-184},{166,-184}},
+              color={0,140,72},
+              thickness=1,
+              arrow={Arrow.None,Arrow.Filled},
+              pattern=LinePattern.Dash),
+            Line(
+              points={{84,-210},{176,-210},{176,-126},{164,-126}},
+              color={0,140,72},
+              thickness=1,
+              arrow={Arrow.None,Arrow.Filled},
+              pattern=LinePattern.Dash),
+            Text(
+              extent={{-13,3},{13,-3}},
+              lineColor={0,140,72},
+              pattern=LinePattern.Dash,
+              lineThickness=1,
+              fillColor={240,233,6},
+              fillPattern=FillPattern.Solid,
+              textString="Initialization",
+              origin={181,-161},
+              rotation=270),
+            Text(
+              extent={{-13,3},{13,-3}},
+              lineColor={0,140,72},
+              pattern=LinePattern.Dash,
+              lineThickness=1,
+              fillColor={240,233,6},
+              fillPattern=FillPattern.Solid,
+              textString="Initialization",
+              origin={97,-205},
+              rotation=360)}),                                              Icon(
+            coordinateSystem(extent={{-70,-220},{240,-20}})));
+    end Tissues3;
   end Tissues;
 
   package Test
@@ -19381,8 +20086,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{124,-10},{104,10}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure1
         annotation (Placement(transformation(extent={{80,10},{100,-10}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Ions.IonsEnum]
-        (each useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Ions.IonsEnum](
+         each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{-68,-130},{-48,-110}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[
         AcidBaseBalance.Ions.IonsEnum](each Conc=0)
@@ -19390,8 +20095,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS1[
         AcidBaseBalance.Ions.IonsEnum](each Conc=0)
         annotation (Placement(transformation(extent={{124,-130},{104,-110}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Ions.IonsEnum]
-        (each useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Ions.IonsEnum](
+         each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{78,-130},{98,-110}})));
       Interfaces.OneToMany oneToMany annotation (Placement(transformation(
             extent={{-4,-4},{4,4}},
@@ -24656,8 +25361,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{156,-10},{136,10}})));
       Physiolibrary.Hydraulic.Sensors.FlowMeasure flowMeasure1
         annotation (Placement(transformation(extent={{112,10},{132,-10}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Ions.IonsEnum]
-        (each useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionFlow[AcidBaseBalance.Ions.IonsEnum](
+         each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{-112,-130},{-92,-110}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS[
         AcidBaseBalance.Ions.IonsEnum](each Conc=0) annotation (Placement(
@@ -24665,8 +25370,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ionUS1[
         AcidBaseBalance.Ions.IonsEnum](each Conc=0)
         annotation (Placement(transformation(extent={{156,-130},{136,-110}})));
-      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Ions.IonsEnum]
-        (each useSolutionFlowInput=true)
+      Physiolibrary.Chemical.Components.Stream ionFlow1[AcidBaseBalance.Ions.IonsEnum](
+         each useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{110,-130},{130,-110}})));
       Interfaces.OneToMany oneToMany annotation (Placement(transformation(
             extent={{-4,-4},{4,4}},
