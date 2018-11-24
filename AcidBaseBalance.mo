@@ -11565,6 +11565,7 @@ and mixing"), Text(
         "Barometric Pressure";
       parameter Physiolibrary.Types.Fraction FiO2= 0.21 "Frattion of O2";
       Physiolibrary.Types.Fraction FiCO2= 0.0004; //if time < 10*60*60 then 0.0004 else 0.05;
+      parameter Physiolibrary.Types.Fraction lungShuntFraction = 0.02;
       parameter Physiolibrary.Types.Concentration cAlb= 0.66;
       parameter Physiolibrary.Types.Concentration cAlbISF = cAlb/3;
       parameter Physiolibrary.Types.Concentration ctHb= 8.4;
@@ -11593,6 +11594,7 @@ and mixing"), Text(
       parameter DiffusionPermeability IonPermeabilities[:] = {100, 100, 50, 2.5e-8};
       parameter DiffusionPermeability HCO3Permeability = 100;
       parameter Boolean UseMetabolicUABalance = true;
+      parameter Physiolibrary.Types.MolarFlowRate metabolismFlowRate = 0.00018333333333333;
 
 
 
@@ -15437,9 +15439,17 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       parameter Physiolibrary.Types.Pressure criticalPoint = 100;
       parameter Physiolibrary.Types.Fraction respiratoryQuotient = 0.85;
       parameter Physiolibrary.Types.MolarFlowRate metabolismFlowRate = 0.00018333333333333;
+    //  Physiolibrary.Types.MolarFlowRate metabolismFlowRate;// = ramp.y;
       parameter Boolean limiterEnabled = true;
       Real FirstOrderFlowRate = pO2*metabolismFlowRate/100;
+    //   Modelica.Blocks.Sources.Ramp ramp(
+    //     duration=100000,
+    //     startTime=60*100,
+    //     height=0.00020,
+    //     offset=0.00002)
+    //     annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
     equation
+    //metabolismFlowRate = ramp.y;
 
       if limiterEnabled and (FirstOrderFlowRate < metabolismFlowRate) then
         O2FlowRate = FirstOrderFlowRate;
@@ -19600,8 +19610,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{24,8},{40,-6}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{38,48},{58,62}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
-          metabolismFlowRate=0.00019166666666667)
+      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true)
         annotation (Placement(transformation(extent={{66,64},{86,44}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a O2 annotation (Placement(
             transformation(rotation=0, extent={{-110,70},{-90,90}}),
@@ -29642,7 +29651,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       annotation (Placement(transformation(extent={{-60,90},{-52,98}})));
     Physiolibrary.Types.Constants.FractionConst Perfusion_fraction(k=0.5)
       annotation (Placement(transformation(extent={{-42,82},{-34,90}})));
-    Physiolibrary.Types.Constants.FractionConst shuntFraction(k=0.02)
+    Physiolibrary.Types.Constants.FractionConst shuntFraction(k=modelSettings.lungShuntFraction)
       annotation (Placement(transformation(extent={{-36,72},{-28,80}})));
     Package.Alveolocapillary_2Units_with_shunts
       alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
@@ -29855,25 +29864,60 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         offset=8.66667e-5,
         height=0.000166667 - 8.66667e-5,
         startTime=5*60*100)
-        annotation (Placement(transformation(extent={{-78,12},{-58,32}})));
+        annotation (Placement(transformation(extent={{-84,-90},{-64,-70}})));
       Modelica.Blocks.Sources.Step step14to3_3(
-        height=-(0.000166667 - 8.66667e-5),
-        offset=0.000166667,
-        startTime=5*60*100)
-        annotation (Placement(transformation(extent={{-78,-22},{-58,-2}})));
+        startTime=5*60*100,
+        height=-(2.3e-4 - 5.5e-5),
+        offset=2.3e-4)
+        annotation (Placement(transformation(extent={{-112,-52},{-92,-32}})));
       SimplestCircWithTissues2 simplestCircWithTissues2_2
         annotation (Placement(transformation(extent={{-36,-24},{-8,-2}})));
-      inner Interfaces.ModelSettings modelSettings(UseMetabolicUABalance=false,
+      inner Interfaces.ModelSettings modelSettings(
         O2DiffusionPermeability(displayUnit="l/min") = 0.005,
         CO2DiffusionPermeability(displayUnit="l/min") = 0.005,
-        HCO3Permeability(displayUnit="l/min") = 5e-5)
+        HCO3Permeability(displayUnit="l/min") = 5e-5,
+        UseMetabolicUABalance=true,
+        metabolismFlowRate=0.000125)
         annotation (Placement(transformation(extent={{-100,78},{-80,98}})));
+      Modelica.Blocks.Sources.Ramp ramp(
+        height=0.000266667,
+        duration=100000,
+        offset=4.66667e-5,
+        startTime=60*100)
+        annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
+      Modelica.Blocks.Sources.Step step3_3to14(
+        startTime=5*60*100,
+        offset=5.5e-5,
+        height=(2.3e-4 - 5.5e-5))
+        annotation (Placement(transformation(extent={{-112,28},{-92,48}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst volumeFlowRateLow(k(
+            displayUnit="l/min") = 5.5e-5)
+        annotation (Placement(transformation(extent={{-110,14},{-102,22}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst volumeFlowRateHigh(k(
+            displayUnit="l/min") = 0.00023333333333333)
+        annotation (Placement(transformation(extent={{-110,-20},{-102,-12}})));
+      Modelica.Blocks.Math.Add add(k2=-1)
+        annotation (Placement(transformation(extent={{-70,2},{-56,16}})));
+      Modelica.Blocks.Math.Add add1(k1=-1)
+        annotation (Placement(transformation(extent={{-70,-18},{-56,-4}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst DeadVolume(k(
+            displayUnit="l/min") = 8.3333333333333e-6)
+        annotation (Placement(transformation(extent={{-92,-4},{-84,4}})));
     equation
-      connect(simplestCircWithTissues2_1.VAi_input, stepLowToHigh.y) annotation (
-          Line(points={{-25.9,20.7},{-40.95,20.7},{-40.95,22},{-57,22}}, color={0,0,
-              127}));
-      connect(simplestCircWithTissues2_2.VAi_input, step14to3_3.y) annotation (Line(
-            points={{-29.9,-13.3},{-34.95,-13.3},{-34.95,-12},{-57,-12}}, color={0,0,
+      connect(add1.y, simplestCircWithTissues2_2.VAi_input) annotation (Line(
+            points={{-55.3,-11},{-52.65,-11},{-52.65,-13.3},{-29.9,-13.3}},
+            color={0,0,127}));
+      connect(add.y, simplestCircWithTissues2_1.VAi_input) annotation (Line(
+            points={{-55.3,9},{-41.65,9},{-41.65,20.7},{-25.9,20.7}}, color={0,
+              0,127}));
+      connect(add.u2, DeadVolume.y) annotation (Line(points={{-71.4,4.8},{-78,
+              4.8},{-78,0},{-83,0}}, color={0,0,127}));
+      connect(add1.u1, DeadVolume.y) annotation (Line(points={{-71.4,-6.8},{-78,
+              -6.8},{-78,0},{-83,0}}, color={0,0,127}));
+      connect(step3_3to14.y, add.u1) annotation (Line(points={{-91,38},{-84,38},
+              {-84,36},{-80,36},{-80,13.2},{-71.4,13.2}}, color={0,0,127}));
+      connect(step14to3_3.y, add1.u2) annotation (Line(points={{-91,-42},{-84,
+              -42},{-84,-40},{-80,-40},{-80,-15.2},{-71.4,-15.2}}, color={0,0,
               127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
