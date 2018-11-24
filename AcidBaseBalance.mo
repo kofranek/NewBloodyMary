@@ -11564,7 +11564,7 @@ and mixing"), Text(
       parameter Physiolibrary.Types.Pressure PB= 101325.0144354
         "Barometric Pressure";
       parameter Physiolibrary.Types.Fraction FiO2= 0.21 "Frattion of O2";
-      Physiolibrary.Types.Fraction FiCO2= 0.0004; //if time < 10*60*60 then 0.0004 else 0.05;
+      parameter Physiolibrary.Types.Fraction FiCO2_start= 0.0004; //if time < 10*60*60 then 0.0004 else 0.05;
       parameter Physiolibrary.Types.Fraction lungShuntFraction = 0.02;
       parameter Physiolibrary.Types.Concentration cAlb= 0.66;
       parameter Physiolibrary.Types.Concentration cAlbISF = cAlb/3;
@@ -11576,10 +11576,10 @@ and mixing"), Text(
       parameter Physiolibrary.Types.Fraction FCOHb= 0.005;
       parameter Physiolibrary.Types.Fraction FHbF= 0.005;
       parameter Physiolibrary.Types.Temperature Temperature= 310.15;
-      parameter Physiolibrary.Types.Concentration ISFCO2conc_start=24;
+    //  parameter Physiolibrary.Types.Concentration ISFCO2conc_start=24;
       parameter Physiolibrary.Types.Concentration ISFO2conc_start= 0.05;
-      parameter Physiolibrary.Types.Concentration ISFBEox_start=0;
-      parameter Physiolibrary.Types.Concentration ISFHCO3_start = 23.5;
+    //  parameter Physiolibrary.Types.Concentration ISFBEox_start=0;
+    //  parameter Physiolibrary.Types.Concentration ISFHCO3_start = 23.5;
       parameter Physiolibrary.Types.Volume ISFvolume_start=1e-2;
 
       parameter Physiolibrary.Types.Concentration arterialO2conc_start = 8.29769;
@@ -11587,22 +11587,27 @@ and mixing"), Text(
       parameter Physiolibrary.Types.Concentration venousO2conc_start = 6.02579;
       parameter Physiolibrary.Types.Concentration venousCO2conc_start = 23.6461;
 
+      // Ion concentrations and initial settings
       parameter Physiolibrary.Types.Concentration IonConcentration[Ions] = {130, 100, 2.5, 0.65} "Plasma ion concentrations";
       constant Integer IonElemChrgs[:] = {1, -1, -1, -1} "elementary charges of ions";
-      parameter DiffusionPermeability O2DiffusionPermeability = 1;
-      parameter DiffusionPermeability CO2DiffusionPermeability = 1;
-      parameter DiffusionPermeability IonPermeabilities[:] = {100, 100, 50, 2.5e-8};
-      parameter DiffusionPermeability HCO3Permeability = 100;
+      parameter DiffusionPermeability O2DiffusionPermeability = 0.005;
+      parameter DiffusionPermeability CO2DiffusionPermeability = 0.005 "According to partial pressure difference in plasma and tissues, a study by SA";
+      parameter DiffusionPermeability IonPermeabilities[:] = {100, 100, 50, 2.5e-8} "Albumin permeability calculated from lympha flow and 3:1 concentration difference";
+      parameter DiffusionPermeability HCO3Permeability = 5e-5 "just a wild guess";
       parameter Boolean UseMetabolicUABalance = true;
       parameter Physiolibrary.Types.MolarFlowRate metabolismFlowRate = 0.00018333333333333;
 
-
+      // validation settings
+      parameter Boolean UseStepCO2Fraction = false;
+      parameter Physiolibrary.Types.Time breakTime = 10*60*60;
+      parameter Boolean UseRespiratoryCompensation = true;
 
       // computed variables
-      parameter Physiolibrary.Types.AmountOfSubstance ISFCO2solute_start = ISFCO2conc_start*ISFvolume_start;
-      parameter Physiolibrary.Types.AmountOfSubstance ISFO2solute_start = ISFO2conc_start*ISFvolume_start;
-      parameter Physiolibrary.Types.AmountOfSubstance ISFBEoxsolute_start = ISFBEox_start*ISFvolume_start;
-      parameter Physiolibrary.Types.AmountOfSubstance ISFHCO3solute_start = ISFHCO3_start*ISFvolume_start;
+      Physiolibrary.Types.Fraction FiCO2= if not UseStepCO2Fraction then FiCO2_start else if time < breakTime then FiCO2_start else 0.08 annotation(Dialog(enable = false, tab="Calculated vars"));
+    //  parameter Physiolibrary.Types.AmountOfSubstance ISFCO2solute_start = ISFCO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
+      parameter Physiolibrary.Types.AmountOfSubstance ISFO2solute_start = ISFO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
+    //  parameter Physiolibrary.Types.AmountOfSubstance ISFBEoxsolute_start = ISFBEox_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
+    //  parameter Physiolibrary.Types.AmountOfSubstance ISFHCO3solute_start = ISFHCO3_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
               Polygon(
               points={{80,100},{40,100},{40,98},{40,60},{-60,-40},{-100,-40},{-100,-80},
@@ -15551,7 +15556,7 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
     end BloodOnePort;
 
     block AlveolarVentilation
-
+      parameter Boolean respiratoryCompensationEnabled = true;
       Real PHA = pHa "pH of arterial blood"  annotation (Placement(transformation(extent={{-120,30},
                 {-80,70}}),           iconTransformation(extent={{-122,72},{-100,
                 94}})));
@@ -15611,7 +15616,7 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       // simplified case
       // VRD = VR;
       der(VRD) = (VR - VRD)/VRD_T "Time delay in alveolar ventilation control";
-      VI= VRD*VI0;
+      VI= if respiratoryCompensationEnabled then VRD*VI0 else VI0;
       //der(VI) = (VR * VI0 - VI) / 2;
       VRA=VRD;
       assert(VR >= 0, "VR out of bounds! Original LIMIT VR >= 0; ");
@@ -29920,8 +29925,55 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               -42},{-84,-40},{-80,-40},{-80,-15.2},{-71.4,-15.2}}, color={0,0,
               127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
-            coordinateSystem(preserveAspectRatio=false)));
+            coordinateSystem(preserveAspectRatio=false)),
+        experiment(StopTime=40000, __Dymola_NumberOfIntervals=5000));
     end CompareVentilationStep;
+
+    model RespiratoryAcidosis
+      SimplestCircWithTissues3 simplestCircWithTissues3_1(alveolarVentilation(
+            respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation))
+        annotation (Placement(transformation(extent={{-32,10},{-4,32}})));
+      inner Interfaces.ModelSettings modelSettings(
+        O2DiffusionPermeability(displayUnit="l/min"),
+        CO2DiffusionPermeability(displayUnit="l/min"),
+        HCO3Permeability(displayUnit="l/min"),
+        UseStepCO2Fraction=true,
+        UseRespiratoryCompensation=false)
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+    equation
+      connect(simplestCircWithTissues3_1.VAi_input1, simplestCircWithTissues3_1.VAi_input)
+        annotation (Line(points={{-11.1,21.5},{2,21.5},{2,36},{-42,36},{-42,
+              20.7},{-25.9,20.7}}, color={0,0,127}));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end RespiratoryAcidosis;
+
+    model SimplestCircWithTissues3
+      extends SimplestCircWithTissues2;
+      Physiolibrary.Types.RealIO.VolumeFlowRateOutput VAi_input1
+                                                               annotation (
+          Placement(transformation(extent={{148,52},{160,64}}),
+            iconTransformation(
+            extent={{-13,-13},{13,13}},
+            rotation=0,
+            origin={89,35})));
+      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+        annotation (Placement(transformation(extent={{148,-10},{168,10}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
+              "ml/min") = 8.19588e-5)
+        annotation (Placement(transformation(extent={{131,-32},{139,-26}})));
+    equation
+      connect(alveolarVentilation.pO2a, o2CO2.pO2) annotation (Line(points={{
+              148,8},{142,8},{142,7.31765},{137.1,7.31765}}, color={0,0,127}));
+      connect(alveolarVentilation.pCO2a, o2CO2.pCO2) annotation (Line(points={{
+              148,3.8},{142,3.8},{142,4.72941},{137.1,4.72941}}, color={0,0,127}));
+      connect(alveolarVentilation.pHa, o2CO2.pH) annotation (Line(points={{148,
+              -1.2},{142,-1.2},{142,1.62353},{137.1,1.62353}}, color={0,0,127}));
+      connect(VAi.y, alveolarVentilation.VA0) annotation (Line(points={{140,-29},
+              {144,-29},{144,-6.4},{148,-6.4}}, color={0,0,127}));
+      connect(alveolarVentilation.VA, VAi_input1) annotation (Line(points={{169,
+              3},{169,30.5},{154,30.5},{154,58}}, color={0,0,127}));
+    end SimplestCircWithTissues3;
   end Validation;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
       Physiomodel(version="1.0.0")));
