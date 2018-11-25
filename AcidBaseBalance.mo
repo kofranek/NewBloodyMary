@@ -15619,7 +15619,7 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       VI= if respiratoryCompensationEnabled then VRD*VI0 else VI0;
       //der(VI) = (VR * VI0 - VI) / 2;
       VRA=VRD;
-      assert(VR >= 0, "VR out of bounds! Original LIMIT VR >= 0; ");
+      //assert(VR >= 0, "VR out of bounds! Original LIMIT VR >= 0; ");
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}}),
                        graphics={
@@ -29974,6 +29974,44 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       connect(alveolarVentilation.VA, VAi_input1) annotation (Line(points={{169,
               3},{169,30.5},{154,30.5},{154,58}}, color={0,0,127}));
     end SimplestCircWithTissues3;
+
+    model RespiratoryAlkalosis
+      SimplestCircWithTissues3 simplestCircWithTissues3_1(alveolarVentilation(
+            respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation),
+          VAi(k=0.00016666666666667))
+        annotation (Placement(transformation(extent={{-32,10},{-4,32}})));
+      inner Interfaces.ModelSettings modelSettings(
+        O2DiffusionPermeability(displayUnit="l/min"),
+        CO2DiffusionPermeability(displayUnit="l/min"),
+        HCO3Permeability(displayUnit="l/min"),
+        UseRespiratoryCompensation=false,
+        UseStepCO2Fraction=false)
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+    equation
+      connect(simplestCircWithTissues3_1.VAi_input1, simplestCircWithTissues3_1.VAi_input)
+        annotation (Line(points={{-11.1,21.5},{2,21.5},{2,36},{-42,36},{-42,
+              20.7},{-25.9,20.7}}, color={0,0,127}));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end RespiratoryAlkalosis;
+
+    model MetabolicAcidosis
+      SimplestCircWithTissues3 simplestCircWithTissues3_1(alveolarVentilation(
+            respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation),
+          VAi(k=0.00016666666666667))
+        annotation (Placement(transformation(extent={{-32,10},{-4,32}})));
+      inner Interfaces.ModelSettings modelSettings(
+        O2DiffusionPermeability(displayUnit="l/min"),
+        CO2DiffusionPermeability(displayUnit="l/min"),
+        HCO3Permeability(displayUnit="l/min"))
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+    equation
+      connect(simplestCircWithTissues3_1.VAi_input1, simplestCircWithTissues3_1.VAi_input)
+        annotation (Line(points={{-11.1,21.5},{2,21.5},{2,36},{-42,36},{-42,
+              20.7},{-25.9,20.7}}, color={0,0,127}));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end MetabolicAcidosis;
   end Validation;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
       Physiomodel(version="1.0.0")));
