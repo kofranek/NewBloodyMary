@@ -8137,6 +8137,1033 @@ and mixing"), Text(
         pCO2BE)) + pHBB;
 
     end SAoriginal;
+
+    package FullBloodAcidbase
+      package PlasmaElectrochemical
+
+        package Auxilliary
+
+          partial model PlasmaElectrochemicalBase
+            //   Real SID(displayUnit="meq/l") "Strong ion difference. Normal value 39";
+            //   Real pCO2(displayUnit="mmHg") "CO2 partial pressure. Normal value 40";
+            //   Real Pi(unit="mmol/l") "Total phosphate. Normal value 1.15";
+            //   Real alb(unit="g/dl") "Albumin concentration. Normal value 4.4";
+
+            input Real SID(displayUnit="meq/l")
+              "Strong ion difference. Normal value 39";
+            input Real pCO2(displayUnit="mmHg")
+              "CO2 partial pressure. Normal value 40";
+            input Real Pi(unit="mmol/l") "Total phosphate. Normal value 1.15";
+            input Real alb(unit="g/dl") "Albumin concentration. Normal value 4.4";
+            // Real Alb(unit="mmol/l") = alb*10/66500*1000;
+            Real pH(start=10, unit="1");
+          //  Real HCO3;
+            annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+                  coordinateSystem(preserveAspectRatio=false)));
+          end PlasmaElectrochemicalBase;
+
+          model FiggeFencl3
+            "Base class for plasma acidbase after Figge and Fencl 3.0, missing inputs for SID, PCO2, total Pi and total albumin. Not meant to be run independently. Implemented after [Figge, 2013]"
+            extends
+              AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.Auxilliary.PlasmaElectrochemicalBase;
+
+            /*
+Rem: Figge-Fencl Quantitative Physicochemical Model
+Rem: of Human Acid-Base Physiology Version 3.0 (8 October, 2012; www.Figge-Fencl.org).
+Rem:
+Rem: Copyright 2003 - 2013 James J. Figge. Update published 28 April, 2013;
+Rem: Update published 27 October, 2013.
+Rem: 
+Rem: The program may be downloaded free of charge for academic and educational use only.
+Rem: This program is not intended for clinical use or for the care of human subjects in clinical trials.
+Rem: This program applies to plasma-like solutions containing albumin. 
+Rem: The program does not account for the contribution of plasma globulins, and has not been tested with clinical data; hence 
+Rem: the program is not suitable for clinical use.
+
+
+Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
+*/
+            // only constants here
+          protected
+            constant Real kw=0.000000000000044;
+
+            constant Real Kc1=0.0000000000244
+              "Kc1 is derived from the parameters in the Henderson-Hasselbalch equation. pK = 6.1; a = 0.230 mM / kPa; 1 Torr = 0.13332236842105 kPa. The value of Kc1 is 2.44E-11 (Eq / L)^2 / Torr.";
+            constant Real Kc2=0.00000000011
+              "Kc2 is calculated from Harned and Scholes (1941) for 37 degrees C and ionic strength 0.15 M. The value of Kc2 is 5.5E-11 mol / L x 2 = 1.1E-10 Eq / L.";
+
+            constant Real K1=0.0122
+              "K1, K2, and K3 for the phosphoric acid - phosphate system are from Sendroy and Rem: Hastings (1927). pK1 = 1.915; pK2 = 6.66; pK3 = 11.78.";
+            constant Real K2=0.000000219
+              "K1, K2, and K3 for the phosphoric acid - phosphate system are from Sendroy and Hastings (1927). pK1 = 1.915; pK2 = 6.66; pK3 = 11.78.";
+            constant Real K3=0.00000000000166
+              "K1, K2, and K3 for the phosphoric acid - phosphate system are from Sendroy and Hastings (1927). pK1 = 1.915; pK2 = 6.66; pK3 = 11.78.";
+
+            //Rem: Enter desired values for SID, PCO2, [ Pi tot ], and [ Albumin ] in the next four lines.
+            //   input Real SID(displayUnit="meq/l") "Strong ion difference. Normal value 39";
+            //   input Real pCO2(displayUnit="mmHg") "CO2 partial pressure. Normal value 40";
+            //   input Real Pi(unit="mmol/l") "Total phosphate. Normal value 1.15";
+            //   input Real alb(unit="g/dl") "Albumin concentration. Normal value 4.4";
+
+          public
+            Real H(displayUnit="eq/l") = 10^(-pH);
+            Real HO(displayUnit="eq/l") = kw/H;
+            Real HCO3(displayUnit="eq/l") = Kc1*pCO2/H;
+            Real CO3(displayUnit="eq/l") = Kc2*HCO3/H;
+
+          protected
+            Real FNX=K1*H^2 + 2*K1*K2*H + 3*K1*K2*K3;
+            Real FNY=H^3 + K1*H^2 + K1*K2*H + K1*K2*K3;
+            Real FNZ=FNX/FNY;
+          public
+            Real P(displayUnit="meq/l") = Pi*FNZ;
+            Real Netcharge=SID + 1000*(H - HO - HCO3 - CO3) - P;
+
+            Real NB=0.4*(1 - (1/(1 + 10^(pH - 6.9))))
+              "NB accounts for histidine pK shift due to the NB transition";
+
+            // constant Real albuminResidues[:] = cat(1,{-1 /*cysteine */,-98/*glutamic acid*/,-18/*tyrosine*/,+24/*arginine */, /* lysine >>>*/ 2, 2, 2, 2, 1, 50} ,ones(16) /*histidine residues*/,/* amino terminus and carboxyl terminus*/{1, 1});
+          protected
+            Real albConversion=1000*10*alb/66500;
+            constant Real albuminResidues[:]=cat(
+                      1,
+                      {-1,-98,-18,+24,2,2,2,2,1,50},
+                      ones(16),
+                      {1,-1});
+            // Real albuminPks[:] = {8.5 /* CYST*/,3.9 /* GLUT*/,11.7 /* TYR*/,12.5 /* ARG*/,/*LYS >>>*/5.8, 6.15, 7.51, 7.685, 7.86, 10.3,/*HIST>>>*/7.12 - NB, 7.22 - NB, 7.1 - NB, 7.49 - NB, 7.01 - NB, 7.31, 6.75, 6.36, 4.85, 5.76, 6.17, 6.73, 5.82, 5.1, 6.7, 6.2, 8/* amino terminus */,3.1 /*carboxyl terminus*/};
+            Real albuminPks[:]={8.5,3.9,11.7,12.5,5.8,6.15,7.51,7.685,7.86,10.3,
+                7.12 - NB,7.22 - NB,7.1 - NB,7.49 - NB,7.01 - NB,7.31,6.75,6.36,
+                4.85,5.76,6.17,6.73,5.82,5.1,6.7,6.2,8,3.1};
+            Real albChrg[n](each displayUnit="meq/l") "charge of albumin per unit";
+            constant Integer n=size(albuminResidues, 1);
+          public
+            Real atch=sum(albChrg)*albConversion
+              "albumin total charge. Normal value -12.2678";
+
+          equation
+            Netcharge + atch = 0;
+
+            for i in 1:n loop
+              if albuminResidues[i] > 0 then
+                // positive charge
+                albChrg[i] = albuminResidues[i]*(1/(1 + 10^(pH - albuminPks[i])));
+              else
+                // negative charge
+                albChrg[i] = albuminResidues[i]*(1/(1 + 10^(-pH + albuminPks[i])));
+              end if;
+            end for;
+
+            /* 
+  // debug
+  alb2 = -1 * (1 / (1 + 10 ^ (-(pH - 8.5))))
+  - 98 * (1 / (1 + 10 ^ (-(pH - 3.9))))
+  - 18 * (1 / (1 + 10 ^ (-(pH - 11.7))))
+  + 24 * (1 / (1 + 10 ^ (pH - 12.5)))
+  + 2 * (1 / (1 + 10 ^ (pH - 5.8)))
+  + 2 * (1 / (1 + 10 ^ (pH - 6.15)))
+  + 2 * (1 / (1 + 10 ^ (pH - 7.51)))
+  + 2 * (1 / (1 + 10 ^ (pH - 7.685)))
+  + 1 * (1 / (1 + 10 ^ (pH - 7.86)))
+  + 50 * (1 / (1 + 10 ^ (pH - 10.3)))
+  + (1 / (1 + 10 ^ (pH - 7.12 + NB)))
+  + (1 / (1 + 10 ^ (pH - 7.22 + NB)))
+  + (1 / (1 + 10 ^ (pH - 7.1 + NB)))
+  + (1 / (1 + 10 ^ (pH - 7.49 + NB)))
+  + (1 / (1 + 10 ^ (pH - 7.01 + NB)))
+  + (1 / (1 + 10 ^ (pH - 7.31)))
+  + (1 / (1 + 10 ^ (pH - 6.75)))
+  + (1 / (1 + 10 ^ (pH - 6.36)))
+  + (1 / (1 + 10 ^ (pH - 4.85)))
+  + (1 / (1 + 10 ^ (pH - 5.76)))
+  + (1 / (1 + 10 ^ (pH - 6.17)))
+  + (1 / (1 + 10 ^ (pH - 6.73)))
+  + (1 / (1 + 10 ^ (pH - 5.82)))
+  + (1 / (1 + 10 ^ (pH - 5.1)))
+  + (1 / (1 + 10 ^ (pH - 6.7)))
+  + (1 / (1 + 10 ^ (pH - 6.2)))
+  + (1 / (1 + 10 ^ (pH - 8)))
+  - 1 * (1 / (1 + 10 ^ (-(pH - 3.1))));
+*/
+            annotation (Documentation(info="<html>
+<pre><font style=\"color: #006400; \">Rem:&nbsp;Figge-Fencl&nbsp;Quantitative&nbsp;Physicochemical&nbsp;Model</font>
+<font style=\"color: #006400; \">Rem:&nbsp;of&nbsp;Human&nbsp;Acid-Base&nbsp;Physiology&nbsp;Version&nbsp;3.0&nbsp;(8&nbsp;October,&nbsp;2012;&nbsp;www.Figge-Fencl.org).</font>
+<font style=\"color: #006400; \">Rem:</font>
+<font style=\"color: #006400; \">Rem:&nbsp;Copyright&nbsp;2003&nbsp;-&nbsp;2013&nbsp;James&nbsp;J.&nbsp;Figge.&nbsp;Update&nbsp;published&nbsp;28&nbsp;April,&nbsp;2013;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;Update&nbsp;published&nbsp;27&nbsp;October,&nbsp;2013.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;The&nbsp;program&nbsp;may&nbsp;be&nbsp;downloaded&nbsp;free&nbsp;of&nbsp;charge&nbsp;for&nbsp;academic&nbsp;and&nbsp;educational&nbsp;use&nbsp;only.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;This&nbsp;program&nbsp;is&nbsp;not&nbsp;intended&nbsp;for&nbsp;clinical&nbsp;use&nbsp;or&nbsp;for&nbsp;the&nbsp;care&nbsp;of&nbsp;human&nbsp;subjects&nbsp;in&nbsp;clinical&nbsp;trials.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;This&nbsp;program&nbsp;applies&nbsp;to&nbsp;plasma-like&nbsp;solutions&nbsp;containing&nbsp;albumin.&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;The&nbsp;program&nbsp;does&nbsp;not&nbsp;account&nbsp;for&nbsp;the&nbsp;contribution&nbsp;of&nbsp;plasma&nbsp;globulins,&nbsp;and&nbsp;has&nbsp;not&nbsp;been&nbsp;tested&nbsp;with&nbsp;clinical&nbsp;data;&nbsp;hence&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;the&nbsp;program&nbsp;is&nbsp;not&nbsp;suitable&nbsp;for&nbsp;clinical&nbsp;use.</font>
+<p><br><br><code><font style=\"color: #006400; \">I</font>mplemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016</code></p>
+</html>",     revisions="<html>
+<pre><font style=\"color: #006400; \">Filip Jezek, 2016</font></pre>
+</html>"));
+          end FiggeFencl3;
+
+          model FiggeFencl3Detailed
+            "Extension for investigation of detailed albumin balance"
+            extends Auxilliary.FiggeFencl3;
+          protected
+            Real albPositivePart[n], albNegativePart[n];
+            Real albTotalPlusPart[n], albTotalMinusPart[n];
+          public
+            Real HCO3mEqL=HCO3*1000;
+            Real albHAPlus=albConversion*sum(albPositivePart) "A0 + H+ = HA+";
+            Real albAMinus=-albConversion*sum(albNegativePart) "A- + H+ = HA0";
+            Real albA0=(ATotPlus - albHAPlus) "A0 + H+ = HA+";
+            Real albHA0=(ATotMinus - albAMinus) "HA0 = A- + H+";
+            Real ATotPlus=albConversion*sum(albTotalPlusPart)
+              "Part of albumin, which could be positive";
+            Real ATotMinus=-albConversion*sum(albTotalMinusPart)
+              "Part of albumin, which could be negative.";
+
+            Real ach=sum(albChrg);
+            Real atch0=-12.2678 "to demonstrate the low buffer strength of albumin";
+            Real atot1=albHAPlus + albA0;
+            Real atot2=albAMinus + albHA0;
+            Real test=atot1 + atot2;
+
+            Real barGraphAlb1=albHA0;
+            Real barGraphAlb2=albHA0 + albAMinus;
+            Real barGraphAlb3=albHA0 + albAMinus + albHAPlus;
+            Real barGraphAlb4=albHA0 + albAMinus + albHAPlus + albA0;
+            Real barGraphHCO3Alb1=P;
+            Real barGraphHCO3Alb2=P - atch;
+            Real barGraphHCO3Alb3=P - atch + 1000*HCO3;
+            discrete Real dHCO3s, dHCO3e, dHCO3;
+            discrete Real dAlbs, dAlbe, dAlb;
+            Real diff=dHCO3 - dAlb;
+            Real outofcobntrol=albHAPlus - albAMinus;
+            parameter Real p=1;
+            parameter Real a=1;
+            parameter Real b=1;
+            parameter Real c=1;
+            Real AlbXMinus=-(0.148*pH - 0.818)*(alb*10) "Total albumin charge";
+            Real PXminus=-(0.309*pH - 0.469)*Pi;
+            Real Pminus=-P;
+            Real totalDiff=AlbXMinus - atch + PXminus - Pminus;
+
+          equation
+
+            // POSSIBLE OPENMODELICA INCOMPATIBILITY
+            // IN OPENMODELICA USE ELSEWHEN instead of end when; and when terminal.. lines
+            when initial() then
+              dHCO3s = 1000*HCO3;
+              dAlbs = albHAPlus - albAMinus - p*P - 1000*CO3*a - 1000*HO*b + 1000*H
+                *c;
+            end when;
+            when terminal() then
+              // elsewhen terminal() then
+              dHCO3e = 1000*HCO3;
+              dHCO3 = dHCO3e - dHCO3s;
+              dAlbe = albHAPlus - albAMinus - p*P - 1000*CO3*a - 1000*HO*b + 1000*H
+                *c;
+              dAlb = dAlbe - dAlbs;
+            end when;
+
+            for i in 1:n loop
+              if albuminResidues[i] > 0 then
+                // positive charge
+                albPositivePart[i] = albChrg[i];
+                albNegativePart[i] = 0;
+                albTotalPlusPart[i] = albuminResidues[i];
+                albTotalMinusPart[i] = 0;
+              else
+                // negative charge
+                albPositivePart[i] = 0;
+                albNegativePart[i] = albChrg[i];
+                albTotalPlusPart[i] = 0;
+                albTotalMinusPart[i] = albuminResidues[i];
+              end if;
+            end for;
+            annotation (Documentation(info="<html>
+<pre><font style=\"color: #006400; \">Rem:&nbsp;Figge-Fencl&nbsp;Quantitative&nbsp;Physicochemical&nbsp;Model</font>
+<font style=\"color: #006400; \">Rem:&nbsp;of&nbsp;Human&nbsp;Acid-Base&nbsp;Physiology&nbsp;Version&nbsp;3.0&nbsp;(8&nbsp;October,&nbsp;2012;&nbsp;www.Figge-Fencl.org).</font>
+<font style=\"color: #006400; \">Rem:</font>
+<font style=\"color: #006400; \">Rem:&nbsp;Copyright&nbsp;2003&nbsp;-&nbsp;2013&nbsp;James&nbsp;J.&nbsp;Figge.&nbsp;Update&nbsp;published&nbsp;28&nbsp;April,&nbsp;2013;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;Update&nbsp;published&nbsp;27&nbsp;October,&nbsp;2013.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;The&nbsp;program&nbsp;may&nbsp;be&nbsp;downloaded&nbsp;free&nbsp;of&nbsp;charge&nbsp;for&nbsp;academic&nbsp;and&nbsp;educational&nbsp;use&nbsp;only.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;This&nbsp;program&nbsp;is&nbsp;not&nbsp;intended&nbsp;for&nbsp;clinical&nbsp;use&nbsp;or&nbsp;for&nbsp;the&nbsp;care&nbsp;of&nbsp;human&nbsp;subjects&nbsp;in&nbsp;clinical&nbsp;trials.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;This&nbsp;program&nbsp;applies&nbsp;to&nbsp;plasma-like&nbsp;solutions&nbsp;containing&nbsp;albumin.&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;The&nbsp;program&nbsp;does&nbsp;not&nbsp;account&nbsp;for&nbsp;the&nbsp;contribution&nbsp;of&nbsp;plasma&nbsp;globulins,&nbsp;and&nbsp;has&nbsp;not&nbsp;been&nbsp;tested&nbsp;with&nbsp;clinical&nbsp;data;&nbsp;hence&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;the&nbsp;program&nbsp;is&nbsp;not&nbsp;suitable&nbsp;for&nbsp;clinical&nbsp;use.</font>
+<p><br><br><code><font style=\"color: #006400; \">I</font>mplemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016</code></p>
+</html>",     revisions="<html>
+<pre><font style=\"color: #006400; \">Filip Jezek, 2016</font></pre>
+</html>"));
+          end FiggeFencl3Detailed;
+
+          model Fencl
+            "Simple albumin and Pi calculations, according to [Fencl, 2000]"
+            extends
+              AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.Auxilliary.PlasmaElectrochemicalBase;
+
+            /*
+Rem: Figge-Fencl Quantitative Physicochemical Model
+Rem: of Human Acid-Base Physiology Version 3.0 (8 October, 2012; www.Figge-Fencl.org).
+Rem:
+Rem: Copyright 2003 - 2013 James J. Figge. Update published 28 April, 2013;
+Rem: Update published 27 October, 2013.
+Rem: 
+Rem: The program may be downloaded free of charge for academic and educational use only.
+Rem: This program is not intended for clinical use or for the care of human subjects in clinical trials.
+Rem: This program applies to plasma-like solutions containing albumin. 
+Rem: The program does not account for the contribution of plasma globulins, and has not been tested with clinical data; hence 
+Rem: the program is not suitable for clinical use.
+
+
+Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
+*/
+            // only constants here
+          protected
+            constant Real Kc1=0.0000000000244
+              "Kc1 is derived from the parameters in the Henderson-Hasselbalch equation. pK = 6.1; a = 0.230 mM / kPa; 1 Torr = 0.13332236842105 kPa. The value of Kc1 is 2.44E-11 (Eq / L)^2 / Torr.";
+            // Real H(displayUnit="eq/l") = 10^(-pH);
+          public
+            Real HCO3(displayUnit="mmol/l") = 1000*Kc1*pCO2/10^(-pH);
+            Real P(displayUnit="meq/l") = -Pi*(0.309*pH - 0.469);
+            Real atch=-(alb*10)*(0.123*pH - 0.631) "albumin total charge";
+          equation
+            SID + P + atch - HCO3 = 0;
+            annotation (Documentation(info="<html>
+<pre><font style=\"color: #006400; \">Rem:&nbsp;Figge-Fencl&nbsp;Quantitative&nbsp;Physicochemical&nbsp;Model</font>
+<font style=\"color: #006400; \">Rem:&nbsp;of&nbsp;Human&nbsp;Acid-Base&nbsp;Physiology&nbsp;Version&nbsp;3.0&nbsp;(8&nbsp;October,&nbsp;2012;&nbsp;www.Figge-Fencl.org).</font>
+<font style=\"color: #006400; \">Rem:</font>
+<font style=\"color: #006400; \">Rem:&nbsp;Copyright&nbsp;2003&nbsp;-&nbsp;2013&nbsp;James&nbsp;J.&nbsp;Figge.&nbsp;Update&nbsp;published&nbsp;28&nbsp;April,&nbsp;2013;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;Update&nbsp;published&nbsp;27&nbsp;October,&nbsp;2013.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;The&nbsp;program&nbsp;may&nbsp;be&nbsp;downloaded&nbsp;free&nbsp;of&nbsp;charge&nbsp;for&nbsp;academic&nbsp;and&nbsp;educational&nbsp;use&nbsp;only.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;This&nbsp;program&nbsp;is&nbsp;not&nbsp;intended&nbsp;for&nbsp;clinical&nbsp;use&nbsp;or&nbsp;for&nbsp;the&nbsp;care&nbsp;of&nbsp;human&nbsp;subjects&nbsp;in&nbsp;clinical&nbsp;trials.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;This&nbsp;program&nbsp;applies&nbsp;to&nbsp;plasma-like&nbsp;solutions&nbsp;containing&nbsp;albumin.&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;The&nbsp;program&nbsp;does&nbsp;not&nbsp;account&nbsp;for&nbsp;the&nbsp;contribution&nbsp;of&nbsp;plasma&nbsp;globulins,&nbsp;and&nbsp;has&nbsp;not&nbsp;been&nbsp;tested&nbsp;with&nbsp;clinical&nbsp;data;&nbsp;hence&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;the&nbsp;program&nbsp;is&nbsp;not&nbsp;suitable&nbsp;for&nbsp;clinical&nbsp;use.</font>
+<p><br><br><code><font style=\"color: #006400; \">I</font>mplemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016</code></p>
+</html>",     revisions="<html>
+<pre><font style=\"color: #006400; \">Filip Jezek, 2016</font></pre>
+</html>"));
+          end Fencl;
+
+          model Wolf
+            "Simple albumin and Pi calculations, according to [Wolf, 2011]"
+            extends
+              AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.Auxilliary.PlasmaElectrochemicalBase;
+            import Modelica.SIunits.*;
+
+            type cont = enumeration(
+                Na,
+                K,
+                Ca,
+                Mg,
+                Cl,
+                Pi,
+                Alb,
+                im,
+                Lac) "Contents of erythrocyte";
+
+            constant Real Vp0ByVp=0.98468;
+            constant Real fpw=0.9406 "fraction plasma water - Vpw/Vp";
+
+            parameter Concentration Na=140;
+            parameter Concentration K=4;
+            parameter Concentration Ca=2.4;
+            parameter Concentration Mg=0.8;
+            // already inherited
+            //  parameter Concentration Pi=1.2;
+            Real AlbPwGPerL=alb*10*Vp0ByVp "g/lpw";
+            Concentration Cl;
+            Concentration Alb=AlbPwGPerL/66.5 "mmol/Lpw";
+            parameter Concentration im=11.87;
+            parameter Concentration Lac=1.5;
+            Concentration SO4pw=0.33/fpw "mmol/Lpw";
+            Concentration volume_c[cont]={Na,K,Ca,Mg,Cl,Pi,Alb/Vp0ByVp,im,Lac}
+              "concentration in one liter";
+            Concentration water_c[cont]=volume_c/fpw*Vp0ByVp
+              "Actual concentration recalculated to water fraction in one liter (initially 0.96)";
+
+            Real CaPPBound=(3.98)/(3.98 + Hh)*water_c[cont.Ca] "1.257";
+            Real MgPPBound=CaPPBound/2;
+            Real ZCaBindPerAlb=CaPPBound/water_c[cont.Alb];
+            Real ZClBindPerAlb=6.46/(6.46 + Hh)*6 + 4 "Anstey";
+            Real CaIon=water_c[cont.Ca]*2 - CaPPBound "mEq/Lpw";
+            Real MgIon=water_c[cont.Mg]*2 - MgPPBound "mEq/Lpw";
+            //charge on inpermeable solutes
+            Real ZPi=(-1) - 10^(pH - 6.87)/(1 + 10^(pH - 6.87));
+            Real ZFigge=(-10.65) - 16*(10^(pH - 7.418)/(1 + 10^(pH - 7.418)));
+            Real ZAlbBnd=-ZClBindPerAlb + ZCaBindPerAlb + ZCaBindPerAlb/2;
+            Real ZAlb=ZFigge + ZAlbBnd;
+            Real Hh=H/fpw*1e8;
+
+            //   parameter Real Zim ;//= -5.3 "Charge of ALL impermeable solutes";//test
+            // Real Zim = -5.3 "Charge of ALL impermeable solutes";//test
+            parameter Real Zim=-0.6349 "Charge of ALL impermeable solutes";
+
+            //   Real fi[cont]={0.93,0.93,1,1,0.93,0.93,1,1,-9999};
+            // Alb has osmotic coefficient of 1???
+            //   Real CaOsm=water_c[cont.Ca] - CaPPBound*0.5;
+            //   Real MgOsm=water_c[cont.Mg] - MgPPBound*0.5;
+            //   Real OsmPart=SO4pw + CaOsm + MgOsm + sum(water_c[{cont.Na,cont.K,cont.Cl,cont.Lac}])
+            //        + water_c[cont.Pi] + HCO3 + CO3;
+            //   Real Osm=OsmPart*0.93 + permeableParticles " = 284.084";
+
+            //   Real Z[cont]={1,1,2,2,-1,ZPi,ZAlb,0,1};
+            //   Real Chrgs[cont]=water_c .* Z;
+
+            Real atch=water_c[cont.Alb]*ZFigge;
+            Real charge=Zim + SID + water_c[cont.Alb]*ZAlb + water_c[cont.Pi]*ZPi
+                 - HCO3 - 2*CO3 - SO4pw*2;
+
+            Concentration HCO3=0.0306*pCO2mmHg*10^(pH - 6.103)/fpw;
+            Concentration CO3=HCO3*10^(pH - 10.2);
+            //  Real pH(start=7.37); = -log10(H);
+
+            Real pCO2mmHg(unit="1") = pCO2;
+            Real H(
+              start=10^(-7.37),
+              min=0,
+              max=1) = 10^(-pH);
+            Real Hw=H/fpw;
+            Concentration permeableParticles=(5 + 5)/fpw
+              "glucose and urea concentration in PLasma water";
+          equation
+            //  SID = HCO3 + P + atch;
+            charge = 0;
+            SID = sum(water_c[{cont.Na,cont.K}]) - water_c[cont.Cl] + 2*sum(water_c[
+              {cont.Ca,cont.Mg}]) - CaPPBound - MgPPBound - water_c[cont.Lac];
+            annotation (Documentation(info="<html>
+<pre><font style=\"color: #006400; \">Rem:&nbsp;Figge-Fencl&nbsp;Quantitative&nbsp;Physicochemical&nbsp;Model</font>
+<font style=\"color: #006400; \">Rem:&nbsp;of&nbsp;Human&nbsp;Acid-Base&nbsp;Physiology&nbsp;Version&nbsp;3.0&nbsp;(8&nbsp;October,&nbsp;2012;&nbsp;www.Figge-Fencl.org).</font>
+<font style=\"color: #006400; \">Rem:</font>
+<font style=\"color: #006400; \">Rem:&nbsp;Copyright&nbsp;2003&nbsp;-&nbsp;2013&nbsp;James&nbsp;J.&nbsp;Figge.&nbsp;Update&nbsp;published&nbsp;28&nbsp;April,&nbsp;2013;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;Update&nbsp;published&nbsp;27&nbsp;October,&nbsp;2013.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;The&nbsp;program&nbsp;may&nbsp;be&nbsp;downloaded&nbsp;free&nbsp;of&nbsp;charge&nbsp;for&nbsp;academic&nbsp;and&nbsp;educational&nbsp;use&nbsp;only.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;This&nbsp;program&nbsp;is&nbsp;not&nbsp;intended&nbsp;for&nbsp;clinical&nbsp;use&nbsp;or&nbsp;for&nbsp;the&nbsp;care&nbsp;of&nbsp;human&nbsp;subjects&nbsp;in&nbsp;clinical&nbsp;trials.</font>
+<font style=\"color: #006400; \">Rem:&nbsp;This&nbsp;program&nbsp;applies&nbsp;to&nbsp;plasma-like&nbsp;solutions&nbsp;containing&nbsp;albumin.&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;The&nbsp;program&nbsp;does&nbsp;not&nbsp;account&nbsp;for&nbsp;the&nbsp;contribution&nbsp;of&nbsp;plasma&nbsp;globulins,&nbsp;and&nbsp;has&nbsp;not&nbsp;been&nbsp;tested&nbsp;with&nbsp;clinical&nbsp;data;&nbsp;hence&nbsp;</font>
+<font style=\"color: #006400; \">Rem:&nbsp;the&nbsp;program&nbsp;is&nbsp;not&nbsp;suitable&nbsp;for&nbsp;clinical&nbsp;use.</font>
+<p><br><br><code><font style=\"color: #006400; \">I</font>mplemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016</code></p>
+</html>",     revisions="<html>
+<pre><font style=\"color: #006400; \">Filip Jezek, 2016</font></pre>
+</html>"));
+          end Wolf;
+
+          model FiggeFenclNSID "Calculation of normal SID using plasma figge fencl"
+            parameter Real pH0(displayUnit="mmHg") = 7.4;
+            input Real pCO20(displayUnit="mmHg") = 40;
+            input Real Pi0(unit="mmol/l");
+            //= 1.15;
+            input Real alb0(unit="g/dl");
+            //= 4.4;
+            Real SID;
+            // = figgeFencl3.SID;
+
+            Auxilliary.FiggeFencl3 figgeFencl3(
+              pH=pH0,
+              pCO2=pCO20,
+              Pi=Pi0,
+              alb=alb0,
+              SID=SID)
+              annotation (Placement(transformation(extent={{-58,0},{-38,20}})));
+          end FiggeFenclNSID;
+        end Auxilliary;
+
+        model PlasmaFiggeFencl3
+          "Implementation of FF3 [Figge, 2013] together with NSID"
+          extends
+            AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.Auxilliary.FiggeFencl3;
+
+          constant Real pH0(displayUnit="mmHg") = 7.4;
+          constant Real pCO20(displayUnit="mmHg") = 40;
+          Real NSID;
+          //  input Real BE=SID - NSID;
+          //input Real Pi;
+          //input Real alb;
+        protected
+          AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.Auxilliary.FiggeFencl3
+            normalPlasmaSID(
+            pCO2=pCO20,
+            Pi=Pi,
+            alb=alb,
+            SID=NSID)
+            annotation (Placement(transformation(extent={{-58,0},{-38,20}})));
+
+        equation
+
+          normalPlasmaSID.pH = pH0;
+          annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+                coordinateSystem(preserveAspectRatio=false)));
+        end PlasmaFiggeFencl3;
+
+        model PlasmaFencl
+          "Implementation of Fencl [Fencl, 2000] together with NSID"
+          extends
+            AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.Auxilliary.Fencl;
+
+          constant Real pH0(displayUnit="mmHg") = 7.4;
+          constant Real pCO20(displayUnit="mmHg") = 40;
+          Real NSID;
+          //  Real BE=SID - NSID;
+          //   input Real Pi;
+          //   input Real alb;
+        protected
+          AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.Auxilliary.Fencl
+            normalPlasmaSID(
+            pCO2=pCO20,
+            Pi=Pi,
+            alb=alb,
+            SID=NSID)
+            annotation (Placement(transformation(extent={{-58,0},{-38,20}})));
+
+        equation
+
+          normalPlasmaSID.pH = pH0;
+          annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+                coordinateSystem(preserveAspectRatio=false)));
+        end PlasmaFencl;
+
+        model PlasmaWolf
+          "Implementation of Wolf model of plasma [Wolf, 2011] together with NSID"
+          extends
+            AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.Auxilliary.Wolf;
+
+          constant Real pH0(displayUnit="mmHg") = 7.4;
+          constant Real pCO20(displayUnit="mmHg") = 40;
+          Real NSID;
+          //  Real BE=SID - NSID;
+          //   input Real Pi;
+          //   input Real alb;
+        protected
+          AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.Auxilliary.Wolf
+            normalPlasmaSID(
+            pCO2=pCO20,
+            Pi=Pi,
+            alb=alb,
+            SID=NSID)
+            annotation (Placement(transformation(extent={{-58,0},{-38,20}})));
+
+        equation
+
+          normalPlasmaSID.pH = pH0;
+          annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+                coordinateSystem(preserveAspectRatio=false)));
+        end PlasmaWolf;
+
+        package Tests
+          extends Modelica.Icons.ExamplesPackage;
+          model Plasma_pCO2 "Change of pH while changing pCO2"
+            extends Modelica.Icons.Example;
+
+            AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.PlasmaFiggeFencl3
+              ff(
+              SID=ff.NSID + BE,
+              pCO2=pCO2,
+              Pi=Pi,
+              alb=alb) annotation (Placement(transformation(extent={{-60,20},{-40,
+                      40}})));
+            AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.PlasmaFencl
+              fe(
+              SID=fe.NSID + BE,
+              pCO2=pCO2,
+              Pi=Pi,
+              alb=alb) annotation (Placement(transformation(extent={{-60,20},{-40,
+                      40}})));
+
+            AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.PlasmaWolf
+              wo(
+              SID=wo.NSID + BE,
+              pCO2=pCO2,
+              Pi=Pi,
+              alb=alb) annotation (Placement(transformation(extent={{-60,20},{-40,
+                      40}})));
+
+            //parameter Real SID=39;
+            //   Real SID=39 - 15 + time*30;
+            //   Real pCO2=40;
+            parameter Real BE=0;
+            Real pCO2=time*40 + 20;
+            parameter Real Pi=1.15;
+            parameter Real alb=4.4;
+            output Real pHFF=ff.pH;
+            output Real pHFe=fe.pH;
+            output Real pHWo=wo.pH;
+          equation
+            //  BE =
+            annotation (experiment(Tolerance=1e-006),
+                __Dymola_experimentSetupOutput);
+          end Plasma_pCO2;
+
+          model Plasma_BE "Change of pH while changing pCO2"
+            extends Modelica.Icons.Example;
+
+            AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.PlasmaFiggeFencl3
+              ff(
+              SID=ff.NSID + BE,
+              pCO2=pCO2,
+              Pi=Pi,
+              alb=alb) annotation (Placement(transformation(extent={{-60,20},{-40,
+                      40}})));
+            AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.PlasmaFencl
+              fe(
+              SID=fe.NSID + BE,
+              pCO2=pCO2,
+              Pi=Pi,
+              alb=alb) annotation (Placement(transformation(extent={{-60,20},{-40,
+                      40}})));
+
+            AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.PlasmaWolf
+              wo(
+              SID=wo.NSID + BE,
+              pCO2=pCO2,
+              Pi=Pi,
+              alb=alb) annotation (Placement(transformation(extent={{-60,20},{-40,
+                      40}})));
+
+            //parameter Real SID=39;
+            //   Real SID=39 - 15 + time*30;
+            //   Real pCO2=40;
+            Real BE=-15 + time*30;
+            parameter Real pCO2=40;
+            parameter Real Pi=1.15;
+            parameter Real alb=4.4;
+            output Real pHFF=ff.pH;
+            output Real pHFe=fe.pH;
+            output Real pHWo=wo.pH;
+          equation
+            //  BE =
+            annotation (experiment(Tolerance=1e-006),
+                __Dymola_experimentSetupOutput);
+          end Plasma_BE;
+        end Tests;
+      end PlasmaElectrochemical;
+
+      package FullBloodEmpirical
+        package Auxiliary
+          partial model FullBloodEmpiricalBase
+            Real Hb(unit="g/dl") = Hct*33.34;
+            input Real Hct(unit="1") = 15/33.34;
+            input Real BEox(displayUnit="meq/l") = 0;
+            input Real sO2(unit="1") = 1;
+            input Real pCO2(displayUnit="mmHg") = 40;
+            Real pH(start=7.4);
+          end FullBloodEmpiricalBase;
+        end Auxiliary;
+
+        model SAVanSlyke77
+          "original Van Slyke equation according to SA 1977 DOI: 10.3109/00365517709098927"
+          extends Auxiliary.FullBloodEmpiricalBase;
+          Real a(unit="mmol/l") "bicarbonate concentration in plasma/(mmol/l)";
+          Real b(unit="mmol/l") = Hb*0.6206
+            "hemoglobin concentration in blood/(mmol/l)";
+          Real c(unit="1") = pH "pH of plasma at 37 degrees C";
+          Real d(displayUnit="mEq/l") = BEox - 0.3*(1 - sO2)
+            "base excess concentration in blood/(mmol/l)";
+
+        equation
+          a - 24.4 = -(2.3*b + 7.7)*(c - 7.40) + d/(1 - 0.023*b);
+          pH = 6.1 + log10(a/(0.230*pCO2*133/1000));
+        end SAVanSlyke77;
+
+        model Zander1995 "Implementation according to [Zander, 1995]"
+          extends Auxiliary.FullBloodEmpiricalBase;
+          Real BE=(1 - 0.0143*Hb)*((0.0304*pCO2*(10^(pH - 6.1)) - 24.26) + (9.5 +
+              1.63*Hb)*(pH - 7.4)) - 0.2*Hb*(1 - sO2);
+        equation
+          BE = BEox + 0.2*(1 - sO2)*Hb;
+        end Zander1995;
+
+        model SAVanSlyke
+          "The Van Slyke equation by Sigaard-Andersen, taken from http://www.siggaard-andersen.dk/OsaTextbook.htm"
+          extends Auxiliary.FullBloodEmpiricalBase;
+          //    parameter Real Hct = 15/33.34;
+          //    Real BEox = 0;
+          //    parameter Real sO2 = 1;
+          //    parameter Real pCO2 = 40;
+
+          Real ctH=-(1 - (1 - rc)*fiEB)*((cHCO3 - cHCO30) + buf*(pH - 7.4))
+            "concentration of titratable hydrogen ion";
+
+          // Real rc = 0.57; // cHCO3e/cHCO3p from web pages
+          Real rc=0.57 - 0.28*dpH - 0.082*dpH^2;
+          // said to be from siggaard-andersen, 1974: The acid-base status of the blood
+          Real dpH=-(pH - 7.4);
+
+          //parameter Real fiEB = 0.7;//15/33.34;// Hct;// ctHbB/cHBE
+          Real fiEB=Hct;
+          // ctHbB/cHBE
+          Real ctHbE(unit="mmol/l") = 21;
+          Real cHCO30(unit="mmol/l") = 24.5;
+          Real buf=2.3*ctHb + BetaP;
+          Real ctHb=Hb*0.6206
+            "Hb*4 SA is considering the monomer of hemoglobin tetramer";
+          //Hct*33.34; // recompute the hematocrit to mmol/l - BUT IS THAT COMPATIBLE? TODO!
+          Real BetaP=5.8 + 8.0*(cAlb - 0.66);
+          // Real BetaP = 7.7 + 8.0 * (cAlb - 0.66);
+          Real cAlb(unit="mmol/l") = Alb/6.6;
+          //0.66;
+          input Real Alb(unit="g/dl") = 4.4;
+
+          Real BE=-ctH;
+          Real cHCO3(start=24.5);
+        equation
+          BEox = BE + 0.3*(1 - sO2);
+
+          pH = 6.1 + log10(cHCO3/(0.230*pCO2*133/1000));
+
+        end SAVanSlyke;
+
+        model Kofr2009 "[Kofranek, 2009]"
+          extends Auxiliary.FullBloodEmpiricalBase;
+
+          Real a[:]={996.35 - 10.35*Hb,35.16875 + 0.25875*Hb,-82.41 + 2.01*Hb,-5.27625
+               - (5.025e-2)*Hb,121 - Hb,2.625 + 0.025*Hb,-2.556 - 0.0944*Hb,
+              13.87634 + 0.186653*Hb + 0.00534936*Hb^2,0.548 - 0.0274*Hb,0.274 -
+              0.0137*Hb};
+
+        public
+          Real BE=BEox + 0.2*(1 - sO2)*Hb;
+          Real Y=a[7] + sqrt(a[8] + a[9]*BE);
+
+        equation
+          pH = (a[1]*a[10] + a[2]*Y + (a[3]*a[10] + a[4]*Y)*log10(pCO2))/(a[5]*a[10]
+             + a[6]*Y);
+
+        end Kofr2009;
+
+        model SAoriginal
+          "Our complex polynomial fit to original SA data, used as a reference"
+          extends Auxiliary.FullBloodEmpiricalBase;
+
+        protected
+          constant Real pco2BBCoef[:]={2.1125e-009,-640.9926e-009,72.7649e-006,-3.2862e-003,
+              -38.1749e-003,8.2352e+000,-97.0551e+000};
+          constant Real pco2BECoef[:]={8.3975e-009,-513.9503e-009,3.8105e-006,
+              231.6888e-006,-46.5581e-003,353.7105e-003,39.9871e+000};
+          constant Real pHBBCoef[:]={40.8936e-012,-13.0063e-009,1.6780e-006,-111.7919e-006,
+              4.0776e-003,-67.8274e-003,7.2888e+000};
+          constant Real pHBECoef[:]={131.3315e-009,2.5027e-006,175.6144e-006,
+              11.9273e-003,7.4001e+000};
+        public
+          Real pCO2BB(start=96) = pco2BBCoef[1]*BB^6 + pco2BBCoef[2]*BB^5 +
+            pco2BBCoef[3]*BB^4 + pco2BBCoef[4]*BB^3 + pco2BBCoef[5]*BB^2 +
+            pco2BBCoef[6]*BB + pco2BBCoef[7];
+          Real pCO2BE(start=40) = pco2BECoef[1]*BE^6 + pco2BECoef[2]*BE^5 +
+            pco2BECoef[3]*BE^4 + pco2BECoef[4]*BE^3 + pco2BECoef[5]*BE^2 +
+            pco2BECoef[6]*BE + pco2BECoef[7];
+          Real pHBB(start=7) = pHBBCoef[1]*BB^6 + pHBBCoef[2]*BB^5 + pHBBCoef[3]*BB
+            ^4 + pHBBCoef[4]*BB^3 + pHBBCoef[5]*BB^2 + pHBBCoef[6]*BB + pHBBCoef[7];
+          Real pHBE(start=7) = pHBECoef[1]*BE^4 + pHBECoef[2]*BE^3 + pHBECoef[3]*BE
+            ^2 + pHBECoef[4]*BE + pHBECoef[5];
+
+          Real BB=BE + 0.42*Hb + 41.7;
+          Real BE=BEox + 0.2*(1 - sO2)*Hb;
+
+        equation
+          pH = (log10(pCO2) - log10(pCO2BB))*(pHBB - pHBE)/(log10(pCO2BB) - log10(
+            pCO2BE)) + pHBB;
+
+        end SAoriginal;
+
+        package Tests
+          extends Modelica.Icons.ExamplesPackage;
+          model Blood_pCO2
+            "pH dependent on varying pCO2 by different approximations. We take our implementation of SA nomogram as reference. Compare the object's pH"
+            extends Modelica.Icons.Example;
+            parameter Real Hct=15/33.34;
+            parameter Real BEox=0;
+            parameter Real sO2=1;
+            output Real pHZander=zander1995.pH;
+            output Real pHNomogram=sAoriginal.pH;
+            output Real pHVanSlyke=sAVanSlyke.pH;
+            output Real pHVanSlyke77=sAVanSlyke77.pH;
+            input Real pCO2=time*40 + 20;
+            FullBloodEmpirical.Zander1995 zander1995(
+              pCO2=pCO2,
+              BEox=BEox,
+              Hct=Hct,
+              sO2=sO2) annotation (Placement(transformation(extent={{-100,40},{
+                      -80,60}})));
+            FullBloodEmpirical.Kofr2009 kofr2009(
+              pCO2=pCO2,
+              BEox=BEox,
+              Hct=Hct,
+              sO2=sO2)
+              annotation (Placement(transformation(extent={{-20,40},{0,60}})));
+            FullBloodEmpirical.SAoriginal sAoriginal(
+              pCO2=pCO2,
+              BEox=BEox,
+              Hct=Hct,
+              sO2=sO2)
+              annotation (Placement(transformation(extent={{34,40},{54,60}})));
+            FullBloodEmpirical.SAVanSlyke sAVanSlyke(
+              pCO2=pCO2,
+              BEox=BEox,
+              Hct=Hct,
+              sO2=sO2)
+              annotation (Placement(transformation(extent={{80,40},{100,60}})));
+            FullBloodEmpirical.SAVanSlyke77 sAVanSlyke77(
+              pCO2=pCO2,
+              BEox=BEox,
+              Hct=Hct,
+              sO2=sO2) annotation (Placement(transformation(extent={{-60,40},{-40,
+                      60}})));
+            annotation (
+              experiment(Tolerance=0.001),
+              __Dymola_experimentSetupOutput,
+              __Dymola_Commands(file="def.mos" "def"));
+          end Blood_pCO2;
+
+          model Blood_BE
+            "pH dependent on varying pCO2 by different approximations. We take our implementation of SA nomogram as reference. Compare the object's pH"
+            extends Modelica.Icons.Example;
+            parameter Real Hct=15/33.34;
+            Real BEox=-15 + time*30;
+            parameter Real sO2=1;
+            output Real pHZander=zander1995.pH;
+            output Real pHNomogram=sAoriginal.pH;
+            output Real pHVanSlyke=sAVanSlyke.pH;
+            output Real pHVanSlyke77=sAVanSlyke77.pH;
+            parameter Real pCO2=40;
+            //time*40 + 20;
+            FullBloodEmpirical.Zander1995 zander1995(
+              pCO2=pCO2,
+              BEox=BEox,
+              Hct=Hct,
+              sO2=sO2) annotation (Placement(transformation(extent={{-100,40},{
+                      -80,60}})));
+            FullBloodEmpirical.Kofr2009 kofr2009(
+              pCO2=pCO2,
+              BEox=BEox,
+              Hct=Hct,
+              sO2=sO2)
+              annotation (Placement(transformation(extent={{-20,40},{0,60}})));
+            FullBloodEmpirical.SAoriginal sAoriginal(
+              pCO2=pCO2,
+              BEox=BEox,
+              Hct=Hct,
+              sO2=sO2)
+              annotation (Placement(transformation(extent={{34,40},{54,60}})));
+            FullBloodEmpirical.SAVanSlyke sAVanSlyke(
+              pCO2=pCO2,
+              BEox=BEox,
+              Hct=Hct,
+              sO2=sO2)
+              annotation (Placement(transformation(extent={{80,40},{100,60}})));
+            FullBloodEmpirical.SAVanSlyke77 sAVanSlyke77(
+              pCO2=pCO2,
+              BEox=BEox,
+              Hct=Hct,
+              sO2=sO2) annotation (Placement(transformation(extent={{-60,40},{-40,
+                      60}})));
+            annotation (
+              experiment(Tolerance=0.001),
+              __Dymola_experimentSetupOutput,
+              __Dymola_Commands(file="def.mos" "def"));
+          end Blood_BE;
+        end Tests;
+        annotation (Documentation(info="<html>
+<h4>References:</h4>
+<p>Fencl, V., Jabor, A., Kazda, A., &amp; Figge, J. (2000). Appendix of Diagnosis of Metabolic Acid&ndash;Base Disturbances in Critically Ill Patients. American Journal of Respiratory and Critical Care Medicine, 162(6), 2246&ndash;2251.</p>
+<p>Figge, J. (27 October, 2013). The Figge-Fencl Quantitative Physicochemical Model of Human Acid-Base Physiology (Version 3.0). Retrieved June 22, 2016, from http://www.figge-fencl.org/model.html</p>
+<p>Kofr&aacute;nek, J. (2009). KOMPLEXN&Iacute; MODEL ACIDOBAZICK&Eacute; ROVNOV&Aacute;HY KRVE. Medsoft 2009. Retrieved from http://www.physiome.cz/references/Medsoft09a.pdf</p>
+<p>Raftos, J. E., Bulliman, B. T., &amp; Kuchel, P. W. (1990). Evaluation of an electrochemical model of erythrocyte pH buffering using 31P nuclear magnetic resonance data. The Journal of General Physiology, 95(6), 1183&ndash;1204.</p>
+<p>Siggaard-Andersen, O. (1977). The van Slyke equation. Scandinavian Journal of Clinical and Laboratory Investigation. Supplementum, 146, 15&ndash;20.</p>
+<p>Siggaard-Andersen, O., &amp; Fogh-Andersen, N. (1995). Base excess or buffer base (strong ion difference) as measure of a non-respiratory acid-base disturbance. Acta Anaesthesiologica Scandinavica. Supplementum, 107, 123&ndash;128.</p>
+<p>Wolf, M. B. (2013). Whole body acid-base and fluid-electrolyte balance: a mathematical model. American Journal of Physiology. Renal Physiology, 305(8), F1118&ndash;31.</p>
+<p>Wolf, M. B. (2015). Comprehensive diagnosis of whole-body acid-base and fluid-electrolyte disorders using a mathematical model and whole-body base excess. Journal of Clinical Monitoring and Computing, 29(4), 475&ndash;490.</p>
+<p>Wolf, M. B., &amp; DeLand, E. C. (2011). A comprehensive, computer-model-based approach for diagnosis and treatment of complex acid&ndash;base disorders in critically-ill patients. Journal of Clinical Monitoring and Computing, 25(6), 353&ndash;364.</p>
+<p>Wolf, M. B., &amp; Deland, E. C. (2011). A mathematical model of blood-interstitial acid-base balance: application to dilution acidosis and acid-base status. Journal of Applied Physiology, 110(4), 988&ndash;1002.</p>
+<p>Zander, R. (1995). Die korrekte Bestimmung des Base Excess (BE, mmol/l) im Blut. AINS-An&auml;sthesiologie- Intensivmedizin- Notfallmedizin- Schmerztherapie, 30(S 1), S36&ndash;S38.</p>
+</html>"));
+      end FullBloodEmpirical;
+
+      package FullBloodCombined
+        extends Modelica.Icons.ExamplesPackage;
+
+        model CombinedModel
+          "Test combined model of Figge-fencl plasma and SA full hemoatocrite"
+          replaceable FullBloodAcidBase.PlasmaElectrochemical.PlasmaFiggeFencl3
+            plasma(
+            SID=SID,
+            pCO2=pCO2,
+            Pi=Pi,
+            alb=alb) constrainedby
+            FullBloodAcidBase.PlasmaElectrochemical.Auxilliary.PlasmaElectrochemicalBase(
+            SID=SID,
+            pCO2=pCO2,
+            Pi=Pi,
+            alb=alb)
+            annotation (Placement(transformation(extent={{-20,20},{0,40}})));
+
+          replaceable FullBloodAcidBase.FullBloodEmpirical.SAoriginal fullErythrocyte(
+            Hct=1,
+            BEox=BEe,
+            pCO2=pCO2) constrainedby
+            FullBloodAcidBase.FullBloodEmpirical.Auxiliary.FullBloodEmpiricalBase(
+            Hct=1,
+            BEox=BEe,
+            pCO2=pCO2)
+            annotation (Placement(transformation(extent={{20,20},{40,40}})));
+          constant Real fullHb=33.34;
+          input Real Hb=15;
+          input Real Hct=Hb/fullHb;
+
+          Real BEp(unit="meq/l") = BE + mHCO3/Hct;
+          Real BEe(unit="meq/l") = BE - mHCO3/(1 - Hct);
+
+          Real mHCO3;
+
+          Real SID;
+          input Real BE=0;
+          input Real pCO2=40;
+          input Real Pi=1.15;
+          input Real alb=4.4;
+          output Real pH=fullErythrocyte.pH;
+        equation
+          plasma.pH = fullErythrocyte.pH;
+          BEp = SID - plasma.NSID;
+
+          annotation (experiment(
+              StopTime=1,
+              __Dymola_NumberOfIntervals=500,
+              Tolerance=1e-003));
+        end CombinedModel;
+
+        model SimplestCombinedListing
+          "Provides simplest combined model, listed as a lucid flat modelica implementation. The Zander's model is however not very precise for this usage."
+          extends Modelica.Icons.Example;
+
+          // INPUT PARAMETERS
+          Real BEox(displayUnit="meq/l") = 0;
+          // Real BEox(displayUnit="meq/l") = time "set the start and end time of simulation to desired range";
+          Real Pi(unit="mmol/l") = 1.15 "Total phosphate. Normal value 1.15";
+          Real alb(unit="g/dl") = 4.4 "Albumin concentration. Normal value 4.4";
+          Real Hb(unit="g/dl") = 15;
+          Real sO2(unit="1") = 1;
+          Real pCO2(displayUnit="mmHg") = 40
+            "CO2 partial pressure. Normal value 40";
+
+          Real BE=BEox + 0.2*(1 - sO2)*Hb
+            "BE in full blood - correction for oxygen saturation";
+          Real Hct(unit="1") = Hb/33.34 "estimation of hematocrit";
+
+          // These two are unknown
+          Real X "Cl for HCO exchange, meq/l";
+          Real pH(start=10, unit="1") "pH of whole blood";
+
+          // ERYTHROCYTE PROPERTIES (Zander, 1995)
+          Real BEe(unit="meq/l") = (1 - 0.0143*Hb)*((0.0304*pCO2*(10^(pH - 6.1)) -
+            24.26) + (9.5 + 1.63*Hb)*(pH - 7.4)) "Zander equation for BE";
+
+          // PLASMA PROPERTIES
+          Real BEp(unit="meq/l") = SID - NSID "BE in plasma is obtained from NSID";
+          Real SID(displayUnit="meq/l") = -(P + atch - HCO3)
+            "Strong ion difference given by electroneutrality of plasma compartment. Normal value 39";
+          Real HCO3(displayUnit="mmol/l") = 24.4e-9*pCO2/10^(-pH)
+            "Total HCO3 (Figge)";
+          Real P(displayUnit="meq/l") = -Pi*(0.309*pH - 0.469)
+            "Total charge of phosphates (Fencl)";
+          Real atch=-(alb*10)*(0.123*pH - 0.631) "albumin total charge (Fencl)";
+
+          // NORMAL SID
+          Real NSID=-(NP_P + NP_atch - NP_HCO3)
+            "SID as would be in pH 7.4 and pCO2 40 torr";
+          Real NP_HCO3(displayUnit="mmol/l") = 24.4e-9*40/10^(-7.4)
+            "Total HCO3 in normal plasma (Figge)";
+          Real NP_P(displayUnit="meq/l") = -Pi*(0.309*7.4 - 0.469)
+            "Total charge of phosphates in normal plasma (Fencl)";
+          Real NP_atch=-(alb*10)*(0.123*7.4 - 0.631)
+            "albumin total charge in normal plasma(Fencl)";
+        equation
+
+          BEp = BE - X/(1 - Hct);
+          BEe = BE + X/Hct;
+
+          annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+                coordinateSystem(preserveAspectRatio=false)));
+        end SimplestCombinedListing;
+
+        model PolynomialCombinedListing
+          "Provides simple combined model with polynomial description of the behavioral HCT1 compartment. Provides good precision, yet good performance as well."
+          extends Modelica.Icons.Example;
+
+          // INPUT PARAMETERS
+          Real BEox(displayUnit="meq/l") = 0;
+          // Real BEox(displayUnit="meq/l") = time "set the start and end time of simulation to desired range";
+          Real Pi(unit="mmol/l") = 1.15 "Total phosphate. Normal value 1.15";
+          Real alb(unit="g/dl") = 4.4 "Albumin concentration. Normal value 4.4";
+          Real Hb(unit="g/dl") = 15;
+          Real sO2(unit="1") = 1;
+          Real pCO2(displayUnit="mmHg") = 40
+            "CO2 partial pressure. Normal value 40";
+
+          Real BE=BEox + 0.2*(1 - sO2)*Hb
+            "BE in full blood - correction for oxygen saturation";
+          Real Hct(unit="1") = Hb/33.34 "estimation of hematocrit";
+
+          // These two are unknown
+          Real X "Cl for HCO exchange, meq/l";
+          Real pH(start=10, unit="1") "pH of whole blood";
+
+          // ERYTHROCYTE PROPERTIES - polynomial approximation
+
+        protected
+          constant Real pco2BBCoef[:]={2.1125e-009,-640.9926e-009,72.7649e-006,-3.2862e-003,
+              -38.1749e-003,8.2352e+000,-97.0551e+000};
+          constant Real pco2BECoef[:]={8.3975e-009,-513.9503e-009,3.8105e-006,
+              231.6888e-006,-46.5581e-003,353.7105e-003,39.9871e+000};
+          constant Real pHBBCoef[:]={40.8936e-012,-13.0063e-009,1.6780e-006,-111.7919e-006,
+              4.0776e-003,-67.8274e-003,7.2888e+000};
+          constant Real pHBECoef[:]={131.3315e-009,2.5027e-006,175.6144e-006,
+              11.9273e-003,7.4001e+000};
+        public
+          Real pCO2BB(start=96) = pco2BBCoef[1]*BB^6 + pco2BBCoef[2]*BB^5 +
+            pco2BBCoef[3]*BB^4 + pco2BBCoef[4]*BB^3 + pco2BBCoef[5]*BB^2 +
+            pco2BBCoef[6]*BB + pco2BBCoef[7];
+          Real pCO2BE(start=40) = pco2BECoef[1]*BEe^6 + pco2BECoef[2]*BEe^5 +
+            pco2BECoef[3]*BEe^4 + pco2BECoef[4]*BEe^3 + pco2BECoef[5]*BEe^2 +
+            pco2BECoef[6]*BEe + pco2BECoef[7];
+          Real pHBB(start=7) = pHBBCoef[1]*BB^6 + pHBBCoef[2]*BB^5 + pHBBCoef[3]*BB
+            ^4 + pHBBCoef[4]*BB^3 + pHBBCoef[5]*BB^2 + pHBBCoef[6]*BB + pHBBCoef[7];
+          Real pHBE(start=7) = pHBECoef[1]*BEe^4 + pHBECoef[2]*BEe^3 + pHBECoef[3]*
+            BEe^2 + pHBECoef[4]*BEe + pHBECoef[5];
+
+          Real BB=BEe + 0.42*Hb + 41.7;
+          Real BEe;
+
+          // PLASMA PROPERTIES
+          Real BEp(unit="meq/l") = SID - NSID "BE in plasma is obtained from NSID";
+          Real SID(displayUnit="meq/l") = -(P + atch - HCO3)
+            "Strong ion difference given by electroneutrality of plasma compartment. Normal value 39";
+          Real HCO3(displayUnit="mmol/l") = 24.4e-9*pCO2/10^(-pH)
+            "Total HCO3 (Figge)";
+          Real P(displayUnit="meq/l") = -Pi*(0.309*pH - 0.469)
+            "Total charge of phosphates (Fencl)";
+          Real atch=-(alb*10)*(0.123*pH - 0.631) "albumin total charge (Fencl)";
+
+          // NORMAL SID
+          Real NSID=-(NP_P + NP_atch - NP_HCO3)
+            "SID as would be in pH 7.4 and pCO2 40 torr";
+          Real NP_HCO3(displayUnit="mmol/l") = 24.4e-9*40/10^(-7.4)
+            "Total HCO3 in normal plasma (Figge)";
+          Real NP_P(displayUnit="meq/l") = -Pi*(0.309*7.4 - 0.469)
+            "Total charge of phosphates in normal plasma (Fencl)";
+          Real NP_atch=-(alb*10)*(0.123*7.4 - 0.631)
+            "albumin total charge in normal plasma(Fencl)";
+        equation
+          pH = (log10(pCO2) - log10(pCO2BB))*(pHBB - pHBE)/(log10(pCO2BB) - log10(
+            pCO2BE)) + pHBB;
+
+          BEp = BE - X/(1 - Hct);
+          BEe = BE + X/Hct;
+
+          annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+                coordinateSystem(preserveAspectRatio=false)));
+        end PolynomialCombinedListing;
+      end FullBloodCombined;
+    end FullBloodAcidbase;
   end Acidbase;
 
   package BloodComponents
@@ -11601,6 +12628,7 @@ and mixing"), Text(
       parameter Boolean UseStepCO2Fraction = false;
       parameter Physiolibrary.Types.Time breakTime = 10*60*60;
       parameter Boolean UseRespiratoryCompensation = true;
+      parameter Physiolibrary.Types.Fraction respiratoryQuotient = 0.85;
 
       // computed variables
       Physiolibrary.Types.Fraction FiCO2= if not UseStepCO2Fraction then FiCO2_start else if time < breakTime then FiCO2_start else 0.08 annotation(Dialog(enable = false, tab="Calculated vars"));
@@ -19615,7 +20643,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{24,8},{40,-6}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{38,48},{58,62}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true)
+      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+          respiratoryQuotient=0.0085)
         annotation (Placement(transformation(extent={{66,64},{86,44}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a O2 annotation (Placement(
             transformation(rotation=0, extent={{-110,70},{-90,90}}),
@@ -29600,19 +30629,99 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
   package Visualization
 
     model Iontograms
-      parameter Real Na = 140, Cl = 100, Atot = 10, UA = 5;
-      Real HCO3 = Na - Cl - Atot - UA;
+
+      parameter Physiolibrary.Types.Concentration Na_init = 140;
+      parameter Physiolibrary.Types.Concentration Cl_init = 100;
+      parameter Physiolibrary.Types.Concentration At_init=0.56;
+      parameter Physiolibrary.Types.Concentration UA_init = 5;
+
+      parameter Physiolibrary.Types.Pressure pCO2 = 40*133;
+      parameter Physiolibrary.Types.Volume volume_start = 1e-3;
+
+      discrete Physiolibrary.Types.AmountOfSubstance Na_solute( start = Na_init*volume_start);
+      discrete Physiolibrary.Types.AmountOfSubstance Cl_solute( start = Cl_init*volume_start);
+      discrete Physiolibrary.Types.AmountOfSubstance At_solute( start = At_init*volume_start);
+      discrete Physiolibrary.Types.AmountOfSubstance UA_solute( start = UA_init*volume_start);
+
+
+      Physiolibrary.Types.Concentration Na = Na_solute/volume;
+      Physiolibrary.Types.Concentration Cl = Cl_solute/volume;
+      Physiolibrary.Types.Concentration At = At_solute/volume;
+      Physiolibrary.Types.Concentration UA = UA_solute/volume;
+
+      discrete Physiolibrary.Types.Volume volume(start = volume_start);
+
+      Physiolibrary.Types.Concentration HCO3 = Na - Cl - albChrg - UA;
+      Physiolibrary.Types.Concentration SIDa = Na - Cl "SIDapp = [Na+] + [K+] + [Ca2+] + [Mg2+] - [Cl-] - [lactate-]. PMC270679";
+      Physiolibrary.Types.Concentration SIDe = HCO3 + albChrg "SIDeff = 12.2 × pCO2 / (10-pH) + 10 × [albumin] × (0.123 × pH - 0.631) + [PO4-] × (0.309 × pH - 0.469) ";
+      Physiolibrary.Types.Concentration SIG = SIDa - SIDe;
+      Physiolibrary.Types.pH pH( start = 7);
+      Real albGpDl(unit = "g/dl") = 1/10/1000*66500*At;
+      Physiolibrary.Types.Concentration albChrg = 10*albGpDl*(0.123*pH - 0.631) "[meq/l] according to Figge";
+
+      Boolean addNaOH;
+      Boolean addHCl;
+      Boolean addNaCl;
+      Boolean dilute;
+      Boolean concentrate;
+
+      parameter Physiolibrary.Types.AmountOfSubstance addAmount = 10e-3;
+
+      AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.PlasmaFencl pf( alb = albGpDl, pCO2 = pCO2/133.32, Pi = 0, SID = SIDe);
+      Physiolibrary.Types.Concentration NSID = pf.NSID;
+      Real BE = SIDe - NSID;
     equation
-      for i in {Na, Cl, Atot, UA} loop
+
+      // henderson hasselbach
+      HCO3 = 2.46e-8 *(pCO2/133)/(10^(-pH)) "Kellum";
+
+      when false then
+       // addNaOH = true;
+        At_solute = 0;
+        UA_solute = 0;
+        addNaCl = false;
+        concentrate = false;
+        dilute  =false;
+      end when;
+
+
+      when addNaOH then
+        Na_solute = pre(Na_solute) + addAmount;
+      end when;
+
+      when addHCl then
+        Cl_solute = pre(Cl_solute) + addAmount;
+      end when;
+
+      if addNaCl then
+        addHCl = true;
+        addNaOH = true;
+      else
+        addHCl = false;
+        addNaOH = false;
+      end if;
+
+      when concentrate then
+        volume = pre(volume) * 1.1;
+      elsewhen dilute then
+        volume = pre(volume) / 1.1;
+      end when;
+
+      for i in {Na, Cl, At, UA} loop
         assert(i >= 0, "Drž se koni svýho klacku, koncentrace nesmí být mínus", AssertionLevel.error);
       end for;
 
       assert(UA < 10, "Ya sure bout tha UA?", AssertionLevel.warning);
+
       if HCO3 < 0 then
         terminate("Model is NOT elektrovoleneutral!");
       end if;
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
-            coordinateSystem(preserveAspectRatio=false)));
+            coordinateSystem(preserveAspectRatio=false)),
+        experiment(
+          StopTime=10,
+          __Dymola_NumberOfIntervals=5000,
+          __Dymola_Algorithm="Sdirk34hw"));
     end Iontograms;
   end Visualization;
 
@@ -29690,7 +30799,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{-44,-10},{-58,4}})));
       Tissues.Cells cells(useMetabolicUaProduction=modelSettings.UseMetabolicUABalance,
         diffusion(Conductance(displayUnit="l/min") = 0.16666666666667),
-        diffusion1(Conductance=0.00016666666666667))
+        diffusion1(Conductance=0.00016666666666667),
+        limitO2Metabolism(respiratoryQuotient=modelSettings.respiratoryQuotient))
                           annotation (Placement(transformation(
             extent={{-8.5,9},{8.5,-9}},
             rotation=90,
