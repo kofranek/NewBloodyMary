@@ -12783,8 +12783,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
   package Kidney
     model Ammonium
       extends Physiolibrary.Icons.Amonium;
-      Physiolibrary.Blocks.Factors.Spline PT_NH3_AcuteEffect(data={{7.00,2.0,0},
-            {7.4,1.0,-3.0},{7.80,0.0,0}})
+      Physiolibrary.Blocks.Factors.Spline PT_NH3_AcuteEffect(data=[7.00,2.0,0;
+            7.4,1.0,-3.0; 7.80,0.0,0])
         "marek: normal pH corrected from 7.45 to 7.42"                                                                                                     annotation(Placement(transformation(extent = {{-28, 48}, {-8, 68}})));
       Physiolibrary.Blocks.Factors.SplineLag PT_NH3_ChronicEffect(                                             stateName = "PT_NH3.ChronicPhEffect",
         data={{7.00,3.0,0},{7.4,1.0,-4.0},{7.80,0.0,0}},
@@ -12805,12 +12805,15 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Physiolibrary.Types.RealIO.ConcentrationInput Cl annotation (Placement(
             transformation(extent={{-92,-10},{-72,10}}), iconTransformation(
               extent={{-100,-10},{-80,10}})));
+      Modelica.Blocks.Math.Gain gain(k=0.8) annotation (Placement(
+            transformation(
+            extent={{-5,-5},{5,5}},
+            rotation=270,
+            origin={-27,13})));
     equation
       connect(PT_NH3_AcuteEffect.y, PT_NH3_ChronicEffect.yBase) annotation(Line(points = {{-18, 54}, {-18, 48}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(PT_NH3_ChronicEffect.y, CD_NH4_PhOnFlux.yBase) annotation(Line(points = {{-18, 42}, {-18, 32}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(electrolytesFlowConstant.y, PT_NH3_AcuteEffect.yBase) annotation(Line(points = {{-22.5, 76}, {-18, 76}, {-18, 60}}, color = {0, 0, 127}, smooth = Smooth.None));
-      connect(CD_NH4_PhOnFlux.y, ChloridePoolEffect.yBase) annotation(Line(points={{-18,26},
-              {-18,2}},                                                                                    color = {0, 0, 127}, smooth = Smooth.None));
       connect(ChloridePoolEffect.y, molarflowrate) annotation(Line(points={{-18,-4},
               {-18,-22},{10,-22}},                                                                                       color = {0, 0, 127}));
       connect(Cl, ChloridePoolEffect.u)
@@ -12821,6 +12824,10 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
               -60,46},{-60,80},{-64,80}}, color={0,0,127}));
       connect(CD_NH4_PhOnFlux.u, pH) annotation (Line(points={{-26,30},{-60,30},
               {-60,80},{-64,80}}, color={0,0,127}));
+      connect(CD_NH4_PhOnFlux.y, gain.u) annotation (Line(points={{-18,26},{-22,
+              26},{-22,19},{-27,19}}, color={0,0,127}));
+      connect(ChloridePoolEffect.yBase, gain.y) annotation (Line(points={{-18,2},
+              {-22,2},{-22,7.5},{-27,7.5}}, color={0,0,127}));
       annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-112, -102}, {108, -128}}, lineColor = {0, 0, 255}, textString = "%name")}), Documentation(revisions = "<html>
 
 <table>
@@ -31124,6 +31131,18 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
               "ml/min") = 8.19588e-5)
         annotation (Placement(transformation(extent={{131,-32},{139,-26}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage clunlim(
+          useConcentrationInput=false, Conc=100)
+        annotation (Placement(transformation(extent={{-56,-52},{-68,-40}})));
+      Physiolibrary.Chemical.Components.Diffusion iSFMembraneO2(Conductance(
+            displayUnit="l/min") = 0.016666666666667)
+        annotation (Placement(transformation(extent={{-84,-56},{-104,-36}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage clunlim1(
+          useConcentrationInput=false, Conc=5)
+        annotation (Placement(transformation(extent={{-50,-82},{-62,-70}})));
+      Physiolibrary.Chemical.Components.Diffusion iSFMembraneO1(Conductance(
+            displayUnit="l/min") = 0.016666666666667)
+        annotation (Placement(transformation(extent={{-78,-86},{-98,-66}})));
     equation
       connect(alveolarVentilation.pO2a, o2CO2.pO2) annotation (Line(points={{
               148,8},{142,8},{142,7.31765},{137.1,7.31765}}, color={0,0,127}));
@@ -31135,6 +31154,24 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               {144,-29},{144,-6.4},{148,-6.4}}, color={0,0,127}));
       connect(alveolarVentilation.VA, VAi_input1) annotation (Line(points={{169,
               3},{169,30.5},{154,30.5},{154,58}}, color={0,0,127}));
+      connect(iSFMembraneO2.q_in, clunlim.q_out) annotation (Line(
+          points={{-84,-46},{-68,-46}},
+          color={107,45,134},
+          thickness=1));
+      connect(iSFMembraneO2.q_out, ionSelector1.port_b) annotation (Line(
+          points={{-104,-46},{-104,-32},{-60,-32},{-60,-13}},
+          color={107,45,134},
+          thickness=1));
+      connect(iSFMembraneO1.q_in, clunlim1.q_out) annotation (Line(
+          points={{-78,-76},{-62,-76}},
+          color={107,45,134},
+          thickness=1));
+      connect(iSFMembraneO1.q_out, ammoniumExcretion.UA_outflow) annotation (
+          Line(
+          points={{-98,-76},{-106,-76},{-106,-64},{-112,-64},{-112,-2.25},{
+              -62.2769,-2.25}},
+          color={107,45,134},
+          thickness=1));
     end SimplestCircWithTissues3;
 
     model RespiratoryAlkalosis
@@ -31174,6 +31211,46 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end MetabolicAcidosis;
+
+    model CompareVentilationStep2
+      import Physiolibrary.Types.*;
+      parameter DiffusionPermeability HCO3Permeability = 100;
+      parameter Physiolibrary.Types.Volume isf_volume = 0.01;
+
+      SimplestCircWithTissues2 simplestCircWithTissues2_1(cells(
+            limitO2Metabolism(metabolismFlowRate=modelSettings.metabolismFlowRate)))
+        annotation (Placement(transformation(extent={{-32,10},{-4,32}})));
+      inner Interfaces.ModelSettings modelSettings(
+        O2DiffusionPermeability(displayUnit="l/min") = 0.005,
+        CO2DiffusionPermeability(displayUnit="l/min") = 0.005,
+        HCO3Permeability(displayUnit="l/min") = 5e-5,
+        UseMetabolicUABalance=false,
+        UseRespiratoryCompensation=false,
+        metabolismFlowRate=0.00016666666666667)
+        annotation (Placement(transformation(extent={{-100,78},{-80,98}})));
+      Modelica.Blocks.Sources.Ramp ramp(
+        duration=100000,
+        startTime=60*100,
+        height=2.3e-4,
+        offset=5.5e-5)
+        annotation (Placement(transformation(extent={{-118,12},{-98,32}})));
+      Modelica.Blocks.Math.Add add(k2=-1)
+        annotation (Placement(transformation(extent={{-70,2},{-56,16}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst DeadVolume(k(
+            displayUnit="l/min") = 8.3333333333333e-6)
+        annotation (Placement(transformation(extent={{-92,-4},{-84,4}})));
+    equation
+      connect(add.y, simplestCircWithTissues2_1.VAi_input) annotation (Line(
+            points={{-55.3,9},{-41.65,9},{-41.65,20.7},{-25.9,20.7}}, color={0,
+              0,127}));
+      connect(add.u2, DeadVolume.y) annotation (Line(points={{-71.4,4.8},{-78,
+              4.8},{-78,0},{-83,0}}, color={0,0,127}));
+      connect(ramp.y, add.u1) annotation (Line(points={{-97,22},{-80,22},{-80,
+              13.2},{-71.4,13.2}}, color={0,0,127}));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)),
+        experiment(StopTime=40000, __Dymola_NumberOfIntervals=5000));
+    end CompareVentilationStep2;
   end Validation;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
       Physiomodel(version="1.0.0")));
