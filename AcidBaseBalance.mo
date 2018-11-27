@@ -12680,9 +12680,10 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       parameter Physiolibrary.Types.Time breakTime = 10*60*60;
       parameter Boolean UseRespiratoryCompensation = true;
       parameter Physiolibrary.Types.Fraction respiratoryQuotient = 0.85;
+      parameter Physiolibrary.Types.Fraction FiCO2_step = 0.08;
 
       // computed variables
-      Physiolibrary.Types.Fraction FiCO2= if not UseStepCO2Fraction then FiCO2_start else if time < breakTime then FiCO2_start else 0.08 annotation(Dialog(enable = false, tab="Calculated vars"));
+      Physiolibrary.Types.Fraction FiCO2= if not UseStepCO2Fraction then FiCO2_start else if time < breakTime then FiCO2_start else FiCO2_step annotation(Dialog(enable = false, tab="Calculated vars"));
     //  parameter Physiolibrary.Types.AmountOfSubstance ISFCO2solute_start = ISFCO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
       parameter Physiolibrary.Types.AmountOfSubstance ISFO2solute_start = ISFO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
     //  parameter Physiolibrary.Types.AmountOfSubstance ISFBEoxsolute_start = ISFBEox_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
@@ -20701,9 +20702,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{24,8},{40,-6}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{38,48},{58,62}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
-          respiratoryQuotient=0.0085)
-        annotation (Placement(transformation(extent={{66,64},{86,44}})));
+      Package.limitO2Metabolism limitO2Metabolism(metabolismFlowRate=
+            modelSettings.metabolismFlowRate)
+        annotation (Placement(transformation(extent={{68,64},{88,44}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a O2 annotation (Placement(
             transformation(rotation=0, extent={{-110,70},{-90,90}}),
             iconTransformation(extent={{-110,70},{-90,90}})));
@@ -20721,6 +20722,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             iconTransformation(extent={{-110,-90},{-90,-70}})));
       Interfaces.IonSelector ionSelector(selectedIon=AcidBaseBalance.Ions.IonsEnum.Ua)
         annotation (Placement(transformation(extent={{-68,-90},{-48,-70}})));
+      outer Interfaces.ModelSettings modelSettings
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
     equation
       if not useMetabolicUaProduction then
         HCO3.q = 0;
@@ -20743,13 +20746,13 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Line(points={{39.8182,49.1667},{30.5,49.1667},{30.5,6.6},{
               32,6.6}},    color={0,0,127}));
       connect(limitO2Metabolism.CO2FlowRate,CO2_MetabolicProduction. soluteFlow)
-        annotation (Line(points={{84,46},{90,46},{90,4},{56,4}},          color=
+        annotation (Line(points={{86,46},{90,46},{90,4},{56,4}},          color=
              {0,0,127}));
       connect(O2_MetabolicConsumption.soluteFlow,limitO2Metabolism. O2FlowRate)
-        annotation (Line(points={{64,84},{84,84},{84,62}},                color=
+        annotation (Line(points={{64,84},{86,84},{86,62}},                color=
              {0,0,127}));
       connect(computationpO2pCO2_1.pO2,limitO2Metabolism. pO2) annotation (Line(
-            points={{56.1818,53.8333},{68,54}},
+            points={{56.1818,53.8333},{70,54}},
             color={0,0,127}));
       connect(diffusion.q_out,O2_MetabolicConsumption. q_in) annotation (Line(
           points={{-22,80},{50,80}},
@@ -30859,7 +30862,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Tissues.Cells cells(useMetabolicUaProduction=modelSettings.UseMetabolicUABalance,
         diffusion(Conductance(displayUnit="l/min") = 0.16666666666667),
         diffusion1(Conductance=0.00016666666666667),
-        limitO2Metabolism(respiratoryQuotient=modelSettings.respiratoryQuotient))
+        limitO2Metabolism(respiratoryQuotient=modelSettings.respiratoryQuotient,
+            limiterEnabled=false))
                           annotation (Placement(transformation(
             extent={{-8.5,9},{8.5,-9}},
             rotation=90,
@@ -31100,8 +31104,10 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
 
     model RespiratoryAcidosis
       SimplestCircWithTissues3 simplestCircWithTissues3_1(alveolarVentilation(
-            respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation))
-        annotation (Placement(transformation(extent={{-32,10},{-4,32}})));
+            respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation),
+        ammoniumExcretion(ammonium(gain(k=0.565))),
+        VAi(k(displayUnit="l/min") = 9.1666666666667e-5))
+        annotation (Placement(transformation(extent={{-34,10},{-6,32}})));
       inner Interfaces.ModelSettings modelSettings(
         O2DiffusionPermeability(displayUnit="l/min"),
         CO2DiffusionPermeability(displayUnit="l/min"),
@@ -31111,8 +31117,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
     equation
       connect(simplestCircWithTissues3_1.VAi_input1, simplestCircWithTissues3_1.VAi_input)
-        annotation (Line(points={{-11.1,21.5},{2,21.5},{2,36},{-42,36},{-42,
-              20.7},{-25.9,20.7}}, color={0,0,127}));
+        annotation (Line(points={{-13.1,21.5},{2,21.5},{2,36},{-42,36},{-42,
+              20.7},{-27.9,20.7}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end RespiratoryAcidosis;
