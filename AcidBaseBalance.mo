@@ -450,7 +450,7 @@ package AcidBaseBalance
         Real tCO2p;
       algorithm
         // pCO2T0 := pCO22of (pCO2, T, T0, ctHb);
-        cAlb := cAlbN;
+        // cAlb := cAlbN;
         // albumin has minimal influence on total CO2 concentration
         pCO2T0 := OSA.pCO22of(
                 pCO2/1000,
@@ -1499,9 +1499,13 @@ BEox"),       Text(
                     -30,-19.5},                                                                                                                                            rotation = 180, fontSize = 12,
                   horizontalAlignment =                                                                                                   TextAlignment.Right, textString = "cdCO2"),
                                                                                                                                                                                     Text(extent={{
-                    -174,118},{-26,102}},                                                                                                                                                                                lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
-                  fillPattern =                                                                                                   FillPattern.Solid, fontSize = 12,
-                  horizontalAlignment =                                                                                                   TextAlignment.Left, textString = "BEox")}), Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-180,
+                    -174,118},{-26,102}},                                                                                                                                                                                lineColor=
+                    {0,0,255},                                                                                                                                                                                                        fillColor=
+                    {255,255,0},
+                  fillPattern=FillPattern.Solid,                                                                                                     fontSize=
+                    12,
+                  horizontalAlignment=TextAlignment.Left,
+                textString="BEox")}),                                                                                                                                                 Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-180,
                   -100},{60,240}})));
       end O2CO2;
 
@@ -7888,6 +7892,53 @@ and mixing"), Text(
                                     Diagram(coordinateSystem(preserveAspectRatio=false,
                 extent={{-200,-180},{260,140}})));
       end AlvEq_2units_with_shunts_and_mixing_connectors;
+
+      model plasmaHCO3
+        Physiolibrary.Types.RealIO.PressureInput pCO2(start = 5330)
+          "pCO2 in Pa"                                                           annotation(Placement(transformation(extent = {{-120, 20}, {-80, 60}}), iconTransformation(extent = {{-120, 70}, {-100, 90}})));
+        Physiolibrary.Types.RealIO.pHInput pH annotation(Placement(transformation(extent = {{-120, 70}, {-80, 110}}), iconTransformation(extent = {{-120, 30}, {-100, 50}})));
+        Physiolibrary.Types.RealIO.ConcentrationOutput cHCO3
+          "plasma HCO3 concentration (in mmol/l)"                                                    annotation(Placement(transformation(extent = {{100, 60}, {120, 80}}), iconTransformation(extent = {{100, -10}, {120, 10}})));
+        Physiolibrary.Types.RealIO.TemperatureInput Temp annotation (Placement(
+              transformation(extent={{-122,-106},{-82,-66}}),
+              iconTransformation(extent={{-126,-106},{-100,-80}})));
+      algorithm
+        (cHCO3) := OSA.cHCO3of(
+                pH,
+                pCO2/1000,
+                Temp-273.15);
+        annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 100}, {100, -100}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                  fillPattern =                                                                                                   FillPattern.Solid), Text(extent={{
+                    -68,-6},{80,-78}},                                                                                                    lineColor=
+                    {28,108,200},                                                                                                    fillColor=
+                    {255,255,0},
+                  fillPattern=FillPattern.Solid,
+                textString="HCO3"),
+              Text(
+                extent={{-96,66},{-40,98}},
+                lineColor={0,0,0},
+                fillColor={28,108,200},
+                fillPattern=FillPattern.Solid,
+                textString="pCO2"),
+              Text(
+                extent={{-98,30},{-42,62}},
+                lineColor={0,0,0},
+                fillColor={28,108,200},
+                fillPattern=FillPattern.Solid,
+                textString="pH"),
+              Text(
+                extent={{40,-16},{96,16}},
+                lineColor={0,0,0},
+                fillColor={28,108,200},
+                fillPattern=FillPattern.Solid,
+                textString="cHCO3"),
+              Text(
+                extent={{-94,-100},{-38,-68}},
+                lineColor={0,0,0},
+                fillColor={28,108,200},
+                fillPattern=FillPattern.Solid,
+                textString="Temp")}));
+      end plasmaHCO3;
     end OSA;
 
     model MembraneVariableCharges
@@ -26391,10 +26442,10 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
       connect(co2_inflow.concentration, bloodABB_OSA.dCO2) annotation (Line(
-            points={{22,-84},{18,-84},{18,-132},{-39.8,-132},{-39.8,-194}},
+            points={{22,-84},{18,-84},{18,-132},{-37.8,-132},{-37.8,-190}},
             color={0,0,127}));
       connect(bloodABB_OSA.dO2, o2_inflow.concentration) annotation (Line(
-            points={{-41.6,-194},{-41.6,-174},{14,-174},{14,-68},{22,-68}},
+            points={{-41.8,-190},{-41.8,-174},{14,-174},{14,-68},{22,-68}},
             color={0,0,127}));
       connect(diffusion1.q_in, CO2_MetabolicProduction.q_out) annotation (Line(
           points={{288,-78},{360,-78}},
@@ -26418,7 +26469,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Line(points={{220.8,-106},{222,-106},{222,-110},{132,-110}},
             color={0,0,127}));
       connect(bloodABB_OSA.cHCO3, hCO3_inflow.concentration) annotation (Line(
-            points={{-37.8,-194},{24,-194},{24,-110},{22,-110}}, color={0,0,127}));
+            points={{-34,-190},{24,-190},{24,-110},{22,-110}},   color={0,0,127}));
       connect(ISFHCO3.q_out, iSFMembraneHco3.q_in) annotation (Line(
           points={{120,-110},{100,-110}},
           color={107,45,134},
@@ -26450,13 +26501,14 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
       connect(bloodABB_OSA.tO2_input, concentrationMeasure3.concentration)
-        annotation (Line(points={{-47.4,-193},{-47.4,-130},{-50,-130},{-50,
+        annotation (Line(points={{-49.6,-190},{-49.6,-130},{-50,-130},{-50,
               -71.2}}, color={0,0,127}));
       connect(bloodABB_OSA._BEox, concentrationMeasure5.concentration)
-        annotation (Line(points={{-50,-193},{-50,-138},{-58,-138},{-58,-123.2}},
+        annotation (Line(points={{-53.6,-190},{-53.6,-138},{-58,-138},{-58,
+              -123.2}},
             color={0,0,127}));
       connect(bloodABB_OSA.tCO2_input, concentrationMeasure4.concentration)
-        annotation (Line(points={{-45.8,-193},{-45.8,-134},{-54,-134},{-54,
+        annotation (Line(points={{-45.8,-190},{-45.8,-134},{-54,-134},{-54,
               -103.2}}, color={0,0,127}));
       connect(o2_inflow.q_out, molarFlowMeasure1.q_in) annotation (Line(
           points={{34,-68},{44,-68}},
