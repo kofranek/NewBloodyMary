@@ -1,0 +1,9 @@
+﻿simulateModel("AcidBaseBalance.Validation.RespiratoryAlkalosis", stopTime=1000000, numberOfIntervals=25000, method="dassl", resultFile="RespiratoryAlkalosis");
+
+
+createPlot(id=2, position={132, 242, 460, 420}, x="simplestCircWithTissues3_1.o2CO2.pH", y={"simplestCircWithTissues3_1.o2CO2.pCO2"}, range={7.3500000000000005, 7.7, 2.0, 5.5}, erase=false, autoscale=false, grid=true, legend=false, filename="RespiratoryAlkalosis.mat", leftTitleType=2, leftTitle="arterial pCO2 [kPa]", bottomTitleType=2, bottomTitle="pH", colors={{28,108,200}}, displayUnits={"kPa"});
+createPlot(id=3, position={637, 218, 433, 412}, y={"simplestCircWithTissues3_1.o2CO2.BEox"}, range={0.0, 12.0, -12.0, 6.0}, erase=false, autoscale=false, grid=true, colors={{28,108,200}}, timeUnit="d", displayUnits={"mmol/l"});
+createPlot(id=5, position={499, 416, 584, 402}, y={"simplestCircWithTissues3_1.ammoniumExcretion.ammonium.hCO3ProductionLimiter.HCO3",
+ "simplestCircWithTissues3_1.ammoniumExcretion.ammonium.hCO3ProductionLimiter.HCO3max"}, range={0.0, 12.0, -100.0, 40.0}, erase=false, grid=true, colors={{28,108,200}, {238,46,47}}, timeUnit="d", displayUnits={"mmol/l", "mmol/l"});
+createPlot(id=4, position={67, 43, 584, 420}, y={"simplestCircWithTissues3_1.ammoniumExcretion.ammonium.hCO3ProductionLimiter.u",
+ "simplestCircWithTissues3_1.ammoniumExcretion.ammonium.hCO3ProductionLimiter.y"}, range={0.0, 280.0, -5.0, 45.0}, erase=false, autoscale=false, grid=true, legendLocation=5, legendFrame=true, legends={"unlimited HCO3 production", "limited HCO3 production"}, colors={{28,108,200}, {238,46,47}}, timeUnit="h", displayUnits={"mmol/day", "mmol/day"});

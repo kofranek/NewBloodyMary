@@ -12936,8 +12936,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
               extent={{-58,84.5754},{-42,100.576}},
               origin={-36,-72.576},
               rotation=0), visible=true));
-        Physiolibrary.Types.Constants.ConcentrationConst hco3(k=24) annotation
-          (Placement(transformation(
+        Physiolibrary.Types.Constants.ConcentrationConst hco3(k=24) annotation (
+           Placement(transformation(
               extent={{-58,84.5754},{-42,100.576}},
               origin={-34,-100.576},
               rotation=0), visible=true));
@@ -12957,8 +12957,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
                 -76,19.9997},{-44,19.9997},{-44,2},{-10,2}}, color={0,0,127}));
         connect(ramp.y, hCO3ProductionLimiter.u) annotation (Line(points={{-5,
                 44},{-2,44},{-2,42},{0.4,42},{0.4,12}}, color={0,0,127}));
-        connect(sawTooth.y, hCO3ProductionLimiter.HCO3) annotation (Line(points
-              ={{-69,-42},{-40,-42},{-40,-8},{-10,-8}}, color={0,0,127}));
+        connect(sawTooth.y, hCO3ProductionLimiter.HCO3) annotation (Line(points=
+               {{-69,-42},{-40,-42},{-40,-8},{-10,-8}}, color={0,0,127}));
         annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
               coordinateSystem(preserveAspectRatio=false)));
       end TestLimiter;
@@ -13482,28 +13482,19 @@ Compensation")}));
               rotation=0, extent={{-120,80},{-100,100}}),iconTransformation(extent={{-120,
                 -120},{-80,-80}})));
       Physiolibrary.Types.Concentration HCO3max = -122.029 + (46.16094 + 122.029)/(1 + (pH/7.565033)^89.04176) "fitted data from SA compensation nomogram at full compensation of respiratory acidosis";
-      parameter Physiolibrary.Types.MolarFlowRate limitation = 4.1e-7;
-      Real blejh;
-      Real d = k*(u - limitation);
-      parameter Real k = 1e8;
-      Real ee = Modelica.Math.exp(d)/(1 + Modelica.Math.exp(d));
+      parameter Physiolibrary.Types.MolarFlowRate limitation = 0;//4.1e-7;
+    //  Real blejh;
+    //  Real d = k*(u - limitation);
+    //  parameter Real k = 1e8;
+    //  Real ee = Modelica.Math.exp(d)/(1 + Modelica.Math.exp(d));
 
       Real dhco3 = kh * (HCO3 - HCO3max);
-      parameter Real kh = 1;
-      Real eeh = Modelica.Math.exp(dhco3)/(1 + Modelica.Math.exp(dhco3));
+      parameter Real kh = 10;
+      Real eeh = Modelica.Math.exp(dhco3)/(1 + Modelica.Math.exp(dhco3)) "the sigmoideal function for smooth limiting the HCO3 production";
       Real blejhco3 = (u - limitation)*(1 - eeh) + limitation;
     equation
 
-
-
-      blejh = (u - limitation)*(1 - ee) + limitation;
-      y = blejhco3;
-
-    //   if noEvent(HCO3 > HCO3max) then
-    //     y = limitation;
-    //   else
-    //     y = u;
-    //   end if;
+      y = u*(1 - eeh);
 
 
     end HCO3ProductionLimiter;
@@ -16731,24 +16722,21 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
 
     block AlveolarVentilation
       parameter Boolean respiratoryCompensationEnabled = true;
-      Real PHA = pHa "pH of arterial blood"  annotation (Placement(transformation(extent={{-120,30},
-                {-80,70}}),           iconTransformation(extent={{-122,72},{-100,
-                94}})));
-      Real PCOA = 0.00750061683 * pCO2a  "CO2 tension in alveoli"
-                                                                 annotation (Placement(transformation(extent={{-120,
+
+      Real PCOA = Pa2mmHg * pCO2a  "mmHg CO2 tension in alveoli"
+                                                                annotation (Placement(transformation(extent={{-120,
                 -50},{-80,-10}}),     iconTransformation(extent={{-122,48},{-100,
                 70}})));
-      Real PO2A = 0.00750061683 * pO2a "O2 tension in alveoli" annotation (Placement(transformation(extent={{-120,
+      Real PO2A = Pa2mmHg * pO2a "mmHg O2 tension in alveoli" annotation (Placement(transformation(extent={{-120,
                 -10},{-80,30}}),      iconTransformation(extent={{-122,24},{-100,
                 46}})));
-      Real VI0 = 1000/60 *VA0  "Normal value of ventilation"
+      Real VI0 = m3ps2lpm *VA0  "Normal value of ventilation"
                                         annotation (Placement(transformation(extent={{-120,
                 -90},{-80,-50}}),     iconTransformation(extent={{-122,0},{-100,
                 22}})));
       Real VI_ss = VR*VI0 "Ventilation"            annotation (Placement(transformation(extent={{60,-50},
                 {100,-10}}),        iconTransformation(extent={{100,16},{128,44}})));
-      Real VI(start = 8.19588e-5*1000/60);
-      parameter Real t_VentilatoryCompensation = 1;
+      Real VI(start = 8.19588e-5*m3ps2lpm);
       Real VR annotation (Placement(transformation(extent={{60,-10},
                 {100,30}}),         iconTransformation(extent={{100,64},{128,92}})));
 
@@ -16757,13 +16745,15 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
 
       // 1 l/min =1000/60 m3/s
       // 1 pascal = 0.00750061683 mmHg
+      constant Real m3ps2lpm = 1000*60;
+      constant Real Pa2mmHg = 1/133.32 "1 pascal = 0.00750061683 mmHg";
       Physiolibrary.Types.RealIO.PressureInput pCO2a annotation (Placement(
             transformation(extent={{-48,-14},{-8,26}}), iconTransformation(extent={{-120,18},
                 {-80,58}})));
       Physiolibrary.Types.RealIO.pHInput pHa annotation (Placement(transformation(
               extent={{-50,40},{-10,80}}), iconTransformation(extent={{-120,-32},{-80,
                 8}})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateOutput VA = VI/(1000/60) annotation (Placement(
+      Physiolibrary.Types.RealIO.VolumeFlowRateOutput VA = VI/m3ps2lpm annotation (Placement(
             transformation(extent={{10,16},{30,36}}), iconTransformation(extent={{100,
                 20},{120,40}})));
       Physiolibrary.Types.RealIO.PressureInput pO2a annotation (Placement(
@@ -16778,14 +16768,14 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       Real VRD "VR delayed";
       parameter Real VRD_T = 1;
     equation
-      k1 = if PHA <= 7.4 then 0.22 else 0.0258;
-      k6 = if PHA <= 7.4 then -12.734 else -5.003;
+      k1 = if pHa <= 7.4 then 0.22 else 0.0258;
+      k6 = if pHa <= 7.4 then -12.734 else -5.003;
       k3 = 0.58;
       k4 = 3.496;
       k2 = if PCOA > 40 then 1 else 0.0396;
       k5 = if PCOA > 40 then -32.08 else 160.11;
 
-      H = 10 ^ (9 - PHA);
+      H = 10 ^ (9 - pHa);
       VR = k1 * H + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5) + k6;
       // simplified case
       // VRD = VR;
@@ -16793,7 +16783,7 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
       VI= if respiratoryCompensationEnabled then VRD*VI0 else VI0;
       //der(VI) = (VR * VI0 - VI) / 2;
       VRA=VRD;
-      //assert(VR >= 0, "VR out of bounds! Original LIMIT VR >= 0; ");
+      assert(VI >= 0, "Alveolar ventilation out of bounds! Original LIMIT VR >= 0; ");
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                 -100},{100,100}}),
                        graphics={
@@ -31194,13 +31184,14 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
     model RespiratoryAcidosis
       SimplestCircWithTissues3 simplestCircWithTissues3_1(alveolarVentilation(
             respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation),
-        VAi(k(displayUnit="l/min") = 9.1666666666667e-5))
+        VAi(k=7.68333E-05))
         annotation (Placement(transformation(extent={{-34,10},{-6,32}})));
       inner Interfaces.ModelSettings modelSettings(
         O2DiffusionPermeability(displayUnit="l/min"),
         CO2DiffusionPermeability(displayUnit="l/min"),
         HCO3Permeability(displayUnit="l/min"),
         UseStepCO2Fraction=true,
+        breakTime=7*24*60*60,
         UseRespiratoryCompensation=false)
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
     equation
@@ -31267,9 +31258,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               -62.2769,-2.25}},
           color={107,45,134},
           thickness=1));
-      connect(o2CO2.cHCO3, ammoniumExcretion.HCO3) annotation (Line(points={{
-              137.1,-0.964706},{137.1,-56},{-116,-56},{-116,3.25},{-96.6154,
-              3.25}}, color={0,0,127}));
+      connect(o2CO2.cHCO3, ammoniumExcretion.HCO3) annotation (Line(points={{137.1,
+              -0.964706},{137.1,-56},{-116,-56},{-116,3.25},{-96.6154,3.25}},
+                      color={0,0,127}));
     end SimplestCircWithTissues3;
 
     model RespiratoryAlkalosis
