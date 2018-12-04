@@ -30691,19 +30691,21 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
   package Visualization
 
     model Iontograms
-
+      // init
       parameter Physiolibrary.Types.Concentration Na_init = 140;
       parameter Physiolibrary.Types.Concentration Cl_init = 100;
       parameter Physiolibrary.Types.Concentration At_init=0.56;
       parameter Physiolibrary.Types.Concentration UA_init = 5;
-
       parameter Physiolibrary.Types.Pressure pCO2 = 40*133;
       parameter Physiolibrary.Types.Volume volume_start = 1e-3;
 
-      discrete Physiolibrary.Types.AmountOfSubstance Na_solute( start = Na_init*volume_start);
-      discrete Physiolibrary.Types.AmountOfSubstance Cl_solute( start = Cl_init*volume_start);
-      discrete Physiolibrary.Types.AmountOfSubstance At_solute( start = At_init*volume_start);
-      discrete Physiolibrary.Types.AmountOfSubstance UA_solute( start = UA_init*volume_start);
+      // modificators
+
+      Physiolibrary.Types.AmountOfSubstance Na_solute = Na_init*volume_start;
+      Physiolibrary.Types.AmountOfSubstance Cl_solute = Cl_init*volume_start;
+      Physiolibrary.Types.AmountOfSubstance At_solute = At_init*volume_start;
+      Physiolibrary.Types.AmountOfSubstance UA_solute = UA_init*volume_start;
+
 
 
       Physiolibrary.Types.Concentration Na = Na_solute/volume;
@@ -30711,7 +30713,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Types.Concentration At = At_solute/volume;
       Physiolibrary.Types.Concentration UA = UA_solute/volume;
 
-      discrete Physiolibrary.Types.Volume volume(start = volume_start);
+      parameter Physiolibrary.Types.Volume volume = 1e-3;
 
       Physiolibrary.Types.Concentration HCO3 = Na - Cl - albChrg - UA;
       Physiolibrary.Types.Concentration SIDa = Na - Cl "SIDapp = [Na+] + [K+] + [Ca2+] + [Mg2+] - [Cl-] - [lactate-]. PMC270679";
@@ -30721,11 +30723,11 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Real albGpDl(unit = "g/dl") = 1/10/1000*66500*At;
       Physiolibrary.Types.Concentration albChrg = 10*albGpDl*(0.123*pH - 0.631) "[meq/l] according to Figge";
 
-      Boolean addNaOH;
-      Boolean addHCl;
-      Boolean addNaCl;
-      Boolean dilute;
-      Boolean concentrate;
+    //   Boolean addNaOH;
+    //   Boolean addHCl;
+    //   Boolean addNaCl;
+    //   Boolean dilute;
+    //   Boolean concentrate;
 
       parameter Physiolibrary.Types.AmountOfSubstance addAmount = 10e-3;
 
@@ -30737,37 +30739,37 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       // henderson hasselbach
       HCO3 = 2.46e-8 *(pCO2/133)/(10^(-pH)) "Kellum";
 
-      when false then
-       // addNaOH = true;
-        At_solute = 0;
-        UA_solute = 0;
-        addNaCl = false;
-        concentrate = false;
-        dilute  =false;
-      end when;
-
-
-      when addNaOH then
-        Na_solute = pre(Na_solute) + addAmount;
-      end when;
-
-      when addHCl then
-        Cl_solute = pre(Cl_solute) + addAmount;
-      end when;
-
-      if addNaCl then
-        addHCl = true;
-        addNaOH = true;
-      else
-        addHCl = false;
-        addNaOH = false;
-      end if;
-
-      when concentrate then
-        volume = pre(volume) * 1.1;
-      elsewhen dilute then
-        volume = pre(volume) / 1.1;
-      end when;
+    //   when false then
+    //    // addNaOH = true;
+    //     At_solute = 0;
+    //     UA_solute = 0;
+    //     addNaCl = false;
+    //     concentrate = false;
+    //     dilute  =false;
+    //   end when;
+    //
+    //
+    //   when addNaOH then
+    //     Na_solute = pre(Na_solute) + addAmount;
+    //   end when;
+    //
+    //   when addHCl then
+    //     Cl_solute = pre(Cl_solute) + addAmount;
+    //   end when;
+    //
+    //   if addNaCl then
+    //     addHCl = true;
+    //     addNaOH = true;
+    //   else
+    //     addHCl = false;
+    //     addNaOH = false;
+    //   end if;
+    //
+    //   when concentrate then
+    //     volume = pre(volume) * 1.1;
+    //   elsewhen dilute then
+    //     volume = pre(volume) / 1.1;
+    //   end when;
 
       for i in {Na, Cl, At, UA} loop
         assert(i >= 0, "Drž se koni svýho klacku, koncentrace nesmí být mínus", AssertionLevel.error);
