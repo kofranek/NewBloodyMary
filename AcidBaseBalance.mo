@@ -12804,13 +12804,13 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
                 {-54,90}}),                                                                                                             iconTransformation(extent={{-100,90},
                 {-80,110}})));
       Physiolibrary.Types.RealIO.ConcentrationInput Cl annotation (Placement(
-            transformation(extent={{-92,-10},{-72,10}}), iconTransformation(
-              extent={{-100,-10},{-80,10}})));
-      Modelica.Blocks.Math.Gain gain(k=0.8) annotation (Placement(
-            transformation(
-            extent={{-5,-5},{5,5}},
-            rotation=270,
-            origin={-27,13})));
+            transformation(extent={{-94,-10},{-74,10}}), iconTransformation(
+              extent={{-94,-10},{-74,10}})));
+      HCO3ProductionLimiter hCO3ProductionLimiter annotation (Placement(
+            transformation(rotation=0, extent={{-56,10},{-44,22}})));
+      Physiolibrary.Types.RealIO.ConcentrationInput HCO3 annotation (Placement(
+            transformation(extent={{-114,0},{-94,20}}), iconTransformation(
+              extent={{-100,50},{-80,70}})));
     equation
       connect(PT_NH3_AcuteEffect.y, PT_NH3_ChronicEffect.yBase) annotation(Line(points = {{-18, 54}, {-18, 48}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(PT_NH3_ChronicEffect.y, CD_NH4_PhOnFlux.yBase) annotation(Line(points = {{-18, 42}, {-18, 32}}, color = {0, 0, 127}, smooth = Smooth.None));
@@ -12818,17 +12818,22 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       connect(ChloridePoolEffect.y, molarflowrate) annotation(Line(points={{-18,-4},
               {-18,-22},{10,-22}},                                                                                       color = {0, 0, 127}));
       connect(Cl, ChloridePoolEffect.u)
-        annotation (Line(points={{-82,0},{-26,0}}, color={0,0,127}));
+        annotation (Line(points={{-84,0},{-26,0}}, color={0,0,127}));
       connect(PT_NH3_AcuteEffect.u, pH) annotation (Line(points={{-26,58},{-60,
               58},{-60,80},{-64,80}}, color={0,0,127}));
       connect(PT_NH3_ChronicEffect.u, pH) annotation (Line(points={{-26,46},{
               -60,46},{-60,80},{-64,80}}, color={0,0,127}));
       connect(CD_NH4_PhOnFlux.u, pH) annotation (Line(points={{-26,30},{-60,30},
               {-60,80},{-64,80}}, color={0,0,127}));
-      connect(CD_NH4_PhOnFlux.y, gain.u) annotation (Line(points={{-18,26},{-22,
-              26},{-22,19},{-27,19}}, color={0,0,127}));
-      connect(ChloridePoolEffect.yBase, gain.y) annotation (Line(points={{-18,2},
-              {-22,2},{-22,7.5},{-27,7.5}}, color={0,0,127}));
+      connect(CD_NH4_PhOnFlux.y,hCO3ProductionLimiter.u)
+                                         annotation (Line(points={{-18,26},{
+              -49.76,26},{-49.76,22}},color={0,0,127}));
+      connect(pH, hCO3ProductionLimiter.pH) annotation (Line(points={{-64,80},{
+              -60,80},{-60,16},{-56,16}}, color={0,0,127}));
+      connect(HCO3, hCO3ProductionLimiter.HCO3)
+        annotation (Line(points={{-104,10},{-56,10}}, color={0,0,127}));
+      connect(hCO3ProductionLimiter.y, ChloridePoolEffect.yBase) annotation (
+          Line(points={{-49.76,10},{-50,10},{-50,2},{-18,2}}, color={0,0,127}));
       annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-112, -102}, {108, -128}}, lineColor = {0, 0, 255}, textString = "%name")}), Documentation(revisions = "<html>
 
 <table>
@@ -12922,6 +12927,41 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
         annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
               coordinateSystem(preserveAspectRatio=false)));
       end UrineAcidificationTest;
+
+      model TestLimiter
+        HCO3ProductionLimiter hCO3ProductionLimiter
+          annotation (Placement(transformation(extent={{-10,-8},{10,12}})));
+        Physiolibrary.Types.Constants.pHConst pHConst(k=7.2) annotation (
+            Placement(transformation(
+              extent={{-58,84.5754},{-42,100.576}},
+              origin={-36,-72.576},
+              rotation=0), visible=true));
+        Physiolibrary.Types.Constants.ConcentrationConst hco3(k=24) annotation
+          (Placement(transformation(
+              extent={{-58,84.5754},{-42,100.576}},
+              origin={-34,-100.576},
+              rotation=0), visible=true));
+        Modelica.Blocks.Sources.Ramp ramp(
+          height=2e-7,
+          duration=1,
+          offset=3e-7)
+          annotation (Placement(transformation(extent={{-26,34},{-6,54}})));
+        Modelica.Blocks.Sources.SawTooth sawTooth(
+          amplitude=100,
+          period=5,
+          offset=20,
+          startTime=2)
+          annotation (Placement(transformation(extent={{-90,-52},{-70,-32}})));
+      equation
+        connect(pHConst.y, hCO3ProductionLimiter.pH) annotation (Line(points={{
+                -76,19.9997},{-44,19.9997},{-44,2},{-10,2}}, color={0,0,127}));
+        connect(ramp.y, hCO3ProductionLimiter.u) annotation (Line(points={{-5,
+                44},{-2,44},{-2,42},{0.4,42},{0.4,12}}, color={0,0,127}));
+        connect(sawTooth.y, hCO3ProductionLimiter.HCO3) annotation (Line(points
+              ={{-69,-42},{-40,-42},{-40,-8},{-10,-8}}, color={0,0,127}));
+        annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+              coordinateSystem(preserveAspectRatio=false)));
+      end TestLimiter;
     end Test;
 
     model F62
@@ -13281,6 +13321,9 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
         annotation (Placement(transformation(extent={{60,14},{80,34}})));
       AnionExcrection anionExcrection annotation (Placement(transformation(
               rotation=0, extent={{118,38},{138,58}})));
+      Physiolibrary.Types.RealIO.ConcentrationInput HCO3 annotation (Placement(
+            transformation(extent={{-114,70},{-94,90}}), iconTransformation(
+              extent={{-100,50},{-80,70}})));
     equation
       connect(titratableAcid.fald, fAld.y) annotation(Line(visible = true, origin={-35.55,
               -77.585},                                                                                points={{-2.135,
@@ -13326,7 +13369,7 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
           color={107,45,134},
           thickness=1));
       connect(ammonium.Cl, concentrationMeasure.concentration)
-        annotation (Line(points={{-29.8,50},{-44,50}}, color={0,0,127}));
+        annotation (Line(points={{-28.48,50},{-44,50}},color={0,0,127}));
       connect(concentrationMeasure1.concentration, pHUrine_New1.OrgAnionsConc)
         annotation (Line(points={{70,16},{70,-16.88},{70.4,-16.88}},
                                                                  color={0,0,127}));
@@ -13345,6 +13388,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       connect(totalAcidExcretion.TotalFlowRate, anionExcrection.HCO3molarflowrate)
         annotation (Line(points={{84.6,56.8},{91.3,56.8},{91.3,48},{119.5,48}},
             color={0,0,127}));
+      connect(ammonium.HCO3, HCO3) annotation (Line(points={{-29.8,62},{-74,62},
+              {-74,80},{-104,80}}, color={0,0,127}));
       annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
                 -80},{160,80}})),  Icon(coordinateSystem(extent={{-100,-80},{
                 160,80}}), graphics={Rectangle(
@@ -13420,6 +13465,48 @@ Compensation")}));
         Diagram(coordinateSystem(preserveAspectRatio=false)),
         experiment);
     end TestAnionExcretion;
+
+    model HCO3ProductionLimiter "maximal resorbtion of HCO3 at given pH"
+
+      Modelica.Blocks.Interfaces.RealInput u annotation (Placement(transformation(
+              rotation=0, extent={{-6,90},{14,110}}),    iconTransformation(extent={{-6,90},
+                {14,110}})));
+      Modelica.Blocks.Interfaces.RealOutput y annotation (Placement(transformation(
+              rotation=0, extent={{-6,-110},{14,-90}}), iconTransformation(extent={{
+                -6,-110},{14,-90}})));
+      Physiolibrary.Types.RealIO.pHInput pH annotation (Placement(transformation(
+              extent={{-120,-20},{-80,20}}), iconTransformation(extent={{-120,-20},{
+                -80,20}})));
+                //            Physiolibrary.Types.MolarFlowRate maxResorbtion = -36932.51 + 10206.79*x - 704.3946*x^2
+      Physiolibrary.Types.RealIO.ConcentrationInput HCO3 annotation (Placement(transformation(
+              rotation=0, extent={{-120,80},{-100,100}}),iconTransformation(extent={{-120,
+                -120},{-80,-80}})));
+      Physiolibrary.Types.Concentration HCO3max = -122.029 + (46.16094 + 122.029)/(1 + (pH/7.565033)^89.04176) "fitted data from SA compensation nomogram at full compensation of respiratory acidosis";
+      parameter Physiolibrary.Types.MolarFlowRate limitation = 4.1e-7;
+      Real blejh;
+      Real d = k*(u - limitation);
+      parameter Real k = 1e8;
+      Real ee = Modelica.Math.exp(d)/(1 + Modelica.Math.exp(d));
+
+      Real dhco3 = kh * (HCO3 - HCO3max);
+      parameter Real kh = 1;
+      Real eeh = Modelica.Math.exp(dhco3)/(1 + Modelica.Math.exp(dhco3));
+      Real blejhco3 = (u - limitation)*(1 - eeh) + limitation;
+    equation
+
+
+
+      blejh = (u - limitation)*(1 - ee) + limitation;
+      y = blejhco3;
+
+    //   if noEvent(HCO3 > HCO3max) then
+    //     y = limitation;
+    //   else
+    //     y = u;
+    //   end if;
+
+
+    end HCO3ProductionLimiter;
   end Kidney;
 
   package Package
@@ -31107,7 +31194,6 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
     model RespiratoryAcidosis
       SimplestCircWithTissues3 simplestCircWithTissues3_1(alveolarVentilation(
             respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation),
-        ammoniumExcretion(ammonium(gain(k=0.565))),
         VAi(k(displayUnit="l/min") = 9.1666666666667e-5))
         annotation (Placement(transformation(extent={{-34,10},{-6,32}})));
       inner Interfaces.ModelSettings modelSettings(
@@ -31122,7 +31208,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Line(points={{-13.1,21.5},{2,21.5},{2,36},{-42,36},{-42,
               20.7},{-27.9,20.7}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
-            coordinateSystem(preserveAspectRatio=false)));
+            coordinateSystem(preserveAspectRatio=false)),
+        experiment(StopTime=1000000, __Dymola_NumberOfIntervals=5000));
     end RespiratoryAcidosis;
 
     model SimplestCircWithTissues3
@@ -31180,6 +31267,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               -62.2769,-2.25}},
           color={107,45,134},
           thickness=1));
+      connect(o2CO2.cHCO3, ammoniumExcretion.HCO3) annotation (Line(points={{
+              137.1,-0.964706},{137.1,-56},{-116,-56},{-116,3.25},{-96.6154,
+              3.25}}, color={0,0,127}));
     end SimplestCircWithTissues3;
 
     model RespiratoryAlkalosis
