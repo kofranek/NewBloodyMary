@@ -12673,16 +12673,25 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       parameter DiffusionPermeability IonPermeabilities[:] = {100, 100, 50, 2.5e-8} "Albumin permeability calculated from lympha flow and 3:1 concentration difference";
       parameter DiffusionPermeability HCO3Permeability = 5e-5 "just a wild guess";
       parameter Boolean UseMetabolicUABalance = true;
-      parameter Physiolibrary.Types.MolarFlowRate metabolismFlowRate = 0.00018333333333333;
+      parameter Physiolibrary.Types.MolarFlowRate metabolismO2FlowRate = 0.00018333333333333;
+      parameter Physiolibrary.Types.MolarFlowRate metabolismUAFlowRate_norm = 6.944444e-7;
+      parameter Physiolibrary.Types.VolumeFlowRate NormalAlveolarVentilation = 7.68333e-5;
 
       // validation settings
+      parameter Boolean makeUAstep = false;
+      parameter Physiolibrary.Types.Fraction UAstepRatio = 1.5;
+
       parameter Boolean UseStepCO2Fraction = false;
       parameter Physiolibrary.Types.Time breakTime = 10*60*60;
+      parameter Physiolibrary.Types.Time breakLength = 60*60*24*2;
       parameter Boolean UseRespiratoryCompensation = true;
       parameter Physiolibrary.Types.Fraction respiratoryQuotient = 0.85;
       parameter Physiolibrary.Types.Fraction FiCO2_step = 0.08;
 
       // computed variables
+      Physiolibrary.Types.MolarFlowRate metabolismUAFlowRate=if makeUAstep and time >
+          breakTime and time < breakTime + breakLength then UAstepRatio*
+          metabolismUAFlowRate_norm else metabolismUAFlowRate_norm;
       Physiolibrary.Types.Fraction FiCO2= if not UseStepCO2Fraction then FiCO2_start else if time < breakTime then FiCO2_start else FiCO2_step annotation(Dialog(enable = false, tab="Calculated vars"));
     //  parameter Physiolibrary.Types.AmountOfSubstance ISFCO2solute_start = ISFCO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
       parameter Physiolibrary.Types.AmountOfSubstance ISFO2solute_start = ISFO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
@@ -19789,11 +19798,13 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_b UA
         annotation (Placement(transformation(extent={{-90,10},{-70,30}}),
             iconTransformation(extent={{-108,-52},{-88,-32}})));
-            parameter Physiolibrary.Types.MolarFlowRate UAMetabolismRate(
-          displayUnit="mmol/day")=6.9444444444444e-7;
+
+        outer Interfaces.ModelSettings modelSettings
+                              annotation (Placement(transformation(extent={{-100,80},
+                {-80,100}})));
     equation
-      HCO3.q = UAMetabolismRate;
-      UA.q + UAMetabolismRate = 0;
+      HCO3.q = modelSettings.metabolismUAFlowRate;
+      UA.q + modelSettings.metabolismUAFlowRate = 0;
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end tissuesOrganicAcidProduction;
@@ -20780,7 +20791,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{38,48},{58,62}})));
       Package.limitO2Metabolism limitO2Metabolism(metabolismFlowRate=
-            modelSettings.metabolismFlowRate)
+            modelSettings.metabolismO2FlowRate)
         annotation (Placement(transformation(extent={{68,64},{88,44}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a O2 annotation (Placement(
             transformation(rotation=0, extent={{-110,70},{-90,90}}),
@@ -31110,6 +31121,26 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Icon(coordinateSystem(extent={{-120,-80},{160,140}})));
   end SimplestCircWithTissues2;
 
+    model NormalState
+      SimplestCircWithTissues3 simplestCircWithTissues3_1
+        annotation (Placement(transformation(extent={{-34,10},{-6,32}})));
+      inner Interfaces.ModelSettings modelSettings(
+        O2DiffusionPermeability(displayUnit="l/min"),
+        CO2DiffusionPermeability(displayUnit="l/min"),
+        HCO3Permeability(displayUnit="l/min"),
+        NormalAlveolarVentilation=8.33333E-05,
+        UseMetabolicUABalance=true,
+        UseRespiratoryCompensation=false)
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+    equation
+      connect(simplestCircWithTissues3_1.VAi_input1, simplestCircWithTissues3_1.VAi_input)
+        annotation (Line(points={{-13.1,21.5},{2,21.5},{2,36},{-42,36},{-42,
+              20.7},{-27.9,20.7}}, color={0,0,127}));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)),
+        experiment(StopTime=1000000, __Dymola_NumberOfIntervals=5000));
+    end NormalState;
+
     model CompareVentilationStep
       import Physiolibrary.Types.*;
       parameter DiffusionPermeability HCO3Permeability = 100;
@@ -31134,7 +31165,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         CO2DiffusionPermeability(displayUnit="l/min") = 0.005,
         HCO3Permeability(displayUnit="l/min") = 5e-5,
         UseMetabolicUABalance=true,
-        metabolismFlowRate=0.000125)
+        metabolismO2FlowRate=0.000125)
         annotation (Placement(transformation(extent={{-100,78},{-80,98}})));
       Modelica.Blocks.Sources.Ramp ramp(
         height=0.000266667,
@@ -31212,10 +31243,11 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             extent={{-13,-13},{13,13}},
             rotation=0,
             origin={89,35})));
-      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
+          respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
         annotation (Placement(transformation(extent={{148,-10},{168,10}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
-              "ml/min") = 8.19588e-5)
+              "ml/min") = modelSettings.NormalAlveolarVentilation)
         annotation (Placement(transformation(extent={{131,-32},{139,-26}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage clunlim(
           useConcentrationInput=false, Conc=100)
@@ -31283,15 +31315,17 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             coordinateSystem(preserveAspectRatio=false)));
     end RespiratoryAlkalosis;
 
-    model MetabolicAcidosis
-      SimplestCircWithTissues3 simplestCircWithTissues3_1(alveolarVentilation(
-            respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation),
-          VAi(k=0.00016666666666667))
+    model MetabolicAcidosisChronic
+      SimplestCircWithTissues3 simplestCircWithTissues3_1
         annotation (Placement(transformation(extent={{-32,10},{-4,32}})));
       inner Interfaces.ModelSettings modelSettings(
         O2DiffusionPermeability(displayUnit="l/min"),
         CO2DiffusionPermeability(displayUnit="l/min"),
-        HCO3Permeability(displayUnit="l/min"))
+        HCO3Permeability(displayUnit="l/min"),
+        makeUAstep=true,
+        UAstepRatio=2,
+        breakTime(displayUnit="d") = 864000,
+        breakLength(displayUnit="d") = 86400000)
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
     equation
       connect(simplestCircWithTissues3_1.VAi_input1, simplestCircWithTissues3_1.VAi_input)
@@ -31299,7 +31333,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               20.7},{-25.9,20.7}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
-    end MetabolicAcidosis;
+    end MetabolicAcidosisChronic;
 
     model CompareVentilationStep2
       import Physiolibrary.Types.*;
@@ -31307,7 +31341,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       parameter Physiolibrary.Types.Volume isf_volume = 0.01;
 
       SimplestCircWithTissues2 simplestCircWithTissues2_1(cells(
-            limitO2Metabolism(metabolismFlowRate=modelSettings.metabolismFlowRate)))
+            limitO2Metabolism(metabolismFlowRate=modelSettings.metabolismO2FlowRate)))
         annotation (Placement(transformation(extent={{-32,10},{-4,32}})));
       inner Interfaces.ModelSettings modelSettings(
         O2DiffusionPermeability(displayUnit="l/min") = 0.005,
@@ -31315,7 +31349,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         HCO3Permeability(displayUnit="l/min") = 5e-5,
         UseMetabolicUABalance=false,
         UseRespiratoryCompensation=false,
-        metabolismFlowRate=0.00016666666666667)
+        metabolismO2FlowRate=0.00016666666666667)
         annotation (Placement(transformation(extent={{-100,78},{-80,98}})));
       Modelica.Blocks.Sources.Ramp ramp(
         duration=100000,
@@ -31340,6 +31374,26 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             coordinateSystem(preserveAspectRatio=false)),
         experiment(StopTime=40000, __Dymola_NumberOfIntervals=5000));
     end CompareVentilationStep2;
+
+    model MetabolicAcidosisAcute
+      SimplestCircWithTissues3 simplestCircWithTissues3_1
+        annotation (Placement(transformation(extent={{-32,10},{-4,32}})));
+      inner Interfaces.ModelSettings modelSettings(
+        O2DiffusionPermeability(displayUnit="l/min"),
+        CO2DiffusionPermeability(displayUnit="l/min"),
+        HCO3Permeability(displayUnit="l/min"),
+        makeUAstep=true,
+        UAstepRatio=5.0,
+        breakTime(displayUnit="d") = 86400,
+        breakLength(displayUnit="d") = 172800)
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+    equation
+      connect(simplestCircWithTissues3_1.VAi_input1, simplestCircWithTissues3_1.VAi_input)
+        annotation (Line(points={{-11.1,21.5},{2,21.5},{2,36},{-42,36},{-42,
+              20.7},{-25.9,20.7}}, color={0,0,127}));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end MetabolicAcidosisAcute;
   end Validation;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
       Physiomodel(version="1.0.0")));
