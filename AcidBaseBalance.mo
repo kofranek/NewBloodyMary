@@ -12804,7 +12804,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
             7.4,0.6,-2.0},{7.80,0.0,0}})
         "marek: normal pH corrected from 7.45 to 7.42"                                                                                                     annotation(Placement(transformation(extent = {{-28, 20}, {-8, 40}})));
       Physiolibrary.Types.Constants.MolarFlowRateConst electrolytesFlowConstant(k=
-            6.6666666666667e-07)                                                                         annotation(Placement(transformation(extent = {{-36, 70}, {-24, 82}})));
+            6.6666666666667e-07)                                                                         annotation(Placement(transformation(extent={{-36,96},
+                {-24,108}})));
       Physiolibrary.Blocks.Factors.Spline ChloridePoolEffect(data = {{0.00, 0.0, 0}, {80, 1.0, 0.0}})
         "electroneutrality does not allow to extract cation without anion"                                                                                               annotation(Placement(transformation(extent={{-28,-10},
                 {-8,10}})));
@@ -12820,10 +12821,12 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Physiolibrary.Types.RealIO.ConcentrationInput HCO3 annotation (Placement(
             transformation(extent={{-114,0},{-94,20}}), iconTransformation(
               extent={{-100,50},{-80,70}})));
+      MetabolicRateNormalizer metabolicRateNormalizer1(T(displayUnit="d") =
+          86400)
+        annotation (Placement(transformation(extent={{22,70},{42,90}})));
     equation
       connect(PT_NH3_AcuteEffect.y, PT_NH3_ChronicEffect.yBase) annotation(Line(points = {{-18, 54}, {-18, 48}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(PT_NH3_ChronicEffect.y, CD_NH4_PhOnFlux.yBase) annotation(Line(points = {{-18, 42}, {-18, 32}}, color = {0, 0, 127}, smooth = Smooth.None));
-      connect(electrolytesFlowConstant.y, PT_NH3_AcuteEffect.yBase) annotation(Line(points = {{-22.5, 76}, {-18, 76}, {-18, 60}}, color = {0, 0, 127}, smooth = Smooth.None));
       connect(ChloridePoolEffect.y, molarflowrate) annotation(Line(points={{-18,-4},
               {-18,-22},{10,-22}},                                                                                       color = {0, 0, 127}));
       connect(Cl, ChloridePoolEffect.u)
@@ -12834,15 +12837,21 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
               -60,46},{-60,80},{-64,80}}, color={0,0,127}));
       connect(CD_NH4_PhOnFlux.u, pH) annotation (Line(points={{-26,30},{-60,30},
               {-60,80},{-64,80}}, color={0,0,127}));
-      connect(CD_NH4_PhOnFlux.y,hCO3ProductionLimiter.u)
-                                         annotation (Line(points={{-18,26},{
-              -49.76,26},{-49.76,22}},color={0,0,127}));
       connect(pH, hCO3ProductionLimiter.pH) annotation (Line(points={{-64,80},{
               -60,80},{-60,16},{-56,16}}, color={0,0,127}));
       connect(HCO3, hCO3ProductionLimiter.HCO3)
         annotation (Line(points={{-104,10},{-56,10}}, color={0,0,127}));
       connect(hCO3ProductionLimiter.y, ChloridePoolEffect.yBase) annotation (
           Line(points={{-49.76,10},{-50,10},{-50,2},{-18,2}}, color={0,0,127}));
+      connect(pH, metabolicRateNormalizer1.pH)
+        annotation (Line(points={{-64,80},{22,80}}, color={0,0,127}));
+      connect(electrolytesFlowConstant.y, metabolicRateNormalizer1.baseLineMetabolism)
+        annotation (Line(points={{-22.5,102},{32,102},{32,90}}, color={0,0,127}));
+      connect(metabolicRateNormalizer1.adjustedMetabolism, PT_NH3_AcuteEffect.yBase)
+        annotation (Line(points={{32,70},{8,70},{8,68},{-18,68},{-18,60}},
+            color={0,0,127}));
+      connect(CD_NH4_PhOnFlux.y, hCO3ProductionLimiter.u) annotation (Line(
+            points={{-18,26},{-18,22},{-49.76,22}}, color={0,0,127}));
       annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Text(extent = {{-112, -102}, {108, -128}}, lineColor = {0, 0, 255}, textString = "%name")}), Documentation(revisions = "<html>
 
 <table>
@@ -12971,6 +12980,28 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
         annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
               coordinateSystem(preserveAspectRatio=false)));
       end TestLimiter;
+
+      model TestMetabolicNormalizer
+        MetabolicRateNormalizer metabolicRateNormalizer(T(displayUnit="d") =
+            345600)
+          annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
+        Physiolibrary.Types.Constants.MolarFlowRateConst electrolytesFlowConstant(k=
+              6.6666666666667e-07)                                                                         annotation(Placement(transformation(extent={{-30,40},
+                  {-18,52}})));
+        Modelica.Blocks.Sources.Pulse pulse(
+          period(displayUnit="d") = 8640000,
+          offset=7.4,
+          startTime(displayUnit="d") = 864000,
+          amplitude=-0.2)
+          annotation (Placement(transformation(extent={{-86,-10},{-66,10}})));
+      equation
+        connect(electrolytesFlowConstant.y, metabolicRateNormalizer.baseLineMetabolism)
+          annotation (Line(points={{-16.5,46},{0,46},{0,10}}, color={0,0,127}));
+        connect(pulse.y, metabolicRateNormalizer.pH)
+          annotation (Line(points={{-65,0},{-10,0}}, color={0,0,127}));
+        annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+              coordinateSystem(preserveAspectRatio=false)));
+      end TestMetabolicNormalizer;
     end Test;
 
     model F62
@@ -13507,6 +13538,52 @@ Compensation")}));
 
 
     end HCO3ProductionLimiter;
+
+    model MetabolicRateNormalizer
+      Physiolibrary.Types.RealIO.pHInput pH annotation (Placement(transformation(
+              extent={{-112,-10},{-92,10}}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=0,
+            origin={-100,0})));
+      parameter Physiolibrary.Types.pH pHRef = 7.4;
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput adjustedMetabolism "MolarFlowRate constant"
+        annotation (Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={0,-100}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={0,-100})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput baseLineMetabolism "MolarFlowRate constant"
+        annotation (Placement(transformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={0,100}), iconTransformation(
+            extent={{-10,-10},{10,10}},
+            rotation=270,
+            origin={0,100})));
+
+      Real pHDiff = pHRef - pH;
+      Real sigmoid = 2/(1 + Modelica.Math.exp(-pHDiff)) - 1 "getting rid of events";
+      Physiolibrary.Types.Fraction ratio( start = 1);
+      parameter Physiolibrary.Types.Time T "the halflife";
+      parameter Real k = 1e-3;
+      parameter Real upperRatioLimit = 2;
+      parameter Real lowerRatioLimit = 0.5;
+      Real r2(start = 1);
+    equation
+
+      if r2 > 2 and pHDiff > 0 then
+        // hco3 resorbtion limiter
+        der(r2)*T = pHDiff * k;
+      else
+        der(r2)*T = pHDiff;
+      end if;
+
+    //  der(r2)*T = pHDiff /(1 + k*max(r2-Rlim);
+      der(ratio)*T = pHDiff;
+      adjustedMetabolism = ratio * baseLineMetabolism;
+    end MetabolicRateNormalizer;
   end Kidney;
 
   package Package
@@ -31316,16 +31393,17 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
     end RespiratoryAlkalosis;
 
     model MetabolicAcidosisChronic
-      SimplestCircWithTissues3 simplestCircWithTissues3_1
+      SimplestCircWithTissues3 simplestCircWithTissues3_1(ammoniumExcretion(
+            ammonium(metabolicRateNormalizer1(T=43200))))
         annotation (Placement(transformation(extent={{-32,10},{-4,32}})));
       inner Interfaces.ModelSettings modelSettings(
         O2DiffusionPermeability(displayUnit="l/min"),
         CO2DiffusionPermeability(displayUnit="l/min"),
         HCO3Permeability(displayUnit="l/min"),
         makeUAstep=true,
-        UAstepRatio=2,
         breakTime(displayUnit="d") = 864000,
-        breakLength(displayUnit="d") = 86400000)
+        breakLength(displayUnit="d") = 86400000,
+        UAstepRatio=2)
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
     equation
       connect(simplestCircWithTissues3_1.VAi_input1, simplestCircWithTissues3_1.VAi_input)
