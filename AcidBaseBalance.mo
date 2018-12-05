@@ -12334,33 +12334,110 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
     end ISF_initialization2;
 
     model albuminRecirculation
-      Physiolibrary.Chemical.Components.Substance plasmaAlbumin(solute_start=
-            0.0013)
-        annotation (Placement(transformation(extent={{-82,0},{-62,20}})));
-      Physiolibrary.Chemical.Components.Substance ISFAlbumin(solute_start=0)
+      parameter Physiolibrary.Types.MolarFlowRate AlbQ0 = 2.75753e-09;
+      Real cAlb = plasmaAlbumin.q_out.conc*66.5/10 "g/dl, normal value is 4.4";
+      Physiolibrary.Chemical.Components.Substance plasmaAlbumin(useNormalizedVolume=
+           false, solute_start(displayUnit="mmol") = 0.00188)
+        annotation (Placement(transformation(extent={{-80,0},{-60,20}})));
+      Physiolibrary.Chemical.Components.Substance ISFAlbumin(useNormalizedVolume=false,
+          solute_start(displayUnit="mmol") = 0.00189)
         annotation (Placement(transformation(extent={{0,0},{20,20}})));
       Physiolibrary.Chemical.Components.Diffusion diffusion(Conductance=2.5E-08)
         annotation (Placement(transformation(extent={{-40,0},{-20,20}})));
       Physiolibrary.Chemical.Components.Stream Stream(SolutionFlow(displayUnit=
               "l/day") = 5.787037037037e-8)
         annotation (Placement(transformation(extent={{-20,40},{-40,60}})));
+      Physiomodel.Proteins.Synthesis                 synthesis(SynthesisBasic(
+            displayUnit="mmol/day"))
+        annotation (Placement(transformation(extent={{-20,-90},{-40,-70}})));
+      Physiomodel.Proteins.Degradation                 degradation(
+          DegradationBasic(displayUnit="mmol/day"))
+        annotation (Placement(transformation(extent={{-40,-70},{-20,-50}})));
+      Physiolibrary.Types.Constants.VolumeConst volume(k=0.003)
+        annotation (Placement(transformation(extent={{-98,64},{-90,72}})));
+      Interfaces.ModelSettings modelSettings
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+      Physiolibrary.Types.Constants.VolumeConst volume1(k=modelSettings.ISFvolume_start)
+        annotation (Placement(transformation(extent={{18,64},{10,72}})));
+      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure
+        annotation (Placement(transformation(extent={{-66,-70},{-46,-50}})));
+      Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure1
+        annotation (Placement(transformation(extent={{-66,-70},{-46,-90}})));
+      Modelica.Blocks.Math.Add add(k1=+1, k2=+1)
+        annotation (Placement(transformation(extent={{-8,-80},{12,-60}})));
+      AlbChrg albChrg
+        annotation (Placement(transformation(extent={{28,-80},{48,-60}})));
+      Physiolibrary.Types.Constants.pHConst     pH(k=7.4)
+        annotation (Placement(transformation(extent={{14,-54},{22,-46}})));
+      Modelica.Blocks.Continuous.Integrator integrator
+        annotation (Placement(transformation(extent={{80,-80},{100,-60}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
+        unlimitedSolutePumpOut(useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{-30,-48},{-10,-28}})));
+      Modelica.Blocks.Sources.Pulse pulse(
+        nperiod=1,
+        startTime(displayUnit="d") = 2592000,
+        amplitude=1e-8,
+        width=100,
+        period(displayUnit="d") = 86400)
+        annotation (Placement(transformation(extent={{24,-30},{4,-10}})));
+      Modelica.Blocks.Continuous.Integrator integrator1
+        annotation (Placement(transformation(extent={{82,-16},{102,4}})));
     equation
       connect(Stream.q_in, ISFAlbumin.q_out) annotation (Line(
           points={{-20,50},{10,50},{10,10}},
           color={107,45,134},
           thickness=1));
       connect(Stream.q_out, plasmaAlbumin.q_out) annotation (Line(
-          points={{-40,50},{-72,50},{-72,10}},
+          points={{-40,50},{-70,50},{-70,10}},
           color={107,45,134},
           thickness=1));
       connect(plasmaAlbumin.q_out, diffusion.q_in) annotation (Line(
-          points={{-72,10},{-40,10}},
+          points={{-70,10},{-40,10}},
           color={107,45,134},
           thickness=1));
       connect(diffusion.q_out, ISFAlbumin.q_out) annotation (Line(
           points={{-20,10},{10,10}},
           color={107,45,134},
           thickness=1));
+      connect(volume.y, plasmaAlbumin.solutionVolume)
+        annotation (Line(points={{-89,68},{-74,68},{-74,14}}, color={0,0,127}));
+      connect(ISFAlbumin.solutionVolume, volume1.y)
+        annotation (Line(points={{6,14},{6,68},{9,68}}, color={0,0,127}));
+      connect(degradation.q_in, molarFlowMeasure.q_out) annotation (Line(
+          points={{-40,-60},{-46,-60}},
+          color={107,45,134},
+          thickness=1));
+      connect(molarFlowMeasure.q_in, plasmaAlbumin.q_out) annotation (Line(
+          points={{-66,-60},{-70,-60},{-70,10}},
+          color={107,45,134},
+          thickness=1));
+      connect(synthesis.q_out, molarFlowMeasure1.q_out) annotation (Line(
+          points={{-40,-80},{-46,-80}},
+          color={107,45,134},
+          thickness=1));
+      connect(molarFlowMeasure1.q_in, plasmaAlbumin.q_out) annotation (Line(
+          points={{-66,-80},{-70,-80},{-70,10}},
+          color={107,45,134},
+          thickness=1));
+      connect(molarFlowMeasure.molarFlowRate, add.u1) annotation (Line(points={
+              {-56,-68},{-16,-68},{-16,-64},{-10,-64}}, color={0,0,127}));
+      connect(molarFlowMeasure1.molarFlowRate, add.u2) annotation (Line(points=
+              {{-56,-72},{-16,-72},{-16,-76},{-10,-76}}, color={0,0,127}));
+      connect(add.y, albChrg.conc) annotation (Line(points={{13,-70},{28,-70},{
+              28,-70.2},{29,-70.2}}, color={0,0,127}));
+      connect(albChrg.pH, pH.y) annotation (Line(points={{28,-61},{26,-61},{26,
+              -50},{23,-50}}, color={0,0,127}));
+      connect(albChrg.chrg, integrator.u)
+        annotation (Line(points={{47,-70},{78,-70}}, color={0,0,127}));
+      connect(unlimitedSolutePumpOut.q_in, degradation.q_in) annotation (Line(
+          points={{-30,-38},{-40,-38},{-40,-60}},
+          color={107,45,134},
+          thickness=1));
+      connect(pulse.y, unlimitedSolutePumpOut.soluteFlow) annotation (Line(
+            points={{3,-20},{-16,-20},{-16,-34}}, color={0,0,127}));
+      connect(pulse.y, integrator1.u) annotation (Line(points={{3,-20},{2,-20},
+              {2,-6},{80,-6}}, color={0,0,127}));
       annotation (
         Icon(coordinateSystem(preserveAspectRatio=false)),
         Diagram(coordinateSystem(preserveAspectRatio=false)),
@@ -12368,6 +12445,23 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
 <p>Albumin recirulation through lymph - given the lymph flow of 5 l/day (<span style=\"font-family: sans-serif; color: #222222; background-color: #eaf3ff;\">&nbsp;</span><i>Guyton and Hall Textbook of Medical Physiology. Saunders. 2010. pp.&nbsp;186, 187.&nbsp;<span style=\"font-family: sans-serif;\"><a href=\"https://en.wikipedia.org/wiki/International_Standard_Book_Number\">ISBN</a><span style=\"color: #222222;\">&nbsp;<a href=\"https://en.wikipedia.org/wiki/Special:BookSources/978-1416045748\">978-1416045748</a>.</span></i> ) and the ISF content of albumin around 1/3 of the plasmatic concentration, the tissue diffusion has been identified to be 1.5 ml/min.</p>
 </html>"));
     end albuminRecirculation;
+
+    model AlbChrg
+      Modelica.Blocks.Interfaces.RealOutput chrg
+        annotation (Placement(transformation(extent={{80,-10},{100,10}})));
+      Physiolibrary.Types.RealIO.ConcentrationInput conc
+        annotation (Placement(transformation(extent={{-100,-12},{-80,8}})));
+      Modelica.Blocks.Interfaces.RealInput pH
+        annotation (Placement(transformation(extent={{-120,70},{-80,110}})));
+            Real toMeqConversion = -1/1000*6500*(0.123*pH - 0.631);
+            Real atch=-(alb*10)*(0.123*pH - 0.631) "albumin total charge";
+            Real atch2 =  conc*toMeqConversion;
+          Real alb(unit="g/dl") = conc/10/1000*6500 "Albumin concentration. Normal value 4.4";
+    equation
+      chrg = atch;
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end AlbChrg;
   end Ions;
 
   package Interfaces
@@ -12821,7 +12915,7 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Physiolibrary.Types.RealIO.ConcentrationInput HCO3 annotation (Placement(
             transformation(extent={{-114,0},{-94,20}}), iconTransformation(
               extent={{-100,50},{-80,70}})));
-      MetabolicRateNormalizer metabolicRateNormalizer1(T(displayUnit="d") =
+      MetabolicRateNormalizer metabolicRateNormalizer1(T(displayUnit="d")=
           86400)
         annotation (Placement(transformation(extent={{22,70},{42,90}})));
     equation
@@ -12982,7 +13076,7 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       end TestLimiter;
 
       model TestMetabolicNormalizer
-        MetabolicRateNormalizer metabolicRateNormalizer(T(displayUnit="d") =
+        MetabolicRateNormalizer metabolicRateNormalizer(T(displayUnit="d")=
             345600)
           annotation (Placement(transformation(extent={{-10,-10},{10,10}})));
         Physiolibrary.Types.Constants.MolarFlowRateConst electrolytesFlowConstant(k=
@@ -31204,10 +31298,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       inner Interfaces.ModelSettings modelSettings(
         O2DiffusionPermeability(displayUnit="l/min"),
         CO2DiffusionPermeability(displayUnit="l/min"),
-        HCO3Permeability(displayUnit="l/min"),
-        NormalAlveolarVentilation=8.33333E-05,
-        UseMetabolicUABalance=true,
-        UseRespiratoryCompensation=false)
+        HCO3Permeability(displayUnit="l/min"))
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
     equation
       connect(simplestCircWithTissues3_1.VAi_input1, simplestCircWithTissues3_1.VAi_input)
