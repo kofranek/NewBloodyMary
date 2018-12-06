@@ -12792,38 +12792,65 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       parameter Real totalHCO3Amount = 0;
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump(
           useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{10,-10},{-10,10}})));
+        annotation (Placement(transformation(extent={{34,-10},{14,10}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut(
           useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{-10,-50},{10,-30}})));
+        annotation (Placement(transformation(extent={{14,-50},{34,-30}})));
       Modelica.Blocks.Sources.Pulse pulse(
         width=100,
         period(displayUnit="h") = 3600,
         nperiod=1,
         startTime(displayUnit="d") = 864000,
         amplitude=totalHCO3Amount/pulse.period)
-        annotation (Placement(transformation(extent={{54,34},{34,54}})));
+        annotation (Placement(transformation(extent={{78,34},{58,54}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a HCO3
         annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_a[IonsEnum]
         annotation (Placement(transformation(extent={{-110,-50},{-90,-30}})));
       Interfaces.IonSelector ionSelector(selectedIon=AcidBaseBalance.Ions.IonsEnum.Cl)
-        annotation (Placement(transformation(extent={{-72,-50},{-52,-30}})));
+        annotation (Placement(transformation(extent={{-80,-50},{-60,-30}})));
+      Physiolibrary.Chemical.Components.Substance substance
+        annotation (Placement(transformation(extent={{-26,6},{-6,26}})));
+      Physiolibrary.Chemical.Components.Substance substance1
+        annotation (Placement(transformation(extent={{-20,-32},{0,-12}})));
+      Physiolibrary.Chemical.Components.Diffusion diffusion(Conductance=
+            1.6666666666667e-5)
+        annotation (Placement(transformation(extent={{-48,-50},{-28,-30}})));
+      Physiolibrary.Chemical.Components.Diffusion diffusion1(Conductance=
+            1.6666666666667e-5)
+        annotation (Placement(transformation(extent={{-48,-10},{-28,10}})));
     equation
       connect(pulse.y, unlimitedSolutePump.soluteFlow)
-        annotation (Line(points={{33,44},{-4,44},{-4,4}}, color={0,0,127}));
+        annotation (Line(points={{57,44},{20,44},{20,4}}, color={0,0,127}));
       connect(pulse.y, unlimitedSolutePumpOut.soluteFlow)
-        annotation (Line(points={{33,44},{4,44},{4,-36}}, color={0,0,127}));
-      connect(HCO3, unlimitedSolutePump.q_out) annotation (Line(
-          points={{-100,0},{-10,0}},
-          color={107,45,134},
-          thickness=1));
+        annotation (Line(points={{57,44},{28,44},{28,-36}},
+                                                          color={0,0,127}));
       connect(port_a, ionSelector.port_a) annotation (Line(
-          points={{-100,-40},{-72,-40}},
+          points={{-100,-40},{-80,-40}},
           color={107,45,134},
           thickness=1));
-      connect(ionSelector.port_b, unlimitedSolutePumpOut.q_in) annotation (Line(
-          points={{-52,-40},{-10,-40}},
+      connect(ionSelector.port_b, diffusion.q_in) annotation (Line(
+          points={{-60,-40},{-48,-40}},
+          color={107,45,134},
+          thickness=1));
+      connect(substance1.q_out, diffusion.q_out) annotation (Line(
+          points={{-10,-22},{-10,-40},{-28,-40}},
+          color={107,45,134},
+          thickness=1));
+      connect(substance1.q_out, unlimitedSolutePumpOut.q_in) annotation (Line(
+          points={{-10,-22},{-10,-40},{14,-40}},
+          color={107,45,134},
+          thickness=1));
+      connect(HCO3, diffusion1.q_in) annotation (Line(
+          points={{-100,0},{-48,0}},
+          color={107,45,134},
+          thickness=1));
+      connect(diffusion1.q_out, unlimitedSolutePump.q_out) annotation (Line(
+          points={{-28,0},{14,0}},
+          color={107,45,134},
+          thickness=1));
+      connect(diffusion1.q_out, substance.q_out) annotation (Line(
+          points={{-28,0},{-16,0},{-16,16}},
           color={107,45,134},
           thickness=1));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
@@ -13264,7 +13291,9 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
               fillColor={240,233,6},
               fillPattern=FillPattern.Solid,
               horizontalAlignment=TextAlignment.Left,
-              textString="[:]")}),                                   Diagram(
+              textString="[:]"),
+            Rectangle(extent={{-100,80},{100,-80}}, lineColor={28,108,200})}),
+                                                                     Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end IonSelector;
 
@@ -31961,7 +31990,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
     end MetabolicAcidosisAcute;
 
     model MetabolicAlkalosis
-      SimplestCircWithTissues3 simplestCircWithTissues3_1
+      SimplestCircWithTissues3 simplestCircWithTissues3_1(vomiting(
+            totalHCO3Amount=10, pulse(startTime=86400.0)))
         annotation (Placement(transformation(extent={{-34,10},{-6,32}})));
       inner Interfaces.ModelSettings modelSettings(
         O2DiffusionPermeability(displayUnit="l/min"),
