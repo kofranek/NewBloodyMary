@@ -12347,10 +12347,10 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Physiolibrary.Chemical.Components.Stream Stream(SolutionFlow(displayUnit=
               "l/day") = 5.787037037037e-8)
         annotation (Placement(transformation(extent={{-20,40},{-40,60}})));
-      Physiomodel.Proteins.Synthesis                 synthesis(SynthesisBasic(
+      Synthesis                 synthesis(SynthesisBasic(
             displayUnit="mmol/day"))
         annotation (Placement(transformation(extent={{-20,-90},{-40,-70}})));
-      Physiomodel.Proteins.Degradation                 degradation(
+      Degradation                 degradation(
           DegradationBasic(displayUnit="mmol/day"))
         annotation (Placement(transformation(extent={{-40,-70},{-20,-50}})));
       Physiolibrary.Types.Constants.VolumeConst volume(k=0.003)
@@ -12369,20 +12369,22 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
         annotation (Placement(transformation(extent={{28,-80},{48,-60}})));
       Physiolibrary.Types.Constants.pHConst     pH(k=7.4)
         annotation (Placement(transformation(extent={{14,-54},{22,-46}})));
-      Modelica.Blocks.Continuous.Integrator integrator
+      Modelica.Blocks.Continuous.Integrator chargeDifference
         annotation (Placement(transformation(extent={{80,-80},{100,-60}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut
         unlimitedSolutePumpOut(useSoluteFlowInput=true)
         annotation (Placement(transformation(extent={{-30,-48},{-10,-28}})));
       Modelica.Blocks.Sources.Pulse pulse(
         nperiod=1,
-        startTime(displayUnit="d") = 2592000,
-        amplitude=1e-8,
+        startTime=3456000.0,
+        amplitude=1.15741E-08,
         width=100,
-        period(displayUnit="d") = 86400)
+        period=345600.0)
         annotation (Placement(transformation(extent={{24,-30},{4,-10}})));
-      Modelica.Blocks.Continuous.Integrator integrator1
+      Modelica.Blocks.Continuous.Integrator AlbuminCatabolism
         annotation (Placement(transformation(extent={{82,-16},{102,4}})));
+      Modelica.Blocks.Continuous.Integrator AlbuminDifference
+        annotation (Placement(transformation(extent={{28,-110},{48,-90}})));
     equation
       connect(Stream.q_in, ISFAlbumin.q_out) annotation (Line(
           points={{-20,50},{10,50},{10,10}},
@@ -12424,11 +12426,11 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
               {-56,-68},{-16,-68},{-16,-64},{-10,-64}}, color={0,0,127}));
       connect(molarFlowMeasure1.molarFlowRate, add.u2) annotation (Line(points=
               {{-56,-72},{-16,-72},{-16,-76},{-10,-76}}, color={0,0,127}));
-      connect(add.y, albChrg.conc) annotation (Line(points={{13,-70},{28,-70},{
-              28,-70.2},{29,-70.2}}, color={0,0,127}));
+      connect(add.y, albChrg.albFlow) annotation (Line(points={{13,-70},{28,-70},
+              {28,-70.2},{29,-70.2}}, color={0,0,127}));
       connect(albChrg.pH, pH.y) annotation (Line(points={{28,-61},{26,-61},{26,
               -50},{23,-50}}, color={0,0,127}));
-      connect(albChrg.chrg, integrator.u)
+      connect(albChrg.HCO3Flow, chargeDifference.u)
         annotation (Line(points={{47,-70},{78,-70}}, color={0,0,127}));
       connect(unlimitedSolutePumpOut.q_in, degradation.q_in) annotation (Line(
           points={{-30,-38},{-40,-38},{-40,-60}},
@@ -12436,8 +12438,11 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
           thickness=1));
       connect(pulse.y, unlimitedSolutePumpOut.soluteFlow) annotation (Line(
             points={{3,-20},{-16,-20},{-16,-34}}, color={0,0,127}));
-      connect(pulse.y, integrator1.u) annotation (Line(points={{3,-20},{2,-20},
-              {2,-6},{80,-6}}, color={0,0,127}));
+      connect(pulse.y, AlbuminCatabolism.u) annotation (Line(points={{3,-20},{2,
+              -20},{2,-6},{80,-6}}, color={0,0,127}));
+      connect(AlbuminDifference.u, albChrg.albFlow) annotation (Line(points={{
+              26,-100},{18,-100},{18,-70},{28,-70},{28,-70.2},{29,-70.2}},
+            color={0,0,127}));
       annotation (
         Icon(coordinateSystem(preserveAspectRatio=false)),
         Diagram(coordinateSystem(preserveAspectRatio=false)),
@@ -12447,21 +12452,402 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
     end albuminRecirculation;
 
     model AlbChrg
-      Modelica.Blocks.Interfaces.RealOutput chrg
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput HCO3Flow "meq/s "
         annotation (Placement(transformation(extent={{80,-10},{100,10}})));
-      Physiolibrary.Types.RealIO.ConcentrationInput conc
+      Physiolibrary.Types.RealIO.MolarFlowRateInput albFlow
         annotation (Placement(transformation(extent={{-100,-12},{-80,8}})));
-      Modelica.Blocks.Interfaces.RealInput pH
+      Physiolibrary.Types.RealIO.pHInput pH
         annotation (Placement(transformation(extent={{-120,70},{-80,110}})));
-            Real toMeqConversion = -1/1000*6500*(0.123*pH - 0.631);
-            Real atch=-(alb*10)*(0.123*pH - 0.631) "albumin total charge";
-            Real atch2 =  conc*toMeqConversion;
-          Real alb(unit="g/dl") = conc/10/1000*6500 "Albumin concentration. Normal value 4.4";
+      Real albChrgFlowRate=albFlow*65000* atch
+        "meq/s: mol/s * (g/mol)";
+      Real atch= -(0.123*pH - 0.631) "meq/g albumin total charge acc to Fencl& Figge";
     equation
-      chrg = atch;
+      HCO3Flow = albChrgFlowRate;
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end AlbChrg;
+
+    model Synthesis
+    //  parameter Physiolibrary.Types.MassFlowRate  SynthesisBasic "10 mg/min";
+      parameter Physiolibrary.Types.MolarFlowRate SynthesisBasic = 2.75753e-09
+      "10 mg/min";
+      parameter Real[:,3] data =  {{ 20.0,  3.0,  0.0}, { 28.0,  1.0,  -0.2}, { 40.0,  0.0,  0.0}}
+      "COPEffect";
+    Physiolibrary.Blocks.Interpolation.Curve c(
+      x=data[:, 1],
+      y=data[:, 2],
+      slope=data[:, 3],
+      Xscale=101325/760);
+      constant Real protToAlb = (0.63/1.45) "recalculation mmol/l of proteins to mmoll of albumin (from Physiomodel.Proteins.ProteinDivision)";
+    Physiolibrary.Chemical.Interfaces.ChemicalPort_b q_out annotation (extent=[
+          -10,-110; 10,-90], Placement(transformation(extent={{90,-10},{110,10}})));
+
+      Physiolibrary.Types.Pressure COP;
+    //  Physiolibrary.Types.AmountOfSubstance  synthetizedAmount(start=0);
+    //  Physiolibrary.Types.Mass  synthetizedMass(start=0);
+    //protected
+    //  constant Physiolibrary.Types.Time sec=1;
+    //  constant Physiolibrary.Types.Volume ghostPlasmaVol=3.02e-3
+    //    "Strange dependence derived from original HumMod";
+    equation
+      COP =  q_out.conc/protToAlb * Modelica.Constants.R * 310.15;
+      c.u=COP;
+      q_out.q = -SynthesisBasic * c.val;
+
+    //TODO: state
+    //der(synthetizedAmount) = -q_out.q;
+    //  ProteinsMass2AmountOfSubstance(synthetizedMass,ghostPlasmaVol) = synthetizedAmount;
+     annotation (
+        defaultComponentName="synthesis",
+        Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
+                100,100}}), graphics={Rectangle(
+              extent={{-100,-50},{100,50}},
+              lineColor={0,0,127},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid), Text(
+              extent={{-100,-50},{90,50}},
+              lineColor={0,0,255},
+              textString="%name")}),        Documentation(revisions="<html>
+<p><i>2009-2010</i></p>
+<p>Marek Matejak, Charles University, Prague, Czech Republic </p>
+</html>"));
+    end Synthesis;
+
+    model Degradation
+    //  parameter Physiolibrary.Types.MassFlowRate  DegradationBasic "10 mg/min";
+    //  parameter Real[:,3] data =  {{ 0.00,  0.0,  0.0}, { 0.07,  1.0,  40.0}, { 0.09,  6.0,  0.0}}
+    //    "ProteinEffect";
+       parameter Physiolibrary.Types.MolarFlowRate DegradationBasic = 2.75753e-09
+      "10 mg/min";
+       parameter Real[:,3] data =  {{ 0.00,  0.0,  0.0}, { 1.45,  1.0,  1.59}, { 1.97,  6.0,  0.0}}
+      "ProteinEffect";
+
+    Physiolibrary.Blocks.Interpolation.Curve c(
+      x=data[:, 1],
+      y=data[:, 2],
+      slope=data[:, 3]);
+      constant Real protToAlb = (0.63/1.45) "recalculation mmol/l of proteins to mmoll of albumin (from Physiomodel.Proteins.ProteinDivision)";
+
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a q_in annotation (Placement(
+          transformation(extent={{-100,0},{-60,40}}), iconTransformation(extent=
+             {{-110,-10},{-90,10}})));
+
+    //  Physiolibrary.Types.AmountOfSubstance  degradedAmount(start=0);
+    //  Physiolibrary.Types.Mass  degradedMass(start=0);
+    //protected
+    //  constant Physiolibrary.Types.Time sec=1;
+    //  constant Physiolibrary.Types.Volume ghostPlasmaVol=3.02e-3
+    //    "Strange dependence derived from original HumMod";
+    equation
+    //  ProteinsMassConcentration2Concentration(c.u*1000) = q_in.conc;
+      c.u = q_in.conc/protToAlb;
+      q_in.q = DegradationBasic * c.val;
+    //  q_in.q =ProteinsMass2AmountOfSubstance(DegradationBasic*c.val*sec,ghostPlasmaVol)/sec;
+
+    //TODO: state
+    //der(degradedAmount) = q_in.q;
+    //  ProteinsMass2AmountOfSubstance(degradedMass,ghostPlasmaVol) = degradedAmount;
+     annotation (
+        defaultComponentName="degradation",
+        Icon(coordinateSystem(preserveAspectRatio=true, extent={{-100,-100},{
+                100,100}}), graphics={Rectangle(
+              extent={{-100,-50},{100,50}},
+              lineColor={0,0,127},
+              fillColor={255,255,255},
+              fillPattern=FillPattern.Solid), Text(
+              extent={{-88,-50},{100,50}},
+              lineColor={0,0,255},
+              textString="%name")}),        Documentation(revisions="<html>
+<p><i>2009-2010</i></p>
+<p>Marek Matejak, Charles University, Prague, Czech Republic </p>
+</html>"));
+    end Degradation;
+
+    model AlbuminHCO3Complement
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b
+                                                     HCO3Flow "meq/s "
+        annotation (Placement(transformation(extent={{-10,90},{10,110}})));
+      Physiolibrary.Types.RealIO.pHInput pH
+        annotation (Placement(transformation(extent={{-120,80},{-80,120}}),
+            iconTransformation(
+            extent={{-20,-20},{20,20}},
+            rotation=0,
+            origin={-100,100})));
+      Real albChrgFlowRate=port_a.q*65000/1000* atch
+        "meq/s: mol/s * (g/mol)";
+      Real atch= -(0.123*pH - 0.631) "meq/g albumin total charge acc to Fencl& Figge";
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_a
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_b port_b
+        annotation (Placement(transformation(extent={{90,-10},{110,10}})));
+    equation
+      HCO3Flow.q + albChrgFlowRate = 0;
+      port_a.q + port_b.q = 0;
+      port_a.conc = port_b.conc;
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+            Line(
+              points={{-88,0},{80,0}},
+              color={28,108,200},
+              arrow={Arrow.None,Arrow.Filled}),
+            Line(
+              points={{0,0},{0,32},{0,90}},
+              color={28,108,200},
+              smooth=Smooth.Bezier,
+              arrow={Arrow.Filled,Arrow.None}),
+            Text(
+              extent={{0,-40},{100,0}},
+              lineColor={0,140,72},
+              textString="alb-"),
+            Text(
+              extent={{20,80},{120,120}},
+              lineColor={0,140,72},
+              textString="HCO3-"),
+            Text(
+              extent={{-100,-40},{0,0}},
+              lineColor={0,140,72},
+              textString="Alb"),
+            Rectangle(extent={{100,-100},{-100,100}}, lineColor={28,108,200}),
+            Text(
+              extent={{-100,-100},{100,-60}},
+              lineColor={28,108,200},
+              textString="HCO3 complement")}),                       Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end AlbuminHCO3Complement;
+
+    model AlbuminAcidBase
+      parameter Physiolibrary.Types.MolarFlowRate AlbQ0 = 2.75753e-09;
+      Real cAlb = plasmaAlbumin.q_out.conc*66.5/10 "g/dl, normal value is 4.4";
+      Real cAlbISF = ISFAlbumin.q_out.conc*66.5/10 "g/dl, normal value is 4.4/3";
+      Physiolibrary.Chemical.Components.Substance plasmaAlbumin(useNormalizedVolume=
+           false, solute_start(displayUnit="mmol") = 0.002)
+        annotation (Placement(transformation(extent={{-80,38},{-60,58}})));
+      Physiolibrary.Chemical.Components.Substance ISFAlbumin(useNormalizedVolume=false,
+          solute_start(displayUnit="mmol") = 0.002)
+        annotation (Placement(transformation(extent={{0,38},{20,58}})));
+      Physiolibrary.Chemical.Components.Diffusion diffusion(Conductance=2.5E-08)
+        annotation (Placement(transformation(extent={{-40,38},{-20,58}})));
+      Physiolibrary.Chemical.Components.Stream Stream(SolutionFlow(displayUnit=
+              "l/day") = 5.787037037037e-8)
+        annotation (Placement(transformation(extent={{-20,80},{-40,100}})));
+      Synthesis                 synthesis(SynthesisBasic(displayUnit="mmol/day") = 5.787037037037e-9)
+        annotation (Placement(transformation(extent={{68,-60},{48,-40}})));
+      Degradation                 degradation(
+          DegradationBasic(displayUnit="mmol/day"))
+        annotation (Placement(transformation(extent={{48,-30},{68,-10}})));
+      Physiolibrary.Types.Constants.VolumeConst volume(k=0.003)
+        annotation (Placement(transformation(extent={{-88,60},{-80,68}})));
+      Interfaces.ModelSettings modelSettings
+        annotation (Placement(transformation(extent={{-98,78},{-78,98}})));
+      Physiolibrary.Types.Constants.VolumeConst volume1(k=modelSettings.ISFvolume_start)
+        annotation (Placement(transformation(extent={{-8,60},{0,68}})));
+      Physiolibrary.Types.Constants.pHConst     pH(k=7.4)
+        annotation (Placement(transformation(extent={{32,-14},{24,-6}})));
+      AlbuminHCO3Complement albuminHCO3Complement annotation (Placement(
+            transformation(
+            extent={{10,-10},{-10,10}},
+            rotation=0,
+            origin={10,-50})));
+      AlbuminHCO3Complement albuminHCO3Complement1 annotation (Placement(
+            transformation(
+            extent={{10,-10},{-10,10}},
+            rotation=0,
+            origin={-30,-20})));
+      Physiolibrary.Chemical.Components.Substance HCO3(useNormalizedVolume=false,
+          solute_start(displayUnit="mol") = 25*0.02)
+        annotation (Placement(transformation(extent={{-20,0},{0,20}})));
+      Physiolibrary.Types.Constants.VolumeConst bodyVolume(k(displayUnit="l") = 0.02)
+        annotation (Placement(transformation(extent={{-34,20},{-26,28}})));
+      Physiolibrary.Chemical.Components.Clearance clearance(useSolutionFlowInput=true)
+        annotation (Placement(transformation(extent={{48,-10},{68,10}})));
+      Modelica.Blocks.Sources.Pulse pulse1(
+        width=100,
+        period(displayUnit="d") = 604800,
+        nperiod=1,
+        startTime(displayUnit="d") = 864000,
+        amplitude=1.15741E-06)
+        annotation (Placement(transformation(extent={{88,18},{68,38}})));
+    equation
+      connect(Stream.q_in, ISFAlbumin.q_out) annotation (Line(
+          points={{-20,90},{10,90},{10,48}},
+          color={107,45,134},
+          thickness=1));
+      connect(Stream.q_out, plasmaAlbumin.q_out) annotation (Line(
+          points={{-40,90},{-70,90},{-70,48}},
+          color={107,45,134},
+          thickness=1));
+      connect(plasmaAlbumin.q_out, diffusion.q_in) annotation (Line(
+          points={{-70,48},{-40,48}},
+          color={107,45,134},
+          thickness=1));
+      connect(diffusion.q_out, ISFAlbumin.q_out) annotation (Line(
+          points={{-20,48},{10,48}},
+          color={107,45,134},
+          thickness=1));
+      connect(volume.y, plasmaAlbumin.solutionVolume)
+        annotation (Line(points={{-79,64},{-74,64},{-74,52}}, color={0,0,127}));
+      connect(ISFAlbumin.solutionVolume, volume1.y)
+        annotation (Line(points={{6,52},{6,64},{1,64}}, color={0,0,127}));
+      connect(synthesis.q_out, albuminHCO3Complement.port_a) annotation (Line(
+          points={{48,-50},{20,-50}},
+          color={107,45,134},
+          thickness=1));
+      connect(degradation.q_in, albuminHCO3Complement1.port_a) annotation (Line(
+          points={{48,-20},{-20,-20}},
+          color={107,45,134},
+          thickness=1));
+      connect(HCO3.q_out, albuminHCO3Complement1.HCO3Flow) annotation (Line(
+          points={{-10,10},{-30,10},{-30,-10}},
+          color={107,45,134},
+          thickness=1));
+      connect(albuminHCO3Complement.HCO3Flow, HCO3.q_out) annotation (Line(
+          points={{10,-40},{10,10},{-10,10}},
+          color={107,45,134},
+          thickness=1));
+      connect(bodyVolume.y, HCO3.solutionVolume)
+        annotation (Line(points={{-25,24},{-14,24},{-14,14}},    color={0,0,127}));
+      connect(pH.y, albuminHCO3Complement1.pH)
+        annotation (Line(points={{23,-10},{-20,-10}},color={0,0,127}));
+      connect(pH.y, albuminHCO3Complement.pH)
+        annotation (Line(points={{23,-10},{20,-10},{20,-40}},
+                                                           color={0,0,127}));
+      connect(clearance.q_in, albuminHCO3Complement1.port_a) annotation (Line(
+          points={{48,0},{38,0},{38,-20},{-20,-20}},
+          color={107,45,134},
+          thickness=1));
+      connect(clearance.solutionFlow, pulse1.y)
+        annotation (Line(points={{58,7},{58,28},{67,28}},     color={0,0,127}));
+      connect(albuminHCO3Complement1.port_b, plasmaAlbumin.q_out) annotation (
+          Line(
+          points={{-40,-20},{-70,-20},{-70,48}},
+          color={107,45,134},
+          thickness=1));
+      connect(albuminHCO3Complement.port_b, plasmaAlbumin.q_out) annotation (
+          Line(
+          points={{0,-50},{-70,-50},{-70,48}},
+          color={107,45,134},
+          thickness=1));
+      annotation (
+        Icon(coordinateSystem(preserveAspectRatio=false)),
+        Diagram(coordinateSystem(preserveAspectRatio=false), graphics={
+            Rectangle(
+              extent={{-46,30},{34,-64}},
+              lineColor={0,140,72},
+              lineThickness=1,
+              pattern=LinePattern.Dot),
+            Line(
+              points={{-48,-48},{-66,-48}},
+              color={0,140,72},
+              thickness=0.5,
+              arrow={Arrow.None,Arrow.Filled}),
+            Text(
+              extent={{-64,-46},{-50,-42}},
+              lineColor={0,140,72},
+              lineThickness=0.5,
+              textString="alb-"),
+            Text(
+              extent={{-64,-16},{-50,-12}},
+              lineColor={0,140,72},
+              lineThickness=0.5,
+              textString="alb-"),
+            Line(
+              points={{-66,-18},{-48,-18}},
+              color={0,140,72},
+              thickness=0.5,
+              arrow={Arrow.None,Arrow.Filled}),
+            Line(
+              points={{-9,0},{9,0}},
+              color={0,140,72},
+              thickness=0.5,
+              arrow={Arrow.None,Arrow.Filled},
+              origin={-33,2},
+              rotation=90),
+            Line(
+              points={{-6,1},{8,1}},
+              color={0,140,72},
+              thickness=0.5,
+              arrow={Arrow.None,Arrow.Filled},
+              origin={7,-30},
+              rotation=270),
+            Text(
+              extent={{-7,-2},{7,2}},
+              lineColor={0,140,72},
+              lineThickness=0.5,
+              textString="HCO3-",
+              origin={5,-30},
+              rotation=90),
+            Text(
+              extent={{-7,-2},{7,2}},
+              lineColor={0,140,72},
+              lineThickness=0.5,
+              textString="HCO3-",
+              origin={-37,2},
+              rotation=90)}),
+        Documentation(info="<html>
+<p>Albumin recirulation through lymph - given the lymph flow of 5 l/day (<span style=\"font-family: sans-serif; color: #222222; background-color: #eaf3ff;\">&nbsp;</span><i>Guyton and Hall Textbook of Medical Physiology. Saunders. 2010. pp.&nbsp;186, 187.&nbsp;<span style=\"font-family: sans-serif;\"><a href=\"https://en.wikipedia.org/wiki/International_Standard_Book_Number\">ISBN</a><span style=\"color: #222222;\">&nbsp;<a href=\"https://en.wikipedia.org/wiki/Special:BookSources/978-1416045748\">978-1416045748</a>.</span></i> ) and the ISF content of albumin around 1/3 of the plasmatic concentration, the tissue diffusion has been identified to be 1.5 ml/min.</p>
+</html>"),
+        experiment(StopTime=2592000, __Dymola_NumberOfIntervals=5000));
+    end AlbuminAcidBase;
+
+    model vomiting
+      parameter Real totalHCO3Amount = 0;
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{10,-10},{-10,10}})));
+      Physiolibrary.Chemical.Sources.UnlimitedSolutePumpOut unlimitedSolutePumpOut(
+          useSoluteFlowInput=true)
+        annotation (Placement(transformation(extent={{-10,-50},{10,-30}})));
+      Modelica.Blocks.Sources.Pulse pulse(
+        width=100,
+        period(displayUnit="h") = 3600,
+        nperiod=1,
+        startTime(displayUnit="d") = 864000,
+        amplitude=totalHCO3Amount/pulse.period)
+        annotation (Placement(transformation(extent={{54,34},{34,54}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a HCO3
+        annotation (Placement(transformation(extent={{-110,-10},{-90,10}})));
+      Physiolibrary.Chemical.Interfaces.ChemicalPort_a port_a[IonsEnum]
+        annotation (Placement(transformation(extent={{-110,-50},{-90,-30}})));
+      Interfaces.IonSelector ionSelector(selectedIon=AcidBaseBalance.Ions.IonsEnum.Cl)
+        annotation (Placement(transformation(extent={{-72,-50},{-52,-30}})));
+    equation
+      connect(pulse.y, unlimitedSolutePump.soluteFlow)
+        annotation (Line(points={{33,44},{-4,44},{-4,4}}, color={0,0,127}));
+      connect(pulse.y, unlimitedSolutePumpOut.soluteFlow)
+        annotation (Line(points={{33,44},{4,44},{4,-36}}, color={0,0,127}));
+      connect(HCO3, unlimitedSolutePump.q_out) annotation (Line(
+          points={{-100,0},{-10,0}},
+          color={107,45,134},
+          thickness=1));
+      connect(port_a, ionSelector.port_a) annotation (Line(
+          points={{-100,-40},{-72,-40}},
+          color={107,45,134},
+          thickness=1));
+      connect(ionSelector.port_b, unlimitedSolutePumpOut.q_in) annotation (Line(
+          points={{-52,-40},{-10,-40}},
+          color={107,45,134},
+          thickness=1));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+                                             Bitmap(extent={{-100,-100},{100,
+                  100}}, fileName=
+                  "modelica://Physiolibrary/Resources/Icons/siluetaVaznejsiStav.png"),
+            Polygon(
+              points={{62,-56},{64,-70},{46,-76},{26,-106},{84,-104},{88,-90},{
+                  104,-110},{118,-94},{118,-74},{92,-82},{118,-58},{84,-68},{86,
+                  -54},{62,-56}},
+              lineColor={0,140,72},
+              lineThickness=0.5,
+              smooth=Smooth.Bezier,
+              fillColor={0,140,72},
+              fillPattern=FillPattern.Solid),
+            Text(
+              extent={{-100,40},{100,100}},
+              lineColor={28,108,200},
+              lineThickness=0.5,
+              fillColor={0,140,72},
+              fillPattern=FillPattern.None,
+              textString="vomiting")}),                              Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end vomiting;
   end Ions;
 
   package Interfaces
@@ -31429,6 +31815,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Components.Diffusion iSFMembraneO1(Conductance(
             displayUnit="l/min") = 0.016666666666667)
         annotation (Placement(transformation(extent={{-78,-86},{-98,-66}})));
+      Ions.vomiting vomiting
+        annotation (Placement(transformation(extent={{-20,-4},{0,16}})));
     equation
       connect(alveolarVentilation.pO2a, o2CO2.pO2) annotation (Line(points={{
               148,8},{142,8},{142,7.31765},{137.1,7.31765}}, color={0,0,127}));
@@ -31461,6 +31849,14 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       connect(o2CO2.cHCO3, ammoniumExcretion.HCO3) annotation (Line(points={{137.1,
               -0.964706},{137.1,-56},{-116,-56},{-116,3.25},{-96.6154,3.25}},
                       color={0,0,127}));
+      connect(vomiting.HCO3, veins.port_BEox) annotation (Line(
+          points={{-20,6},{-34,6},{-34,-26.2}},
+          color={107,45,134},
+          thickness=1));
+      connect(vomiting.port_a, tissues.ions_plasma) annotation (Line(
+          points={{-20,2},{-39.6,2},{-39.6,11}},
+          color={107,45,134},
+          thickness=1));
     end SimplestCircWithTissues3;
 
     model RespiratoryAlkalosis
@@ -31563,6 +31959,23 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end MetabolicAcidosisAcute;
+
+    model MetabolicAlkalosis
+      SimplestCircWithTissues3 simplestCircWithTissues3_1
+        annotation (Placement(transformation(extent={{-34,10},{-6,32}})));
+      inner Interfaces.ModelSettings modelSettings(
+        O2DiffusionPermeability(displayUnit="l/min"),
+        CO2DiffusionPermeability(displayUnit="l/min"),
+        HCO3Permeability(displayUnit="l/min"))
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+    equation
+      connect(simplestCircWithTissues3_1.VAi_input1, simplestCircWithTissues3_1.VAi_input)
+        annotation (Line(points={{-13.1,21.5},{2,21.5},{2,36},{-42,36},{-42,
+              20.7},{-27.9,20.7}}, color={0,0,127}));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)),
+        experiment(StopTime=1000000, __Dymola_NumberOfIntervals=5000));
+    end MetabolicAlkalosis;
   end Validation;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
       Physiomodel(version="1.0.0")));
