@@ -31461,6 +31461,38 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           __Dymola_NumberOfIntervals=5000,
           __Dymola_Algorithm="Sdirk34hw"));
     end Iontograms;
+
+    model ODC "Oxygen dissociation curve"
+      Real pCO2_kPa = o2CO2_by_integration.pCO2/1000;
+      Real pO2_kPa = o2CO2_by_integration.pO2/1000;
+        Acidbase.OSA.O2CO2_by_integration
+                           o2CO2_by_integration
+          annotation (Placement(transformation(extent={{-2,38},{42,82}})));
+      inner Interfaces.ModelSettings modelSettings
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+      Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
+        annotation (Placement(transformation(extent={{-26,44},{-18,52}})));
+      Physiolibrary.Types.Constants.ConcentrationConst pCO2(k=21.65)
+        annotation (Placement(transformation(extent={{-30,58},{-22,66}})));
+      Modelica.Blocks.Sources.Ramp ramp(
+        height=10,
+        duration=1000,
+        offset=1e-3,
+        startTime=10.0)
+        annotation (Placement(transformation(extent={{-60,60},{-40,80}})));
+    equation
+      connect(o2CO2_by_integration.BEox, BEox.y) annotation (Line(points={{-4.2,
+              52.1429},{-4.2,51.5883},{-17,51.5883},{-17,48}},
+                                                       color={0,0,127}));
+      connect(ramp.y, o2CO2_by_integration.ctO2) annotation (Line(points={{-39,70},
+              {-18,70},{-18,69.4286},{-4.2,69.4286}},color={0,0,127}));
+      connect(pCO2.y, o2CO2_by_integration.ctCO2) annotation (Line(points={{-21,62},
+              {-12,62},{-12,61.5714},{-3.76,61.5714}}, color={0,0,127}));
+      annotation (
+        Icon(coordinateSystem(preserveAspectRatio=false)),
+        Diagram(coordinateSystem(preserveAspectRatio=false)),
+        experiment(StopTime=840));
+    end ODC;
   end Visualization;
 
   package Validation
