@@ -12653,9 +12653,10 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
             rotation=0,
             origin={-30,-20})));
       Physiolibrary.Chemical.Components.Substance HCO3(useNormalizedVolume=false,
-          solute_start(displayUnit="mol") = 25*0.02)
+          solute_start(displayUnit="mol") = 0)
         annotation (Placement(transformation(extent={{-20,0},{0,20}})));
-      Physiolibrary.Types.Constants.VolumeConst bodyVolume(k(displayUnit="l") = 0.02)
+      Physiolibrary.Types.Constants.VolumeConst bodyVolume(k(displayUnit="l")
+           = modelSettings.ISFvolume_start + 0.003)
         annotation (Placement(transformation(extent={{-34,20},{-26,28}})));
       Physiolibrary.Chemical.Components.Clearance clearance(useSolutionFlowInput=true)
         annotation (Placement(transformation(extent={{48,-10},{68,10}})));
