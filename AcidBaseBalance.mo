@@ -6769,12 +6769,15 @@ y = OSA.antilg(OSA.lg(pCO21) + dlgpCO2dTmean*(T2 - T1));
                   {-190,90}})));
         AlvEq alvEq annotation (Placement(transformation(extent={{-90,-90},{50,78}})));
 
-        Physiolibrary.Types.RealIO.FractionInput Fsh "shunt fraction" annotation (
-            Placement(transformation(extent={{-202,-76},{-162,-36}}),
-              iconTransformation(extent={{-206,-48},{-188,-30}})));
+      //   Physiolibrary.Types.RealIO.FractionInput Fsh "shunt fraction" annotation (
+      //       Placement(transformation(extent={{-202,-76},{-162,-36}}),
+      //         iconTransformation(extent={{-206,-48},{-188,-30}})));
 
-        Physiolibrary.Types.VolumeFlowRate Qsh=Q*Fsh;
+        Physiolibrary.Types.VolumeFlowRate Qsh=Q*modelSettings.lungShuntFraction;
         Physiolibrary.Types.VolumeFlowRate Qpulm=Q-Qsh;
+        outer
+        Interfaces.ModelSettings modelSettings
+          annotation (Placement(transformation(extent={{-200,120},{-180,140}})));
       initial equation
 
       equation
@@ -7015,25 +7018,28 @@ shunts"),     Text(
         AlvEq alvEq1
           annotation (Placement(transformation(extent={{-84,-36},{42,88}})));
 
-        Physiolibrary.Types.RealIO.FractionInput Fsh "shunt fraction" annotation (
-            Placement(transformation(extent={{-202,-76},{-162,-36}}),
-              iconTransformation(extent={{-206,-48},{-188,-30}})));
+      //  Physiolibrary.Types.RealIO.FractionInput Fsh "shunt fraction" annotation (
+      //       Placement(transformation(extent={{-202,-76},{-162,-36}}),
+      //         iconTransformation(extent={{-206,-48},{-188,-30}})));
 
-        Physiolibrary.Types.RealIO.FractionInput F_q1 "alveolar perfusion fraction" annotation (
-            Placement(transformation(extent={{-202,-110},{-162,-70}}),
-              iconTransformation(extent={{-206,-84},{-188,-66}})));
-        Physiolibrary.Types.RealIO.FractionInput F_VAi1 "alveolar ventilation fraction" annotation (
-            Placement(transformation(extent={{-204,-140},{-164,-100}}),
-              iconTransformation(extent={{-208,-124},{-190,-106}})));
+      //  Physiolibrary.Types.RealIO.FractionInput F_q1 "alveolar perfusion fraction" annotation (
+      //       Placement(transformation(extent={{-202,-110},{-162,-70}}),
+      //         iconTransformation(extent={{-206,-84},{-188,-66}})));
+      //  Physiolibrary.Types.RealIO.FractionInput F_VAi1 "alveolar ventilation fraction" annotation (
+      //       Placement(transformation(extent={{-204,-140},{-164,-100}}),
+      //         iconTransformation(extent={{-208,-124},{-190,-106}})));
         AlvEq alvEq2
           annotation (Placement(transformation(extent={{-82,-170},{44,-46}})));
 
-        Physiolibrary.Types.VolumeFlowRate Qsh=Q*Fsh;
+        Physiolibrary.Types.VolumeFlowRate Qsh=Q*modelSettings.lungShuntFraction;
         Physiolibrary.Types.VolumeFlowRate Qpulm=Q-Qsh;
-        Physiolibrary.Types.VolumeFlowRate Q_alv1 = Qpulm*F_q1;
-        Physiolibrary.Types.VolumeFlowRate VAi_alv1 = VAi*F_VAi1;
+        Physiolibrary.Types.VolumeFlowRate Q_alv1 = Qpulm*modelSettings.perfusionFraction;
+        Physiolibrary.Types.VolumeFlowRate VAi_alv1 = VAi*modelSettings.ventilationFraction;
         Physiolibrary.Types.VolumeFlowRate Q_alv2 = Qpulm-Q_alv1;
         Physiolibrary.Types.VolumeFlowRate VAi_alv2 = VAi-VAi_alv1;
+        outer
+        Interfaces.ModelSettings modelSettings
+          annotation (Placement(transformation(extent={{-200,120},{-180,140}})));
       initial equation
 
       equation
@@ -12081,6 +12087,7 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
      Physiolibrary.Types.AmountOfSubstance isf_HCO3_solute = isf_HCO3*isf_volume;
      Physiolibrary.Types.AmountOfSubstance isf_solutes[IonsEnum] = isf .*isf_volume;
      Physiolibrary.Types.AmountOfSubstance isf_tCO2_solute = isf_tCO2 *isf_volume;
+    // Physiolibrary.Types.AmountOfSubstance isf_tO2
 
 
      parameter Real permeabilities[IonsEnum] "to know additional zero permeabilities. Otherwise specified separately";
@@ -13153,62 +13160,72 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       import Ions =
              AcidBaseBalance.Ions.IonsEnum;
        import Physiolibrary.Types.*;
-      parameter Physiolibrary.Types.Pressure PB= 101325.0144354
-        "Barometric Pressure";
-      parameter Physiolibrary.Types.Fraction FiO2= 0.21 "Frattion of O2";
-      parameter Physiolibrary.Types.Fraction FiCO2_start= 0.0004; //if time < 10*60*60 then 0.0004 else 0.05;
-      parameter Physiolibrary.Types.Fraction lungShuntFraction = 0.02;
-      parameter Physiolibrary.Types.Concentration cAlb= 0.66;
-      parameter Physiolibrary.Types.Concentration cAlbISF = cAlb/3;
-      parameter Physiolibrary.Types.Concentration ctHb= 8.4;
 
-      parameter Physiolibrary.Types.Concentration cPi= 1.15;
-      parameter Physiolibrary.Types.Concentration cDPG= 5;
-      parameter Physiolibrary.Types.Fraction FMetHb= 0.005;
-      parameter Physiolibrary.Types.Fraction FCOHb= 0.005;
-      parameter Physiolibrary.Types.Fraction FHbF= 0.005;
-      parameter Physiolibrary.Types.Temperature Temperature= 310.15;
+      // respiratory settings
+      parameter Physiolibrary.Types.VolumeFlowRate NormalAlveolarVentilation = 7.68333e-5 annotation(Dialog(tab = "Respiration"));
+      parameter Boolean UseRespiratoryCompensation = true annotation(Dialog(tab = "Respiration"));
+      parameter Physiolibrary.Types.Fraction respiratoryQuotient = 0.85 annotation(Dialog(tab = "Respiration"));
+
+
+      parameter Physiolibrary.Types.Pressure PB= 101325.0144354
+        "Barometric Pressure" annotation(Dialog(tab = "Respiration"));
+      parameter Physiolibrary.Types.Fraction FiO2= 0.21 "Frattion of O2" annotation(Dialog(tab = "Respiration"));
+      parameter Physiolibrary.Types.Fraction FiCO2_start= 0.0004 annotation(Dialog(tab = "Respiration"));
+      parameter Physiolibrary.Types.Fraction lungShuntFraction = 0.02 annotation(Dialog(tab = "Respiration"));
+      parameter Physiolibrary.Types.Fraction perfusionFraction = 0.5 "alveolar perfusion fraction of the first half of the lungs" annotation(Dialog(tab = "Respiration"));
+      parameter Physiolibrary.Types.Fraction ventilationFraction = 0.5 "alveolar ventilation fraction of the first half of the lungs"  annotation(Dialog(tab = "Respiration"));
+
+      parameter Physiolibrary.Types.Concentration cAlb= 0.66 annotation(Dialog(tab = "Concentrations"));
+    //  parameter Physiolibrary.Types.Concentration cAlbISF = cAlb/3;
+      parameter Physiolibrary.Types.Concentration ctHb= 8.4 annotation(Dialog(tab = "Concentrations"));
+      parameter Physiolibrary.Types.Concentration cPi= 1.15 annotation(Dialog(tab = "Concentrations"));
+      parameter Physiolibrary.Types.Concentration cDPG= 5 annotation(Dialog(tab = "Concentrations"));
+      parameter Physiolibrary.Types.Fraction FMetHb= 0.005 annotation(Dialog(tab = "Concentrations"));
+      parameter Physiolibrary.Types.Fraction FCOHb= 0.005 annotation(Dialog(tab = "Concentrations"));
+      parameter Physiolibrary.Types.Fraction FHbF= 0.005 annotation(Dialog(tab = "Concentrations"));
+      parameter Physiolibrary.Types.Temperature Temperature= 310.15 annotation(Dialog(tab = "Concentrations"));
     //  parameter Physiolibrary.Types.Concentration ISFCO2conc_start=24;
-      parameter Physiolibrary.Types.Concentration ISFO2conc_start= 0.05;
+     // parameter Physiolibrary.Types.Concentration ISFO2conc_start= 0.05;
     //  parameter Physiolibrary.Types.Concentration ISFBEox_start=0;
     //  parameter Physiolibrary.Types.Concentration ISFHCO3_start = 23.5;
-      parameter Physiolibrary.Types.Volume ISFvolume_start=1e-2;
-
-      parameter Physiolibrary.Types.Concentration arterialO2conc_start = 8.29769;
-      parameter Physiolibrary.Types.Concentration arterialCO2conc_start = 21.6053;
-      parameter Physiolibrary.Types.Concentration venousO2conc_start = 6.02579;
-      parameter Physiolibrary.Types.Concentration venousCO2conc_start = 23.6461;
+      parameter Physiolibrary.Types.Concentration arterialO2conc_start = 8.29769  annotation(Dialog(tab = "Concentrations", group = "Initial"));
+      parameter Physiolibrary.Types.Concentration arterialCO2conc_start = 21.6053 annotation(Dialog(tab = "Concentrations", group = "Initial"));
+      parameter Physiolibrary.Types.Concentration venousO2conc_start = 6.02579 annotation(Dialog(tab = "Concentrations", group = "Initial"));
+      parameter Physiolibrary.Types.Concentration venousCO2conc_start = 23.6461 annotation(Dialog(tab = "Concentrations", group = "Initial"));
+      parameter Physiolibrary.Types.Volume ISFvolume_start=1e-2 annotation(Dialog(tab = "Concentrations", group = "Initial"));
 
       // Ion concentrations and initial settings
-      parameter Physiolibrary.Types.Concentration IonConcentration[Ions] = {130, 100, 2.5, 0.65} "Plasma ion concentrations";
-      constant Integer IonElemChrgs[:] = {1, -1, -1, -1} "elementary charges of ions";
-      parameter DiffusionPermeability O2DiffusionPermeability = 0.005;
-      parameter DiffusionPermeability CO2DiffusionPermeability = 0.005 "According to partial pressure difference in plasma and tissues, a study by SA";
-      parameter DiffusionPermeability IonPermeabilities[:] = {100, 100, 50, 0} "Albumin permeability calculated from lympha flow and 3:1 concentration difference";
-      parameter DiffusionPermeability HCO3Permeability = 5e-5 "just a wild guess";
-      parameter Boolean UseMetabolicUABalance = true;
-      parameter Physiolibrary.Types.MolarFlowRate metabolismO2FlowRate = 0.00018333333333333;
-      parameter Physiolibrary.Types.MolarFlowRate metabolismUAFlowRate_norm = 6.944444e-7;
-      parameter Physiolibrary.Types.VolumeFlowRate NormalAlveolarVentilation = 7.68333e-5;
+      parameter Physiolibrary.Types.Concentration IonConcentration[Ions] = {130, 100, 2.5, 0.65} "Plasma ion concentrations" annotation(Dialog(tab = "Concentrations", group = "Ions"));
+      constant Integer IonElemChrgs[:] = {1, -1, -1, -1} "elementary charges of ions"
+                                                                                     annotation(Dialog(tab = "Concentrations", group = "Ions"));
+      parameter DiffusionPermeability O2DiffusionPermeability = 0.005
+                                                                     annotation(Dialog(tab = "Concentrations", group = "Ions"));
+      parameter DiffusionPermeability CO2DiffusionPermeability = 0.005 "According to partial pressure difference in plasma and tissues, a study by SA" annotation(Dialog(tab = "Concentrations", group = "Ions"));
+      parameter DiffusionPermeability IonPermeabilities[:] = {100, 100, 50, 0} "Albumin permeability calculated from lympha flow and 3:1 concentration difference" annotation(Dialog(tab = "Concentrations", group = "Ions"));
+      parameter DiffusionPermeability HCO3Permeability = 5e-5 "just a wild guess" annotation(Dialog(tab = "Concentrations", group = "Ions"));
+
+      // Metabolism
+      parameter Physiolibrary.Types.MolarFlowRate metabolismO2FlowRate = 0.00018333333333333 annotation(Dialog(tab = "Metabolism"));
+      parameter Boolean UseMetabolicUABalance = true annotation(Dialog(tab = "Metabolism"));
+      parameter Physiolibrary.Types.MolarFlowRate metabolismUAFlowRate_norm = 6.944444e-7 annotation(Dialog(tab = "Metabolism", enable = UseMetabolicUABalance));
+
 
       // validation settings
-      parameter Boolean makeUAstep = false;
-      parameter Physiolibrary.Types.Fraction UAstepRatio = 1.5;
+      parameter Boolean makeUAstep = false annotation(Dialog(tab = "Validation steps"));
+      parameter Physiolibrary.Types.Fraction UAstepRatio = 1.5 annotation(Dialog(tab = "Validation steps"));
 
-      parameter Boolean UseStepCO2Fraction = false;
-      parameter Physiolibrary.Types.Time breakTime = 10*60*60;
-      parameter Physiolibrary.Types.Time breakLength = 60*60*24*2;
-      parameter Boolean UseRespiratoryCompensation = true;
-      parameter Physiolibrary.Types.Fraction respiratoryQuotient = 0.85;
-      parameter Physiolibrary.Types.Fraction FiCO2_step = 0.08;
+      parameter Boolean UseStepCO2Fraction = false annotation(Dialog(tab = "Validation steps"));
+      parameter Physiolibrary.Types.Fraction FiCO2_step = 0.08 annotation(Dialog(tab = "Validation steps"));
+      parameter Physiolibrary.Types.Time breakTime = 10*60*60 annotation(Dialog(tab = "Validation steps"));
+      parameter Physiolibrary.Types.Time breakLength = 60*60*24*2 annotation(Dialog(tab = "Validation steps"));
 
       // computed variables
       Physiolibrary.Types.MolarFlowRate metabolismUAFlowRate=if makeUAstep and time >
           breakTime and time < breakTime + breakLength then UAstepRatio*
-          metabolismUAFlowRate_norm else metabolismUAFlowRate_norm;
+          metabolismUAFlowRate_norm else metabolismUAFlowRate_norm annotation(Dialog(enable = false, tab="Calculated vars"));
       Physiolibrary.Types.Fraction FiCO2= if not UseStepCO2Fraction then FiCO2_start else if time < breakTime then FiCO2_start else FiCO2_step annotation(Dialog(enable = false, tab="Calculated vars"));
     //  parameter Physiolibrary.Types.AmountOfSubstance ISFCO2solute_start = ISFCO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
-      parameter Physiolibrary.Types.AmountOfSubstance ISFO2solute_start = ISFO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
+    //  parameter Physiolibrary.Types.AmountOfSubstance ISFO2solute_start = ISFO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
     //  parameter Physiolibrary.Types.AmountOfSubstance ISFBEoxsolute_start = ISFBEox_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
     //  parameter Physiolibrary.Types.AmountOfSubstance ISFHCO3solute_start = ISFHCO3_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
@@ -19310,9 +19327,6 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
         useCO2_input=true,
         useBEox_input=true)
         annotation (Placement(transformation(extent={{12,64},{34,84}})));
-      Physiolibrary.Types.RealIO.FractionInput Fsh "shunt fraction" annotation (
-         Placement(transformation(extent={{-100,-62},{-84,-46}}),
-            iconTransformation(extent={{-70,-68},{-52,-50}})));
       Acidbase.OSA.AlvEq_with_shunts alvEq_with_shunts
         annotation (Placement(transformation(extent={{-40,-86},{56,-12}})));
     equation
@@ -19359,8 +19373,6 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           points={{34,74},{96,74}},
           color={28,108,200},
           thickness=0.5));
-      connect(Fsh, alvEq_with_shunts.Fsh) annotation (Line(points={{-92,-54},{
-              -38,-54},{-38,-53.3937},{-39.3739,-53.3937}}, color={0,0,127}));
       connect(alvEq_with_shunts.VAi, VAi) annotation (Line(points={{-39.1652,
               -32.35},{-38.5826,-32.35},{-38.5826,-32},{-94,-32}}, color={0,0,
               127}));
@@ -19503,15 +19515,6 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
         useCO2_input=true,
         useBEox_input=true)
         annotation (Placement(transformation(extent={{12,64},{34,84}})));
-      Physiolibrary.Types.RealIO.FractionInput Fsh "shunt fraction" annotation (
-         Placement(transformation(extent={{-74,-48},{-60,-34}}),
-            iconTransformation(extent={{-44,-86},{-26,-68}})));
-      Physiolibrary.Types.RealIO.FractionInput F_q1 "alveolar perfusion fraction" annotation (
-          Placement(transformation(extent={{-84,-56},{-70,-42}}),
-            iconTransformation(extent={{-80,-42},{-62,-24}})));
-      Physiolibrary.Types.RealIO.FractionInput F_VAi1 "alveolar ventilation fraction" annotation (
-          Placement(transformation(extent={{-74,-70},{-58,-54}}),
-            iconTransformation(extent={{-80,-22},{-62,-4}})));
       Acidbase.OSA.AlvEq_2units_with_shunts alvEq_2units_with_shunts
         annotation (Placement(transformation(extent={{-50,-82},{52,14}})));
     equation
@@ -19558,15 +19561,6 @@ and plasma-<i><b>erythrocytes</b></i> acidity distribution.</pre>
           points={{34,74},{96,74}},
           color={28,108,200},
           thickness=0.5));
-      connect(alvEq_2units_with_shunts.F_VAi1, F_VAi1) annotation (Line(points={{
-              -49.7783,-62.5},{-53.8892,-62.5},{-53.8892,-62},{-66,-62}},
-            color={0,0,127}));
-      connect(alvEq_2units_with_shunts.F_q1, F_q1) annotation (Line(points={{
-              -49.3348,-50.5},{-60.6674,-50.5},{-60.6674,-49},{-77,-49}}, color=
-             {0,0,127}));
-      connect(alvEq_2units_with_shunts.Fsh, Fsh) annotation (Line(points={{
-              -49.3348,-39.7},{-55.6674,-39.7},{-55.6674,-41},{-67,-41}}, color=
-             {0,0,127}));
       connect(alvEq_2units_with_shunts.VAi, VAi) annotation (Line(points={{-49.113,
               -12.4},{-56.5565,-12.4},{-56.5565,-10},{-64,-10}},         color=
               {0,0,127}));
@@ -21037,7 +21031,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           Simulation=Physiolibrary.Types.SimulationType.NoInit)
         annotation (Placement(transformation(extent={{62,-10},{82,10}})));
       Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
-          solute_start=modelSettings.ISFO2solute_start)
+          Simulation=Physiolibrary.Types.SimulationType.NoInit)
         annotation (Placement(transformation(extent={{62,70},{82,90}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump6(
           useSoluteFlowInput=true)
@@ -21145,6 +21139,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
        HCO3.state = iSF_initialization.isf_HCO3_solute;
        ions.state = iSF_initialization.isf_solutes;
        CO2.state = iSF_initialization.isf_tCO2_solute;
+       O2.state = plasma_dO2.Conc*modelSettings.ISFvolume_start;
     equation
     //    when initial() then
     //      reinit(HCO3.state,iSF_initialization.HCO3InitialConcentration*10);
@@ -31616,14 +31611,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
                 120},{-102,140}})));
       Acidbase.OSA.O2CO2 o2CO2
         annotation (Placement(transformation(extent={{92,-24},{136,20}})));
-    Physiolibrary.Types.Constants.FractionConst VAi_fraction(k=0.5)
-      annotation (Placement(transformation(extent={{-60,90},{-52,98}})));
-    Physiolibrary.Types.Constants.FractionConst Perfusion_fraction(k=0.5)
-      annotation (Placement(transformation(extent={{-42,82},{-34,90}})));
-    Physiolibrary.Types.Constants.FractionConst shuntFraction(k=modelSettings.lungShuntFraction)
-      annotation (Placement(transformation(extent={{-36,72},{-28,80}})));
-    Package.Alveolocapillary_2Units_with_shunts
-      alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
+    Package.AlveolocapillaryUnit_with_shunts
+      alveolocapillaryUnit_with_shunts
       annotation (Placement(transformation(extent={{-28,88},{6,116}})));
       BloodComponents.BloodElasticVesselCompliance veins(
         volume_start(displayUnit="l") = 0.00325,
@@ -31685,27 +31674,16 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             0,127}));
     connect(o2CO2.BEox, flowConcentrationMeasure1.BEox_conc) annotation (Line(
           points={{90.9,3.17647},{90.9,-4},{84,-4}}, color={0,0,127}));
-    connect(Perfusion_fraction.y,
-      alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.F_q1)
-      annotation (Line(points={{-33,86},{-26,86},{-26,97.38},{-23.07,97.38}},
-          color={0,0,127}));
-    connect(VAi_fraction.y,
-      alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.F_VAi1)
-      annotation (Line(points={{-51,94},{-30,94},{-30,100.18},{-23.07,100.18}},
-          color={0,0,127}));
-    connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.Fsh,
-      shuntFraction.y) annotation (Line(points={{-16.95,91.22},{-24,91.22},{-24,
-            76},{-27,76}}, color={0,0,127}));
     connect(pulmonaryVeinsAndLeftAtrium.bloodPort_in, pulmonary.bloodPort_out)
       annotation (Line(
         points={{40.2,110},{25,110}},
         color={28,108,200},
         thickness=0.5));
-    connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.bloodPort_out,
-      pulmonary.bloodPort_in) annotation (Line(
-        points={{-6.92,110.68},{0,110.68},{0,110},{7,110}},
-        color={28,108,200},
-        thickness=0.5));
+      connect(alveolocapillaryUnit_with_shunts.bloodPort_out, pulmonary.bloodPort_in)
+        annotation (Line(
+          points={{-6.92,110.68},{0,110.68},{0,110},{7,110}},
+          color={28,108,200},
+          thickness=0.5));
     connect(LNormalCO.y, leftHeart.volumeFlowRate)
       annotation (Line(points={{21,46},{26,46},{26,20}}, color={0,0,127}));
     connect(leftHeart.bloodPort_in, pulmonaryVeinsAndLeftAtrium.bloodPort_out)
@@ -31718,9 +31696,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         points={{25,-36},{72,-36},{72,-5}},
         color={28,108,200},
         thickness=0.5));
-      connect(
-        alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.bloodPort_in,
-        veins.bloodPort_out) annotation (Line(
+      connect(alveolocapillaryUnit_with_shunts.bloodPort_in, veins.bloodPort_out)
+        annotation (Line(
           points={{-16.78,110.4},{-108,110.4},{-108,-36},{-42,-36}},
           color={28,108,200},
           thickness=0.5));
@@ -31789,9 +31766,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         points={{-46,-13},{-44,-13},{-44,-14},{-41.8,-14},{-41.8,-26.2}},
         color={107,45,134},
         thickness=1));
-    connect(alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors.VAi,
-      VAi_input) annotation (Line(points={{-21.03,105.78},{-54.515,105.78},{-54.515,
-            100},{-102,100}}, color={0,0,127}));
+      connect(alveolocapillaryUnit_with_shunts.VAi, VAi_input) annotation (Line(
+            points={{-24.09,101.02},{-54.515,101.02},{-54.515,100},{-102,100}},
+            color={0,0,127}));
       connect(veins.port_Flow, tissues.port_Flow) annotation (Line(
           points={{-22,-26.2},{-24.1417,-26.2},{-24.1417,11}},
           color={0,0,0},
