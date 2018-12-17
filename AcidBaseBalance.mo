@@ -11435,15 +11435,15 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
             color={28,108,200},
             thickness=0.5));
       connect(veins.port_O2,tissues. tO2) annotation (Line(
-          points={{-56.2,-45.8},{-56,-45.8},{-56,-58.4},{-40,-58.4}},
+          points={{-56,-46},{-56,-46},{-56,-58.4},{-40,-58.4}},
           color={107,45,134},
           thickness=1));
       connect(tissues.tCO2, veins.port_CO2) annotation (Line(
-          points={{-40,-63.2},{-59.8,-63.2},{-59.8,-45.8}},
+          points={{-40,-63.2},{-60,-63.2},{-60,-46}},
           color={107,45,134},
           thickness=1));
       connect(tissues.BE, veins.port_BEox) annotation (Line(
-          points={{-40,-68},{-64,-68},{-64,-45.8}},
+          points={{-40,-68},{-64,-68},{-64,-46}},
           color={107,45,134},
           thickness=1));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
@@ -11610,19 +11610,19 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
             color={28,108,200},
             thickness=0.5));
         connect(veins.port_O2, tissuesWithUAProduction.tO2) annotation (Line(
-            points={{-26.2,-26.2},{-26,-26.2},{-26,11},{-26.1,11}},
+            points={{-26,-26},{-26,-26},{-26,11},{-26.1,11}},
             color={107,45,134},
             thickness=1));
         connect(tissuesWithUAProduction.tCO2, veins.port_CO2) annotation (Line(
-            points={{-30.3,11},{-29.8,11},{-29.8,-26.2}},
+            points={{-30.3,11},{-30,11},{-30,-26}},
             color={107,45,134},
             thickness=1));
         connect(tissuesWithUAProduction.BE, veins.port_BEox) annotation (Line(
-            points={{-34.5,11},{-34,11},{-34,-26.2}},
+            points={{-34.5,11},{-34,11},{-34,-26}},
             color={107,45,134},
             thickness=1));
         connect(ionSelector.port_a, veins.port_ions) annotation (Line(
-            points={{-42,-21},{-42,-26.2},{-41.8,-26.2}},
+            points={{-42,-21},{-42,-26},{-41.8,-26}},
             color={107,45,134},
             thickness=1));
       connect(unlimitedSolutionStorage.q_out,ammoniumExcretion. Cl_outflow)
@@ -11643,7 +11643,7 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
             thickness=1));
         connect(ammoniumExcretion.hco3_outflow, veins.port_BEox) annotation (
             Line(
-            points={{-62,8},{-34,8},{-34,-26.2}},
+            points={{-62,8},{-34,8},{-34,-26}},
             color={107,45,134},
             thickness=1));
         connect(o2CO2.pH, ammoniumExcretion.pH) annotation (Line(points={{137.1,
@@ -11819,15 +11819,15 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
             color={28,108,200},
             thickness=0.5));
         connect(veins.port_O2, tissues.tO2) annotation (Line(
-            points={{-26.2,-26.2},{-26,-26.2},{-26,11},{-27.7,11}},
+            points={{-26,-26},{-26,-26},{-26,11},{-28.8333,11}},
             color={107,45,134},
             thickness=1));
         connect(tissues.tCO2, veins.port_CO2) annotation (Line(
-            points={{-31.1,11},{-29.8,11},{-29.8,-26.2}},
+            points={{-31.6667,11},{-30,11},{-30,-26}},
             color={107,45,134},
             thickness=1));
         connect(tissues.BE, veins.port_BEox) annotation (Line(
-            points={{-34.5,11},{-34,11},{-34,-26.2}},
+            points={{-34.5,11},{-34,11},{-34,-26}},
             color={107,45,134},
             thickness=1));
       connect(unlimitedSolutionStorage.q_out,ammoniumExcretion. Cl_outflow)
@@ -11837,14 +11837,14 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
           thickness=1));
         connect(ammoniumExcretion.hco3_outflow, veins.port_BEox) annotation (
             Line(
-            points={{-62,6},{-34,6},{-34,-26.2}},
+            points={{-62,6},{-34,6},{-34,-26}},
             color={107,45,134},
             thickness=1));
         connect(o2CO2.pH, ammoniumExcretion.pH) annotation (Line(points={{137.1,
                 1.62353},{142,1.62353},{142,-58},{-118,-58},{-118,6},{-96.6154,
                 6}}, color={0,0,127}));
         connect(tissues.ions_plasma, veins.port_ions) annotation (Line(
-            points={{-39.6,11},{-39.6,-7.5},{-41.8,-7.5},{-41.8,-26.2}},
+            points={{-40.1667,11},{-40.1667,-7.5},{-41.8,-7.5},{-41.8,-26}},
             color={107,45,134},
             thickness=1));
         connect(ammoniumExcretion.hco3_outflow, tissues.BE) annotation (Line(
@@ -11852,19 +11852,19 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
             color={107,45,134},
             thickness=1));
         connect(tissues.tO2_ISF, cells.O2) annotation (Line(
-            points={{-27.7,38.18},{-28,38.18},{-28,46.5},{-25.3,46.5}},
+            points={{-28.8333,38},{-28,38},{-28,46.5},{-27.1,46.5}},
             color={107,45,134},
             thickness=1));
         connect(cells.CO2, tissues.tCO2_ISF) annotation (Line(
-            points={{-32.5,46.5},{-30.08,46.5},{-30.08,38.18}},
+            points={{-30.7,46.5},{-31.6667,46.5},{-31.6667,38}},
             color={107,45,134},
             thickness=1));
         connect(tissues.HCO3_ISF, cells.HCO3) annotation (Line(
-            points={{-34.5,38.18},{-36.1,38.18},{-36.1,46.5}},
+            points={{-34.5,38},{-34.3,38},{-34.3,46.5}},
             color={107,45,134},
             thickness=1));
         connect(tissues.ions_ISF, cells.ions) annotation (Line(
-            points={{-39.6,38.18},{-39.7,38.18},{-39.7,46.5}},
+            points={{-40.1667,38},{-41.5,38},{-41.5,46.5}},
             color={107,45,134},
             thickness=1));
         connect(ammoniumExcretion.UA_outflow, ionSelector.port_b) annotation (
@@ -11873,7 +11873,7 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
             color={107,45,134},
             thickness=1));
         connect(veins.port_ions, ionSelector.port_a) annotation (Line(
-            points={{-41.8,-26.2},{-41.8,-3},{-44,-3}},
+            points={{-41.8,-26},{-41.8,-3},{-44,-3}},
             color={107,45,134},
             thickness=1));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
@@ -11891,13 +11891,13 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
     end SimpleCirculation;
 
     model SimplestCirculation
-        BloodComponents.BloodVesselConstVolume pulmonaryVeinsAndLeftAtrium(
-          volume_start(displayUnit="l") = 0.0004,
-          useFlow_input=false,
-          ion_start=modelSettings.IonConcentration,
+        BloodComponents.BloodVesselConstVolume pulmonaryVeins(
+        volume_start(displayUnit="l") = 0.0004,
+        useFlow_input=false,
+        ion_start=modelSettings.IonConcentration,
         O2_concentration=modelSettings.arterialO2conc_start,
         CO2_concentration=modelSettings.arterialCO2conc_start)
-          annotation (Placement(transformation(extent={{20,80},{40,60}})));
+        annotation (Placement(transformation(extent={{20,80},{40,60}})));
         BloodComponents.BloodConductor pulmonary(Conductance(displayUnit=
                 "l/(mmHg.min)") = 4.1665920538226e-8, useConductanceInput=false)
           annotation (Placement(transformation(extent={{-20,80},{0,60}})));
@@ -11944,15 +11944,15 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
           points={{69,70},{80,70},{80,59}},
           color={28,108,200},
           thickness=0.5));
-      connect(pulmonaryVeinsAndLeftAtrium.bloodPort_in,pulmonary. bloodPort_out)
-        annotation (Line(
+      connect(pulmonaryVeins.bloodPort_in, pulmonary.bloodPort_out) annotation
+        (Line(
           points={{20.2,70},{-1,70}},
           color={28,108,200},
           thickness=0.5));
       connect(LNormalCO.y,leftHeart. volumeFlowRate)
         annotation (Line(points={{63,84},{60,84},{60,74}}, color={0,0,127}));
-      connect(leftHeart.bloodPort_in,pulmonaryVeinsAndLeftAtrium. bloodPort_out)
-        annotation (Line(
+      connect(leftHeart.bloodPort_in, pulmonaryVeins.bloodPort_out) annotation
+        (Line(
           points={{51,70},{40,70}},
           color={28,108,200},
           thickness=0.5));
@@ -12215,6 +12215,12 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
 
     Real totalCharge = 0;
 
+    //   Modelica.Blocks.Interfaces.RealInput pH
+    //     annotation (Placement(transformation(extent={{-120,40},{-80,80}}),
+    //         iconTransformation(
+    //         extent={{20,-20},{-20,20}},
+    //         rotation=0,
+    //         origin={100,100})));
     protected
       parameter Real isf_default[:]=ones(NumberOfIons)
         "lets start in positive numbers to avoid initialization error warnings";
@@ -32188,17 +32194,17 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
 
   model SimplestCircWithTissues2
     "Cardiovascular part of Guyton-Coleman-Granger's model from 1972"
-      extends Circulation.SimplestCirculation(veins(
-          useO2_input=true,
-          useCO2_input=true,
-          useBEox_input=true,
-          useFlow_input=true,
-          useIons_input=true), pulmonaryVeinsAndLeftAtrium(
+      extends Circulation.SimplestCirculation(pulmonaryVeins(
           useO2_input=true,
           useCO2_input=true,
           useBEox_input=true,
           useFlow_input=false,
-          useFlowMeasureOutput=true));
+          useFlowMeasureOutput=true), veins(
+          useO2_input=true,
+          useCO2_input=true,
+          useBEox_input=true,
+          useFlow_input=true,
+          useIons_input=true));
      extends Modelica.Icons.Example;
      import Physiolibrary.Hydraulic;
       Acidbase.OSA.O2CO2 o2CO2
@@ -32338,21 +32344,20 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       connect(alveolarVentilation.VA, lungsOneCompartment.VAi) annotation (Line(
             points={{191,49},{192,49},{192,50},{196,50},{196,112},{30,112},{30,
               108}}, color={0,0,127}));
-      connect(pulmonaryVeinsAndLeftAtrium.volumeFlow, lungsOneCompartment.bloodFlow)
+      connect(pulmonaryVeins.volumeFlow, lungsOneCompartment.bloodFlow)
         annotation (Line(points={{20,74},{10,74},{10,94},{20,94}}, color={0,0,
               127}));
-      connect(lungsOneCompartment.O2, pulmonaryVeinsAndLeftAtrium.port_O2)
-        annotation (Line(
+      connect(lungsOneCompartment.O2, pulmonaryVeins.port_O2) annotation (Line(
           points={{24,88},{24,80}},
           color={107,45,134},
           thickness=1));
-      connect(pulmonaryVeinsAndLeftAtrium.port_CO2, lungsOneCompartment.CO2)
-        annotation (Line(
+      connect(pulmonaryVeins.port_CO2, lungsOneCompartment.CO2) annotation (
+          Line(
           points={{28,80},{28,88}},
           color={107,45,134},
           thickness=1));
-      connect(pulmonaryVeinsAndLeftAtrium.port_BEox, lungsOneCompartment.BEox)
-        annotation (Line(
+      connect(pulmonaryVeins.port_BEox, lungsOneCompartment.BEox) annotation (
+          Line(
           points={{32,80},{32,88}},
           color={107,45,134},
           thickness=1));
@@ -32447,6 +32452,279 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
     end metabolicRegulation;
+
+    package TornApproach
+    model SimplestCircWithGas
+        "Cardiovascular part of Guyton-Coleman-Granger's model from 1972"
+        extends Circulation.SimplestCirculation(
+          pulmonaryVeins(
+            useO2_input=true,
+            useCO2_input=true,
+            useBEox_input=true,
+            useFlow_input=false,
+            useFlowMeasureOutput=true),
+          veins(
+            useO2_input=true,
+            useCO2_input=true,
+            useBEox_input=true,
+            useFlow_input=true,
+            useIons_input=true),
+          modelSettings(
+            useIons=true,
+            useOsmoticFlow=false,
+            UseMetabolicUABalance=false,
+            UseRespiratoryCompensation=false,
+            NormalAlveolarVentilation=9e-5,
+            arterialCO2conc_start=22.25,
+            venousCO2conc_start=24.12,
+            venousO2conc_start=3.889));
+       extends Modelica.Icons.Example;
+       import Physiolibrary.Hydraulic;
+        Acidbase.OSA.O2CO2 o2CO2
+          annotation (Placement(transformation(extent={{-22,-22},{22,22}},
+            rotation=0,
+            origin={132,44})));
+
+        Tissues.Cells cells(useMetabolicUaProduction=modelSettings.UseMetabolicUABalance,
+          diffusion(Conductance(displayUnit="l/min") = 0.16666666666667),
+          diffusion1(Conductance=0.00016666666666667),
+          limitO2Metabolism(respiratoryQuotient=modelSettings.respiratoryQuotient,
+              limiterEnabled=false))
+                            annotation (Placement(transformation(
+              extent={{9.875,9.875},{-9.875,-9.875}},
+              rotation=90,
+              origin={40.125,-8.125})));
+      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
+          respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
+        annotation (Placement(transformation(extent={{170,36},{190,56}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit="ml/min")=
+             modelSettings.NormalAlveolarVentilation)
+        annotation (Placement(transformation(extent={{194,14},{183,24}})));
+        Respiratory.LungsOneCompartment lungsOneCompartment
+          annotation (Placement(transformation(extent={{20,108},{40,88}})));
+    equation
+
+      connect(flowConcentrationMeasure1.O2_conc, o2CO2.ctO2) annotation (Line(
+            points={{92,58},{92,54.3529},{108.9,54.3529}},        color={0,0,
+              127}));
+      connect(o2CO2.ctCO2, flowConcentrationMeasure1.CO2_conc) annotation (Line(
+            points={{108.9,51.7647},{104.45,51.7647},{104.45,50},{92,50}},
+                                                                      color={0,
+              0,127}));
+      connect(o2CO2.BEox, flowConcentrationMeasure1.BEox_conc) annotation (Line(
+            points={{108.9,49.1765},{108.9,42},{92,42}},
+                                                       color={0,0,127}));
+      connect(VAi.y,alveolarVentilation. VA0) annotation (Line(points={{181.625,19},
+              {164,19},{164,39.6},{170,39.6}},  color={0,0,127}));
+      connect(alveolarVentilation.pO2a, o2CO2.pO2) annotation (Line(points={{170,54},
+                {170,53.3176},{155.1,53.3176}},              color={0,0,127}));
+      connect(alveolarVentilation.pCO2a, o2CO2.pCO2) annotation (Line(points={{170,
+                49.8},{155.1,49.8},{155.1,50.7294}},             color={0,0,127}));
+      connect(alveolarVentilation.pHa, o2CO2.pH) annotation (Line(points={{170,
+                44.8},{170,47.6235},{155.1,47.6235}},          color={0,0,127}));
+        connect(alveolarVentilation.VA, lungsOneCompartment.VAi) annotation (
+            Line(points={{191,49},{192,49},{192,50},{196,50},{196,112},{30,112},
+                {30,108}}, color={0,0,127}));
+        connect(pulmonaryVeins.volumeFlow, lungsOneCompartment.bloodFlow)
+          annotation (Line(points={{20,74},{10,74},{10,94},{20,94}}, color={0,0,
+                127}));
+        connect(lungsOneCompartment.O2, pulmonaryVeins.port_O2) annotation (
+            Line(
+            points={{24,88},{24,80}},
+            color={107,45,134},
+            thickness=1));
+        connect(pulmonaryVeins.port_CO2, lungsOneCompartment.CO2) annotation (
+            Line(
+            points={{28,80},{28,88}},
+            color={107,45,134},
+            thickness=1));
+        connect(pulmonaryVeins.port_BEox, lungsOneCompartment.BEox) annotation
+          (Line(
+            points={{32,80},{32,88}},
+            color={107,45,134},
+            thickness=1));
+        connect(veins.port_ions, cells.ions) annotation (Line(
+            points={{-19.8,20},{-20,20},{-20,1.75},{30.25,1.75}},
+            color={107,45,134},
+            thickness=1));
+        connect(veins.port_BEox, cells.HCO3) annotation (Line(
+            points={{-12,20},{-12,10},{38.15,10},{38.15,1.75}},
+            color={107,45,134},
+            thickness=1));
+        connect(veins.port_CO2, cells.CO2) annotation (Line(
+            points={{-8,20},{-8,12},{42.1,12},{42.1,1.75}},
+            color={107,45,134},
+            thickness=1));
+        connect(veins.port_O2, cells.O2) annotation (Line(
+            points={{-4,20},{-4,14},{46.05,14},{46.05,1.75}},
+            color={107,45,134},
+            thickness=1));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
+                -80},{200,140}})),            Documentation(info="<html>
+<p>Cardiovascular subsystem in famous Guyton-Coleman-Granger model from 1972. </p>
+<p><br/>Model, all parameters and all initial values are from article: </p>
+<p>A.C. Guyton, T.G. Coleman, H.J. Granger (1972). &quot;Circulation: overall regulation.&quot; Annual review of physiology 34(1): 13-44.</p>
+</html>", revisions="<html>
+<p><i>2014</i></p>
+<p>Marek Matejak, Charles University, Prague, Czech Republic </p>
+</html>"),
+        experiment(StopTime=100000),
+        Icon(coordinateSystem(extent={{-120,-80},{200,140}})));
+    end SimplestCircWithGas;
+
+    model SimplestCircWithGasAndTissues
+        "Cardiovascular part of Guyton-Coleman-Granger's model from 1972"
+        extends Circulation.SimplestCirculation(
+          pulmonaryVeins(
+            useO2_input=true,
+            useCO2_input=true,
+            useBEox_input=true,
+            useFlow_input=false,
+            useFlowMeasureOutput=true),
+          veins(
+            useO2_input=true,
+            useCO2_input=true,
+            useBEox_input=true,
+            useFlow_input=true,
+            useIons_input=true),
+          modelSettings(
+            useIons=true,
+            UseMetabolicUABalance=false,
+            UseRespiratoryCompensation=false,
+            arterialCO2conc_start=22.25,
+            venousCO2conc_start=24.12,
+            venousO2conc_start=3.889,
+            useOsmoticFlow=true,
+            NormalAlveolarVentilation=9e-5));
+       extends Modelica.Icons.Example;
+       import Physiolibrary.Hydraulic;
+        Acidbase.OSA.O2CO2 o2CO2
+          annotation (Placement(transformation(extent={{-22,-22},{22,22}},
+            rotation=0,
+            origin={132,44})));
+
+        Tissues.Cells cells(useMetabolicUaProduction=modelSettings.UseMetabolicUABalance,
+          diffusion(Conductance(displayUnit="l/min") = 0.16666666666667),
+          diffusion1(Conductance=0.00016666666666667),
+          limitO2Metabolism(respiratoryQuotient=modelSettings.respiratoryQuotient,
+              limiterEnabled=false))
+                            annotation (Placement(transformation(
+              extent={{9.875,9.875},{-9.875,-9.875}},
+              rotation=90,
+              origin={40.125,-8.125})));
+      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
+          respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
+        annotation (Placement(transformation(extent={{170,36},{190,56}})));
+      Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit="ml/min")=
+             modelSettings.NormalAlveolarVentilation)
+        annotation (Placement(transformation(extent={{194,14},{183,24}})));
+        Respiratory.LungsOneCompartment lungsOneCompartment
+          annotation (Placement(transformation(extent={{20,108},{40,88}})));
+        Tissues.Tissues2 tissues(
+          isf_ionChargeCorrection(elementaryCharges=modelSettings.IonElemChrgs),
+
+          plasma_ionChargeCorrection(elementaryCharges=modelSettings.IonElemChrgs),
+
+          iSF_initialization(
+            isf_dCO2=0,
+            isf_dHCO3=0,
+            pHisf=7.361),
+          tissueHCO3_2(pH(start=7.36)),
+          membrane(HydraulicPressureIn=2435.0, cond=1.0))    annotation (
+            Placement(transformation(
+              rotation=90,
+              extent={{15,12},{-15,-12}},
+              origin={-12,-31})));
+    equation
+
+      connect(flowConcentrationMeasure1.O2_conc, o2CO2.ctO2) annotation (Line(
+            points={{92,58},{92,54.3529},{108.9,54.3529}},        color={0,0,
+              127}));
+      connect(o2CO2.ctCO2, flowConcentrationMeasure1.CO2_conc) annotation (Line(
+            points={{108.9,51.7647},{104.45,51.7647},{104.45,50},{92,50}},
+                                                                      color={0,
+              0,127}));
+      connect(o2CO2.BEox, flowConcentrationMeasure1.BEox_conc) annotation (Line(
+            points={{108.9,49.1765},{108.9,42},{92,42}},
+                                                       color={0,0,127}));
+      connect(VAi.y,alveolarVentilation. VA0) annotation (Line(points={{181.625,19},
+              {164,19},{164,39.6},{170,39.6}},  color={0,0,127}));
+      connect(alveolarVentilation.pO2a, o2CO2.pO2) annotation (Line(points={{170,54},
+                {170,53.3176},{155.1,53.3176}},              color={0,0,127}));
+      connect(alveolarVentilation.pCO2a, o2CO2.pCO2) annotation (Line(points={{170,
+                49.8},{155.1,49.8},{155.1,50.7294}},             color={0,0,127}));
+      connect(alveolarVentilation.pHa, o2CO2.pH) annotation (Line(points={{170,
+                44.8},{170,47.6235},{155.1,47.6235}},          color={0,0,127}));
+        connect(alveolarVentilation.VA, lungsOneCompartment.VAi) annotation (
+            Line(points={{191,49},{192,49},{192,50},{196,50},{196,112},{30,112},
+                {30,108}}, color={0,0,127}));
+        connect(pulmonaryVeins.volumeFlow, lungsOneCompartment.bloodFlow)
+          annotation (Line(points={{20,74},{10,74},{10,94},{20,94}}, color={0,0,
+                127}));
+        connect(lungsOneCompartment.O2, pulmonaryVeins.port_O2) annotation (
+            Line(
+            points={{24,88},{24,80}},
+            color={107,45,134},
+            thickness=1));
+        connect(pulmonaryVeins.port_CO2, lungsOneCompartment.CO2) annotation (
+            Line(
+            points={{28,80},{28,88}},
+            color={107,45,134},
+            thickness=1));
+        connect(pulmonaryVeins.port_BEox, lungsOneCompartment.BEox) annotation
+          (Line(
+            points={{32,80},{32,88}},
+            color={107,45,134},
+            thickness=1));
+        connect(veins.port_ions, cells.ions) annotation (Line(
+            points={{-19.8,20},{-20,20},{-20,1.75},{30.25,1.75}},
+            color={107,45,134},
+            thickness=1));
+        connect(veins.port_BEox, cells.HCO3) annotation (Line(
+            points={{-12,20},{-12,10},{38.15,10},{38.15,1.75}},
+            color={107,45,134},
+            thickness=1));
+        connect(veins.port_CO2, cells.CO2) annotation (Line(
+            points={{-8,20},{-8,12},{42.1,12},{42.1,1.75}},
+            color={107,45,134},
+            thickness=1));
+        connect(veins.port_O2, cells.O2) annotation (Line(
+            points={{-4,20},{-4,14},{46.05,14},{46.05,1.75}},
+            color={107,45,134},
+            thickness=1));
+        connect(tissues.tO2, veins.port_O2) annotation (Line(
+            points={{-4,-16},{-4,20},{-4,20}},
+            color={107,45,134},
+            thickness=1));
+        connect(tissues.tCO2, veins.port_CO2) annotation (Line(
+            points={{-8,-16},{-8,20},{-8,20}},
+            color={107,45,134},
+            thickness=1));
+        connect(tissues.BE, veins.port_BEox) annotation (Line(
+            points={{-12,-16},{-12,20}},
+            color={107,45,134},
+            thickness=1));
+        connect(tissues.ions_plasma, veins.port_ions) annotation (Line(
+            points={{-20,-16},{-20,20},{-19.8,20}},
+            color={107,45,134},
+            thickness=1));
+        connect(tissues.port_Flow, veins.port_Flow) annotation (Line(
+            points={{0,-16},{0,20}},
+            color={0,0,0},
+            thickness=1));
+      annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
+                -80},{200,140}})),            Documentation(info="<html>
+<p>Cardiovascular subsystem in famous Guyton-Coleman-Granger model from 1972. </p>
+<p><br/>Model, all parameters and all initial values are from article: </p>
+<p>A.C. Guyton, T.G. Coleman, H.J. Granger (1972). &quot;Circulation: overall regulation.&quot; Annual review of physiology 34(1): 13-44.</p>
+</html>", revisions="<html>
+<p><i>2014</i></p>
+<p>Marek Matejak, Charles University, Prague, Czech Republic </p>
+</html>"),
+        experiment(StopTime=100000),
+        Icon(coordinateSystem(extent={{-120,-80},{200,140}})));
+    end SimplestCircWithGasAndTissues;
+    end TornApproach;
   end Validation;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
       Physiomodel(version="1.0.0")));
