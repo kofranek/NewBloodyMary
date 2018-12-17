@@ -31955,6 +31955,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
 
     model LungVentilationPerfusion
       extends Validation.TornApproach.lungShunt;
+      Real pO2_kPa = floor(o2CO2.pO2 + 0.5)/100;
+      Real pCO2_kPa = floor(o2CO2.pO2 + 0.5)/100;
+      Real timeHours = time/60/60;
     end LungVentilationPerfusion;
   end Visualization;
 
@@ -32689,11 +32692,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           annotation (Placement(transformation(extent={{20,108},{40,88}})));
         Tissues.Tissues2 tissues(
           ImpermeantSolutes(Simulation=Physiolibrary.Types.SimulationType.NormalInit),
-
           isf_ionChargeCorrection(elementaryCharges=modelSettings.IonElemChrgs),
-
           plasma_ionChargeCorrection(elementaryCharges=modelSettings.IonElemChrgs),
-
           iSF_initialization(
             isf_dCO2=0,
             isf_dHCO3=0,
@@ -32862,11 +32862,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           annotation (Placement(transformation(extent={{20,108},{40,88}})));
         Tissues.Tissues2 tissues(
           ImpermeantSolutes(Simulation=Physiolibrary.Types.SimulationType.NormalInit),
-
           isf_ionChargeCorrection(elementaryCharges=modelSettings.IonElemChrgs),
-
           plasma_ionChargeCorrection(elementaryCharges=modelSettings.IonElemChrgs),
-
           iSF_initialization(
             isf_dCO2=0,
             isf_dHCO3=0,
@@ -32916,8 +32913,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             points={{28,80},{28,88}},
             color={107,45,134},
             thickness=1));
-        connect(pulmonaryVeins.port_BEox, lungsOneCompartment.BEox) annotation
-          (Line(
+        connect(pulmonaryVeins.port_BEox, lungsOneCompartment.BEox) annotation (
+           Line(
             points={{32,80},{32,88}},
             color={107,45,134},
             thickness=1));
@@ -32965,8 +32962,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         connect(pressureMeasure.concO2, lungsOneCompartment.cvO2) annotation (
             Line(points={{1,105},{10.5,105},{10.5,106},{20,106}}, color={0,0,
                 127}));
-        connect(lungsOneCompartment.cvCO2, pressureMeasure.concCO2) annotation
-          (Line(points={{20,102},{12,102},{12,101},{1,101}}, color={0,0,127}));
+        connect(lungsOneCompartment.cvCO2, pressureMeasure.concCO2) annotation (
+           Line(points={{20,102},{12,102},{12,101},{1,101}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
                 -80},{200,140}})),            Documentation(info="<html>
 <p>Cardiovascular subsystem in famous Guyton-Coleman-Granger model from 1972. </p>
