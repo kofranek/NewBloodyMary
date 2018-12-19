@@ -1,0 +1,8 @@
+﻿cd ..
+simulateModel("AcidBaseBalance.Ions.AlbuminAcidBase", stopTime=2592000, numberOfIntervals=5000, method="dassl", resultFile="AlbuminAcidBase");
+
+createPlot(id=1, position={522, 102, 376, 327}, y={"cAlb", "cAlbISF"}, range={5.0, 30.0, 0.0, 5.0}, erase=false, autoscale=false, grid=true, filename="AlbuminAcidBase.mat", legendLocation=5, legendFrame=true, legends={"Plasma", "ISF"}, leftTitleType=2, leftTitle="Albumin concentration g/dl", colors={{28,108,200}, {238,46,47}}, range2={1.0000000000000006E-78, 1.2500000000000009E-78}, timeUnit="d");
+
+createPlot(id=2, position={602, 31, 510, 420}, y={"HCO3.q_out.conc", "HCO3.solute"}, range={0.0, 30.0, -10.0, 80.0}, autoscale=false, grid=true, filename="AlbuminAcidBase.mat", legendLocation=4, legendHorizontal=false, legends={"HCO3 concentration [mmol/l]", "total produced HCO3 [mmol]"}, colors={{28,108,200}, {238,46,47}}, thicknesses={0.5, 0.25}, timeUnit="d", displayUnits={"mmol/l", "mmol"});
+plotSignalOperator("AlbuminAcidBase[end].HCO3.q_out.conc", SignalOperator.Max, 820800, 1.5984e+06, 0, 8);
+plotSignalOperator("AlbuminAcidBase[end].HCO3.solute", SignalOperator.Max, 1.3824e+06, 1.944e+06, 0, 8);

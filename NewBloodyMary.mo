@@ -1,4 +1,4 @@
-within ;
+癤퓑ithin ;
 package NewBloodyMary_testing
   package OSA
     function HbFromGramDlToMmolL
@@ -183,7 +183,7 @@ package NewBloodyMary_testing
       input Real FCOHb "substance fraction of carboxyhemoglobin";
       input Real FMetHb "substance fraction of hemiglobin";
       input Real FHbF "substance fraction of fetal hemoglobin";
-      input Real TPt "temperature in캜";
+      input Real TPt "temperature in째C";
       output Real returnValue "oxygen hemoglobin saturation";
     protected
       Real MpCOa;
@@ -242,7 +242,7 @@ package NewBloodyMary_testing
       input Real FCOHb "substance fraction of carboxyhemoglobin";
       input Real FMetHb "substance fraction of hemiglobin";
       input Real FHbF "substance fraction of fetal hemogobin";
-      input Real temp "temperature in 캜";
+      input Real temp "temperature in 째C";
       output Real ctO2
         "concentration of total blood oxygen concentration in mmol/l";
     protected
@@ -267,7 +267,7 @@ package NewBloodyMary_testing
       input Real FCOHb "substance fraction of carboxyhemoglobin";
       input Real FMetHb "substance fraction of hemiglobin";
       input Real FHbF "substance fraction of fetal hemogobin";
-      input Real temp "temperature in 캜";
+      input Real temp "temperature in 째C";
       output Real ctO2
         "concentration of total blood oxygen concentration in mmol/l";
       output Real sO2t "oxygen saturation of hemoglobin at given temperature";
@@ -291,7 +291,7 @@ package NewBloodyMary_testing
       input Real FCOHb "substance fraction of carboxyhemoglobin";
       input Real FMetHb "substance fraction of hemiglobin";
       input Real FHbF "substance fraction of fetal hemogobin";
-      input Real temp "temperature in 째K";
+      input Real temp "temperature in 횂째K";
       output Real ctO2
         "concentration of total blood oxygen concentration in mmol/l";
       output Real sO2t "oxygen saturation of hemoglobin at given temperature";
@@ -354,7 +354,7 @@ package NewBloodyMary_testing
     function cHCO3of "calculation of plasma bicarbonate concentration"
       input Real pH "plasma pH at given temperature in mmol/l";
       input Real pCO2 "pCO2 in kPa";
-      input Real T "temperature in 째C";
+      input Real T "temperature in 횂째C";
       output Real HCO3p "plasma bicarbonate concentration in mmol/l";
     algorithm
       HCO3p := pCO2*aCO2of( T)*antilg( pH - pKof( T));
@@ -474,7 +474,7 @@ package NewBloodyMary_testing
     function ctCO2Bof "Calculation of blood total CO2 concentration"
       input Real pH "plasma pH at given temperature";
       input Real pCO2 "pCO2 at given temperatura in kPa";
-      input Real T "temperature in캜";
+      input Real T "temperature in째C";
       input Real ctHb "Hemoglobin concentration in mmol/l";
       input Real sO2 "O2 hemoglobin saturation";
       output Real ctCO2B "Total blood CO2 concetratoin in mmol/l";
@@ -514,7 +514,7 @@ package NewBloodyMary_testing
     function CO2totalSI "Calculation of blood total CO2 concentration"
       input Real pH "plasma pH at given temperature";
       input Real pCO2 "pCO2 at given temperatura in Pa";
-      input Real T "temperature in 캜";
+      input Real T "temperature in 째C";
       input Real ctHb "Hemoglobin concentration in mmol/l";
       input Real sO2 "O2 hemoglobin saturation";
       output Real ctCO2B "Total blood CO2 concetratoin in mmol/l";
@@ -634,7 +634,7 @@ package NewBloodyMary_testing
       input Real pH "pH at given temperature";
       input Real pCO2 "pCO2 at given temperature in kPa";
       input Real cHb "hemoglobin concentration in mmol/l";
-      input Real T "temperature in 캜";
+      input Real T "temperature in 째C";
       input Real cAlb "concentration of albumin in mmol/l";
       output Real result_cBEcf "Extracellular fluid BE - mmo/l";
     protected
@@ -666,7 +666,7 @@ package NewBloodyMary_testing
       input Real pH "pH at given temperature";
       input Real pCO2 "pCO2 in kPA at given temperature";
       input Real cHb "hemoglobin concentration in mmol/l";
-      input Real T "temperature in 캜";
+      input Real T "temperature in 째C";
       input Real cAlb "albumin concentration in mmol/l";
       input Real cPi "phosphate concentration in mmol/l";
       input Real sO2 "O2 hemoglobin saturation (as fraction)";
@@ -702,7 +702,7 @@ package NewBloodyMary_testing
       input Real cAlb "albumin concentration in plasma in mmol/l";
       input Real cPi "plasma phosphate concentration in mmol/l";
       input Real sO2 "O2 hemoglobin saturation";
-      input Real temp "temperature in 캜";
+      input Real temp "temperature in 째C";
       output Real pH "plasma pH";
     protected
       Real epsilon = 0.000001;
@@ -755,7 +755,7 @@ package NewBloodyMary_testing
       input Real FCOHb "substance fraction of carboxyhemoglobin";
       input Real FMetHb "substance fraction of hemiglobin";
       input Real FHbF "substance fraction of fetal hemogobin";
-      input Real temp "temperature in 캜";
+      input Real temp "temperature in 째C";
       output Real ctO2 "blood total O2 concantration in mmol/l";
       output Real ctCO2 "blood total CO2 concentration in mmol/l";
       output Real pH "plasma pH";
@@ -792,7 +792,7 @@ package NewBloodyMary_testing
       input Real FCOHb "substance fraction of carboxyhemoglobin";
       input Real FMetHb "substance fraction of hemiglobin";
       input Real FHbF "substance fraction of fetal hemogobin";
-      input Real temp "temperature in 캜";
+      input Real temp "temperature in 째C";
       output Real pO2 "pO2 in kPa";
       output Real pCO2 "pCO2 in kPa";
       output Real pH "plasma pH";
@@ -919,7 +919,7 @@ package NewBloodyMary_testing
     end O2CO2of;
 
     function pH2Oof
-      input Real temp "temperature in 캜";
+      input Real temp "temperature in 째C";
       output Real vaporPressure "in mmHg";
     algorithm
       if (temp < 0) then
@@ -935,7 +935,7 @@ package NewBloodyMary_testing
 
     function BTPS_to_STPD "coefficient for conversion volume from BTPS to STPD"
       input Real PB "barometric pressure in mmHg";
-      input Real temp "temperature in 캜";
+      input Real temp "temperature in 째C";
       output Real coefficient_BTPS_to_STP
         "from BTPS to STPD conversion coefficient";
     protected
@@ -949,7 +949,7 @@ package NewBloodyMary_testing
       input Real VAi "inspired alveolar ventilation in l BTPS/min";
       input Real FiO2 "fraction concentration of O2 in dry nspired gas";
       input Real FiCO2 "fraction concentationo of CO2 in dry inspired gas";
-      input Real temp "temperature in 캜";
+      input Real temp "temperature in 째C";
       input Real PB "barometric pressure";
       input Real Q "blood perfusion";
       input Real CvO2

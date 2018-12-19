@@ -1,0 +1,21 @@
+﻿cd ..
+simulateModel("AcidBaseBalance.Validation.MetabolicAcidosisAcute", stopTime=8000000, numberOfIntervals=25000, method="dassl", resultFile="MetabolicAcidosisAcute");
+
+
+
+createPlot(id=3, position={771, 105, 433, 412}, y=fill("", 0), range={0.0, 100.0, -30.0, 5.0}, autoscale=false, grid=true, filename="RespiratoryAlkalosis.mat", timeUnit="d", displayUnits={"mmol/l"});
+createPlot(id=2, position={63, 261, 460, 420}, x="simplestCircWithTissues3_1.o2CO2.pH", y=fill("", 0), range={6.95, 7.45, 0.5, 6.0}, autoscale=false, grid=true, legend=false, leftTitleType=2, leftTitle="arterial pCO2 [kPa]", bottomTitleType=2, bottomTitle="pH", displayUnits={"kPa"});
+createPlot(id=4, position={357, 25, 679, 420}, y=fill("", 0), range={0.0, 2400.0, -50.0, 250.0}, autoscale=false, grid=true, legendLocation=2, legendHorizontal=false, range2={-5.0, 50.0}, timeUnit="h", displayUnits={"mmol/day", "mmol/day", "mmol/l", "mmol/l"});
+createPlot(id=8, position={493, 329, 431, 415}, y=fill("", 0), range={0.0, 8000000.0, 6.95, 7.45}, grid=true);
+createPlot(id=3, position={771, 105, 433, 412}, y=fill("", 0), range={0.0, 100.0, -30.0, 5.0}, erase=false, autoscale=false, grid=true, filename="MetabolicAcidosis.mat", timeUnit="d", displayUnits={"mmol/l"});
+createPlot(id=2, position={63, 261, 460, 420}, x="simplestCircWithTissues3_1.o2CO2.pH", y=fill("", 0), range={6.95, 7.45, 0.5, 6.0}, erase=false, autoscale=false, grid=true, legend=false, leftTitleType=2, leftTitle="arterial pCO2 [kPa]", bottomTitleType=2, bottomTitle="pH", displayUnits={"kPa"});
+createPlot(id=4, position={357, 25, 679, 420}, y=fill("", 0), range={0.0, 2400.0, -50.0, 250.0}, erase=false, autoscale=false, grid=true, legendLocation=2, legendHorizontal=false, range2={-5.0, 50.0}, timeUnit="h", displayUnits={"mmol/day", "mmol/day", "mmol/l", "mmol/l"});
+createPlot(id=8, position={493, 329, 431, 415}, y=fill("", 0), range={0.0, 8000000.0, 6.95, 7.45}, erase=false, grid=true);
+createPlot(id=3, position={771, 105, 433, 412}, y={"simplestCircWithTissues3_1.o2CO2.BEox"}, range={0.0, 100.0, -30.0, 5.0}, erase=false, autoscale=false, grid=true, filename="MetabolicAcidosisAcute.mat", colors={{28,108,200}}, timeUnit="d", displayUnits={"mmol/l"});
+createPlot(id=2, position={63, 261, 460, 420}, x="simplestCircWithTissues3_1.o2CO2.pH", y={"simplestCircWithTissues3_1.o2CO2.pCO2"}, range={6.95, 7.45, 0.5, 6.0}, erase=false, autoscale=false, grid=true, legend=false, leftTitleType=2, leftTitle="arterial pCO2 [kPa]", bottomTitleType=2, bottomTitle="pH", colors={{28,108,200}}, displayUnits={"kPa"});
+createPlot(id=4, position={357, 25, 679, 420}, y={"simplestCircWithTissues3_1.ammoniumExcretion.ammonium.hCO3ProductionLimiter.u",
+ "simplestCircWithTissues3_1.ammoniumExcretion.ammonium.hCO3ProductionLimiter.y",
+ "simplestCircWithTissues3_1.ammoniumExcretion.ammonium.hCO3ProductionLimiter.HCO3",
+ "simplestCircWithTissues3_1.ammoniumExcretion.ammonium.hCO3ProductionLimiter.HCO3max"}, range={0.0, 2400.0, -50.0, 250.0}, erase=false, autoscale=false, grid=true, legendLocation=2, legendHorizontal=false, legends={"unlimited HCO3 production", "limited HCO3 production", "actual HCO3 [mmol/l]",
+ "Maximal HCO3 [mmol/l]"}, colors={{28,108,200}, {238,46,47}, {0,140,72}, {0,0,0}}, patterns={LinePattern.Solid, LinePattern.Solid, LinePattern.Dash, LinePattern.Dash}, thicknesses={0.5, 0.5, 0.25, 0.25}, range2={-5.0, 50.0}, axes={1, 1, 2, 2}, timeUnit="h", displayUnits={"mmol/day", "mmol/day", "mmol/l", "mmol/l"});
+createPlot(id=8, position={493, 329, 431, 415}, y={"simplestCircWithTissues3_1.o2CO2.pH"}, range={0.0, 8000000.0, 6.95, 7.45}, erase=false, grid=true, colors={{28,108,200}});
