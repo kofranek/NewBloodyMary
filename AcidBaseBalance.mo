@@ -1354,6 +1354,8 @@ BEox"),       Text(
       end AlvEq;
 
       model O2CO2
+        Real HCO3act = 0.0307*(pCO2/133.32)*10^(pH-6.105) "HCO3 act acc to Berend, N ENGL J MED 2018";
+        Real SBE = HCO3act - 24.8 + 16.2*(pH-7.4);
         Physiolibrary.Types.RealIO.FractionOutput sO2 annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin={4,8}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,58})));
         Physiolibrary.Types.RealIO.ConcentrationOutput cHCO3(displayUnit = "mmol/l")
           "outgoing concentration of HCO3"                                                                            annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin={5,116}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,78})));
@@ -13384,6 +13386,7 @@ initialization")}));
       // Metabolism
       parameter Physiolibrary.Types.MolarFlowRate metabolismO2FlowRate = 0.00018333333333333 annotation(Dialog(tab = "Metabolism"));
       parameter Boolean UseMetabolicUABalance = true annotation(Dialog(tab = "Metabolism"));
+      parameter Boolean fixedMetabolismCompensation = false annotation(Dialog(tab = "Metabolism"));
       parameter Physiolibrary.Types.MolarFlowRate metabolismUAFlowRate_norm = 6.944444e-7 annotation(Dialog(tab = "Metabolism", enable = UseMetabolicUABalance));
 
 
@@ -13520,7 +13523,8 @@ initialization")}));
       Physiolibrary.Blocks.Factors.Spline ChloridePoolEffect(data = {{0.00, 0.0, 0}, {80, 1.0, 0.0}})
         "electroneutrality does not allow to extract cation without anion"                                                                                               annotation(Placement(transformation(extent={{-28,-10},
                 {-8,10}})));
-      Physiolibrary.Types.RealIO.MolarFlowRateOutput molarflowrate annotation(Placement(transformation(extent = {{0, -32}, {20, -12}}), iconTransformation(extent = {{92, 4}, {112, 24}})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput molarflowrate annotation(Placement(transformation(extent = {{0, -32}, {20, -12}}), iconTransformation(extent={{92,-10},
+                {112,10}})));
       Physiolibrary.Types.RealIO.pHInput             pH            annotation(Placement(transformation(extent={{-74,70},
                 {-54,90}}),                                                                                                             iconTransformation(extent={{-100,90},
                 {-80,110}})));
@@ -13869,6 +13873,10 @@ initialization")}));
             iconTransformation(extent={{-108,-70},{-80,-42}})));
       Modelica.Blocks.Math.Add3 add3_1(k3=-1)
         annotation (Placement(transformation(extent={{-8,8},{12,28}})));
+      Modelica.Blocks.Logical.Switch switch1
+        annotation (Placement(transformation(extent={{50,-28},{70,-8}})));
+      Modelica.Blocks.Sources.BooleanExpression booleanExpression
+        annotation (Placement(transformation(extent={{-14,-28},{6,-8}})));
     equation
       connect(HCO3excretion, add3_1.u3) annotation (Line(points={{-94,-26},{-62,
               -26},{-62,-20},{-62,10},{-58,10},{-10,10}}, color={0,0,127}));
@@ -13878,6 +13886,10 @@ initialization")}));
               {-10,26}}, color={0,0,127}));
       connect(add3_1.y, TotalFlowRate) annotation (Line(points={{13,18},{56,18},
               {56,8},{106,8}}, color={0,0,127}));
+      connect(booleanExpression.y, switch1.u2)
+        annotation (Line(points={{7,-18},{48,-18}}, color={255,0,255}));
+      connect(add3_1.y, switch1.u1) annotation (Line(points={{13,18},{30,18},{
+              30,-10},{48,-10}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
                 -100,-100},{100,100}}), graphics={Rectangle(
               extent={{-100,100},{100,-100}},
@@ -14029,8 +14041,8 @@ initialization")}));
 
     model AmmoniumExcretion
     //  extends Physiolibrary.Icons.Kidney;
-      Ammonium ammonium annotation(Placement(transformation(extent={{-32,30},{
-                12,70}})));
+      Ammonium ammonium annotation(Placement(transformation(extent={{-40,40},{2,
+                80}})));
       Physiolibrary.Types.Constants.ConcentrationConst Chloride(k = 100) annotation(Placement(transformation(extent={{-98,24},
                 {-82,42}})));
       TitratableAcid titratableAcid(HalfTime = 8280) annotation(Placement(transformation(extent = {{-50, -68}, {-8, -30}}, origin={12.105,
@@ -14042,15 +14054,13 @@ initialization")}));
       Physiolibrary.Types.Constants.ConcentrationConst Phosphate(k = 1.1) "1.1" annotation(Placement(transformation(extent={{102,-20},
                 {86,-2}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst GFR(k(displayUnit = "l/min") = 1.6666666666667e-06) annotation(Placement(transformation(extent = {{-8, -7}, {8, 7}}, rotation = 180, origin={106,-40}),   visible = true));
-      Physiolibrary.Types.Constants.MolarFlowRateConst HCO3excretion(k=0)
-        annotation (Placement(transformation(extent={{48,46},{56,54}})));
-      TotalAcidExcretion totalAcidExcretion
-        annotation (Placement(transformation(extent={{64,46},{84,66}})));
+      Physiolibrary.Types.Constants.MolarFlowRateConst normalUA(k=modelSettings.metabolismUAFlowRate_norm)
+        annotation (Placement(transformation(extent={{22,88},{30,96}})));
       pHUrine_New pHUrine_New1
         annotation (Placement(transformation(extent={{64,-82},{96,-46}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump pump_hco3(
           useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{122,90},{142,70}})));
+        annotation (Placement(transformation(extent={{100,100},{120,80}})));
       Physiolibrary.Types.RealIO.pHInput pH annotation (Placement(
             transformation(extent={{-110,-46},{-90,-26}}),iconTransformation(
               extent={{-100,70},{-80,90}})));
@@ -14067,31 +14077,32 @@ initialization")}));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure
         annotation (Placement(transformation(extent={{-54,48},{-34,68}})));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
-        annotation (Placement(transformation(extent={{60,14},{80,34}})));
+        annotation (Placement(transformation(extent={{62,22},{82,42}})));
       AnionExcrection anionExcrection annotation (Placement(transformation(
-              rotation=0, extent={{100,40},{120,60}})));
+              rotation=0, extent={{100,12},{120,32}})));
       Physiolibrary.Types.RealIO.ConcentrationInput HCO3 annotation (Placement(
-            transformation(extent={{-114,70},{-94,90}}), iconTransformation(
+            transformation(extent={{-114,66},{-94,86}}), iconTransformation(
               extent={{-100,50},{-80,70}})));
         Interfaces.IonSelector ionSelector1(selectedIon=AcidBaseBalance.Ions.IonsEnum.Cl)
           annotation (Placement(transformation(extent={{146,-8},{132,8}})));
         Interfaces.IonSelector ionSelector(selectedIon=AcidBaseBalance.Ions.IonsEnum.Ua)
-          annotation (Placement(transformation(extent={{146,52},{132,68}})));
+          annotation (Placement(transformation(extent={{146,24},{132,40}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a ions[AcidBaseBalance.Ions.IonsEnum]
         annotation (Placement(transformation(extent={{150,22},{170,42}}),
             iconTransformation(extent={{150,-110},{170,-90}})));
+      Modelica.Blocks.Math.Add  add3_1
+        annotation (Placement(transformation(extent={{30,44},{50,64}})));
+      Modelica.Blocks.Logical.Switch switch1
+        annotation (Placement(transformation(extent={{62,74},{82,94}})));
+      Modelica.Blocks.Sources.BooleanExpression booleanExpression(y=
+            modelSettings.fixedMetabolismCompensation)
+        annotation (Placement(transformation(extent={{-16,74},{6,94}})));
+      outer Interfaces.ModelSettings modelSettings
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
     equation
       connect(titratableAcid.fald, fAld.y) annotation(Line(visible = true, origin={-35.55,
               -77.585},                                                                                points={{-2.135,
               12.415},{-3.207,12.415},{-3.207,13.585},{-11.45,13.585}},                                                                                                color = {0, 0, 127}));
-      connect(totalAcidExcretion.HCO3excretion, HCO3excretion.y) annotation (
-          Line(points={{64.6,50.4},{62,50.4},{62,50},{57,50}}, color={0,0,127}));
-      connect(totalAcidExcretion.NH4, ammonium.molarflowrate) annotation (
-          Line(points={{64.4,56.8},{64,56.8},{64,56},{34,56},{34,52.8},{12.44,
-              52.8}}, color={0,0,127}));
-      connect(totalAcidExcretion.TA, titratableAcid.TA) annotation (Line(
-            points={{64.2,62.4},{22,62.4},{22,-56.62},{3.685,-56.62}},
-                              color={0,0,127}));
       connect(pHUrine_New1.GlomerularFiltration, GFR.y) annotation (Line(
             points={{89.6,-46},{89.6,-40},{96,-40}},
             color={0,0,127}));
@@ -14112,23 +14123,18 @@ initialization")}));
       connect(pHUrine_New1.pHa, pH) annotation (Line(points={{64,-64},{28,-64},
               {28,-36},{-100,-36}},                  color={0,0,127}));
       connect(pH, ammonium.pH) annotation (Line(points={{-100,-36},{-66,-36},{
-              -66,70},{-29.8,70}}, color={0,0,127}));
+              -66,80},{-37.9,80}}, color={0,0,127}));
       connect(pump_hco3.q_out, hco3_outflow) annotation (Line(
-          points={{142,80},{158,80}},
+          points={{120,90},{150,90},{150,80},{158,80}},
           color={107,45,134},
           thickness=1));
-      connect(totalAcidExcretion.TotalFlowRate, pump_hco3.soluteFlow)
-        annotation (Line(points={{84.6,56.8},{92,56.8},{92,76},{136,76}}, color=
-             {0,0,127}));
       connect(ammonium.Cl, concentrationMeasure.concentration)
-        annotation (Line(points={{-28.48,50},{-44,50}},color={0,0,127}));
+        annotation (Line(points={{-36.64,60},{-36,60},{-36,50},{-44,50}},
+                                                       color={0,0,127}));
       connect(concentrationMeasure1.concentration, pHUrine_New1.OrgAnionsConc)
         annotation (Line(points={{70,16},{70,-46},{70.4,-46}},   color={0,0,127}));
-      connect(totalAcidExcretion.TotalFlowRate, anionExcrection.HCO3molarflowrate)
-        annotation (Line(points={{84.6,56.8},{91.3,56.8},{91.3,50},{101.5,50}},
-            color={0,0,127}));
-      connect(ammonium.HCO3, HCO3) annotation (Line(points={{-29.8,62},{-74,62},
-              {-74,80},{-104,80}}, color={0,0,127}));
+      connect(ammonium.HCO3, HCO3) annotation (Line(points={{-37.9,72},{-74,72},
+              {-74,76},{-104,76}}, color={0,0,127}));
       connect(ions, ionSelector1.port_a) annotation (Line(
           points={{160,32},{152,32},{152,0},{146,0}},
           color={107,45,134},
@@ -14138,15 +14144,15 @@ initialization")}));
           color={107,45,134},
           thickness=1));
       connect(ionSelector.port_a, ions) annotation (Line(
-          points={{146,60},{152,60},{152,32},{160,32}},
+          points={{146,32},{160,32}},
           color={107,45,134},
           thickness=1));
       connect(anionExcrection.UA, ionSelector.port_b) annotation (Line(
-          points={{120,60},{132,60}},
+          points={{120,32},{132,32}},
           color={107,45,134},
           thickness=1));
       connect(concentrationMeasure1.q_in, ionSelector.port_b) annotation (Line(
-          points={{70,24},{70,60},{132,60}},
+          points={{72,32},{132,32}},
           color={107,45,134},
           thickness=1));
       connect(ionSelector1.port_b, concentrationMeasure.q_in) annotation (Line(
@@ -14154,9 +14160,23 @@ initialization")}));
           color={107,45,134},
           thickness=1));
       connect(ionSelector1.port_b, anionExcrection.Cl) annotation (Line(
-          points={{132,0},{120,0},{120,40}},
+          points={{132,0},{120,0},{120,12}},
           color={107,45,134},
           thickness=1));
+      connect(booleanExpression.y, switch1.u2)
+        annotation (Line(points={{7.1,84},{60,84}}, color={255,0,255}));
+      connect(normalUA.y, switch1.u1)
+        annotation (Line(points={{31,92},{60,92}}, color={0,0,127}));
+      connect(switch1.y, anionExcrection.HCO3molarflowrate) annotation (Line(
+            points={{83,84},{90,84},{90,22},{101.5,22}}, color={0,0,127}));
+      connect(pump_hco3.soluteFlow, switch1.y)
+        annotation (Line(points={{114,86},{114,84},{83,84}}, color={0,0,127}));
+      connect(add3_1.y, switch1.u3) annotation (Line(points={{51,54},{54,54},{
+              54,76},{60,76}}, color={0,0,127}));
+      connect(add3_1.u1, ammonium.molarflowrate)
+        annotation (Line(points={{28,60},{2.42,60}}, color={0,0,127}));
+      connect(titratableAcid.TA, add3_1.u2) annotation (Line(points={{3.685,
+              -56.62},{28,-56.62},{28,48}}, color={0,0,127}));
       annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
                 -100},{160,100}})),Icon(coordinateSystem(extent={{-100,-100},{
                 160,100}}),graphics={    Text(
@@ -21692,7 +21712,7 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-22,10},{-42,30}})));
       AcidBaseBalance.Tissues.limitO2Metabolism limitO2Metabolism(
           metabolismFlowRate=modelSettings.metabolismO2FlowRate)
-        annotation (Placement(transformation(extent={{66,40},{86,60}})));
+        annotation (Placement(transformation(extent={{68,40},{88,60}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a O2 annotation (Placement(
             transformation(rotation=0, extent={{-110,50},{-90,70}}),
             iconTransformation(extent={{-110,50},{-90,70}})));
@@ -21729,10 +21749,10 @@ Ventilation"),
       end if;
 
       connect(limitO2Metabolism.CO2FlowRate,CO2_MetabolicProduction. soluteFlow)
-        annotation (Line(points={{86,40},{90,40},{90,24},{56,24}},        color=
+        annotation (Line(points={{88,40},{90,40},{90,24},{56,24}},        color=
              {0,0,127}));
       connect(O2_MetabolicConsumption.soluteFlow,limitO2Metabolism. O2FlowRate)
-        annotation (Line(points={{64,84},{86,84},{86,60}},                color=
+        annotation (Line(points={{64,84},{88,84},{88,60}},                color=
              {0,0,127}));
       connect(diffusion.q_out,O2_MetabolicConsumption. q_in) annotation (Line(
           points={{-22,80},{50,80}},
@@ -21773,10 +21793,10 @@ Ventilation"),
           color={107,45,134},
           thickness=1));
       connect(limitO2Metabolism.lactateFlowRate, CO2_MetabolicProduction2.soluteFlow)
-        annotation (Line(points={{86,50},{94,50},{94,-40},{34,-40},{34,-24}},
+        annotation (Line(points={{88,50},{94,50},{94,-40},{34,-40},{34,-24}},
             color={0,0,127}));
       connect(limitO2Metabolism.lactateFlowRate, CO2_MetabolicProduction1.soluteFlow)
-        annotation (Line(points={{86,50},{94,50},{94,-40},{26,-40},{26,-56}},
+        annotation (Line(points={{88,50},{94,50},{94,-40},{26,-40},{26,-56}},
             color={0,0,127}));
       connect(limitO2Metabolism.pO2, pressure.y)
         annotation (Line(points={{68,50},{51,50}}, color={0,0,127}));
@@ -22849,8 +22869,8 @@ Ventilation"),
       Physiolibrary.Chemical.Components.Substance HCO3(useNormalizedVolume=false,
           Simulation=Physiolibrary.Types.SimulationType.NoInit)
         annotation (Placement(transformation(extent={{64,-16},{84,4}})));
-      Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
-          Simulation=Physiolibrary.Types.SimulationType.NoInit)
+      Physiolibrary.Chemical.Components.Substance dO2(useNormalizedVolume=false,
+          Simulation=Physiolibrary.Types.SimulationType.NoInit) "dissolved O2"
         annotation (Placement(transformation(extent={{64,70},{84,90}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump6(
           useSoluteFlowInput=true)
@@ -22944,7 +22964,7 @@ Ventilation"),
        HCO3.state = iSF_initialization.isf_HCO3_solute;
        ions.state = iSF_initialization.isf_solutes;
        CO2.state = iSF_initialization.isf_tCO2_solute;
-       O2.state = plasma_dO2.concentration*modelSettings.ISFvolume_start;
+      dO2.state = plasma_dO2.concentration*modelSettings.ISFvolume_start;
     equation
     //    when initial() then
     //      reinit(HCO3.state,iSF_initialization.HCO3InitialConcentration*10);
@@ -22958,7 +22978,7 @@ Ventilation"),
           points={{112,36},{74,36}},
           color={107,45,134},
           thickness=1));
-      connect(concentrationMeasure2.q_in,O2. q_out) annotation (Line(
+      connect(concentrationMeasure2.q_in, dO2.q_out) annotation (Line(
           points={{52,80},{74,80}},
           color={107,45,134},
           thickness=1));
@@ -22966,7 +22986,7 @@ Ventilation"),
           points={{42,20},{74,20},{74,36}},
           color={107,45,134},
           thickness=1));
-      connect(unlimitedSolutePump6.q_out,O2. q_out) annotation (Line(
+      connect(unlimitedSolutePump6.q_out, dO2.q_out) annotation (Line(
           points={{44,80},{74,80}},
           color={107,45,134},
           thickness=1));
@@ -22984,7 +23004,7 @@ Ventilation"),
       connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePump7. soluteFlow)
         annotation (Line(points={{-38,8.4},{-38,14},{30,14},{30,16.8},{37.2,
               16.8}},        color={0,0,127}));
-      connect(gain.y, O2.solutionVolume) annotation (Line(points={{125.6,96},{
+      connect(gain.y, dO2.solutionVolume) annotation (Line(points={{125.6,96},{
               70,96},{70,84}}, color={0,0,127}));
       connect(gain.y, CO2.solutionVolume) annotation (Line(points={{125.6,96},{
               70,96},{70,40}}, color={0,0,127}));
@@ -33997,7 +34017,8 @@ Ventilation"),
 
         model CompleteModel
           extends SimplestCircWithGas(modelSettings(UseMetabolicUABalance=true,
-                UseRespiratoryCompensation=true));
+                UseRespiratoryCompensation=true,
+              fixedMetabolismCompensation=true));
           Kidney.AmmoniumExcretion ammoniumExcretion1 if modelSettings.UseMetabolicUABalance
             annotation (Placement(transformation(extent={{-86,0},{-60,20}})));
           Tissues.ISF iSF annotation (Placement(transformation(
@@ -34043,13 +34064,6 @@ Ventilation"),
         end CompleteModel;
 
         package AcidbaseDisorders
-          model MetabolicAcidosisAcute
-            extends CompleteModel(modelSettings(makeUAstep=true,
-              breakTime(displayUnit="d") = 86400,
-              breakLength(displayUnit="d") = 172800,
-                UAstepRatio=5));
-          end MetabolicAcidosisAcute;
-
           model MetabolicAlkalosis
             extends CompleteModel;
             Ions.vomiting vomiting(totalHCO3Amount=0.1)
@@ -34070,12 +34084,29 @@ Ventilation"),
                 Tolerance=1e-05));
           end MetabolicAlkalosis;
 
+          model MetabolicAcidosisAcute
+            extends CompleteModel(modelSettings(makeUAstep=true,
+              breakTime(displayUnit="d") = 86400,
+              breakLength(displayUnit="d") = 172800,
+                UAstepRatio=5));
+          end MetabolicAcidosisAcute;
+
           model MetabolicAcidosisChronic
             extends CompleteModel(modelSettings(makeUAstep=true,
               breakTime(displayUnit="d") = 864000,
               breakLength(displayUnit="d") = 86400000,
               UAstepRatio=1.8));
           end MetabolicAcidosisChronic;
+
+          model RespiratoryAcidosis
+            extends CompleteModel(modelSettings(UseStepCO2Fraction=true,
+              breakTime=7*24*60*60,
+                UseRespiratoryCompensation=true));
+          end RespiratoryAcidosis;
+
+          model RespiratoryAlkalosis
+            extends CompleteModel(modelSettings(FiO2=0.1));
+          end RespiratoryAlkalosis;
         end AcidbaseDisorders;
       end validation;
 
