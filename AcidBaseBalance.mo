@@ -33883,13 +33883,6 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         end CompleteModel;
 
         package AcidbaseDisorders
-          model MetabolicAcidosisAcute
-            extends CompleteModel(modelSettings(makeUAstep=true,
-              breakTime(displayUnit="d") = 86400,
-              breakLength(displayUnit="d") = 172800,
-                UAstepRatio=5));
-          end MetabolicAcidosisAcute;
-
           model MetabolicAlkalosis
             extends CompleteModel;
             Ions.vomiting vomiting(totalHCO3Amount=0.1)
@@ -33901,14 +33894,21 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
                 thickness=1));
             connect(veins.port_ions, vomiting.port_a) annotation (Line(
                 points={{-19.8,20},{-20,20},{-20,0},{-34,0},{-34,-38},{-60,-38}},
-
                 color={107,45,134},
                 thickness=1));
+
             annotation (experiment(
                 StopTime=5000000,
                 __Dymola_NumberOfIntervals=5000,
                 Tolerance=1e-05));
           end MetabolicAlkalosis;
+
+          model MetabolicAcidosisAcute
+            extends CompleteModel(modelSettings(makeUAstep=true,
+              breakTime(displayUnit="d") = 86400,
+              breakLength(displayUnit="d") = 172800,
+                UAstepRatio=5));
+          end MetabolicAcidosisAcute;
 
           model MetabolicAcidosisChronic
             extends CompleteModel(modelSettings(makeUAstep=true,
@@ -33916,6 +33916,12 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               breakLength(displayUnit="d") = 86400000,
               UAstepRatio=1.8));
           end MetabolicAcidosisChronic;
+
+          model RespiratoryAcidosis
+            extends CompleteModel(modelSettings(UseStepCO2Fraction=true,
+              breakTime=7*24*60*60,
+              UseRespiratoryCompensation=false));
+          end RespiratoryAcidosis;
         end AcidbaseDisorders;
       end validation;
 
