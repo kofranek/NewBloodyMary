@@ -1354,6 +1354,8 @@ BEox"),       Text(
       end AlvEq;
 
       model O2CO2
+        Real HCO3act = 0.0307*(pCO2/133.32)*10^(pH-6.105) "HCO3 act acc to Berend, N ENGL J MED 2018";
+        Real SBE = HCO3act - 24.8 + 16.2*(pH-7.4);
         Physiolibrary.Types.RealIO.FractionOutput sO2 annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin={4,8}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,58})));
         Physiolibrary.Types.RealIO.ConcentrationOutput cHCO3(displayUnit = "mmol/l")
           "outgoing concentration of HCO3"                                                                            annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin={5,116}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,78})));
@@ -33920,8 +33922,12 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           model RespiratoryAcidosis
             extends CompleteModel(modelSettings(UseStepCO2Fraction=true,
               breakTime=7*24*60*60,
-              UseRespiratoryCompensation=false));
+                UseRespiratoryCompensation=true));
           end RespiratoryAcidosis;
+
+          model RespiratoryAlkalosis
+            extends CompleteModel(modelSettings(FiO2=0.1));
+          end RespiratoryAlkalosis;
         end AcidbaseDisorders;
       end validation;
 
