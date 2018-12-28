@@ -1354,13 +1354,11 @@ BEox"),       Text(
       end AlvEq;
 
       model O2CO2
-        Real HCO3act = 0.0307*(pCO2/133.32)*10^(pH-6.105) "HCO3 act acc to Berend, N ENGL J MED 2018";
-        Real SBE = HCO3act - 24.8 + 16.2*(pH-7.4);
         Physiolibrary.Types.RealIO.FractionOutput sO2 annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin={4,8}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,58})));
         Physiolibrary.Types.RealIO.ConcentrationOutput cHCO3(displayUnit = "mmol/l")
           "outgoing concentration of HCO3"                                                                            annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin={5,116}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,78})));
-        Physiolibrary.Types.RealIO.ConcentrationInput BEox annotation(Placement(transformation(extent={{-122,
-                  -28},{-106,-12}}),                                                                                               iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={-186,110})));
+        Physiolibrary.Types.RealIO.ConcentrationInput BEox annotation(Placement(transformation(extent={{-160,
+                  -40},{-120,0}}),                                                                                                 iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={-186,110})));
         Physiolibrary.Types.RealIO.pHOutput pH(start = 7.4) annotation(Placement(transformation(extent={{-7,-7},
                   {7,7}},                                                                                                    rotation = 0, origin={1,-41}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,98})));
         Physiolibrary.Types.RealIO.ConcentrationOutput cdO2 annotation(Placement(transformation(extent={{-6,6},{
@@ -1375,26 +1373,28 @@ BEox"),       Text(
         Physiolibrary.Types.RealIO.ConcentrationOutput ceHb
           "effiective concentration of hemoglobin (mmol/l)"                                                   annotation(Placement(transformation(extent = {{-6, 6}, {6, -6}}, rotation = 0, origin = {-58, 0}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,20})));
         Physiolibrary.Types.RealIO.ConcentrationInput ctO2 annotation (Placement(
-              transformation(extent={{-160,146},{-120,186}}), iconTransformation(
+              transformation(extent={{-160,150},{-120,190}}), iconTransformation(
                 extent={{-196,140},{-176,160}})));
         Physiolibrary.Types.RealIO.PressureOutput pO2( start = 13300) annotation (Placement(
               transformation(extent={{-30,162},{-10,182}}), iconTransformation(extent={{56,132},
                   {76,152}})));
         Physiolibrary.Types.RealIO.ConcentrationInput ctCO2 annotation (Placement(
-              transformation(extent={{-154,182},{-114,222}}), iconTransformation(
+              transformation(extent={{-160,190},{-120,230}}), iconTransformation(
                 extent={{-196,120},{-176,140}})));
         Physiolibrary.Types.RealIO.PressureOutput pCO2( start = 5333) annotation (Placement(
               transformation(extent={{-26,194},{-6,214}}), iconTransformation(extent={{56,112},
                   {76,132}})));
-        Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints annotation(Placement(transformation(extent={{-76,192},
-                  {-36,216}})));
-        Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints1 annotation(Placement(transformation(extent={{-76,160},
-                  {-36,184}})));
+        Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints annotation(Placement(transformation(extent={{-80,200},
+                  {-40,220}})));
+        Modelica.Blocks.Math.InverseBlockConstraints inverseBlockConstraints1 annotation(Placement(transformation(extent={{-82,160},
+                  {-40,180}})));
       equation
         connect(vanSlykeEquation.BEox, BEox) annotation(Line(points={{-84.8182,
-                -22},{-98,-22},{-98,-20},{-114,-20}},                                             color = {0, 0, 127}));
+                -22},{-98,-22},{-98,-20},{-140,-20}},                                             color = {0, 0, 127}));
         connect(bloodctO2content.pH, bloodctCO2content.pH) annotation(Line(points={{-83,
-                56.6},{-120,56.6},{-120,128},{-83,128}},                                                                                               color = {0, 0, 127}));
+                56.6},{-120,56.6},{-120,128},{-83,128}},                                                                                               color={238,46,
+                47},
+            thickness=0.5));
         connect(bloodctCO2content.cHCO3, cHCO3) annotation(Line(points={{-17,116},
                 {5,116}},                                                                       color = {0, 0, 127}));
         connect(bloodctO2content.ceHb, ceHb) annotation(Line(points={{-68,11},{-68,0},
@@ -1407,15 +1407,16 @@ BEox"),       Text(
           annotation (Line(points={{-32,11},{-32,8},{4,8}}, color={0,0,127}));
         connect(vanSlykeEquation.pH, bloodctCO2content.pH) annotation (Line(points={{
                 -23.3818,-40.6},{-12,-40.6},{-12,-8},{-120,-8},{-120,128},{-83,
-                128}},                                                       color={0,
-                0,127}));
-        connect(ctCO2, inverseBlockConstraints.u1) annotation (Line(points={{-134,202},
-                {-106,202},{-106,204},{-78,204}}, color={0,0,127}));
+                128}},                                                       color={238,46,
+                47},
+            thickness=0.5));
+        connect(ctCO2, inverseBlockConstraints.u1) annotation (Line(points={{-140,
+                210},{-82,210}},                  color={0,0,127}));
         connect(bloodctCO2content.ctCO2, inverseBlockConstraints.u2) annotation (Line(
-              points={{-17,128},{-6,128},{-6,190},{-60,190},{-60,204},{-72,204}},
+              points={{-17,128},{-6,128},{-6,190},{-60,190},{-60,210},{-76,210}},
               color={0,0,127}));
-        connect(inverseBlockConstraints1.u1, ctO2) annotation (Line(points={{-78,172},
-                {-102,172},{-102,166},{-140,166}}, color={0,0,127}));
+        connect(inverseBlockConstraints1.u1, ctO2) annotation (Line(points={{-84.1,
+                170},{-140,170}},                  color={0,0,127}));
         connect(bloodctCO2content.sO2, sO2) annotation (Line(points={{-83,92},{-90,92},
                 {-90,78},{-12,78},{-12,8},{4,8}}, color={0,0,127}));
         connect(vanSlykeEquation.sO2, sO2) annotation (Line(points={{-84.8182,
@@ -1423,27 +1424,36 @@ BEox"),       Text(
                 {4,8}},                                                    color={0,0,
                 127}));
         connect(bloodctO2content.totalO2, inverseBlockConstraints1.u2) annotation (
-            Line(points={{-44,11},{-44,0},{24,0},{24,156},{-60,156},{-60,172},{
-                -72,172}},
+            Line(points={{-44,11},{-44,0},{24,0},{24,156},{-60,156},{-60,170},{
+                -77.8,170}},
                        color={0,0,127}));
         connect(inverseBlockConstraints.y1, pCO2)
-          annotation (Line(points={{-35,204},{-16,204}}, color={0,0,127}));
+          annotation (Line(points={{-39,210},{-28,210},{-28,204},{-16,204}},
+                                                         color={0,0,127}));
         connect(inverseBlockConstraints.y2, vanSlykeEquation.pCO2) annotation (Line(
-              points={{-39,204},{-50,204},{-50,236},{-162,236},{-162,-34},{
+              points={{-43,210},{-50,210},{-50,236},{-162,236},{-162,-34},{
                 -84.8182,-34}},
-              color={0,0,127}));
+              color={0,0,127},
+            thickness=0.5));
         connect(bloodctO2content.pCO2, vanSlykeEquation.pCO2) annotation (Line(points={{-83,44},
-                {-162,44},{-162,-34},{-84.8182,-34}},       color={0,0,127}));
+                {-162,44},{-162,-34},{-84.8182,-34}},       color={0,0,127},
+            thickness=0.5));
         connect(bloodctCO2content.pCO2, vanSlykeEquation.pCO2) annotation (Line(
               points={{-83,140},{-162,140},{-162,-34},{-84.8182,-34}},
-                                                                    color={0,0,127}));
+                                                                    color={0,0,127},
+
+            thickness=0.5));
         connect(inverseBlockConstraints1.y1, pO2)
-          annotation (Line(points={{-35,172},{-20,172}}, color={0,0,127}));
+          annotation (Line(points={{-38.95,170},{-28,170},{-28,172},{-20,172}},
+                                                         color={0,0,127}));
         connect(inverseBlockConstraints1.y2, bloodctO2content.pO2) annotation (Line(
-              points={{-39,172},{-48,172},{-48,188},{-154,188},{-154,68},{-83,68}},
+              points={{-43.15,170},{-48,170},{-48,188},{-154,188},{-154,68},{
+                -83,68}},
               color={0,0,127}));
         connect(vanSlykeEquation.pH, pH) annotation (Line(points={{-23.3818,
-                -40.6},{-10.76,-40.6},{-10.76,-41},{1,-41}}, color={0,0,127}));
+                -40.6},{-10.76,-40.6},{-10.76,-41},{1,-41}}, color={238,46,47},
+
+            thickness=0.5));
         annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent={{-180,
                   -100},{60,240}}),                                                                         graphics={  Rectangle(extent={{
                     -180,196},{56,-58}},                                                                                                                               lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
@@ -6095,6 +6105,25 @@ algorithm
                                        color={0,0,127}));
         connect(o2CO2.pH, pH) annotation (Line(points={{39.9,2.23529},{69.95,
                 2.23529},{69.95,6},{106,6}}, color={0,0,127}));
+        annotation (Icon(graphics={
+              Rectangle(
+                extent={{-100,-100},{100,100}},
+                lineColor={28,108,200},
+                lineThickness=0.5,
+                fillColor={255,170,213},
+                fillPattern=FillPattern.Solid),
+              Text(
+                extent={{-100,0},{100,80}},
+                lineColor={28,108,200},
+                pattern=LinePattern.Dash,
+                lineThickness=0.5,
+                textString="OSA"),
+              Text(
+                extent={{-100,-100},{100,-20}},
+                lineColor={28,108,200},
+                pattern=LinePattern.Dash,
+                lineThickness=0.5,
+                textString="acid-base")}));
       end BloodABB_OSA;
 
       model pCO22of_eq_debug
@@ -11149,8 +11178,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Package.Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
         alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
         annotation (Placement(transformation(extent={{-28,88},{6,116}})));
-      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
-        annotation (Placement(transformation(extent={{146,-10},{166,10}})));
+        Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+          annotation (Placement(transformation(extent={{146,-10},{166,10}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
               "ml/min") = 8.19588e-5)
         annotation (Placement(transformation(extent={{133,-38},{141,-32}})));
@@ -11297,8 +11326,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Package.Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
         alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
         annotation (Placement(transformation(extent={{-28,88},{6,116}})));
-      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
-        annotation (Placement(transformation(extent={{146,-10},{166,10}})));
+        Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+          annotation (Placement(transformation(extent={{146,-10},{166,10}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
               "ml/min") = 8.19588e-5)
         annotation (Placement(transformation(extent={{133,-38},{141,-32}})));
@@ -11457,8 +11486,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Package.Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
         alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
         annotation (Placement(transformation(extent={{-28,88},{6,116}})));
-      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
-        annotation (Placement(transformation(extent={{146,-10},{166,10}})));
+        Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+          annotation (Placement(transformation(extent={{146,-10},{166,10}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
               "ml/min") = 8.19588e-5)
         annotation (Placement(transformation(extent={{129,-32},{137,-26}})));
@@ -11660,8 +11689,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Package.Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
         alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
         annotation (Placement(transformation(extent={{-28,88},{6,116}})));
-      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
-        annotation (Placement(transformation(extent={{146,-10},{166,10}})));
+        Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+          annotation (Placement(transformation(extent={{146,-10},{166,10}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
               "ml/min") = 8.19588e-5)
         annotation (Placement(transformation(extent={{129,-32},{137,-26}})));
@@ -12209,6 +12238,18 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
 
       sum(totalCharges) + isf_HCO3*(-1) = totalCharge;
 
+      annotation (Icon(graphics={Rectangle(
+              extent={{-100,-100},{100,100}},
+              lineColor={28,108,200},
+              lineThickness=0.5,
+              fillColor={170,255,170},
+              fillPattern=FillPattern.Solid), Text(
+              extent={{-100,-80},{100,80}},
+              lineColor={28,108,200},
+              pattern=LinePattern.Dash,
+              lineThickness=0.5,
+              textString="ISF
+initialization")}));
     end ISF_initialization;
 
     model IonCharges
@@ -12300,16 +12341,19 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
        HCO3.q + port_b[end].q = 0;
 
       annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+            Rectangle(extent={{-100,100},{100,-100}}, lineColor={28,108,200},
+              fillColor={255,255,170},
+              fillPattern=FillPattern.Solid),
             Text(
-              extent={{-100,20},{0,80}},
+              extent={{-100,0},{20,60}},
               lineColor={28,108,200},
-              textString="Conc"),
+              horizontalAlignment=TextAlignment.Left,
+              textString="mmol/l"),
             Text(
-              extent={{0,-80},{100,-20}},
+              extent={{-38,-60},{100,0}},
               lineColor={28,108,200},
-              textString="|meq/l|",
-              horizontalAlignment=TextAlignment.Right),
-            Rectangle(extent={{-100,100},{100,-100}}, lineColor={28,108,200}),
+              horizontalAlignment=TextAlignment.Right,
+              textString="meq/l"),
             Line(
               points={{-80,0},{80,0}},
               color={102,44,145},
@@ -13108,29 +13152,64 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
                                                 annotation (Icon(
             coordinateSystem(preserveAspectRatio=false), graphics={
             Text(
-              extent={{-4,40},{92,0}},
+              extent={{-80,40},{80,0}},
               lineColor={107,45,134},
               fillColor={255,0,0},
               fillPattern=FillPattern.Solid,
-              textString="O2"),
+              textString="O2",
+              horizontalAlignment=TextAlignment.Right),
             Text(
-              extent={{-20,0},{76,-40}},
+              extent={{-80,0},{80,-40}},
               lineColor={107,45,134},
               fillColor={255,0,0},
               fillPattern=FillPattern.Solid,
-              textString="CO2"),
+              textString="CO2",
+              horizontalAlignment=TextAlignment.Right),
             Text(
-              extent={{-24,-38},{72,-78}},
+              extent={{-80,-40},{80,-78}},
               lineColor={107,45,134},
               fillColor={255,0,0},
               fillPattern=FillPattern.Solid,
-              textString="BEox"),
+              textString="BEox",
+              horizontalAlignment=TextAlignment.Right),
             Text(
               extent={{-58,126},{66,58}},
               lineColor={107,45,134},
               fillColor={255,0,0},
               fillPattern=FillPattern.Solid,
-              textString="bloodFlow")}), Diagram(coordinateSystem(
+              textString="bloodFlow"),
+            Text(
+              extent={{-80,-80},{80,-120}},
+              lineColor={107,45,134},
+              fillColor={255,0,0},
+              fillPattern=FillPattern.Solid,
+              textString="Ions []",
+              horizontalAlignment=TextAlignment.Right),
+            Line(
+              points={{-80,0},{-60,0},{-60,20},{-20,20}},
+              color={0,0,127},
+              thickness=0.5,
+              smooth=Smooth.Bezier),
+            Line(
+              points={{-80,0},{-60,0},{-60,-20},{-20,-20}},
+              color={0,0,127},
+              thickness=0.5,
+              smooth=Smooth.Bezier),
+            Line(
+              points={{-80,0},{-60,0},{-60,-60},{-20,-60}},
+              color={0,0,127},
+              thickness=0.5,
+              smooth=Smooth.Bezier),
+            Line(
+              points={{-80,0},{-60,0},{-60,-100},{-20,-100}},
+              color={0,0,127},
+              thickness=0.5,
+              smooth=Smooth.Bezier),
+            Line(
+              points={{-80,0},{-60,0},{-60,40},{-20,60}},
+              color={0,0,127},
+              thickness=0.5,
+              smooth=Smooth.Bezier)}),   Diagram(coordinateSystem(
               preserveAspectRatio=false)),
                   Diagram(coordinateSystem(extent={{-100,-120},{100,100}})),
           Icon(coordinateSystem(extent={{-100,-120},{100,100}})));
@@ -13178,79 +13257,67 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       BEox.q + actualStream(bloodPort_out.conc[3])*bloodPort_out.bloodFlow = 0;
 
         bloodFlow.pressure=bloodPort_out.pressure;
-      bloodFlow.q + bloodPort_out.bloodFlow = 0 annotation (Icon(
-            coordinateSystem(preserveAspectRatio=false), graphics={
+      bloodFlow.q + bloodPort_out.bloodFlow = 0;
+      annotation (Icon(graphics={
             Text(
-              extent={{-62,34},{-18,-10}},
+              extent={{-80,40},{80,0}},
               lineColor={107,45,134},
               fillColor={255,0,0},
               fillPattern=FillPattern.Solid,
+              horizontalAlignment=TextAlignment.Left,
               textString="O2"),
             Text(
-              extent={{-80,-8},{16,-48}},
+              extent={{-80,0},{80,-40}},
               lineColor={107,45,134},
               fillColor={255,0,0},
               fillPattern=FillPattern.Solid,
+              horizontalAlignment=TextAlignment.Left,
               textString="CO2"),
             Text(
-              extent={{-72,-44},{24,-84}},
+              extent={{-80,-40},{80,-78}},
               lineColor={107,45,134},
               fillColor={255,0,0},
               fillPattern=FillPattern.Solid,
+              horizontalAlignment=TextAlignment.Left,
               textString="BEox"),
             Text(
-              extent={{-58,134},{66,66}},
+              extent={{80,-80},{-80,-120}},
               lineColor={107,45,134},
               fillColor={255,0,0},
               fillPattern=FillPattern.Solid,
-              textString="bloodFlow")}), Diagram(coordinateSystem(
-              preserveAspectRatio=false)));
-
-      annotation (Icon(coordinateSystem(extent={{-100,-120},{100,100}}),
-            graphics={
+              horizontalAlignment=TextAlignment.Left,
+              textString="Ions []"),
+            Line(
+              points={{80,0},{60,0},{60,20},{20,20}},
+              color={0,0,127},
+              thickness=0.5,
+              smooth=Smooth.Bezier),
+            Line(
+              points={{80,0},{60,0},{60,-20},{20,-20}},
+              color={0,0,127},
+              thickness=0.5,
+              smooth=Smooth.Bezier),
+            Line(
+              points={{80,0},{60,0},{60,-60},{20,-60}},
+              color={0,0,127},
+              thickness=0.5,
+              smooth=Smooth.Bezier),
+            Line(
+              points={{80,0},{60,0},{60,-100},{20,-100}},
+              color={0,0,127},
+              thickness=0.5,
+              smooth=Smooth.Bezier),
             Text(
-              extent={{-34,-82},{62,-122}},
+              extent={{-80,120},{100,60}},
               lineColor={107,45,134},
               fillColor={255,0,0},
               fillPattern=FillPattern.Solid,
-              textString="BEox"),
-            Text(
-              extent={{-48,-94},{48,-134}},
-              lineColor={107,45,134},
-              fillColor={255,0,0},
-              fillPattern=FillPattern.Solid,
-              textString="BEox"),
-            Text(
-              extent={{-50,-92},{46,-132}},
-              lineColor={107,45,134},
-              fillColor={255,0,0},
-              fillPattern=FillPattern.Solid,
-              textString="BEox"),
-            Text(
-              extent={{-52,-56},{44,-96}},
-              lineColor={107,45,134},
-              fillColor={255,0,0},
-              fillPattern=FillPattern.Solid,
-              textString="CO2"),
-            Text(
-              extent={{-24,-58},{72,-98}},
-              lineColor={107,45,134},
-              fillColor={255,0,0},
-              fillPattern=FillPattern.Solid,
-              textString="BEox"),
-            Text(
-              extent={{-24,-58},{72,-98}},
-              lineColor={107,45,134},
-              fillColor={255,0,0},
-              fillPattern=FillPattern.Solid,
-              textString="BEox"),
-            Text(
-              extent={{-64,-148},{36,-110}},
-              lineColor={0,0,127},
-              pattern=LinePattern.Dash,
-              lineThickness=0.5,
-              textString="IONS []")}), Diagram(coordinateSystem(extent={{-100,
-                -120},{100,100}})));
+              textString="bloodFlow"),
+            Line(
+              points={{80,0},{60,0},{60,40},{20,60}},
+              color={0,0,127},
+              thickness=0.5,
+              smooth=Smooth.Bezier)}));
     end BloodPort_out_Extension;
 
   type IonsDummy = enumeration(
@@ -13317,7 +13384,6 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       // Metabolism
       parameter Physiolibrary.Types.MolarFlowRate metabolismO2FlowRate = 0.00018333333333333 annotation(Dialog(tab = "Metabolism"));
       parameter Boolean UseMetabolicUABalance = true annotation(Dialog(tab = "Metabolism"));
-      parameter Boolean fixedMetabolismCompensation = false annotation(Dialog(tab = "Metabolism"));
       parameter Physiolibrary.Types.MolarFlowRate metabolismUAFlowRate_norm = 6.944444e-7 annotation(Dialog(tab = "Metabolism", enable = UseMetabolicUABalance));
 
 
@@ -13454,8 +13520,7 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Physiolibrary.Blocks.Factors.Spline ChloridePoolEffect(data = {{0.00, 0.0, 0}, {80, 1.0, 0.0}})
         "electroneutrality does not allow to extract cation without anion"                                                                                               annotation(Placement(transformation(extent={{-28,-10},
                 {-8,10}})));
-      Physiolibrary.Types.RealIO.MolarFlowRateOutput molarflowrate annotation(Placement(transformation(extent = {{0, -32}, {20, -12}}), iconTransformation(extent={{92,-10},
-                {112,10}})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput molarflowrate annotation(Placement(transformation(extent = {{0, -32}, {20, -12}}), iconTransformation(extent = {{92, 4}, {112, 24}})));
       Physiolibrary.Types.RealIO.pHInput             pH            annotation(Placement(transformation(extent={{-74,70},
                 {-54,90}}),                                                                                                             iconTransformation(extent={{-100,90},
                 {-80,110}})));
@@ -13803,10 +13868,6 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
             iconTransformation(extent={{-108,-70},{-80,-42}})));
       Modelica.Blocks.Math.Add3 add3_1(k3=-1)
         annotation (Placement(transformation(extent={{-8,8},{12,28}})));
-      Modelica.Blocks.Logical.Switch switch1
-        annotation (Placement(transformation(extent={{50,-28},{70,-8}})));
-      Modelica.Blocks.Sources.BooleanExpression booleanExpression
-        annotation (Placement(transformation(extent={{-14,-28},{6,-8}})));
     equation
       connect(HCO3excretion, add3_1.u3) annotation (Line(points={{-94,-26},{-62,
               -26},{-62,-20},{-62,10},{-58,10},{-10,10}}, color={0,0,127}));
@@ -13816,10 +13877,6 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
               {-10,26}}, color={0,0,127}));
       connect(add3_1.y, TotalFlowRate) annotation (Line(points={{13,18},{56,18},
               {56,8},{106,8}}, color={0,0,127}));
-      connect(booleanExpression.y, switch1.u2)
-        annotation (Line(points={{7,-18},{48,-18}}, color={255,0,255}));
-      connect(add3_1.y, switch1.u1) annotation (Line(points={{13,18},{30,18},{
-              30,-10},{48,-10}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
                 -100,-100},{100,100}}), graphics={Rectangle(
               extent={{-100,100},{100,-100}},
@@ -13969,8 +14026,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
 
     model AmmoniumExcretion
     //  extends Physiolibrary.Icons.Kidney;
-      Ammonium ammonium annotation(Placement(transformation(extent={{-40,40},{2,
-                80}})));
+      Ammonium ammonium annotation(Placement(transformation(extent={{-32,30},{
+                12,70}})));
       Physiolibrary.Types.Constants.ConcentrationConst Chloride(k = 100) annotation(Placement(transformation(extent={{-98,24},
                 {-82,42}})));
       TitratableAcid titratableAcid(HalfTime = 8280) annotation(Placement(transformation(extent = {{-50, -68}, {-8, -30}}, origin={12.105,
@@ -13982,13 +14039,15 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Physiolibrary.Types.Constants.ConcentrationConst Phosphate(k = 1.1) "1.1" annotation(Placement(transformation(extent={{102,-20},
                 {86,-2}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst GFR(k(displayUnit = "l/min") = 1.6666666666667e-06) annotation(Placement(transformation(extent = {{-8, -7}, {8, 7}}, rotation = 180, origin={106,-40}),   visible = true));
-      Physiolibrary.Types.Constants.MolarFlowRateConst normalUA(k=modelSettings.metabolismUAFlowRate_norm)
-        annotation (Placement(transformation(extent={{22,88},{30,96}})));
+      Physiolibrary.Types.Constants.MolarFlowRateConst HCO3excretion(k=0)
+        annotation (Placement(transformation(extent={{48,46},{56,54}})));
+      TotalAcidExcretion totalAcidExcretion
+        annotation (Placement(transformation(extent={{64,46},{84,66}})));
       pHUrine_New pHUrine_New1
         annotation (Placement(transformation(extent={{64,-82},{96,-46}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump pump_hco3(
           useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{100,100},{120,80}})));
+        annotation (Placement(transformation(extent={{122,90},{142,70}})));
       Physiolibrary.Types.RealIO.pHInput pH annotation (Placement(
             transformation(extent={{-110,-46},{-90,-26}}),iconTransformation(
               extent={{-100,70},{-80,90}})));
@@ -14005,32 +14064,31 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure
         annotation (Placement(transformation(extent={{-54,48},{-34,68}})));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
-        annotation (Placement(transformation(extent={{62,22},{82,42}})));
+        annotation (Placement(transformation(extent={{60,14},{80,34}})));
       AnionExcrection anionExcrection annotation (Placement(transformation(
-              rotation=0, extent={{100,12},{120,32}})));
+              rotation=0, extent={{100,40},{120,60}})));
       Physiolibrary.Types.RealIO.ConcentrationInput HCO3 annotation (Placement(
-            transformation(extent={{-114,66},{-94,86}}), iconTransformation(
+            transformation(extent={{-114,70},{-94,90}}), iconTransformation(
               extent={{-100,50},{-80,70}})));
         Interfaces.IonSelector ionSelector1(selectedIon=AcidBaseBalance.Ions.IonsEnum.Cl)
           annotation (Placement(transformation(extent={{146,-8},{132,8}})));
         Interfaces.IonSelector ionSelector(selectedIon=AcidBaseBalance.Ions.IonsEnum.Ua)
-          annotation (Placement(transformation(extent={{146,24},{132,40}})));
+          annotation (Placement(transformation(extent={{146,52},{132,68}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a ions[AcidBaseBalance.Ions.IonsEnum]
         annotation (Placement(transformation(extent={{150,22},{170,42}}),
             iconTransformation(extent={{150,-110},{170,-90}})));
-      Modelica.Blocks.Math.Add  add3_1
-        annotation (Placement(transformation(extent={{30,44},{50,64}})));
-      Modelica.Blocks.Logical.Switch switch1
-        annotation (Placement(transformation(extent={{62,74},{82,94}})));
-      Modelica.Blocks.Sources.BooleanExpression booleanExpression(y=
-            modelSettings.fixedMetabolismCompensation)
-        annotation (Placement(transformation(extent={{-16,74},{6,94}})));
-      outer Interfaces.ModelSettings modelSettings
-        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
     equation
       connect(titratableAcid.fald, fAld.y) annotation(Line(visible = true, origin={-35.55,
               -77.585},                                                                                points={{-2.135,
               12.415},{-3.207,12.415},{-3.207,13.585},{-11.45,13.585}},                                                                                                color = {0, 0, 127}));
+      connect(totalAcidExcretion.HCO3excretion, HCO3excretion.y) annotation (
+          Line(points={{64.6,50.4},{62,50.4},{62,50},{57,50}}, color={0,0,127}));
+      connect(totalAcidExcretion.NH4, ammonium.molarflowrate) annotation (
+          Line(points={{64.4,56.8},{64,56.8},{64,56},{34,56},{34,52.8},{12.44,
+              52.8}}, color={0,0,127}));
+      connect(totalAcidExcretion.TA, titratableAcid.TA) annotation (Line(
+            points={{64.2,62.4},{22,62.4},{22,-56.62},{3.685,-56.62}},
+                              color={0,0,127}));
       connect(pHUrine_New1.GlomerularFiltration, GFR.y) annotation (Line(
             points={{90.24,-49.24},{90.24,-40},{96,-40}},
             color={0,0,127}));
@@ -14038,32 +14096,37 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
             points={{80.32,-49.24},{80.32,-18},{80,-18},{80,-11},{84,-11}},
             color={0,0,127}));
       connect(titratableAcid.TA, pHUrine_New1.TA) annotation (Line(points={{3.685,
-              -56.62},{66,-56.62},{66,-56.8},{66.88,-56.8}},
+              -56.62},{22,-56.62},{22,-56.8},{66.88,-56.8}},
                        color={0,0,127}));
       connect(pHUrine_New1.NH4exretion, ammonium.molarflowrate) annotation (
-          Line(points={{66.24,-77.32},{16,-77.32},{16,60},{2.42,60}},
+          Line(points={{66.24,-77.32},{34,-77.32},{34,52.8},{12.44,52.8}},
                                    color={0,0,127}));
       connect(pHUrine_New1.pHu, titratableAcid.pHu) annotation (Line(points={{96,
               -61.84},{96,-62},{102,-62},{102,-90},{-64,-90},{-64,-55.48},{
               -37.055,-55.48}},          color={0,0,127}));
       connect(pH, titratableAcid.pHa) annotation (Line(points={{-100,-36},{-66,
               -36},{-66,-44.84},{-37.055,-44.84}}, color={0,0,127}));
-      connect(pHUrine_New1.pHa, pH) annotation (Line(points={{66.88,-68.68},{10,
-              -68.68},{10,-36},{-100,-36}},          color={0,0,127}));
+      connect(pHUrine_New1.pHa, pH) annotation (Line(points={{66.88,-68.68},{28,
+              -68.68},{28,-36},{-100,-36}},          color={0,0,127}));
       connect(pH, ammonium.pH) annotation (Line(points={{-100,-36},{-66,-36},{
-              -66,80},{-37.9,80}}, color={0,0,127}));
+              -66,70},{-29.8,70}}, color={0,0,127}));
       connect(pump_hco3.q_out, hco3_outflow) annotation (Line(
-          points={{120,90},{150,90},{150,80},{158,80}},
+          points={{142,80},{158,80}},
           color={107,45,134},
           thickness=1));
+      connect(totalAcidExcretion.TotalFlowRate, pump_hco3.soluteFlow)
+        annotation (Line(points={{84.6,56.8},{92,56.8},{92,76},{136,76}}, color=
+             {0,0,127}));
       connect(ammonium.Cl, concentrationMeasure.concentration)
-        annotation (Line(points={{-36.64,60},{-36,60},{-36,50},{-44,50}},
-                                                       color={0,0,127}));
+        annotation (Line(points={{-28.48,50},{-44,50}},color={0,0,127}));
       connect(concentrationMeasure1.concentration, pHUrine_New1.OrgAnionsConc)
-        annotation (Line(points={{72,24},{72,-48.88},{70.4,-48.88}},
+        annotation (Line(points={{70,16},{70,-48.88},{70.4,-48.88}},
                                                                  color={0,0,127}));
-      connect(ammonium.HCO3, HCO3) annotation (Line(points={{-37.9,72},{-74,72},
-              {-74,76},{-104,76}}, color={0,0,127}));
+      connect(totalAcidExcretion.TotalFlowRate, anionExcrection.HCO3molarflowrate)
+        annotation (Line(points={{84.6,56.8},{91.3,56.8},{91.3,50},{101.5,50}},
+            color={0,0,127}));
+      connect(ammonium.HCO3, HCO3) annotation (Line(points={{-29.8,62},{-74,62},
+              {-74,80},{-104,80}}, color={0,0,127}));
       connect(ions, ionSelector1.port_a) annotation (Line(
           points={{160,32},{152,32},{152,0},{146,0}},
           color={107,45,134},
@@ -14073,15 +14136,15 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
           color={107,45,134},
           thickness=1));
       connect(ionSelector.port_a, ions) annotation (Line(
-          points={{146,32},{160,32}},
+          points={{146,60},{152,60},{152,32},{160,32}},
           color={107,45,134},
           thickness=1));
       connect(anionExcrection.UA, ionSelector.port_b) annotation (Line(
-          points={{120,32},{132,32}},
+          points={{120,60},{132,60}},
           color={107,45,134},
           thickness=1));
       connect(concentrationMeasure1.q_in, ionSelector.port_b) annotation (Line(
-          points={{72,32},{132,32}},
+          points={{70,24},{70,60},{132,60}},
           color={107,45,134},
           thickness=1));
       connect(ionSelector1.port_b, concentrationMeasure.q_in) annotation (Line(
@@ -14089,23 +14152,9 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
           color={107,45,134},
           thickness=1));
       connect(ionSelector1.port_b, anionExcrection.Cl) annotation (Line(
-          points={{132,0},{120,0},{120,12}},
+          points={{132,0},{120,0},{120,40}},
           color={107,45,134},
           thickness=1));
-      connect(booleanExpression.y, switch1.u2)
-        annotation (Line(points={{7.1,84},{60,84}}, color={255,0,255}));
-      connect(normalUA.y, switch1.u1)
-        annotation (Line(points={{31,92},{60,92}}, color={0,0,127}));
-      connect(switch1.y, anionExcrection.HCO3molarflowrate) annotation (Line(
-            points={{83,84},{90,84},{90,22},{101.5,22}}, color={0,0,127}));
-      connect(pump_hco3.soluteFlow, switch1.y)
-        annotation (Line(points={{114,86},{114,84},{83,84}}, color={0,0,127}));
-      connect(add3_1.y, switch1.u3) annotation (Line(points={{51,54},{54,54},{
-              54,76},{60,76}}, color={0,0,127}));
-      connect(add3_1.u1, ammonium.molarflowrate)
-        annotation (Line(points={{28,60},{2.42,60}}, color={0,0,127}));
-      connect(titratableAcid.TA, add3_1.u2) annotation (Line(points={{3.685,
-              -56.62},{28,-56.62},{28,48}}, color={0,0,127}));
       annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
                 -100},{160,100}})),Icon(coordinateSystem(extent={{-100,-100},{
                 160,100}}),graphics={    Text(
@@ -17373,56 +17422,6 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
               textString="pO2")}));
     end ComputationpO2pCO2;
 
-    model limitO2Metabolism
-      Physiolibrary.Types.RealIO.PressureInput pO2(start=6000)
-        "Tissue partial pressure of O2" annotation(Placement(transformation(extent={{-100,-20},{-60,20}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation=0,     origin={-80,0})));
-      Physiolibrary.Types.RealIO.MolarFlowRateOutput O2FlowRate annotation (Placement(
-            transformation(extent={{80,80},{120,120}}), iconTransformation(
-            extent={{-20,-20},{20,20}},
-            rotation=0,
-            origin={100,100})));
-      Physiolibrary.Types.RealIO.MolarFlowRateOutput CO2FlowRate annotation (Placement(
-            transformation(extent={{80,-20},{120,20}}),  iconTransformation(
-            extent={{-20,-20},{20,20}},
-            rotation=0,
-            origin={100,-100})));
-
-      parameter Physiolibrary.Types.Pressure criticalPoint = 100;
-      parameter Physiolibrary.Types.Fraction respiratoryQuotient = 0.85;
-      parameter Physiolibrary.Types.MolarFlowRate metabolismFlowRate = 0.00018333333333333;
-    //  Physiolibrary.Types.MolarFlowRate metabolismFlowRate;// = ramp.y;
-      parameter Boolean limiterEnabled = true;
-      Real FirstOrderFlowRate = pO2*metabolismFlowRate/100;
-    //   Modelica.Blocks.Sources.Ramp ramp(
-    //     duration=100000,
-    //     startTime=60*100,
-    //     height=0.00020,
-    //     offset=0.00002)
-    //     annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
-      Physiolibrary.Types.RealIO.MolarFlowRateOutput lactateFlowRate annotation (
-          Placement(transformation(extent={{80,-120},{120,-80}}),
-            iconTransformation(
-            extent={{-20,-20},{20,20}},
-            rotation=0,
-            origin={100,0})));
-    equation
-    //metabolismFlowRate = ramp.y;
-
-      if limiterEnabled and (FirstOrderFlowRate < metabolismFlowRate) then
-        O2FlowRate = FirstOrderFlowRate;
-        lactateFlowRate = metabolismFlowRate - FirstOrderFlowRate;
-      else
-        O2FlowRate = metabolismFlowRate;
-        lactateFlowRate = 0;
-      end if;
-
-
-    //  O2FlowRate = FirstOrderFlowRate > metabolismFlowRate + min(0, (criticalPoint-pO2)*limitedMetabolismSlope) else metabolismFlowRate;
-      CO2FlowRate = O2FlowRate*respiratoryQuotient;
-       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
-            coordinateSystem(preserveAspectRatio=false)));
-    end limitO2Metabolism;
-
     partial model BloodOnePort
       Interfaces.BloodPort_in_Extension bloodPort_in_Extension
         annotation (Placement(transformation(extent={{-70,-10},{-50,10}})));
@@ -17509,88 +17508,6 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
           color={28,108,200},
           thickness=0.5));
     end BloodOnePort;
-
-    block AlveolarVentilation
-      parameter Boolean respiratoryCompensationEnabled = true;
-
-      Real PCOA = Pa2mmHg * pCO2a  "mmHg CO2 tension in alveoli"
-                                                                annotation (Placement(transformation(extent={{-120,
-                -50},{-80,-10}}),     iconTransformation(extent={{-122,48},{-100,
-                70}})));
-      Real PO2A = Pa2mmHg * pO2a "mmHg O2 tension in alveoli" annotation (Placement(transformation(extent={{-120,
-                -10},{-80,30}}),      iconTransformation(extent={{-122,24},{-100,
-                46}})));
-      Real VI0 = m3ps2lpm *VA0  "Normal value of ventilation"
-                                        annotation (Placement(transformation(extent={{-120,
-                -90},{-80,-50}}),     iconTransformation(extent={{-122,0},{-100,
-                22}})));
-      Real VI_ss = VR*VI0 "Ventilation"            annotation (Placement(transformation(extent={{60,-50},
-                {100,-10}}),        iconTransformation(extent={{100,16},{128,44}})));
-      Real VI(start = 8.19588e-5*m3ps2lpm);
-      Real VR annotation (Placement(transformation(extent={{60,-10},
-                {100,30}}),         iconTransformation(extent={{100,64},{128,92}})));
-
-      Real k1,k2,k3,k4,k5,k6;
-      Real H;
-
-      // 1 l/min =1000/60 m3/s
-      // 1 pascal = 0.00750061683 mmHg
-      constant Real m3ps2lpm = 1000*60;
-      constant Real Pa2mmHg = 1/133.32 "1 pascal = 0.00750061683 mmHg";
-      Physiolibrary.Types.RealIO.PressureInput pCO2a annotation (Placement(
-            transformation(extent={{-48,-14},{-8,26}}), iconTransformation(extent={{-120,18},
-                {-80,58}})));
-      Physiolibrary.Types.RealIO.pHInput pHa annotation (Placement(transformation(
-              extent={{-50,40},{-10,80}}), iconTransformation(extent={{-120,-32},{-80,
-                8}})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateOutput VA = VI/m3ps2lpm annotation (Placement(
-            transformation(extent={{10,16},{30,36}}), iconTransformation(extent={{100,
-                20},{120,40}})));
-      Physiolibrary.Types.RealIO.PressureInput pO2a annotation (Placement(
-            transformation(extent={{4,48},{44,88}}), iconTransformation(extent={{-120,60},
-                {-80,100}})));
-      Physiolibrary.Types.RealIO.FractionOutput VRA( start=1) annotation (Placement(
-            transformation(extent={{-20,-68},{0,-48}}), iconTransformation(extent={{
-                100,-48},{120,-28}})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateInput VA0 annotation (Placement(
-            transformation(extent={{-74,-100},{-34,-60}}), iconTransformation(
-              extent={{-120,-84},{-80,-44}})));
-      Real VRD "VR delayed";
-      parameter Real VRD_T = 1;
-      parameter Real corr = -0.07 "ikeda correction";
-    equation
-      k1 = if pHa <= 7.4 then 0.22 else 0.0258;
-    //   k6 = if pHa <= 7.4 then -12.734 else -5.003;
-      k6 = if pHa <= 7.4 then -12.734 else -5.003;
-      k3 = 0.58;
-      k4 = 3.496;
-      k2 = if PCOA > 40 then 1 else 0.0396;
-      k5 = if PCOA > 40 then -32.08 else 160.11;
-
-      H = 10 ^ (9 - pHa);
-      VR = k1 * H + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5) + k6 + corr;
-      // simplified case
-      // VRD = VR;
-      der(VRD) = (VR - VRD)/VRD_T "Time delay in alveolar ventilation control";
-      VI= if respiratoryCompensationEnabled then VRD*VI0 else VI0;
-      //der(VI) = (VR * VI0 - VI) / 2;
-      VRA=VRD;
-      assert(VI >= 0, "Alveolar ventilation out of bounds! Original LIMIT VR >= 0; ");
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-                -100},{100,100}}),
-                       graphics={            Bitmap(extent={{-78,-60},{82,100}},
-                fileName="modelica://Physiolibrary/Resources/Icons/respiracniCentrum.png"),
-            Text(
-              extent={{-160,-60},{158,-100}},
-              lineColor={0,0,255},
-              lineThickness=0.5,
-              textString="Alveolar Ventilation"),
-            Rectangle(
-              extent={{-100,100},{100,-100}},
-              lineColor={0,0,255},
-              lineThickness=0.5)}), Diagram(coordinateSystem(preserveAspectRatio=false,
-              extent={{-100,-100},{100,100}})));
-    end AlveolarVentilation;
 
 
     model AlveolocapillaryUnit_by_integration
@@ -18414,11 +18331,12 @@ annotation (Placement(transformation(extent={{16,-70},{22,-64}})));
                 -100},{100,100}}), graphics={Rectangle(
               extent={{-100,100},{100,-100}},
               lineColor={0,0,255},
-              fillColor={215,215,215},
+              fillColor={255,170,213},
               fillPattern=FillPattern.Solid), Text(
-              extent={{-96,-40},{98,-68}},
+              extent={{-100,80},{100,-80}},
               lineColor={0,0,255},
-              textString="%name")}),        Documentation(revisions="<html>
+              textString="plasma 
+acid-base")}),                              Documentation(revisions="<html>
 
 <table cellspacing=\"2\" cellpadding=\"0\" border=\"0\"><tr>
 <td><p>Author:</p></td>
@@ -20593,7 +20511,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             extent={{-20,-20},{20,20}},
             rotation=0,
             origin={-100,-74}), iconTransformation(
-            extent={{-20,-20},{20,20}},
+            extent={{-10,-10},{10,10}},
             rotation=0,
             origin={-100,-80})));
       Physiolibrary.Types.RealIO.ConcentrationInput cvCO2
@@ -20602,7 +20520,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             extent={{-20,-20},{20,20}},
             rotation=0,
             origin={-100,-40}), iconTransformation(
-            extent={{-20,-20},{20,20}},
+            extent={{-10,-10},{10,10}},
             rotation=0,
             origin={-100,-40})));
     equation
@@ -20687,6 +20605,88 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               textString="2")}), Diagram(coordinateSystem(preserveAspectRatio=
                 false)));
     end LungsTwoCompartments;
+
+    block AlveolarVentilation
+      parameter Boolean respiratoryCompensationEnabled = true;
+
+      Real PCOA = Pa2mmHg * pCO2a  "mmHg CO2 tension in alveoli"
+                                                                annotation (Placement(transformation(extent={{-120,
+                -50},{-80,-10}}),     iconTransformation(extent={{-122,48},{-100,
+                70}})));
+      Real PO2A = Pa2mmHg * pO2a "mmHg O2 tension in alveoli" annotation (Placement(transformation(extent={{-120,
+                -10},{-80,30}}),      iconTransformation(extent={{-122,24},{-100,
+                46}})));
+      Real VI0 = m3ps2lpm *VA0  "Normal value of ventilation"
+                                        annotation (Placement(transformation(extent={{-120,
+                -90},{-80,-50}}),     iconTransformation(extent={{-122,0},{-100,
+                22}})));
+      Real VI_ss = VR*VI0 "Ventilation"            annotation (Placement(transformation(extent={{60,-50},
+                {100,-10}}),        iconTransformation(extent={{100,16},{128,44}})));
+      Real VI(start = 8.19588e-5*m3ps2lpm);
+      Physiolibrary.Types.Fraction VR;
+      Physiolibrary.Types.Fraction VRA( start=1);
+
+      Real k1,k2,k3,k4,k5,k6;
+      Real H;
+
+      // 1 l/min =1000/60 m3/s
+      // 1 pascal = 0.00750061683 mmHg
+      constant Real m3ps2lpm = 1000*60;
+      constant Real Pa2mmHg = 1/133.32 "1 pascal = 0.00750061683 mmHg";
+      Physiolibrary.Types.RealIO.PressureInput pCO2a annotation (Placement(
+            transformation(extent={{-48,-14},{-8,26}}), iconTransformation(extent={{-120,18},
+                {-80,58}})));
+      Physiolibrary.Types.RealIO.pHInput pHa annotation (Placement(transformation(
+              extent={{-50,40},{-10,80}}), iconTransformation(extent={{-120,-32},{-80,
+                8}})));
+      Physiolibrary.Types.RealIO.VolumeFlowRateOutput VA = VI/m3ps2lpm annotation (Placement(
+            transformation(extent={{10,16},{30,36}}), iconTransformation(extent={{100,
+                20},{120,40}})));
+      Physiolibrary.Types.RealIO.PressureInput pO2a annotation (Placement(
+            transformation(extent={{4,48},{44,88}}), iconTransformation(extent={{-120,60},
+                {-80,100}})));
+
+      Physiolibrary.Types.RealIO.VolumeFlowRateInput VA0 annotation (Placement(
+            transformation(extent={{-74,-100},{-34,-60}}), iconTransformation(
+              extent={{-120,-84},{-80,-44}})));
+      Real VRD "VR delayed";
+      parameter Real VRD_T = 1;
+      parameter Real corr = -0.07 "ikeda correction";
+    equation
+      k1 = if pHa <= 7.4 then 0.22 else 0.0258;
+    //   k6 = if pHa <= 7.4 then -12.734 else -5.003;
+      k6 = if pHa <= 7.4 then -12.734 else -5.003;
+      k3 = 0.58;
+      k4 = 3.496;
+      k2 = if PCOA > 40 then 1 else 0.0396;
+      k5 = if PCOA > 40 then -32.08 else 160.11;
+
+      H = 10 ^ (9 - pHa);
+      VR = k1 * H + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5) + k6 + corr;
+      // simplified case
+      // VRD = VR;
+      der(VRD) = (VR - VRD)/VRD_T "Time delay in alveolar ventilation control";
+      VI= if respiratoryCompensationEnabled then VRD*VI0 else VI0;
+      //der(VI) = (VR * VI0 - VI) / 2;
+      VRA=VRD;
+      assert(VI >= 0, "Alveolar ventilation out of bounds! Original LIMIT VR >= 0; ");
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                -100},{100,100}}),
+                       graphics={            Bitmap(extent={{-80,-20},{82,100}},
+                fileName="modelica://Physiolibrary/Resources/Icons/respiracniCentrum.png"),
+            Text(
+              extent={{-100,-20},{100,-100}},
+              lineColor={0,0,255},
+              lineThickness=0.5,
+              textString="Alveolar
+Ventilation"),
+            Rectangle(
+              extent={{-100,100},{100,-100}},
+              lineColor={0,0,255},
+              pattern=LinePattern.Dash)}),
+                                    Diagram(coordinateSystem(preserveAspectRatio=false,
+              extent={{-100,-100},{100,100}})));
+    end AlveolarVentilation;
   end Respiratory;
 
   package Tissues
@@ -20751,7 +20751,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       equation
         connect(substanceHCO3.q_out, ammoniumExcretion.hco3_outflow)
           annotation (Line(
-            points={{22,40},{22,24},{-7.10543e-15,24}},
+            points={{22,40},{22,-6},{-7.10543e-15,-6}},
             color={107,45,134},
             thickness=1));
         connect(tissuesOrganicAcidProduction1.HCO3, substanceHCO3.q_out)
@@ -20791,11 +20791,26 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         connect(temperature2.y, tissueHCO3_2.T) annotation (Line(points={{57.5,
                 90},{57.5,98},{19,98}}, color={0,0,127}));
         connect(tissueHCO3_2.pH, ammoniumExcretion.pH) annotation (Line(points={{1,98},{
-                0,98},{0,106},{-78.8462,106},{-78.8462,24}},
+                0,98},{0,106},{-78.8462,106},{-78.8462,19}},
                                color={0,0,127}));
         annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
               coordinateSystem(preserveAspectRatio=false)));
       end testTissuesAndKidneys;
+
+      model HypoxemiaMetabolism
+        limitO2Metabolism limitO2Metabolism1
+          annotation (Placement(transformation(extent={{-52,2},{-32,22}})));
+        Modelica.Blocks.Sources.Ramp ramp(
+          height=10000,
+          duration=1,
+          offset=1)
+          annotation (Placement(transformation(extent={{-96,2},{-76,22}})));
+      equation
+        connect(ramp.y, limitO2Metabolism1.pO2)
+          annotation (Line(points={{-75,12},{-50,12}}, color={0,0,127}));
+        annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+              coordinateSystem(preserveAspectRatio=false)));
+      end HypoxemiaMetabolism;
     end Tests;
 
     model TissuesOld
@@ -20898,7 +20913,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{334,-70},{350,-84}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{328,-46},{348,-32}})));
-      AcidBaseBalance.Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+      AcidBaseBalance.Tissues.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
           metabolismFlowRate=0.00019166666666667)
         annotation (Placement(transformation(extent={{356,-50},{376,-30}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISFO2(
@@ -21354,19 +21369,19 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           elementary_charges=modelSettings.IonElemChrgs,
         isf_volume=modelSettings.ISFvolume_start,
         isf_dCO2=1.5)
-        annotation (Placement(transformation(extent={{-20,-40},{0,-20}})));
+        annotation (Placement(transformation(extent={{-20,-38},{0,-18}})));
       Physiolibrary.Osmotic.Components.OsmoticCell osmoticCell(
           useImpermeableSolutesInput=true, volume_start=modelSettings.ISFvolume_start)
         annotation (Placement(transformation(extent={{140,-130},{160,-110}})));
       Physiolibrary.Osmotic.Sources.UnlimitedSolution unlimitedSolution(
           useOsmolarityInput=true) if modelSettings.useOsmoticFlow
-        annotation (Placement(transformation(extent={{0,-130},{20,-110}})));
+        annotation (Placement(transformation(extent={{-14,-130},{6,-110}})));
       Physiolibrary.Osmotic.Sensors.FlowMeasure flowMeasure if modelSettings.useOsmoticFlow
-        annotation (Placement(transformation(extent={{30,-130},{50,-110}})));
+        annotation (Placement(transformation(extent={{16,-130},{36,-110}})));
       Physiolibrary.Osmotic.Components.Membrane membrane(HydraulicPressureIn(
             displayUnit="Pa") = 1670, cond(displayUnit="m3/(Pa.s)") = 1e6) if
                                                             modelSettings.useOsmoticFlow
-        annotation (Placement(transformation(extent={{62,-130},{82,-110}})));
+        annotation (Placement(transformation(extent={{44,-130},{64,-110}})));
       Modelica.Blocks.Math.Sum sum1(nin=size(ions_plasma, 1))
         annotation (Placement(transformation(extent={{84,-78},{92,-70}})));
       Modelica.Blocks.Math.MultiSum multiSum(nu=3)
@@ -21423,11 +21438,11 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
       connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePump5. soluteFlow)
-        annotation (Line(points={{-32,8.4},{-32,14},{37.2,14},{37.2,1.2}},
+        annotation (Line(points={{-38,8.4},{-38,14},{37.2,14},{37.2,1.2}},
             color={0,0,127}));
       connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePump7. soluteFlow)
-        annotation (Line(points={{-32,8.4},{-32,14},{30,14},{30,16.8},{37.2,16.8}},
-                             color={0,0,127}));
+        annotation (Line(points={{-38,8.4},{-38,14},{30,14},{30,16.8},{37.2,
+              16.8}},        color={0,0,127}));
       connect(gain.y, O2.solutionVolume) annotation (Line(points={{149.6,96},{
               68,96},{68,84}}, color={0,0,127}));
       connect(gain.y, CO2.solutionVolume) annotation (Line(points={{149.6,96},{
@@ -21435,10 +21450,10 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       connect(gain.y, HCO3.solutionVolume)
         annotation (Line(points={{149.6,96},{68,96},{68,4}}, color={0,0,127}));
       connect(molarFlowMeasure2.molarFlowRate,unlimitedSolutePump4. soluteFlow)
-        annotation (Line(points={{-32,34.4},{-32,39.2},{37.2,39.2}},   color={0,
+        annotation (Line(points={{-38,34.4},{-38,39.2},{37.2,39.2}},   color={0,
               0,127}));
       connect(molarFlowMeasure1.molarFlowRate,unlimitedSolutePump6. soluteFlow)
-        annotation (Line(points={{-32,50.4},{38,50.4},{38,76}},     color={0,0,
+        annotation (Line(points={{-38,50.4},{38,50.4},{38,76}},     color={0,0,
               127}));
       connect(ISF_O2.concentration, concentrationMeasure2.concentration)
         annotation (Line(points={{14,44},{96,44},{96,73.6}},      color={0,0,127}));
@@ -21455,11 +21470,11 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       connect(concentrationMeasure.concentration, ISF_HCO3.concentration)
         annotation (Line(points={{98,4.8},{98,2},{14,2}},            color={0,0,127}));
       connect(ISF_CO2.q_out, iSFMembraneCO2.q_in) annotation (Line(
-          points={{2,28},{0,28}},
+          points={{2,28},{-6,28}},
           color={107,45,134},
           thickness=1));
       connect(ISF_O2.q_out, iSFMembraneO2.q_in) annotation (Line(
-          points={{2,44},{0,44}},
+          points={{2,44},{-6,44}},
           color={107,45,134},
           thickness=1));
       connect(O2.q_out, tO2_ISF) annotation (Line(
@@ -21479,7 +21494,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
       connect(plasma_ionChargeCorrection.port_a, ions_plasma) annotation (Line(
-          points={{-42,-60},{-92,-60},{-92,-100},{-140,-100}},
+          points={{-42,-60},{-84,-60},{-84,-100},{-140,-100}},
           color={107,45,134},
           thickness=1));
       connect(oneToMany.y, ions.solutionVolume)
@@ -21487,8 +21502,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       connect(oneToMany.u, O2.solutionVolume)
         annotation (Line(points={{68,-40},{68,84}},     color={0,0,127}));
       connect(plasma_ionChargeCorrection.pH, bloodABB_OSA.pH) annotation (Line(
-            points={{-42,-56},{-54,-56},{-54,-34},{-112,-34}},
-                                                             color={0,0,127}));
+            points={{-42,-56},{-54,-56},{-54,-34},{-92,-34}},color={0,0,127}));
       connect(plasma_ionChargeCorrection.port_b, membraneVariableCharges.particlesInside)
         annotation (Line(
           points={{-22,-60},{-18,-60}},
@@ -21501,7 +21515,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           thickness=1));
       connect(plasma_ionChargeCorrection.HCO3, molarFlowMeasure.q_out) annotation (
           Line(
-          points={{-42,-50},{-48,-50},{-48,-40},{-24,-40},{-24,2}},
+          points={{-42,-50},{-48,-50},{-48,-40},{-30,-40},{-30,2}},
           color={107,45,134},
           thickness=1));
       connect(isf_ionChargeCorrection.HCO3, ISF_HCO3.q_out) annotation (Line(
@@ -21513,22 +21527,22 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
       connect(iSF_initialization.HCO3, molarFlowMeasure.q_out) annotation (Line(
-          points={{-20,-20},{-24,-20},{-24,2}},
+          points={{-20,-18},{-30,-18},{-30,2}},
           color={107,45,134},
           thickness=1));
 
       connect(iSF_initialization.plasma_conc, ions_plasma) annotation (Line(
-          points={{-20,-30},{-92,-30},{-92,-100},{-140,-100}},
+          points={{-20,-28},{-84,-28},{-84,-100},{-140,-100}},
           color={107,45,134},
           thickness=1));
-      connect(bloodABB_OSA.pH, isf_ionChargeCorrection.pH) annotation (Line(points={{-112,
-              -34},{42,-34},{42,-56},{30,-56}},             color={0,0,127}));
+      connect(bloodABB_OSA.pH, isf_ionChargeCorrection.pH) annotation (Line(points={{-92,-34},
+              {42,-34},{42,-56},{30,-56}},                  color={0,0,127}));
       connect(membrane.q_out, osmoticCell.q_in[1]) annotation (Line(
-          points={{82,-120},{150,-120}},
+          points={{64,-120},{150,-120}},
           color={127,127,0},
           thickness=1));
       connect(plasma_ionChargeCorrection.osmolarity, unlimitedSolution.osmolarity)
-        annotation (Line(points={{-22,-70},{-24,-70},{-24,-120},{0,-120}},
+        annotation (Line(points={{-22,-70},{-22,-120},{-14,-120}},
             color={0,0,127}));
       connect(ions.solute, sum1.u) annotation (Line(points={{78,-70},{78,-74},{
               83.2,-74}}, color={0,0,127}));
@@ -21539,11 +21553,11 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       connect(multiSum.y, osmoticCell.impermeableSolutes[1]) annotation (Line(
             points={{127.02,-78},{142,-78},{142,-114}}, color={0,0,127}));
       connect(unlimitedSolution.port, flowMeasure.q_in) annotation (Line(
-          points={{20,-120},{30,-120}},
+          points={{6,-120},{16,-120}},
           color={127,127,0},
           thickness=1));
       connect(membrane.q_in, flowMeasure.q_out) annotation (Line(
-          points={{62,-120},{50,-120}},
+          points={{44,-120},{36,-120}},
           color={127,127,0},
           thickness=1));
       connect(osmoticCell.volume, gain.u) annotation (Line(points={{156,-130},{
@@ -21553,7 +21567,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={0,0,0},
           thickness=1));
       connect(unlimitedOutflowPump.solutionFlow, flowMeasure.volumeFlowRate)
-        annotation (Line(points={{-90,-127},{-90,-136},{40,-136},{40,-128}},
+        annotation (Line(points={{-90,-127},{-90,-136},{26,-136},{26,-128}},
             color={0,0,127}));
       connect(HCO3.solutionVolume, ImpermeantSolutes.solutionVolume)
         annotation (Line(points={{68,4},{68,-88}}, color={0,0,127}));
@@ -21585,7 +21599,25 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               lineThickness=1,
               fillColor={240,233,6},
               fillPattern=FillPattern.Solid,
-              textString="Initialization via initial equations")}),         Icon(
+              textString="Initialization via initial equations"),
+            Text(
+              extent={{76,-118},{118,-108}},
+              lineColor={244,125,35},
+              pattern=LinePattern.Dash,
+              lineThickness=1,
+              textString="Conditional"),
+            Rectangle(
+              extent={{-72,-106},{122,-138}},
+              lineColor={244,125,35},
+              lineThickness=1,
+              pattern=LinePattern.Dash),
+            Text(
+              extent={{32,-138},{120,-128}},
+              lineColor={244,125,35},
+              pattern=LinePattern.Dash,
+              lineThickness=1,
+              textString="useOsmoticFlow",
+              horizontalAlignment=TextAlignment.Right)}),                   Icon(
             coordinateSystem(extent={{-140,-140},{160,100}}), graphics={
             Rectangle(
               extent={{80,100},{160,-100}},
@@ -21628,16 +21660,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Physiolibrary.Chemical.Components.Diffusion diffusion1(Conductance=
             modelSettings.CO2DiffusionPermeability)
         annotation (Placement(transformation(extent={{-22,10},{-42,30}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure TissueO2Concentration
-        annotation (Placement(transformation(extent={{10,70},{30,90}})));
-      Physiolibrary.Chemical.Sensors.ConcentrationMeasure
-        TissueCO2Concentration
-        annotation (Placement(transformation(extent={{10,30},{30,10}})));
-      Package.ComputationpO2pCO2 computationpO2pCO2_1
-        annotation (Placement(transformation(extent={{30,40},{52,60}})));
-      Package.limitO2Metabolism limitO2Metabolism(metabolismFlowRate=
-            modelSettings.metabolismO2FlowRate)
-        annotation (Placement(transformation(extent={{68,40},{88,60}})));
+      AcidBaseBalance.Tissues.limitO2Metabolism limitO2Metabolism(
+          metabolismFlowRate=modelSettings.metabolismO2FlowRate)
+        annotation (Placement(transformation(extent={{66,40},{86,60}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a O2 annotation (Placement(
             transformation(rotation=0, extent={{-110,50},{-90,70}}),
             iconTransformation(extent={{-110,50},{-90,70}})));
@@ -21665,36 +21690,20 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         CO2_MetabolicProduction2(useSoluteFlowInput=true, SoluteFlow=
             0.00016666666666667) if useMetabolicUaProduction
         annotation (Placement(transformation(extent={{20,-10},{40,-30}})));
+      Physiolibrary.Types.Constants.PressureConst pressure(k(displayUnit="Pa")
+           = 6000)
+        annotation (Placement(transformation(extent={{42,46},{50,54}})));
     equation
       if not useMetabolicUaProduction then
         HCO3.q = 0;
       end if;
 
-      connect(O2_MetabolicConsumption.q_in,TissueO2Concentration. q_in)
-        annotation (Line(
-          points={{50,80},{20,80}},
-          color={107,45,134},
-          thickness=1));
-      connect(TissueCO2Concentration.q_in,CO2_MetabolicProduction. q_out)
-        annotation (Line(
-          points={{20,20},{50,20}},
-          color={107,45,134},
-          thickness=1));
-      connect(TissueO2Concentration.concentration,computationpO2pCO2_1. ctO2)
-        annotation (Line(points={{20,72},{20,58},{32,58}},
-            color={0,0,127}));
-      connect(computationpO2pCO2_1.ctCO2,TissueCO2Concentration. concentration)
-        annotation (Line(points={{32,40},{20.5,40},{20.5,28},{20,28}},
-                           color={0,0,127}));
       connect(limitO2Metabolism.CO2FlowRate,CO2_MetabolicProduction. soluteFlow)
-        annotation (Line(points={{88,40},{90,40},{90,24},{56,24}},        color=
+        annotation (Line(points={{86,40},{90,40},{90,24},{56,24}},        color=
              {0,0,127}));
       connect(O2_MetabolicConsumption.soluteFlow,limitO2Metabolism. O2FlowRate)
-        annotation (Line(points={{64,84},{88,84},{88,60}},                color=
+        annotation (Line(points={{64,84},{86,84},{86,60}},                color=
              {0,0,127}));
-      connect(computationpO2pCO2_1.pO2,limitO2Metabolism. pO2) annotation (Line(
-            points={{50,50},{70,50}},
-            color={0,0,127}));
       connect(diffusion.q_out,O2_MetabolicConsumption. q_in) annotation (Line(
           points={{-22,80},{50,80}},
           color={107,45,134},
@@ -21734,19 +21743,13 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
       connect(limitO2Metabolism.lactateFlowRate, CO2_MetabolicProduction2.soluteFlow)
-        annotation (Line(points={{88,50},{94,50},{94,-40},{34,-40},{34,-24}},
+        annotation (Line(points={{86,50},{94,50},{94,-40},{34,-40},{34,-24}},
             color={0,0,127}));
       connect(limitO2Metabolism.lactateFlowRate, CO2_MetabolicProduction1.soluteFlow)
-        annotation (Line(points={{88,50},{94,50},{94,-40},{26,-40},{26,-56}},
+        annotation (Line(points={{86,50},{94,50},{94,-40},{26,-40},{26,-56}},
             color={0,0,127}));
-      connect(diffusion1.q_in, TissueCO2Concentration.q_in) annotation (Line(
-          points={{-22,20},{20,20}},
-          color={107,45,134},
-          thickness=1));
-      connect(diffusion.q_out, TissueO2Concentration.q_in) annotation (Line(
-          points={{-22,80},{20,80}},
-          color={107,45,134},
-          thickness=1));
+      connect(limitO2Metabolism.pO2, pressure.y)
+        annotation (Line(points={{68,50},{51,50}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(extent={{-100,-100},{100,100}}),
             graphics={
             Rectangle(
@@ -22806,19 +22809,19 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{26,28},{42,44}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump5(
           useSoluteFlowInput=true)
-        annotation (Placement(transformation(extent={{26,-10},{42,6}})));
+        annotation (Placement(transformation(extent={{26,-14},{42,2}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage ISF_HCO3(
           useConcentrationInput=true)
         annotation (Placement(transformation(extent={{14,-4},{2,8}})));
       Physiolibrary.Chemical.Components.Substance CO2(useNormalizedVolume=false,
           Simulation=Physiolibrary.Types.SimulationType.NoInit)
-        annotation (Placement(transformation(extent={{62,26},{82,46}})));
+        annotation (Placement(transformation(extent={{64,26},{84,46}})));
       Physiolibrary.Chemical.Components.Substance HCO3(useNormalizedVolume=false,
           Simulation=Physiolibrary.Types.SimulationType.NoInit)
-        annotation (Placement(transformation(extent={{62,-10},{82,10}})));
-      Physiolibrary.Chemical.Components.Substance dO2(useNormalizedVolume=false,
-          Simulation=Physiolibrary.Types.SimulationType.NoInit) "dissolved O2"
-        annotation (Placement(transformation(extent={{62,70},{82,90}})));
+        annotation (Placement(transformation(extent={{64,-16},{84,4}})));
+      Physiolibrary.Chemical.Components.Substance O2(useNormalizedVolume=false,
+          Simulation=Physiolibrary.Types.SimulationType.NoInit)
+        annotation (Placement(transformation(extent={{64,70},{84,90}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump unlimitedSolutePump6(
           useSoluteFlowInput=true)
         annotation (Placement(transformation(extent={{24,90},{44,70}})));
@@ -22829,7 +22832,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(
             extent={{-6,-6},{6,6}},
             rotation=180,
-            origin={98,0})));
+            origin={98,-6})));
       Physiolibrary.Chemical.Sensors.ConcentrationMeasure concentrationMeasure1
         annotation (Placement(transformation(
             extent={{-8,-8},{8,8}},
@@ -22849,7 +22852,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{122,50},{130,58}})));
       Physiolibrary.Chemical.Components.Substance ions[AcidBaseBalance.Ions.IonsEnum](
          each useNormalizedVolume=false, each Simulation=Physiolibrary.Types.SimulationType.NoInit)
-        annotation (Placement(transformation(extent={{62,-70},{82,-50}})));
+        annotation (Placement(transformation(extent={{64,-70},{84,-50}})));
       Physiolibrary.Chemical.Interfaces.ChemicalPort_a ions_plasma[AcidBaseBalance.Ions.IonsEnum]
         annotation (Placement(transformation(rotation=0, extent={{-130,-110},{
                 -110,-90}}), iconTransformation(extent={{-130,-110},{-110,-90}})));
@@ -22870,25 +22873,26 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Interfaces.OneToMany oneToMany annotation (Placement(transformation(
             extent={{-4,-4},{4,4}},
             rotation=270,
-            origin={70,-44})));
+            origin={72,-44})));
 
       Ions.ISF_initialization iSF_initialization(permeabilities=modelSettings.IonPermeabilities,
           elementary_charges=modelSettings.IonElemChrgs,
         isf_volume=modelSettings.ISFvolume_start,
         isf_dCO2=1.5)
-        annotation (Placement(transformation(extent={{-20,-40},{0,-20}})));
+        annotation (Placement(transformation(extent={{-20,-38},{0,-18}})));
       Physiolibrary.Osmotic.Components.OsmoticCell osmoticCell(
           useImpermeableSolutesInput=true, volume_start=modelSettings.ISFvolume_start)
         annotation (Placement(transformation(extent={{120,-130},{140,-110}})));
       Physiolibrary.Osmotic.Sources.UnlimitedSolution unlimitedSolution(
-          useOsmolarityInput=true) if modelSettings.useOsmoticFlow
-        annotation (Placement(transformation(extent={{0,-130},{20,-110}})));
+          useOsmolarityInput=true, Osm=280) if
+                                      modelSettings.useOsmoticFlow
+        annotation (Placement(transformation(extent={{-16,-130},{4,-110}})));
       Physiolibrary.Osmotic.Sensors.FlowMeasure flowMeasure if modelSettings.useOsmoticFlow
-        annotation (Placement(transformation(extent={{30,-130},{50,-110}})));
+        annotation (Placement(transformation(extent={{14,-130},{34,-110}})));
       Physiolibrary.Osmotic.Components.Membrane membrane(HydraulicPressureIn(
             displayUnit="Pa") = 1670, cond(displayUnit="m3/(Pa.s)") = 1e6) if
                                                             modelSettings.useOsmoticFlow
-        annotation (Placement(transformation(extent={{62,-130},{82,-110}})));
+        annotation (Placement(transformation(extent={{46,-130},{66,-110}})));
       Modelica.Blocks.Math.Sum sum1(nin=size(ions_plasma, 1))
         annotation (Placement(transformation(extent={{84,-78},{92,-70}})));
       Modelica.Blocks.Math.MultiSum multiSum(nu=3)
@@ -22905,57 +22909,57 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         useNormalizedVolume=false,
         Simulation=Physiolibrary.Types.SimulationType.NoInit,
         solute_start=0.0095)
-        annotation (Placement(transformation(extent={{62,-102},{82,-82}})));
+        annotation (Placement(transformation(extent={{64,-102},{84,-82}})));
     initial equation
        HCO3.state = iSF_initialization.isf_HCO3_solute;
        ions.state = iSF_initialization.isf_solutes;
        CO2.state = iSF_initialization.isf_tCO2_solute;
-      dO2.state = plasma_dO2.concentration*modelSettings.ISFvolume_start;
+       O2.state = plasma_dO2.concentration*modelSettings.ISFvolume_start;
     equation
     //    when initial() then
     //      reinit(HCO3.state,iSF_initialization.HCO3InitialConcentration*10);
     //    end when;
 
       connect(concentrationMeasure.q_in,HCO3. q_out) annotation (Line(
-          points={{98,0},{92,0},{92,-2},{86,-2},{86,0},{72,0}},
+          points={{98,-6},{74,-6}},
           color={107,45,134},
           thickness=1));
       connect(concentrationMeasure1.q_in,CO2. q_out) annotation (Line(
-          points={{112,36},{72,36}},
+          points={{112,36},{74,36}},
           color={107,45,134},
           thickness=1));
-      connect(concentrationMeasure2.q_in, dO2.q_out) annotation (Line(
-          points={{52,80},{72,80}},
+      connect(concentrationMeasure2.q_in,O2. q_out) annotation (Line(
+          points={{52,80},{74,80}},
           color={107,45,134},
           thickness=1));
       connect(unlimitedSolutePump7.q_out,CO2. q_out) annotation (Line(
-          points={{42,20},{72,20},{72,36}},
+          points={{42,20},{74,20},{74,36}},
           color={107,45,134},
           thickness=1));
-      connect(unlimitedSolutePump6.q_out, dO2.q_out) annotation (Line(
-          points={{44,80},{72,80}},
+      connect(unlimitedSolutePump6.q_out,O2. q_out) annotation (Line(
+          points={{44,80},{74,80}},
           color={107,45,134},
           thickness=1));
       connect(unlimitedSolutePump4.q_out,CO2. q_out) annotation (Line(
-          points={{42,36},{72,36}},
+          points={{42,36},{74,36}},
           color={107,45,134},
           thickness=1));
       connect(unlimitedSolutePump5.q_out,HCO3. q_out) annotation (Line(
-          points={{42,-2},{58,-2},{58,0},{72,0}},
+          points={{42,-6},{74,-6}},
           color={107,45,134},
           thickness=1));
       connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePump5. soluteFlow)
-        annotation (Line(points={{-38,8.4},{-38,14},{37.2,14},{37.2,1.2}},
+        annotation (Line(points={{-38,8.4},{-38,14},{37.2,14},{37.2,-2.8}},
             color={0,0,127}));
       connect(molarFlowMeasure.molarFlowRate,unlimitedSolutePump7. soluteFlow)
         annotation (Line(points={{-38,8.4},{-38,14},{30,14},{30,16.8},{37.2,
               16.8}},        color={0,0,127}));
-      connect(gain.y, dO2.solutionVolume) annotation (Line(points={{125.6,96},{
-              68,96},{68,84}}, color={0,0,127}));
+      connect(gain.y, O2.solutionVolume) annotation (Line(points={{125.6,96},{
+              70,96},{70,84}}, color={0,0,127}));
       connect(gain.y, CO2.solutionVolume) annotation (Line(points={{125.6,96},{
-              68,96},{68,40}}, color={0,0,127}));
+              70,96},{70,40}}, color={0,0,127}));
       connect(gain.y, HCO3.solutionVolume)
-        annotation (Line(points={{125.6,96},{68,96},{68,4}}, color={0,0,127}));
+        annotation (Line(points={{125.6,96},{70,96},{70,-2}},color={0,0,127}));
       connect(molarFlowMeasure2.molarFlowRate,unlimitedSolutePump4. soluteFlow)
         annotation (Line(points={{-38,34.4},{-38,39.2},{37.2,39.2}},   color={0,
               0,127}));
@@ -22968,15 +22972,15 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Line(points={{121,30.2},{112,30.2},{112,29.6}},
             color={0,0,127}));
       connect(concentrationMeasure.concentration,tissueHCO3_2. cHCO3)
-        annotation (Line(points={{98,4.8},{138,4.8},{138,14}},
+        annotation (Line(points={{98,-1.2},{98,2},{138,2},{138,14}},
             color={0,0,127}));
       connect(tissueHCO3_2.T,temperature2. y)
         annotation (Line(points={{139,34},{138,34},{138,54},{131,54}},
                                                          color={0,0,127}));
       connect(ISF_CO2.concentration, tissueHCO3_2.cdCO2_) annotation (Line(points={{14,28},
-              {22,28},{22,25.2},{121,25.2}},                color={0,0,127}));
+              {24,28},{24,25.2},{121,25.2}},                color={0,0,127}));
       connect(concentrationMeasure.concentration, ISF_HCO3.concentration)
-        annotation (Line(points={{98,4.8},{98,2},{14,2}},            color={0,0,127}));
+        annotation (Line(points={{98,-1.2},{98,2},{14,2}},           color={0,0,127}));
       connect(ISF_CO2.q_out, iSFMembraneCO2.q_in) annotation (Line(
           points={{2,28},{-6,28}},
           color={107,45,134},
@@ -22990,9 +22994,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
       connect(oneToMany.y, ions.solutionVolume)
-        annotation (Line(points={{68,-48},{68,-56}},     color={0,0,127}));
-      connect(oneToMany.u, dO2.solutionVolume)
-        annotation (Line(points={{68,-40},{68,84}}, color={0,0,127}));
+        annotation (Line(points={{70,-48},{70,-56}},     color={0,0,127}));
+      connect(oneToMany.u, O2.solutionVolume)
+        annotation (Line(points={{70,-40},{70,84}},     color={0,0,127}));
       connect(plasma_ionChargeCorrection.pH, bloodABB_OSA.pH) annotation (Line(
             points={{-42,-56},{-54,-56},{-54,-34},{-92,-34}},color={0,0,127}));
       connect(plasma_ionChargeCorrection.port_b, membraneVariableCharges.particlesInside)
@@ -23015,41 +23019,41 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
       connect(isf_ionChargeCorrection.port_a, ions.q_out) annotation (Line(
-          points={{30,-60},{72,-60}},
+          points={{30,-60},{74,-60}},
           color={107,45,134},
           thickness=1));
       connect(iSF_initialization.HCO3, molarFlowMeasure.q_out) annotation (Line(
-          points={{-20,-20},{-30,-20},{-30,2}},
+          points={{-20,-18},{-30,-18},{-30,2}},
           color={107,45,134},
           thickness=1));
 
       connect(iSF_initialization.plasma_conc, ions_plasma) annotation (Line(
-          points={{-20,-30},{-72,-30},{-72,-100},{-120,-100}},
+          points={{-20,-28},{-72,-28},{-72,-100},{-120,-100}},
           color={107,45,134},
           thickness=1));
       connect(bloodABB_OSA.pH, isf_ionChargeCorrection.pH) annotation (Line(points={{-92,-34},
               {42,-34},{42,-56},{30,-56}},                  color={0,0,127}));
       connect(membrane.q_out, osmoticCell.q_in[1]) annotation (Line(
-          points={{82,-120},{130,-120}},
+          points={{66,-120},{130,-120}},
           color={127,127,0},
           thickness=1));
       connect(plasma_ionChargeCorrection.osmolarity, unlimitedSolution.osmolarity)
-        annotation (Line(points={{-22,-70},{-24,-70},{-24,-120},{0,-120}},
+        annotation (Line(points={{-22,-70},{-24,-70},{-24,-120},{-16,-120}},
             color={0,0,127}));
-      connect(ions.solute, sum1.u) annotation (Line(points={{78,-70},{78,-74},{
+      connect(ions.solute, sum1.u) annotation (Line(points={{80,-70},{80,-74},{
               83.2,-74}}, color={0,0,127}));
       connect(sum1.y, multiSum.u[1]) annotation (Line(points={{92.4,-74},{104,
               -74},{104,-73.2},{108,-73.2}}, color={0,0,127}));
-      connect(HCO3.solute, multiSum.u[2]) annotation (Line(points={{78,-10},{96,
-              -10},{96,-76},{108,-76}},     color={0,0,127}));
+      connect(HCO3.solute, multiSum.u[2]) annotation (Line(points={{80,-16},{98,
+              -16},{98,-76},{108,-76}},     color={0,0,127}));
       connect(multiSum.y, osmoticCell.impermeableSolutes[1]) annotation (Line(
             points={{121.02,-76},{122,-76},{122,-114}}, color={0,0,127}));
       connect(unlimitedSolution.port, flowMeasure.q_in) annotation (Line(
-          points={{20,-120},{30,-120}},
+          points={{4,-120},{14,-120}},
           color={127,127,0},
           thickness=1));
       connect(membrane.q_in, flowMeasure.q_out) annotation (Line(
-          points={{62,-120},{50,-120}},
+          points={{46,-120},{34,-120}},
           color={127,127,0},
           thickness=1));
       connect(osmoticCell.volume, gain.u) annotation (Line(points={{136,-130},{
@@ -23059,11 +23063,11 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={0,0,0},
           thickness=1));
       connect(unlimitedOutflowPump.solutionFlow, flowMeasure.volumeFlowRate)
-        annotation (Line(points={{-70,-127},{-70,-136},{40,-136},{40,-128}},
+        annotation (Line(points={{-70,-127},{-70,-136},{24,-136},{24,-128}},
             color={0,0,127}));
       connect(HCO3.solutionVolume, ImpermeantSolutes.solutionVolume)
-        annotation (Line(points={{68,4},{68,-88}}, color={0,0,127}));
-      connect(ImpermeantSolutes.solute, multiSum.u[3]) annotation (Line(points={{78,-102},
+        annotation (Line(points={{70,-2},{70,-88}},color={0,0,127}));
+      connect(ImpermeantSolutes.solute, multiSum.u[3]) annotation (Line(points={{80,-102},
               {108,-102},{108,-78.8}},            color={0,0,127}));
       connect(unlimitedSolutePump6.q_out, concentrationMeasure2.q_in)
         annotation (Line(
@@ -23072,19 +23076,19 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           thickness=1));
       annotation (Diagram(coordinateSystem(extent={{-120,-140},{140,100}}),graphics={
             Line(
-              points={{102,-28},{102,-6},{88,-6}},
+              points={{104,-34},{104,-12},{90,-12}},
               color={0,140,72},
               pattern=LinePattern.Dash,
               thickness=1,
               arrow={Arrow.None,Arrow.Filled}),
             Line(
-              points={{102,-6},{102,32},{88,32}},
+              points={{104,-6},{104,32},{90,32}},
               color={0,140,72},
               pattern=LinePattern.Dash,
               thickness=1,
               arrow={Arrow.None,Arrow.Filled}),
             Line(
-              points={{-6,-28},{102,-28},{102,-64},{90,-64}},
+              points={{-4,-28},{104,-28},{104,-64},{92,-64}},
               color={0,140,72},
               pattern=LinePattern.Dash,
               thickness=1,
@@ -23096,13 +23100,30 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               lineThickness=1,
               fillColor={240,233,6},
               fillPattern=FillPattern.Solid,
-              textString="Initialization via initial equations")}),         Icon(
+              textString="Initialization via initial equations"),
+            Rectangle(
+              extent={{-132,-108},{116,-138}},
+              lineColor={244,125,35},
+              lineThickness=1,
+              pattern=LinePattern.Dash),
+            Text(
+              extent={{70,-118},{112,-108}},
+              lineColor={244,125,35},
+              pattern=LinePattern.Dash,
+              lineThickness=1,
+              textString="Conditional"),
+            Text(
+              extent={{26,-138},{114,-128}},
+              lineColor={244,125,35},
+              pattern=LinePattern.Dash,
+              lineThickness=1,
+              textString="useOsmoticFlow",
+              horizontalAlignment=TextAlignment.Right)}),                   Icon(
             coordinateSystem(extent={{-120,-140},{140,100}}), graphics={
-                                             Bitmap(extent={{-102,-100},{140,
-                  100}},
+                                             Bitmap(extent={{-98,-82},{120,80}},
                 fileName="modelica://Physiolibrary/Resources/Icons/pojivovaTkan.png"),
                                                                         Text(
-              extent={{-104,-152},{96,-72}},
+              extent={{-120,-140},{140,-80}},
               lineColor={28,108,200},
               pattern=LinePattern.Dash,
               textString="ISF"), Rectangle(
@@ -23131,8 +23152,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{0,30},{20,10}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{18,40},{40,60}})));
-      Package.limitO2Metabolism limitO2Metabolism(metabolismFlowRate=
-            modelSettings.metabolismO2FlowRate)
+      AcidBaseBalance.Tissues.limitO2Metabolism limitO2Metabolism(
+          metabolismFlowRate=modelSettings.metabolismO2FlowRate)
         annotation (Placement(transformation(extent={{50,40},{70,60}})));
       tissuesOrganicAcidProduction tissuesOrganicAcidProduction1 if
         useMetabolicUaProduction
@@ -23250,6 +23271,55 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               pattern=LinePattern.Dash,
               textString="Cells")}));
     end TissueCells;
+
+    model limitO2Metabolism
+      Physiolibrary.Types.RealIO.PressureInput pO2(start=6000)
+        "Tissue partial pressure of O2" annotation(Placement(transformation(extent={{-100,-20},{-60,20}}), iconTransformation(extent = {{-20, -20}, {20, 20}}, rotation=0,     origin={-80,0})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput O2FlowRate annotation (Placement(
+            transformation(extent={{80,80},{120,120}}), iconTransformation(
+            extent={{-20,-20},{20,20}},
+            rotation=0,
+            origin={100,100})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput CO2FlowRate annotation (Placement(
+            transformation(extent={{80,-20},{120,20}}),  iconTransformation(
+            extent={{-20,-20},{20,20}},
+            rotation=0,
+            origin={100,-100})));
+
+      parameter Physiolibrary.Types.Pressure criticalPoint = 100;
+      parameter Physiolibrary.Types.Fraction respiratoryQuotient = 0.85;
+      parameter Physiolibrary.Types.MolarFlowRate metabolismFlowRate = 0.00018333333333333;
+    //  Physiolibrary.Types.MolarFlowRate metabolismFlowRate;// = ramp.y;
+      parameter Boolean limiterEnabled = true;
+      Real FirstOrderFlowRate = pO2*metabolismFlowRate/100;
+    //   Modelica.Blocks.Sources.Ramp ramp(
+    //     duration=100000,
+    //     startTime=60*100,
+    //     height=0.00020,
+    //     offset=0.00002)
+    //     annotation (Placement(transformation(extent={{-80,60},{-60,80}})));
+      Physiolibrary.Types.RealIO.MolarFlowRateOutput lactateFlowRate annotation (
+          Placement(transformation(extent={{80,-120},{120,-80}}),
+            iconTransformation(
+            extent={{-20,-20},{20,20}},
+            rotation=0,
+            origin={100,0})));
+    equation
+    //metabolismFlowRate = ramp.y;
+
+      if limiterEnabled and (FirstOrderFlowRate < metabolismFlowRate) then
+        O2FlowRate = FirstOrderFlowRate;
+        lactateFlowRate = metabolismFlowRate - FirstOrderFlowRate;
+      else
+        O2FlowRate = metabolismFlowRate;
+        lactateFlowRate = 0;
+      end if;
+
+    //  O2FlowRate = FirstOrderFlowRate > metabolismFlowRate + min(0, (criticalPoint-pO2)*limitedMetabolismSlope) else metabolismFlowRate;
+      CO2FlowRate = O2FlowRate*respiratoryQuotient;
+       annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+            coordinateSystem(preserveAspectRatio=false)));
+    end limitO2Metabolism;
   end Tissues;
 
   package Test
@@ -25115,7 +25185,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             transformation(rotation=0, extent={{-20,-20},{0,0}})));
       inner Interfaces.ModelSettings modelSettings(PB=106657.909932)
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
-      Package.limitO2Metabolism limitO2Metabolism
+      Tissues.limitO2Metabolism limitO2Metabolism
         annotation (Placement(transformation(extent={{-40,40},{-20,60}})));
       Modelica.Blocks.Sources.Clock clock
         annotation (Placement(transformation(extent={{-80,40},{-60,60}})));
@@ -25313,7 +25383,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{56,-82},{72,-96}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+      Tissues.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
           metabolismFlowRate=0.00033333333333333)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
     equation
@@ -25742,10 +25812,10 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{56,-82},{72,-96}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+      Tissues.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
           metabolismFlowRate=0.00018333333333333)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
-      Package.AlveolarVentilation alveolarVentilation
+      Respiratory.AlveolarVentilation alveolarVentilation
         annotation (Placement(transformation(extent={{114,-26},{134,-6}})));
     equation
       connect(RNormalCO.y, rightStarling.yBase) annotation (Line(
@@ -26316,7 +26386,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{56,-82},{72,-96}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+      Tissues.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
           metabolismFlowRate=0.00019166666666667)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
     equation
@@ -26747,7 +26817,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{56,-82},{72,-96}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+      Tissues.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
           metabolismFlowRate=0.00019166666666667)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
     equation
@@ -27177,10 +27247,10 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{56,-82},{72,-96}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+      Tissues.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
           metabolismFlowRate=0.00033333333333333)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
-      Package.AlveolarVentilation alveolarVentilation
+      Respiratory.AlveolarVentilation alveolarVentilation
         annotation (Placement(transformation(extent={{114,-26},{134,-6}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump HCO3Production(
           SoluteFlow(displayUnit="mol/s") = 0.00016666666666667,
@@ -27689,7 +27759,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{334,-62},{350,-76}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{328,-38},{348,-24}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+      Tissues.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
           metabolismFlowRate=0.00019166666666667)
         annotation (Placement(transformation(extent={{356,-42},{376,-22}})));
       Physiolibrary.Chemical.Sensors.MolarFlowMeasure molarFlowMeasure annotation (
@@ -28939,10 +29009,10 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{56,-82},{72,-96}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+      Tissues.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
           metabolismFlowRate=0.00018333333333333)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
-      Package.AlveolarVentilation alveolarVentilation
+      Respiratory.AlveolarVentilation alveolarVentilation
         annotation (Placement(transformation(extent={{114,-26},{134,-6}})));
       Package.AlveolocapillaryUnit alveolocapillaryUnit1
         annotation (Placement(transformation(extent={{-18,126},{10,150}})));
@@ -29428,10 +29498,10 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{56,-82},{72,-96}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+      Tissues.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
           metabolismFlowRate=0.00018333333333333)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
-      Package.AlveolarVentilation alveolarVentilation
+      Respiratory.AlveolarVentilation alveolarVentilation
         annotation (Placement(transformation(extent={{114,-26},{134,-6}})));
       Package.AlveolocapillaryUnit_with_shunts alveolocapillaryUnit_with_shunts
         annotation (Placement(transformation(extent={{-26,86},{6,116}})));
@@ -29856,10 +29926,10 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{56,-82},{72,-96}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+      Tissues.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
           metabolismFlowRate=0.00018333333333333)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
-      Package.AlveolarVentilation alveolarVentilation
+      Respiratory.AlveolarVentilation alveolarVentilation
         annotation (Placement(transformation(extent={{114,-26},{134,-6}})));
       Package.Alveolocapillary_2Units_with_shunts
         alveolocapillary_2Units_with_shunts
@@ -30296,10 +30366,10 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{56,-82},{72,-96}})));
       Package.ComputationpO2pCO2 computationpO2pCO2_1
         annotation (Placement(transformation(extent={{68,-62},{88,-48}})));
-      Package.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
+      Tissues.limitO2Metabolism limitO2Metabolism(limiterEnabled=true,
           metabolismFlowRate=0.00018333333333333)
         annotation (Placement(transformation(extent={{96,-66},{116,-46}})));
-      Package.AlveolarVentilation alveolarVentilation
+      Respiratory.AlveolarVentilation alveolarVentilation
         annotation (Placement(transformation(extent={{114,-26},{134,-6}})));
       Package.Alveolocapillary_2Units_with_shunts_and_mixing
         alveolocapillary_2Units_with_shunts_and_mixing
@@ -30685,7 +30755,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Package.Alveolocapillary_2Units_with_shunts_and_mixing
         alveolocapillary_2Units_with_shunts_and_mixing
         annotation (Placement(transformation(extent={{-28,88},{6,116}})));
-      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+      Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
         annotation (Placement(transformation(extent={{146,-10},{166,10}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
               "ml/min") = 8.19588e-5)
@@ -30963,7 +31033,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       Package.Alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
         alveolocapillary_2Units_with_shunts_and_mixing_direct_connectors
         annotation (Placement(transformation(extent={{-28,88},{6,116}})));
-      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
+      Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0)
         annotation (Placement(transformation(extent={{146,-10},{166,10}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
               "ml/min") = 8.19588e-5)
@@ -32636,7 +32706,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               extent={{-13,-13},{13,13}},
               rotation=0,
               origin={89,35})));
-        Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
+        Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
             respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
           annotation (Placement(transformation(extent={{170,36},{190,56}})));
         Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit=
@@ -32841,9 +32911,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         annotation (Placement(transformation(extent={{-54,-12},{-68,2}})));
       Ions.IonRegulation ionRegulation if modelSettings.UseMetabolicUABalance
         annotation (Placement(transformation(extent={{-98,-42},{-78,-22}})));
-    Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
-        respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
-      annotation (Placement(transformation(extent={{170,36},{190,56}})));
+      Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
+          respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
+        annotation (Placement(transformation(extent={{170,36},{190,56}})));
     Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit="ml/min")=
            modelSettings.NormalAlveolarVentilation)
       annotation (Placement(transformation(extent={{194,14},{183,24}})));
@@ -32876,14 +32946,15 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
       connect(o2CO2.pH, ammoniumExcretion.pH) annotation (Line(points={{155.1,
-              47.6235},{160,47.6235},{160,-80},{-120,-80},{-120,14},{-106.615,
-              14}},color={0,0,127}));
+              47.6235},{160,47.6235},{160,-80},{-120,-80},{-120,11.8},{-106.615,
+              11.8}},
+                   color={0,0,127}));
       connect(tissues.ions_plasma, veins.port_ions) annotation (Line(
           points={{-20,0},{-19.8,20}},
           color={107,45,134},
           thickness=1));
       connect(ammoniumExcretion.hco3_outflow, tissues.BE) annotation (Line(
-          points={{-72,14},{-12,14},{-12,-2}},
+          points={{-72,0.8},{-12,0.8},{-12,-2}},
           color={107,45,134},
           thickness=1));
       connect(tissues.tO2_ISF, cells.O2) annotation (Line(
@@ -32924,8 +32995,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={0,0,0},
           thickness=1));
       connect(o2CO2.cHCO3, ammoniumExcretion.HCO3) annotation (Line(points={{155.1,
-              45.0353},{158,45.0353},{158,-78},{-118,-78},{-118,11.25},{
-              -106.615,11.25}},  color={0,0,127}));
+              45.0353},{158,45.0353},{158,-78},{-118,-78},{-118,9.6},{-106.615,
+              9.6}},             color={0,0,127}));
       connect(ionRegulation.q_out, veins.port_ions) annotation (Line(
           points={{-78,-32},{-46,-32},{-46,20},{-19.8,20}},
           color={107,45,134},
@@ -32937,7 +33008,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         color={107,45,134},
         thickness=1));
     connect(vomiting.port_a, tissues.ions_plasma) annotation (Line(
-        points={{-70,-72},{-46,-72},{-46,20},{-20,20},{-20,0}},
+        points={{-70,-76},{-46,-76},{-46,20},{-20,20},{-20,0}},
         color={107,45,134},
         thickness=1));
     connect(alveolarVentilation.pO2a, o2CO2.pO2) annotation (Line(points={{170,54},
@@ -33099,9 +33170,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               extent={{9.875,9.875},{-9.875,-9.875}},
               rotation=180,
               origin={30.125,9.875})));
-      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
-          respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
-        annotation (Placement(transformation(extent={{170,36},{190,56}})));
+        Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
+            respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
+          annotation (Placement(transformation(extent={{170,36},{190,56}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit="ml/min")=
              modelSettings.NormalAlveolarVentilation)
         annotation (Placement(transformation(extent={{194,14},{183,24}})));
@@ -33231,9 +33302,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               extent={{9.875,9.875},{-9.875,-9.875}},
               rotation=90,
               origin={40.125,-8.125})));
-      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
-          respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
-        annotation (Placement(transformation(extent={{170,36},{190,56}})));
+        Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
+            respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
+          annotation (Placement(transformation(extent={{170,36},{190,56}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit="ml/min")=
              modelSettings.NormalAlveolarVentilation)
         annotation (Placement(transformation(extent={{194,14},{183,24}})));
@@ -33401,9 +33472,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               extent={{9.875,9.875},{-9.875,-9.875}},
               rotation=90,
               origin={40.125,-8.125})));
-      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
-          respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
-        annotation (Placement(transformation(extent={{170,36},{190,56}})));
+        Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
+            respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
+          annotation (Placement(transformation(extent={{170,36},{190,56}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit="ml/min")=
              modelSettings.NormalAlveolarVentilation)
         annotation (Placement(transformation(extent={{194,14},{183,24}})));
@@ -33563,9 +33634,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
               extent={{9.875,9.875},{-9.875,-9.875}},
               rotation=180,
               origin={30.125,9.875})));
-      Package.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
-          respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
-        annotation (Placement(transformation(extent={{170,36},{190,56}})));
+        Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
+            respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
+          annotation (Placement(transformation(extent={{170,36},{190,56}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit="ml/min")=
              modelSettings.NormalAlveolarVentilation)
         annotation (Placement(transformation(extent={{194,14},{183,24}})));
@@ -33686,10 +33757,11 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       connect(lungsOneCompartment.cvCO2, pressureMeasure.concCO2) annotation (Line(
             points={{20,102},{12,102},{12,101},{1,101}}, color={0,0,127}));
         connect(o2CO2.pH,ammoniumExcretion. pH) annotation (Line(points={{155.1,
-                47.6235},{160,47.6235},{160,-80},{-120,-80},{-120,14},{-106.615,
-                14}},color={0,0,127}));
+                47.6235},{160,47.6235},{160,-80},{-120,-80},{-120,11.8},{
+                -106.615,11.8}},
+                     color={0,0,127}));
         connect(ammoniumExcretion.hco3_outflow, tissues.BE) annotation (Line(
-            points={{-72,14},{-12,14},{-12,-18}},
+            points={{-72,0.8},{-12,0.8},{-12,-18}},
             color={107,45,134},
             thickness=1));
         connect(ammoniumExcretion.UA_outflow,ionSelector. port_b) annotation (
@@ -33710,8 +33782,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
         connect(o2CO2.cHCO3,ammoniumExcretion. HCO3) annotation (Line(points={{155.1,
-                45.0353},{158,45.0353},{158,-78},{-118,-78},{-118,11.25},{
-                -106.615,11.25}},  color={0,0,127}));
+                45.0353},{158,45.0353},{158,-78},{-118,-78},{-118,9.6},{
+                -106.615,9.6}},    color={0,0,127}));
         connect(ionRegulation.q_out, veins.port_ions) annotation (Line(
             points={{-78,-32},{-46,-32},{-46,20},{-19.8,20}},
             color={107,45,134},
@@ -33721,7 +33793,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           color={107,45,134},
           thickness=1));
       connect(vomiting.port_a, tissues.ions_plasma) annotation (Line(
-          points={{-70,-72},{-46,-72},{-46,20},{-20,20},{-20,-16}},
+          points={{-70,-76},{-46,-76},{-46,20},{-20,20},{-20,-16}},
           color={107,45,134},
           thickness=1));
       annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-120,
@@ -33858,8 +33930,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
 
         model CompleteModel
           extends SimplestCircWithGas(modelSettings(UseMetabolicUABalance=true,
-                UseRespiratoryCompensation=true,
-              fixedMetabolismCompensation=true));
+                UseRespiratoryCompensation=true));
           Kidney.AmmoniumExcretion ammoniumExcretion1 if modelSettings.UseMetabolicUABalance
             annotation (Placement(transformation(extent={{-86,0},{-60,20}})));
           Tissues.ISF iSF annotation (Placement(transformation(
@@ -33905,6 +33976,13 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
         end CompleteModel;
 
         package AcidbaseDisorders
+          model MetabolicAcidosisAcute
+            extends CompleteModel(modelSettings(makeUAstep=true,
+              breakTime(displayUnit="d") = 86400,
+              breakLength(displayUnit="d") = 172800,
+                UAstepRatio=5));
+          end MetabolicAcidosisAcute;
+
           model MetabolicAlkalosis
             extends CompleteModel;
             Ions.vomiting vomiting(totalHCO3Amount=0.1)
@@ -33925,29 +34003,12 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
                 Tolerance=1e-05));
           end MetabolicAlkalosis;
 
-          model MetabolicAcidosisAcute
-            extends CompleteModel(modelSettings(makeUAstep=true,
-              breakTime(displayUnit="d") = 86400,
-              breakLength(displayUnit="d") = 172800,
-                UAstepRatio=5));
-          end MetabolicAcidosisAcute;
-
           model MetabolicAcidosisChronic
             extends CompleteModel(modelSettings(makeUAstep=true,
               breakTime(displayUnit="d") = 864000,
               breakLength(displayUnit="d") = 86400000,
               UAstepRatio=1.8));
           end MetabolicAcidosisChronic;
-
-          model RespiratoryAcidosis
-            extends CompleteModel(modelSettings(UseStepCO2Fraction=true,
-              breakTime=7*24*60*60,
-                UseRespiratoryCompensation=true));
-          end RespiratoryAcidosis;
-
-          model RespiratoryAlkalosis
-            extends CompleteModel(modelSettings(FiO2=0.1));
-          end RespiratoryAlkalosis;
         end AcidbaseDisorders;
       end validation;
 
