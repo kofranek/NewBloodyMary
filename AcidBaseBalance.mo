@@ -1443,8 +1443,8 @@ BEox"),       Text(
         connect(bloodctCO2content.pCO2, vanSlykeEquation.pCO2) annotation (Line(
               points={{-83,140},{-162,140},{-162,-34},{-84.8182,-34}},
                                                                     color={0,0,127},
-
             thickness=0.5));
+
         connect(inverseBlockConstraints1.y1, pO2)
           annotation (Line(points={{-38.95,170},{-28,170},{-28,172},{-20,172}},
                                                          color={0,0,127}));
@@ -1454,8 +1454,8 @@ BEox"),       Text(
               color={0,0,127}));
         connect(vanSlykeEquation.pH, pH) annotation (Line(points={{-23.3818,
                 -40.6},{-10.76,-40.6},{-10.76,-41},{1,-41}}, color={238,46,47},
-
             thickness=0.5));
+
         annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent={{-180,
                   -100},{60,240}}),                                                                         graphics={  Rectangle(extent={{
                     -180,196},{56,-58}},                                                                                                                               lineColor = {0, 0, 255}, fillColor = {255, 255, 0},
@@ -11519,8 +11519,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
         unlimitedSolutionStorage(Conc=100)
         annotation (Placement(transformation(extent={{-78,-26},{-70,-18}})));
-      Kidney.AmmoniumExcretion ammoniumExcretion
-        annotation (Placement(transformation(extent={{-98,-14},{-62,8}})));
+        Kidney.KidneyMetabolicCompensation ammoniumExcretion
+          annotation (Placement(transformation(extent={{-98,-14},{-62,8}})));
     equation
 
       connect(leftHeart.bloodPort_out, flowConcentrationMeasure1.bloodPort_in)
@@ -11722,8 +11722,8 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
       Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage
         unlimitedSolutionStorage(Conc=100)
         annotation (Placement(transformation(extent={{-78,-30},{-70,-22}})));
-      Kidney.AmmoniumExcretion ammoniumExcretion
-        annotation (Placement(transformation(extent={{-98,-16},{-62,6}})));
+        Kidney.KidneyMetabolicCompensation ammoniumExcretion
+          annotation (Placement(transformation(extent={{-98,-16},{-62,6}})));
         Interfaces.IonSelector ionSelector(selectedIon=AcidBaseBalance.Ions.IonsEnum.Ua)
           annotation (Placement(transformation(extent={{-44,-10},{-58,4}})));
         Tissues.SimpleCells cells annotation (Placement(transformation(
@@ -13620,7 +13620,7 @@ initialization")}));
     package Test
 
       model UrineAcidificationTest
-        AmmoniumExcretion ammoniumExcretion(anionExcrection(UAlimit=0,
+        KidneyMetabolicCompensation ammoniumExcretion(anionExcrection(UAlimit=0,
               Clextrection0=0))
           annotation (Placement(transformation(extent={{-46,-20},{20,20}})));
         Physiolibrary.Types.Constants.ConcentrationConst Chloride(k=100)   annotation(Placement(transformation(extent={{100,-26},
@@ -13720,6 +13720,43 @@ initialization")}));
         annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
               coordinateSystem(preserveAspectRatio=false)));
       end TestMetabolicNormalizer;
+
+      model TestAnionExcretion
+        AnionExcrection anionExcrection
+          annotation (Placement(transformation(extent={{-54,-4},{-46,4}})));
+        Modelica.Blocks.Sources.Sine sine(
+          amplitude=0.5e-4,
+          freqHz=10,
+          offset=0.5e-4)
+          annotation (Placement(transformation(extent={{-90,-10},{-70,10}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage UA(
+            useConcentrationInput=true)
+          annotation (Placement(transformation(extent={{-8,0},{-28,20}})));
+        Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage Cl
+          annotation (Placement(transformation(extent={{-8,-32},{-28,-12}})));
+        Modelica.Blocks.Sources.Ramp ramp1(
+          height=10,
+          duration=1,
+          offset=0)
+          annotation (Placement(transformation(extent={{42,0},{22,20}})));
+      equation
+        connect(anionExcrection.UA, UA.q_out) annotation (Line(
+            points={{-46,4},{-36,4},{-36,10},{-28,10}},
+            color={107,45,134},
+            thickness=1));
+        connect(anionExcrection.Cl, Cl.q_out) annotation (Line(
+            points={{-46,-4},{-38,-4},{-38,-22},{-28,-22}},
+            color={107,45,134},
+            thickness=1));
+        connect(UA.concentration, ramp1.y)
+          annotation (Line(points={{-8,10},{21,10}}, color={0,0,127}));
+        connect(anionExcrection.HCO3molarflowrate,sine. y)
+          annotation (Line(points={{-53.4,0},{-69,0}}, color={0,0,127}));
+        annotation (
+          Icon(coordinateSystem(preserveAspectRatio=false)),
+          Diagram(coordinateSystem(preserveAspectRatio=false)),
+          experiment);
+      end TestAnionExcretion;
     end Test;
 
     model F62
@@ -13790,12 +13827,22 @@ initialization")}));
       connect(f63_1.yBase, f62_1.y) annotation(Line(visible = true, origin = {36, 25.84}, points = {{0, -20.08}, {0, 20.08}}, color = {0, 0, 127}));
       connect(f63_1.y, aldEffect.yBase) annotation(Line(visible = true, origin = {36.5, -20.77}, points = {{-0.5, 13.93}, {-0.5, -0.23}, {0.5, -0.23}, {0.5, -13.47}}, color = {0, 0, 127}));
       connect(aldEffect.y, TA) annotation(Line(visible = true, origin = {44.667, -68.947}, points = {{-7.667, 22.107}, {-7.667, -11.053}, {15.333, -11.053}}, color = {0, 0, 127}));
-      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent = {{-100, 80}, {100, -80}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+      annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}), graphics={  Rectangle(extent={{
+                  -100,100},{100,-100}},                                                                                                                           lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                   FillPattern.Solid), Text(extent = {{-76, 82}, {-40, 48}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                   FillPattern.Solid, textString = "pHa"), Text(extent = {{-78, 28}, {-42, -6}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
                 fillPattern =                                                                                                   FillPattern.Solid, textString = "pHu"), Text(extent = {{-78, -24}, {-42, -58}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                   FillPattern.Solid, textString = "fald"), Text(extent = {{38, 18}, {74, -16}}, lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
-                fillPattern =                                                                                                   FillPattern.Solid, textString = "TA")}), Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "fald"), Text(extent={{
+                  50,20},{86,-14}},                                                                                                                                                                           lineColor = {28, 108, 200}, fillColor = {255, 255, 0},
+                fillPattern =                                                                                                   FillPattern.Solid, textString = "TA"),
+            Text(
+              extent={{-100,-120},{100,-60}},
+              lineColor={28,108,200},
+              pattern=LinePattern.Dash,
+              fillColor={255,170,213},
+              fillPattern=FillPattern.None,
+              textString="titratable
+acidity")}),                                                                                                                                                             Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
             graphics={Text(
               extent={{60,-8},{102,10}},
               lineColor={28,108,200},
@@ -14039,7 +14086,7 @@ initialization")}));
               extent={{-100,-100},{100,100}})));
     end pHUrine_New;
 
-    model AmmoniumExcretion
+    model KidneyMetabolicCompensation
     //  extends Physiolibrary.Icons.Kidney;
       Ammonium ammonium annotation(Placement(transformation(extent={{-40,40},{2,
                 80}})));
@@ -14054,8 +14101,9 @@ initialization")}));
       Physiolibrary.Types.Constants.ConcentrationConst Phosphate(k = 1.1) "1.1" annotation(Placement(transformation(extent={{102,-20},
                 {86,-2}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst GFR(k(displayUnit = "l/min") = 1.6666666666667e-06) annotation(Placement(transformation(extent = {{-8, -7}, {8, 7}}, rotation = 180, origin={106,-40}),   visible = true));
-      Physiolibrary.Types.Constants.MolarFlowRateConst normalUA(k=modelSettings.metabolismUAFlowRate_norm)
-        annotation (Placement(transformation(extent={{22,88},{30,96}})));
+      Physiolibrary.Types.Constants.MolarFlowRateConst normalUA(k=
+            0.00018333333333333)
+        annotation (Placement(transformation(extent={{20,88},{28,96}})));
       pHUrine_New pHUrine_New1
         annotation (Placement(transformation(extent={{64,-82},{96,-46}})));
       Physiolibrary.Chemical.Sources.UnlimitedSolutePump pump_hco3(
@@ -14091,7 +14139,7 @@ initialization")}));
         annotation (Placement(transformation(extent={{150,22},{170,42}}),
             iconTransformation(extent={{150,-110},{170,-90}})));
       Modelica.Blocks.Math.Add  add3_1
-        annotation (Placement(transformation(extent={{30,44},{50,64}})));
+        annotation (Placement(transformation(extent={{24,44},{44,64}})));
       Modelica.Blocks.Logical.Switch switch1
         annotation (Placement(transformation(extent={{62,74},{82,94}})));
       Modelica.Blocks.Sources.BooleanExpression booleanExpression(y=
@@ -14111,10 +14159,12 @@ initialization")}));
             color={0,0,127}));
       connect(titratableAcid.TA, pHUrine_New1.TA) annotation (Line(points={{3.685,
               -56.62},{22,-56.62},{22,-78.4},{64,-78.4}},
-                       color={0,0,127}));
+                       color={0,0,127},
+          thickness=0.5));
       connect(pHUrine_New1.NH4exretion, ammonium.molarflowrate) annotation (
-          Line(points={{64,-53.2},{34,-53.2},{34,52.8},{12.44,52.8}},
-                                   color={0,0,127}));
+          Line(points={{64,-53.2},{40,-53.2},{40,60},{2.42,60}},
+                                   color={0,0,0},
+          thickness=0.5));
       connect(pHUrine_New1.pHu, titratableAcid.pHu) annotation (Line(points={{96.32,
               -64},{96.32,-62},{102,-62},{102,-90},{-64,-90},{-64,-55.48},{
               -37.055,-55.48}},          color={0,0,127}));
@@ -14132,7 +14182,7 @@ initialization")}));
         annotation (Line(points={{-36.64,60},{-36,60},{-36,50},{-44,50}},
                                                        color={0,0,127}));
       connect(concentrationMeasure1.concentration, pHUrine_New1.OrgAnionsConc)
-        annotation (Line(points={{70,16},{70,-46},{70.4,-46}},   color={0,0,127}));
+        annotation (Line(points={{72,24},{72,-46},{70.4,-46}},   color={0,0,127}));
       connect(ammonium.HCO3, HCO3) annotation (Line(points={{-37.9,72},{-74,72},
               {-74,76},{-104,76}}, color={0,0,127}));
       connect(ions, ionSelector1.port_a) annotation (Line(
@@ -14166,17 +14216,22 @@ initialization")}));
       connect(booleanExpression.y, switch1.u2)
         annotation (Line(points={{7.1,84},{60,84}}, color={255,0,255}));
       connect(normalUA.y, switch1.u1)
-        annotation (Line(points={{31,92},{60,92}}, color={0,0,127}));
+        annotation (Line(points={{29,92},{60,92}}, color={0,0,127}));
       connect(switch1.y, anionExcrection.HCO3molarflowrate) annotation (Line(
-            points={{83,84},{90,84},{90,22},{101.5,22}}, color={0,0,127}));
+            points={{83,84},{90,84},{90,22},{101.5,22}}, color={0,0,0},
+          thickness=0.5));
       connect(pump_hco3.soluteFlow, switch1.y)
-        annotation (Line(points={{114,86},{114,84},{83,84}}, color={0,0,127}));
-      connect(add3_1.y, switch1.u3) annotation (Line(points={{51,54},{54,54},{
-              54,76},{60,76}}, color={0,0,127}));
+        annotation (Line(points={{114,86},{114,84},{83,84}}, color={0,0,0},
+          thickness=0.5));
+      connect(add3_1.y, switch1.u3) annotation (Line(points={{45,54},{54,54},{
+              54,76},{60,76}}, color={0,0,0},
+          thickness=0.5));
       connect(add3_1.u1, ammonium.molarflowrate)
-        annotation (Line(points={{28,60},{2.42,60}}, color={0,0,127}));
+        annotation (Line(points={{22,60},{2.42,60}}, color={0,0,0},
+          thickness=0.5));
       connect(titratableAcid.TA, add3_1.u2) annotation (Line(points={{3.685,
-              -56.62},{28,-56.62},{28,48}}, color={0,0,127}));
+              -56.62},{22,-56.62},{22,48}}, color={0,0,0},
+          thickness=0.5));
       annotation(Diagram(coordinateSystem(preserveAspectRatio=false,   extent={{-100,
                 -100},{160,100}})),Icon(coordinateSystem(extent={{-100,-100},{
                 160,100}}),graphics={    Text(
@@ -14192,7 +14247,7 @@ Compensation"),                              Bitmap(extent={{-60,-20},{20,100}},
               extent={{-100,100},{160,-100}},
               lineColor={28,108,200},
               pattern=LinePattern.Dash)}));
-    end AmmoniumExcretion;
+    end KidneyMetabolicCompensation;
 
     model AnionExcrection "To maintain electroneutrality, the total amount of excreted anions must be outweighted by the same amount of excrected cations or resorbed anions."
       Physiolibrary.Types.RealIO.MolarFlowRateInput HCO3molarflowrate annotation (
@@ -14221,47 +14276,18 @@ Compensation"),                              Bitmap(extent={{-60,-20},{20,100}},
       assert(ClExtrection >= 0, "Cl could not be resorbed from the urine!", AssertionLevel.warning);
       assert(UAExtrection >= 0, "UA could not be resorbed from the urine!",AssertionLevel.warning);
       annotation (Diagram(coordinateSystem(extent={{-40,-40},{40,40}})), Icon(
-            coordinateSystem(extent={{-40,-40},{40,40}})));
+            coordinateSystem(extent={{-40,-40},{40,40}}), graphics={Rectangle(
+              extent={{-40,40},{40,-40}},
+              lineColor={28,108,200},
+              pattern=LinePattern.Dash,
+              fillColor={255,170,213},
+              fillPattern=FillPattern.Solid), Text(
+              extent={{-40,-40},{40,40}},
+              lineColor={28,108,200},
+              pattern=LinePattern.Dash,
+              textString="anion
+excretion")}));
     end AnionExcrection;
-
-    model TestAnionExcretion
-      AnionExcrection anionExcrection(UAlimit=10, Clextrection0(displayUnit=
-              "mmol/day") = 4.6296296296296e-7,
-        uanormalrate(displayUnit="mmol/day") = 6.9444444444444e-7)
-        annotation (Placement(transformation(extent={{-54,-4},{-46,4}})));
-      Modelica.Blocks.Sources.Sine sine(
-        amplitude=0.5e-4,
-        freqHz=10,
-        offset=0.5e-4)
-        annotation (Placement(transformation(extent={{-90,-10},{-70,10}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage UA(
-          useConcentrationInput=true)
-        annotation (Placement(transformation(extent={{-8,0},{-28,20}})));
-      Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage Cl
-        annotation (Placement(transformation(extent={{-8,-32},{-28,-12}})));
-      Modelica.Blocks.Sources.Ramp ramp1(
-        height=10,
-        duration=1,
-        offset=0)
-        annotation (Placement(transformation(extent={{42,0},{22,20}})));
-    equation
-      connect(anionExcrection.UA, UA.q_out) annotation (Line(
-          points={{-46,4},{-36,4},{-36,10},{-28,10}},
-          color={107,45,134},
-          thickness=1));
-      connect(anionExcrection.Cl, Cl.q_out) annotation (Line(
-          points={{-46,-4},{-38,-4},{-38,-22},{-28,-22}},
-          color={107,45,134},
-          thickness=1));
-      connect(UA.concentration, ramp1.y)
-        annotation (Line(points={{-8,10},{21,10}}, color={0,0,127}));
-      connect(anionExcrection.HCO3molarflowrate,sine. y)
-        annotation (Line(points={{-53.4,0},{-69,0}}, color={0,0,127}));
-      annotation (
-        Icon(coordinateSystem(preserveAspectRatio=false)),
-        Diagram(coordinateSystem(preserveAspectRatio=false)),
-        experiment);
-    end TestAnionExcretion;
 
     model HCO3ProductionLimiter "maximal resorbtion of HCO3 at given pH"
 
@@ -20762,7 +20788,7 @@ Ventilation"),
       model testTissuesAndKidneys
         tissuesOrganicAcidProduction tissuesOrganicAcidProduction1
           annotation (Placement(transformation(extent={{34,-30},{100,30}})));
-        Kidney.AmmoniumExcretion ammoniumExcretion
+        Kidney.KidneyMetabolicCompensation ammoniumExcretion
           annotation (Placement(transformation(extent={{-82,-26},{0,24}})));
         Physiolibrary.Types.Constants.pHConst pHConst(k=7.2) annotation (
             Placement(transformation(
@@ -21740,8 +21766,8 @@ Ventilation"),
         CO2_MetabolicProduction2(useSoluteFlowInput=true, SoluteFlow=
             0.00016666666666667) if useMetabolicUaProduction
         annotation (Placement(transformation(extent={{20,-10},{40,-30}})));
-      Physiolibrary.Types.Constants.PressureConst pressure(k(displayUnit="Pa")
-           = 6000)
+      Physiolibrary.Types.Constants.PressureConst pressure(k(displayUnit="Pa")=
+             6000)
         annotation (Placement(transformation(extent={{42,46},{50,54}})));
     equation
       if not useMetabolicUaProduction then
@@ -32430,6 +32456,9 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-48,-90},{-28,-70}})));
       AcidBaseBalance.Respiratory.AlveolarVentilation alveolarVentilation
         annotation (Placement(transformation(extent={{46,-90},{66,-70}})));
+      Kidney.KidneyMetabolicCompensation ammoniumExcretion1 if
+                                                     modelSettings.UseMetabolicUABalance
+        annotation (Placement(transformation(extent={{60,20},{86,40}})));
     equation
       connect(bloodPort_out_Extension.bloodPort_out, bloodPort_in_Extension.bloodPort_in)
         annotation (Line(
@@ -32981,8 +33010,9 @@ Ventilation"),
             extent={{15,12},{-15,-12}},
             origin={-12,-15})));
 
-    Kidney.AmmoniumExcretion ammoniumExcretion if modelSettings.UseMetabolicUABalance
-      annotation (Placement(transformation(extent={{-108,-8},{-72,14}})));
+      Kidney.KidneyMetabolicCompensation ammoniumExcretion if
+                                                  modelSettings.UseMetabolicUABalance
+        annotation (Placement(transformation(extent={{-108,-8},{-72,14}})));
       Interfaces.IonSelector ionSelector(selectedIon=AcidBaseBalance.Ions.IonsEnum.Ua)
         annotation (Placement(transformation(extent={{-54,-2},{-68,12}})));
       Tissues.SimpleCells cells(
@@ -33746,10 +33776,10 @@ Ventilation"),
 
       BloodComponents.PressureMeasure pressureMeasure
         annotation (Placement(transformation(extent={{-18,86},{2,106}})));
-      Kidney.AmmoniumExcretion ammoniumExcretion(ammonium(PT_NH3_ChronicEffect(
-              HalfTime(displayUnit="s") = 90000))) if
+        Kidney.KidneyMetabolicCompensation ammoniumExcretion(ammonium(
+              PT_NH3_ChronicEffect(HalfTime(displayUnit="s") = 90000))) if
                                                     modelSettings.UseMetabolicUABalance
-        annotation (Placement(transformation(extent={{-108,-8},{-72,14}})));
+          annotation (Placement(transformation(extent={{-108,-8},{-72,14}})));
         Interfaces.IonSelector ionSelector(selectedIon=AcidBaseBalance.Ions.IonsEnum.Ua)
           annotation (Placement(transformation(extent={{-54,-2},{-68,12}})));
         Interfaces.IonSelector ionSelector1(selectedIon=AcidBaseBalance.Ions.IonsEnum.Cl)
@@ -33956,7 +33986,7 @@ Ventilation"),
                   100))
             annotation (Placement(transformation(extent={{12,-56},{34,-36}})));
 
-          Kidney.AmmoniumExcretion ammoniumExcretion1
+          Kidney.KidneyMetabolicCompensation ammoniumExcretion1
             annotation (Placement(transformation(extent={{-96,-2},{-60,20}})));
         equation
           connect(nonMuscle1.bloodPort_in, flowConcentrationMeasure1.bloodPort_out)
@@ -34019,7 +34049,8 @@ Ventilation"),
           extends SimplestCircWithGas(modelSettings(UseMetabolicUABalance=true,
                 UseRespiratoryCompensation=true,
               fixedMetabolismCompensation=true));
-          Kidney.AmmoniumExcretion ammoniumExcretion1 if modelSettings.UseMetabolicUABalance
+          Kidney.KidneyMetabolicCompensation ammoniumExcretion1 if
+                                                         modelSettings.UseMetabolicUABalance
             annotation (Placement(transformation(extent={{-86,0},{-60,20}})));
           Tissues.ISF iSF annotation (Placement(transformation(
                 extent={{-14,-12},{14,12}},
