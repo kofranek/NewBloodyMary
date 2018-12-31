@@ -7066,8 +7066,8 @@ shunts"),     Text(
 
         Physiolibrary.Types.VolumeFlowRate Qsh=Q*modelSettings.lungShuntFraction;
         Physiolibrary.Types.VolumeFlowRate Qpulm=Q-Qsh;
-        Physiolibrary.Types.VolumeFlowRate Q_alv1 = Qpulm*modelSettings.perfusionFraction;
-        Physiolibrary.Types.VolumeFlowRate VAi_alv1 = VAi*modelSettings.ventilationFraction;
+        Physiolibrary.Types.VolumeFlowRate Q_alv1 = Qpulm*modelSettings.perfusionFractionStep;
+        Physiolibrary.Types.VolumeFlowRate VAi_alv1 = VAi*modelSettings.ventilationFractionStep;
         Physiolibrary.Types.VolumeFlowRate Q_alv2 = Qpulm-Q_alv1;
         Physiolibrary.Types.VolumeFlowRate VAi_alv2 = VAi-VAi_alv1;
         outer
@@ -13394,17 +13394,39 @@ initialization")}));
       parameter Boolean makeUAstep = false annotation(Dialog(tab = "Validation steps"));
       parameter Physiolibrary.Types.Fraction UAstepRatio = 1.5 annotation(Dialog(tab = "Validation steps"));
 
-      parameter Boolean UseStepCO2Fraction = false annotation(Dialog(tab = "Validation steps"));
+      parameter Boolean makeCO2FractionStep=false  annotation(Dialog(tab="Validation steps"));
       parameter Physiolibrary.Types.Fraction FiCO2_step = 0.08 annotation(Dialog(tab = "Validation steps"));
+
+      parameter Boolean makeVentilationPerfusionFractionStep=false annotation(Dialog(tab = "Validation steps"));
+      parameter Physiolibrary.Types.Fraction ventilationPerfusionFraction_step=0.75
+                                                                             annotation(Dialog(tab=
+              "Validation steps"));
       parameter Physiolibrary.Types.Time breakTime = 10*60*60 annotation(Dialog(tab = "Validation steps"));
+      parameter Physiolibrary.Types.Time break2Time = 10*60*60 annotation(Dialog(tab = "Validation steps"));
       parameter Physiolibrary.Types.Time breakLength = 60*60*24*2 annotation(Dialog(tab = "Validation steps"));
 
       // computed variables
       Physiolibrary.Types.MolarFlowRate metabolismUAFlowRate=if makeUAstep and time >
           breakTime and time < breakTime + breakLength then UAstepRatio*
           metabolismUAFlowRate_norm else metabolismUAFlowRate_norm annotation(Dialog(enable = false, tab="Calculated vars"));
-      Physiolibrary.Types.Fraction FiCO2= if not UseStepCO2Fraction then FiCO2_start else if time < breakTime then FiCO2_start else FiCO2_step annotation(Dialog(enable = false, tab="Calculated vars"));
-    //  parameter Physiolibrary.Types.AmountOfSubstance ISFCO2solute_start = ISFCO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
+      Physiolibrary.Types.Fraction FiCO2=if not makeCO2FractionStep then
+          FiCO2_start else if time < breakTime then FiCO2_start else FiCO2_step
+        annotation (Dialog(enable=false, tab="Calculated vars"));
+
+      Physiolibrary.Types.Fraction ventilationFractionStep=if not
+          makeVentilationPerfusionFractionStep then ventilationFraction else if
+          time > breakTime and time < breakTime + breakLength then
+          ventilationPerfusionFraction_step else ventilationFraction
+        "alveolar perfusion fraction of the first half of the lungs"
+        annotation (Dialog(enable=false, tab="Calculated vars"));
+      Physiolibrary.Types.Fraction perfusionFractionStep=if not
+          makeVentilationPerfusionFractionStep then perfusionFraction else if time >
+          break2Time and time < break2Time + breakLength then
+          ventilationPerfusionFraction_step else perfusionFraction
+        "alveolar perfusion fraction of the first half of the lungs"
+        annotation (Dialog(enable=false, tab="Calculated vars"));
+
+      //  parameter Physiolibrary.Types.AmountOfSubstance ISFCO2solute_start = ISFCO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
     //  parameter Physiolibrary.Types.AmountOfSubstance ISFO2solute_start = ISFO2conc_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
     //  parameter Physiolibrary.Types.AmountOfSubstance ISFBEoxsolute_start = ISFBEox_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
     //  parameter Physiolibrary.Types.AmountOfSubstance ISFHCO3solute_start = ISFHCO3_start*ISFvolume_start annotation(Dialog(enable = false, tab="Calculated vars"));
@@ -32804,7 +32826,7 @@ Ventilation"),
           O2DiffusionPermeability(displayUnit="l/min"),
           CO2DiffusionPermeability(displayUnit="l/min"),
           HCO3Permeability(displayUnit="l/min"),
-          UseStepCO2Fraction=true,
+          makeCO2FractionStep=true,
           breakTime=7*24*60*60,
           UseRespiratoryCompensation=false)
           annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
@@ -32874,7 +32896,7 @@ Ventilation"),
           CO2DiffusionPermeability(displayUnit="l/min"),
           HCO3Permeability(displayUnit="l/min"),
           UseRespiratoryCompensation=false,
-          UseStepCO2Fraction=false)
+          makeCO2FractionStep=false)
           annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
       equation
         connect(simplestCircWithTissues3_1.VAi_input1, simplestCircWithTissues3_1.VAi_input)
@@ -32914,8 +32936,8 @@ Ventilation"),
         parameter Physiolibrary.Types.Volume isf_volume = 0.01;
 
         AcidBaseBalance.Validation.old.SimplestCircWithTissues2
-          simplestCircWithTissues2_1(cells(limitO2Metabolism(metabolismFlowRate
-                =modelSettings.metabolismO2FlowRate)))
+          simplestCircWithTissues2_1(cells(limitO2Metabolism(metabolismFlowRate=
+                 modelSettings.metabolismO2FlowRate)))
           annotation (Placement(transformation(extent={{-32,10},{-4,32}})));
         inner Interfaces.ModelSettings modelSettings(
           O2DiffusionPermeability(displayUnit="l/min") = 0.005,
@@ -33966,9 +33988,10 @@ Ventilation"),
 
           model RespiratoryAcidosis
             extends Results.CompleteModel(
-                                  modelSettings(UseStepCO2Fraction=true,
+                                  modelSettings(
               breakTime=7*24*60*60,
-                UseRespiratoryCompensation=true));
+                UseRespiratoryCompensation=true,makeCO2FractionStep=
+                                                                   true));
           end RespiratoryAcidosis;
 
           model RespiratoryAlkalosis
@@ -34164,6 +34187,18 @@ Ventilation"),
           color={107,45,134},
           thickness=1));
     end CompleteModel;
+
+    model ImpairedLungVentilation
+     extends Results.SimplestCircWithGas(                redeclare Respiratory.LungsTwoCompartments
+          lungsOneCompartment, modelSettings(
+          makeVentilationPerfusionFractionStep=true,
+          breakLength(displayUnit="d") = 1728000,
+          breakTime(displayUnit="h") = 3600,
+          break2Time(displayUnit="h") = 7200));
+      Real pO2_kPa = floor(o2CO2.pO2 + 0.5)/100;
+      Real pCO2_kPa = floor(o2CO2.pO2 + 0.5)/100;
+      Real timeHours = time/60/60;
+    end ImpairedLungVentilation;
   end Results;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
       Physiomodel(version="1.0.0")));

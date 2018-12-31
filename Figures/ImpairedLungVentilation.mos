@@ -1,0 +1,14 @@
+﻿simulateModel("AcidBaseBalance.Visualization.LungVentilationPerfusion", stopTime=18000, numberOfIntervals=5000, resultFile="LungVentilationPerfusion");
+
+createPlot(id=4, position={15, 10, 519, 805}, y=fill("", 0), range={0.0, 5.0, 95.5, 97.5}, grid=true, filename="TestLimiter.mat", legendLocation=7, timeUnit="h", displayUnits={"%"});
+createPlot(id=4, position={15, 10, 519, 265}, y=fill("", 0), range={0.0, 5.0, 7.385, 7.41}, grid=true, legendLocation=7, subPlot=2, timeUnit="h");
+createPlot(id=4, position={15, 10, 519, 264}, y=fill("", 0), range={0.0, 5.0, 5.300000000000001, 5.700000000000001}, grid=true, legendLocation=5, subPlot=3, timeUnit="h", displayUnits={"kPa"});
+createPlot(id=4, position={15, 10, 519, 805}, y=fill("", 0), range={0.0, 5.0, 95.5, 97.5}, erase=false, grid=true, filename="TestAnionExcretion.mat", legendLocation=7, timeUnit="h", displayUnits={"%"});
+createPlot(id=4, position={15, 10, 519, 265}, y=fill("", 0), range={0.0, 5.0, 7.385, 7.41}, erase=false, grid=true, legendLocation=7, subPlot=2, timeUnit="h");
+createPlot(id=4, position={15, 10, 519, 264}, y=fill("", 0), range={0.0, 5.0, 5.300000000000001, 5.700000000000001}, erase=false, grid=true, legendLocation=5, subPlot=3, timeUnit="h", displayUnits={"kPa"});
+createPlot(id=4, position={15, 10, 519, 805}, y=fill("", 0), range={0.0, 5.0, 95.5, 97.5}, erase=false, grid=true, filename="TestLimiter.mat", legendLocation=7, timeUnit="h", displayUnits={"%"});
+createPlot(id=4, position={15, 10, 519, 265}, y=fill("", 0), range={0.0, 5.0, 7.385, 7.41}, erase=false, grid=true, legendLocation=7, subPlot=2, timeUnit="h");
+createPlot(id=4, position={15, 10, 519, 264}, y=fill("", 0), range={0.0, 5.0, 5.300000000000001, 5.700000000000001}, erase=false, grid=true, legendLocation=5, subPlot=3, timeUnit="h", displayUnits={"kPa"});
+createPlot(id=4, position={15, 10, 519, 805}, y={"o2CO2.sO2"}, range={0.0, 5.0, 95.5, 97.5}, erase=false, grid=true, filename="LungVentilationPerfusion.mat", legendLocation=7, legends={"sO2"}, colors={{28,108,200}}, timeUnit="h", displayUnits={"%"});
+createPlot(id=4, position={15, 10, 519, 265}, y={"o2CO2.pH"}, range={0.0, 5.0, 7.385, 7.41}, erase=false, grid=true, legendLocation=7, legends={"pH"}, subPlot=2, colors={{28,108,200}}, timeUnit="h");
+createPlot(id=4, position={15, 10, 519, 264}, y={"o2CO2.pCO2"}, range={0.0, 5.0, 5.300000000000001, 5.700000000000001}, erase=false, grid=true, legendLocation=5, legends={"pCO2"}, subPlot=3, colors={{28,108,200}}, timeUnit="h", displayUnits={"kPa"});
