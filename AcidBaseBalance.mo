@@ -20376,7 +20376,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
           annotation (Placement(transformation(extent={{-14,90},{6,70}})));
         Physiolibrary.Types.Constants.FractionConst fraction(k=0.02)
           annotation (Placement(transformation(extent={{-106,74},{-98,82}})));
-        Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)") =
+        Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)")=
             4.1665920538226e-8)
           annotation (Placement(transformation(extent={{-68,68},{-60,76}})));
         inner Interfaces.ModelSettings modelSettings(PB=106657.909932)
@@ -23406,7 +23406,7 @@ Ventilation"),
       end if;
 
     //  O2FlowRate = FirstOrderFlowRate > metabolismFlowRate + min(0, (criticalPoint-pO2)*limitedMetabolismSlope) else metabolismFlowRate;
-      CO2FlowRate = O2FlowRate*respiratoryQuotient;
+      CO2FlowRate = metabolismFlowRate*respiratoryQuotient;
        annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end limitO2Metabolism;
@@ -24548,7 +24548,7 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-14,90},{6,70}})));
       Physiolibrary.Types.Constants.FractionConst fraction(k=0.02)
         annotation (Placement(transformation(extent={{-106,74},{-98,82}})));
-      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)") =
+      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)")=
           4.1665920538226e-8)
         annotation (Placement(transformation(extent={{-68,68},{-60,76}})));
       inner Interfaces.ModelSettings modelSettings(PB=106657.909932)
@@ -24905,7 +24905,7 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-14,90},{6,70}})));
       Physiolibrary.Types.Constants.FractionConst fraction(k=0.02)
         annotation (Placement(transformation(extent={{-106,74},{-98,82}})));
-      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)") =
+      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)")=
           4.1665920538226e-8)
         annotation (Placement(transformation(extent={{-68,68},{-60,76}})));
       inner Interfaces.ModelSettings modelSettings(PB=106657.909932)
@@ -25425,7 +25425,7 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-14,90},{6,70}})));
       Physiolibrary.Types.Constants.FractionConst shuntFraction(k=0.02)
         annotation (Placement(transformation(extent={{-106,74},{-98,82}})));
-      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)") =
+      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)")=
           4.1665920538226e-8)
         annotation (Placement(transformation(extent={{-68,68},{-60,76}})));
       inner Interfaces.ModelSettings modelSettings(PB=106657.909932)
@@ -25854,7 +25854,7 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-14,90},{6,70}})));
       Physiolibrary.Types.Constants.FractionConst shuntFraction(k=0.02)
         annotation (Placement(transformation(extent={{-106,74},{-98,82}})));
-      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)") =
+      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)")=
           4.1665920538226e-8)
         annotation (Placement(transformation(extent={{-68,68},{-60,76}})));
       inner Interfaces.ModelSettings modelSettings(PB=106657.909932)
@@ -26428,7 +26428,7 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-14,90},{6,70}})));
       Physiolibrary.Types.Constants.FractionConst shuntFraction(k=0.02)
         annotation (Placement(transformation(extent={{-106,74},{-98,82}})));
-      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)") =
+      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)")=
           4.1665920538226e-8)
         annotation (Placement(transformation(extent={{-68,68},{-60,76}})));
       inner Interfaces.ModelSettings modelSettings(PB=106657.909932)
@@ -26862,7 +26862,7 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-14,90},{6,70}})));
       Physiolibrary.Types.Constants.FractionConst shuntFraction(k=0.02)
         annotation (Placement(transformation(extent={{-106,74},{-98,82}})));
-      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)") =
+      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)")=
           4.1665920538226e-8)
         annotation (Placement(transformation(extent={{-68,68},{-60,76}})));
       inner Interfaces.ModelSettings modelSettings(PB=106657.909932)
@@ -27289,7 +27289,7 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-14,90},{6,70}})));
       Physiolibrary.Types.Constants.FractionConst shuntFraction(k=0.02)
         annotation (Placement(transformation(extent={{-106,74},{-98,82}})));
-      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)") =
+      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)")=
           4.1665920538226e-8)
         annotation (Placement(transformation(extent={{-68,68},{-60,76}})));
       inner Interfaces.ModelSettings modelSettings(PB=106657.909932)
@@ -27821,7 +27821,7 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-14,90},{6,70}})));
       Physiolibrary.Types.Constants.FractionConst shuntFraction(k=0.02)
         annotation (Placement(transformation(extent={{-106,74},{-98,82}})));
-      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)") =
+      Interfaces.Shunt shunt(G_total(displayUnit="l/(mmHg.min)")=
           4.1665920538226e-8)
         annotation (Placement(transformation(extent={{-68,68},{-60,76}})));
       inner Interfaces.ModelSettings modelSettings(PB(displayUnit="Pa"),
