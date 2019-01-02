@@ -13401,6 +13401,10 @@ initialization")}));
       parameter Physiolibrary.Types.Fraction ventilationPerfusionFraction_step=0.75
                                                                              annotation(Dialog(tab=
               "Validation steps"));
+
+      parameter Boolean makeVAstep = false annotation(Dialog(tab = "Validation steps"));
+      parameter Physiolibrary.Types.Fraction VAstepRatio = 1.5 annotation(Dialog(tab = "Validation steps"));
+
       parameter Physiolibrary.Types.Time breakTime = 10*60*60 annotation(Dialog(tab = "Validation steps"));
       parameter Physiolibrary.Types.Time break2Time = 10*60*60 annotation(Dialog(tab = "Validation steps"));
       parameter Physiolibrary.Types.Time breakLength = 60*60*24*2 annotation(Dialog(tab = "Validation steps"));
@@ -13423,6 +13427,13 @@ initialization")}));
           makeVentilationPerfusionFractionStep then perfusionFraction else if time >
           break2Time and time < break2Time + breakLength then
           ventilationPerfusionFraction_step else perfusionFraction
+        "alveolar perfusion fraction of the first half of the lungs"
+        annotation (Dialog(enable=false, tab="Calculated vars"));
+
+      Physiolibrary.Types.VolumeFlowRate AlveolarVentilationFlowRate=if not
+          makeVAstep then  NormalAlveolarVentilation else if time >
+          breakTime and time < breakTime + breakLength then
+          NormalAlveolarVentilation*VAstepRatio else NormalAlveolarVentilation
         "alveolar perfusion fraction of the first half of the lungs"
         annotation (Dialog(enable=false, tab="Calculated vars"));
 
@@ -20743,12 +20754,12 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
             transformation(extent={{4,48},{44,88}}), iconTransformation(extent={{-120,60},
                 {-80,100}})));
 
-      Physiolibrary.Types.RealIO.VolumeFlowRateInput VA0 annotation (Placement(
-            transformation(extent={{-74,-100},{-34,-60}}), iconTransformation(
-              extent={{-120,-84},{-80,-44}})));
+      Physiolibrary.Types.VolumeFlowRate VA0 = modelSettings.AlveolarVentilationFlowRate;
       Real VRD "VR delayed";
       parameter Real VRD_T = 1;
       parameter Real corr = -0.07 "ikeda correction";
+      outer Interfaces.ModelSettings modelSettings
+        annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
     equation
       k1 = if pHa <= 7.4 then 0.22 else 0.0258;
     //   k6 = if pHa <= 7.4 then -12.734 else -5.003;
@@ -21791,10 +21802,6 @@ Ventilation"),
              6000)
         annotation (Placement(transformation(extent={{42,46},{50,54}})));
     equation
-      if not useMetabolicUaProduction then
-        HCO3.q = 0;
-      end if;
-
       connect(limitO2Metabolism.CO2FlowRate,CO2_MetabolicProduction. soluteFlow)
         annotation (Line(points={{88,40},{90,40},{90,24},{56,24}},        color=
              {0,0,127}));
@@ -22970,7 +22977,7 @@ Ventilation"),
       Interfaces.OneToMany oneToMany annotation (Placement(transformation(
             extent={{-4,-4},{4,4}},
             rotation=270,
-            origin={72,-44})));
+            origin={78,-44})));
 
       Ions.ISF_initialization iSF_initialization(permeabilities=modelSettings.IonPermeabilities,
           elementary_charges=modelSettings.IonElemChrgs,
@@ -23091,9 +23098,8 @@ Ventilation"),
           color={107,45,134},
           thickness=1));
       connect(oneToMany.y, ions.solutionVolume)
-        annotation (Line(points={{70,-48},{70,-56}},     color={0,0,127}));
-      connect(oneToMany.u, O2.solutionVolume)
-        annotation (Line(points={{70,-40},{70,84}},     color={0,0,127}));
+        annotation (Line(points={{76,-48},{76,-52},{70,-52},{70,-56}},
+                                                         color={0,0,127}));
       connect(plasma_ionChargeCorrection.pH, bloodABB_OSA.pH) annotation (Line(
             points={{-42,-56},{-54,-56},{-54,-34},{-92,-34}},color={0,0,127}));
       connect(plasma_ionChargeCorrection.port_b, membraneVariableCharges.particlesInside)
@@ -23171,6 +23177,8 @@ Ventilation"),
           points={{44,80},{52,80}},
           color={107,45,134},
           thickness=1));
+      connect(dO2.solutionVolume, oneToMany.u) annotation (Line(points={{70,84},
+              {74,84},{74,-40},{76,-40}}, color={0,0,127}));
       annotation (Diagram(coordinateSystem(extent={{-120,-140},{140,100}}),graphics={
             Line(
               points={{104,-34},{104,-12},{90,-12}},
@@ -33865,7 +33873,7 @@ Ventilation"),
                                   modelSettings(makeUAstep=true,
               breakTime(displayUnit="d") = 86400,
               breakLength(displayUnit="d") = 172800,
-                UAstepRatio=5));
+                UAstepRatio=3.0));
           end MetabolicAcidosisAcute;
 
           model MetabolicAcidosisChronic
@@ -33886,7 +33894,12 @@ Ventilation"),
 
           model RespiratoryAlkalosis
             extends Results.CompleteModel(
-                                  modelSettings(FiO2=0.1));
+                                  modelSettings(
+                makeVAstep=true,
+                breakTime(displayUnit="d") = 86400,
+                breakLength(displayUnit="h") = 36000,
+                UseRespiratoryCompensation=false,
+                VAstepRatio=2), alveolarVentilation(VRD_T=800));
           end RespiratoryAlkalosis;
         end AcidbaseDisorders;
       end validation;
@@ -33915,11 +33928,11 @@ Ventilation"),
           useIons=true,
           useOsmoticFlow=false,
           UseMetabolicUABalance=false,
-          UseRespiratoryCompensation=false,
           arterialO2conc_start=8.23882,
           arterialCO2conc_start=21.659,
           venousO2conc_start=6.03882,
-          venousCO2conc_start=23.529));
+          venousCO2conc_start=23.529,
+          UseRespiratoryCompensation=true));
      extends Modelica.Icons.Example;
      import Physiolibrary.Hydraulic;
       Acidbase.OSA.O2CO2 o2CO2
@@ -33939,9 +33952,6 @@ Ventilation"),
       Respiratory.AlveolarVentilation alveolarVentilation(VRD_T=80000.0,
           respiratoryCompensationEnabled=modelSettings.UseRespiratoryCompensation)
         annotation (Placement(transformation(extent={{170,36},{190,56}})));
-    Physiolibrary.Types.Constants.VolumeFlowRateConst VAi(k(displayUnit="ml/min")=
-           modelSettings.NormalAlveolarVentilation)
-      annotation (Placement(transformation(extent={{194,14},{183,24}})));
       replaceable
       Respiratory.LungsOneCompartment lungsOneCompartment constrainedby
         Respiratory.LungsBase
@@ -33961,8 +33971,6 @@ Ventilation"),
     connect(o2CO2.BEox, flowConcentrationMeasure1.BEox_conc) annotation (Line(
           points={{108.9,49.1765},{108.9,42},{92,42}},
                                                      color={0,0,127}));
-    connect(VAi.y,alveolarVentilation. VA0) annotation (Line(points={{181.625,19},
-            {164,19},{164,39.6},{170,39.6}},  color={0,0,127}));
     connect(alveolarVentilation.pO2a, o2CO2.pO2) annotation (Line(points={{170,54},
               {170,53.3176},{155.1,53.3176}},              color={0,0,127}));
     connect(alveolarVentilation.pCO2a, o2CO2.pCO2) annotation (Line(points={{170,
@@ -34032,7 +34040,8 @@ Ventilation"),
     model CompleteModel
       extends Results.SimplestCircWithGas(
                                   modelSettings(UseMetabolicUABalance=true,
-            UseRespiratoryCompensation=true));
+            UseRespiratoryCompensation=true,
+          useIons=false));
       Kidney.KidneyMetabolicCompensation ammoniumExcretion1 if
                                                      modelSettings.UseMetabolicUABalance
         annotation (Placement(transformation(extent={{-86,0},{-60,20}})));
