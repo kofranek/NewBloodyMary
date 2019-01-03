@@ -32721,6 +32721,14 @@ Ventilation"),
       Real pCO2_kPa = floor(o2CO2.pO2 + 0.5)/100;
       Real timeHours = time/60/60;
     end LungVentilationPerfusion;
+
+    model AcidBaseCompensations
+      extends Results.CompleteModel;
+      Real pO2_kPa = floor(o2CO2.pO2 + 0.5)/100;
+      Real pCO2_kPa = floor(o2CO2.pO2 + 0.5)/100;
+      Real timeHours = time/60/60;
+
+    end AcidBaseCompensations;
   end Visualization;
 
   package Validation
@@ -33878,7 +33886,7 @@ Ventilation"),
                                   modelSettings(makeUAstep=true,
               breakTime(displayUnit="d") = 86400,
               breakLength(displayUnit="d") = 172800,
-                UAstepRatio=3.0));
+                UAstepRatio=3));
           end MetabolicAcidosisAcute;
 
           model MetabolicAcidosisChronic
@@ -33905,9 +33913,10 @@ Ventilation"),
           model RespiratoryAlkalosis
             extends Results.CompleteModel(
                                   modelSettings(
+                fixedMetabolismCompensation=false,
                 makeVAstep=true,
                 breakTime(displayUnit="d") = 86400,
-                breakLength(displayUnit="h") = 36000,
+                breakLength(displayUnit="d") = 604800,
                 UseRespiratoryCompensation=false,
                 VAstepRatio=2), alveolarVentilation(VRD_T=800));
           end RespiratoryAlkalosis;
