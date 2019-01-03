@@ -14430,10 +14430,10 @@ limiter")}));
      // Real r2(start = 1);
     equation
 
-      if ratio > 2 and pHDiff > 0 then
+      if ratio > upperRatioLimit and pHDiff > 0 then
         // hco3 resorbtion limiter
         der(ratio)*T = pHDiff * k;
-      elseif ratio < 0.5 and pHDiff < 0 then
+      elseif ratio < lowerRatioLimit and pHDiff < 0 then
         der(ratio)*T = pHDiff * k;
       else
         der(ratio)*T = pHDiff;
@@ -20756,8 +20756,11 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
 
       Physiolibrary.Types.VolumeFlowRate VA0 = modelSettings.AlveolarVentilationFlowRate;
       Real VRD "VR delayed";
-      parameter Real VRD_T = 1;
+      parameter Physiolibrary.Types.Time VRD_T = 1;
       parameter Real corr = -0.07 "ikeda correction";
+      parameter Physiolibrary.Types.Time t_var = 1;
+      Real var( start = h_term);
+      Real h_term = (k1 * H + k6);
       outer Interfaces.ModelSettings modelSettings
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
     equation
@@ -20770,7 +20773,9 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       k5 = if PCOA > 40 then -32.08 else 160.11;
 
       H = 10 ^ (9 - pHa);
-      VR = k1 * H + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5) + k6 + corr;
+      // VR = k1 * H + k6 + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5)  + corr;
+      der(var)*t_var = h_term - var;
+      VR = var + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5)  + corr;
       // simplified case
       // VRD = VR;
       der(VRD) = (VR - VRD)/VRD_T "Time delay in alveolar ventilation control";
@@ -33881,15 +33886,20 @@ Ventilation"),
                                   modelSettings(makeUAstep=true,
               breakTime(displayUnit="d") = 864000,
               breakLength(displayUnit="d") = 86400000,
-              UAstepRatio=1.8));
+                UAstepRatio=1.8), ammoniumExcretion1(ammonium(
+                    metabolicRateNormalizer1(upperRatioLimit=3))));
           end MetabolicAcidosisChronic;
 
           model RespiratoryAcidosis
             extends Results.CompleteModel(
                                   modelSettings(
-              breakTime=7*24*60*60,
                 UseRespiratoryCompensation=true,makeCO2FractionStep=
-                                                                   true));
+                                                                   true,
+                breakTime(displayUnit="d") = 86400,
+                breakLength(displayUnit="d") = 604800),
+              alveolarVentilation(VRD_T=1, t_var=259200.0),
+              ammoniumExcretion1(ammonium(metabolicRateNormalizer1(T=172800.0)),
+                  titratableAcid(HalfTime(displayUnit="d") = 86400)));
           end RespiratoryAcidosis;
 
           model RespiratoryAlkalosis
@@ -34041,7 +34051,8 @@ Ventilation"),
       extends Results.SimplestCircWithGas(
                                   modelSettings(UseMetabolicUABalance=true,
             UseRespiratoryCompensation=true,
-          useIons=false));
+          useIons=false), alveolarVentilation(VRD_T(displayUnit="s") = 1, t_var(
+              displayUnit="h") = 86400));
       Kidney.KidneyMetabolicCompensation ammoniumExcretion1 if
                                                      modelSettings.UseMetabolicUABalance
         annotation (Placement(transformation(extent={{-86,0},{-60,20}})));
