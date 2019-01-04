@@ -20758,15 +20758,22 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       parameter Physiolibrary.Types.Time VRD_T = 1;
       parameter Real corr = -0.07 "ikeda correction";
       parameter Physiolibrary.Types.Time t_var = 1;
-      Real var( start = h_term);
+      Real var( start = h_term_start);
       // Real h_term = (k1 * H + k6);
-      parameter Real h_term = (0.22 * 10 ^ (9 - 7.4) -12.734);
+      parameter Real h_term_start = (0.22 * 10 ^ (9 - 7.4) -12.734);
+      parameter Real k1_ac = 0.22;
+      Real k6_ac;// = -12.734;
+      Real h_term = k1 * H + k6;
+      Real gas_term = k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5);
       outer Interfaces.ModelSettings modelSettings
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
+      parameter Real comp = -4;
     equation
-      k1 = if pHa <= 7.4 then 0.22 else 0.0258;
+      comp = k1_ac * 10 ^ (9 - 7.4) + k6_ac;
+
+      k1 = if pHa <= 7.4 then k1_ac else 0.0258;
     //   k6 = if pHa <= 7.4 then -12.734 else -5.003;
-      k6 = if pHa <= 7.4 then -12.734 else -5.003;
+      k6 = if pHa <= 7.4 then k6_ac else -5.003;
       k3 = 0.58;
       k4 = 3.496;
       k2 = if PCOA > 40 then 1 else 0.0396;
@@ -20775,7 +20782,7 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       H = 10 ^ (9 - pHa);
       // VR = k1 * H + k6 + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5)  + corr;
       der(var)*t_var = h_term - var;
-      VR = var + k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5)  + corr;
+      VR = var + gas_term  + corr;
       // simplified case
       // VRD = VR;
       der(VRD) = (VR - VRD)/VRD_T "Time delay in alveolar ventilation control";
@@ -33861,33 +33868,6 @@ Ventilation"),
       package validation
 
         package AcidbaseDisorders
-          model MetabolicAlkalosis
-            extends Results.CompleteModel;
-            Ions.vomiting vomiting(totalHCO3Amount=0.1)
-              annotation (Placement(transformation(extent={{-60,-40},{-80,-20}})));
-          equation
-            connect(vomiting.HCO3, veins.port_BEox) annotation (Line(
-                points={{-60,-30},{-40,-30},{-40,8},{-12,8},{-12,20}},
-                color={107,45,134},
-                thickness=1));
-            connect(veins.port_ions, vomiting.port_a) annotation (Line(
-                points={{-19.8,20},{-20,20},{-20,0},{-34,0},{-34,-38},{-60,-38}},
-                color={107,45,134},
-                thickness=1));
-
-            annotation (experiment(
-                StopTime=5000000,
-                __Dymola_NumberOfIntervals=5000,
-                Tolerance=1e-05));
-          end MetabolicAlkalosis;
-
-          model MetabolicAcidosisAcute
-            extends Results.CompleteModel(
-                                  modelSettings(makeUAstep=true,
-              breakTime(displayUnit="d") = 86400,
-              breakLength(displayUnit="d") = 172800,
-                UAstepRatio=3));
-          end MetabolicAcidosisAcute;
 
           model MetabolicAcidosisChronic
             extends Results.CompleteModel(
@@ -34224,6 +34204,37 @@ Ventilation"),
           breakLength(displayUnit="d") = 864000),
                           alveolarVentilation(VRD_T=800));
     end RespiratoryAlkalosis;
+
+    model MetabolicAlkalosis
+      extends Results.CompleteModel;
+      Ions.vomiting vomiting(totalHCO3Amount=0.1)
+        annotation (Placement(transformation(extent={{-60,-40},{-80,-20}})));
+    equation
+      connect(vomiting.HCO3, veins.port_BEox) annotation (Line(
+          points={{-60,-30},{-40,-30},{-40,8},{-12,8},{-12,20}},
+          color={107,45,134},
+          thickness=1));
+      connect(veins.port_ions, vomiting.port_a) annotation (Line(
+          points={{-19.8,20},{-20,20},{-20,0},{-34,0},{-34,-38},{-60,-38}},
+          color={107,45,134},
+          thickness=1));
+
+      annotation (experiment(
+          StopTime=5000000,
+          __Dymola_NumberOfIntervals=5000,
+          Tolerance=1e-05));
+    end MetabolicAlkalosis;
+
+    model MetabolicAcidosisAcute
+      extends Results.CompleteModel(
+                            modelSettings(
+          useIons=true,
+          breakTime(displayUnit="d") = 86400,
+          breakLength(displayUnit="h") = 3600,
+          makeUAstep=true,
+          UAstepRatio=100,
+          fixedMetabolismCompensation=true), alveolarVentilation(k1_ac=0.03));
+    end MetabolicAcidosisAcute;
   end Results;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
       Physiomodel(version="1.0.0")));
