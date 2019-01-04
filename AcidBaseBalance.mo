@@ -13875,7 +13875,6 @@ initialization")}));
       parameter Physiolibrary.Types.Time HalfTime = 8340;
       //(displayUnit="d");
       //Tau(unit="day");
-      Modelica.Blocks.Sources.Constant const(k = 0.0068) annotation(Placement(transformation(extent = {{66, 72}, {86, 92}})));
       F63 f63_1 annotation(Placement(transformation(extent = {{14, -18}, {58, 18}})));
     equation
       connect(aldEffect.u, fald) annotation(Line(points = {{12.16, -40}, {-32, -40}}, color = {0, 0, 127}));
@@ -13905,11 +13904,11 @@ initialization")}));
               textString="titratable
 acidity")}),                                                                                                                                                             Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
             graphics={Text(
-              extent={{60,-8},{102,10}},
+              extent={{-56,-20},{28,-4}},
               lineColor={28,108,200},
               textString="Damping effect of H+-urine pump  to pH",
               horizontalAlignment=TextAlignment.Left), Text(
-              extent={{62,-48},{104,-30}},
+              extent={{-62,-66},{30,-38}},
               lineColor={28,108,200},
               textString="Damping effect of H+-urine pump  to pH",
               horizontalAlignment=TextAlignment.Left)}),
@@ -20760,7 +20759,8 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       parameter Real corr = -0.07 "ikeda correction";
       parameter Physiolibrary.Types.Time t_var = 1;
       Real var( start = h_term);
-      Real h_term = (k1 * H + k6);
+      // Real h_term = (k1 * H + k6);
+      parameter Real h_term = (0.22 * 10 ^ (9 - 7.4) -12.734);
       outer Interfaces.ModelSettings modelSettings
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
     equation
@@ -32717,15 +32717,15 @@ Ventilation"),
     model LungVentilationPerfusion
      extends Results.SimplestCircWithGas(                redeclare Respiratory.LungsTwoCompartments
           lungsOneCompartment);
-      Real pO2_kPa = floor(o2CO2.pO2 + 0.5)/100;
-      Real pCO2_kPa = floor(o2CO2.pO2 + 0.5)/100;
+      Real pO2_kPa = floor(o2CO2.pO2/10 + 0.5)/100;
+      Real pCO2_kPa = floor(o2CO2.pCO2/10 + 0.5)/100;
       Real timeHours = time/60/60;
     end LungVentilationPerfusion;
 
     model AcidBaseCompensations
       extends Results.CompleteModel;
-      Real pO2_kPa = floor(o2CO2.pO2 + 0.5)/100;
-      Real pCO2_kPa = floor(o2CO2.pO2 + 0.5)/100;
+      Real pO2_kPa = floor(o2CO2.pO2/10 + 0.5)/100;
+      Real pCO2_kPa = floor(o2CO2.pCO2/10 + 0.5)/100;
       Real timeHours = time/60/60;
 
     end AcidBaseCompensations;
@@ -33898,28 +33898,6 @@ Ventilation"),
                     metabolicRateNormalizer1(upperRatioLimit=3))));
           end MetabolicAcidosisChronic;
 
-          model RespiratoryAcidosis
-            extends Results.CompleteModel(
-                                  modelSettings(
-                UseRespiratoryCompensation=true,makeCO2FractionStep=
-                                                                   true,
-                breakTime(displayUnit="d") = 86400,
-                breakLength(displayUnit="d") = 604800),
-              alveolarVentilation(VRD_T=1, t_var=259200.0),
-              ammoniumExcretion1(ammonium(metabolicRateNormalizer1(T=172800.0)),
-                  titratableAcid(HalfTime(displayUnit="d") = 86400)));
-          end RespiratoryAcidosis;
-
-          model RespiratoryAlkalosis
-            extends Results.CompleteModel(
-                                  modelSettings(
-                fixedMetabolismCompensation=false,
-                makeVAstep=true,
-                breakTime(displayUnit="d") = 86400,
-                breakLength(displayUnit="d") = 604800,
-                UseRespiratoryCompensation=false,
-                VAstepRatio=2), alveolarVentilation(VRD_T=800));
-          end RespiratoryAlkalosis;
         end AcidbaseDisorders;
       end validation;
 
@@ -34220,6 +34198,32 @@ Ventilation"),
           color={107,45,134},
           thickness=1));
     end TissuePerfusion;
+
+    model RespiratoryAcidosis
+      extends Results.CompleteModel(
+                            modelSettings(
+          UseRespiratoryCompensation=true,makeCO2FractionStep=
+                                                             true,
+          breakTime(displayUnit="d") = 86400,
+          breakLength(displayUnit="d") = 604800,
+          useIons=true),
+        alveolarVentilation(VRD_T=1, t_var=259200.0),
+        ammoniumExcretion1(ammonium(metabolicRateNormalizer1(T=172800.0)),
+            titratableAcid(HalfTime(displayUnit="d") = 86400)));
+    end RespiratoryAcidosis;
+
+    model RespiratoryAlkalosis
+      extends Results.CompleteModel(
+                            modelSettings(
+          fixedMetabolismCompensation=false,
+          makeVAstep=true,
+          breakTime(displayUnit="d") = 86400,
+          UseRespiratoryCompensation=false,
+          useIons=true,
+          VAstepRatio=2,
+          breakLength(displayUnit="d") = 864000),
+                          alveolarVentilation(VRD_T=800));
+    end RespiratoryAlkalosis;
   end Results;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
       Physiomodel(version="1.0.0")));
