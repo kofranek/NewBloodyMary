@@ -13870,7 +13870,8 @@ initialization")}));
         "Basal rate of titratable acids"                                                                                                     annotation(Placement(transformation(extent = {{-58, 78}, {-44, 94}})));
       F62 f62_1 annotation(Placement(transformation(extent = {{16, 36}, {56, 68}})));
       AldEffect aldEffect annotation(Placement(transformation(extent = {{14, -58}, {60, -22}})));
-      Physiolibrary.Blocks.Math.Integrator int(k = Modelica.Math.log(2) / HalfTime, y_start = 7.4) annotation(Placement(transformation(extent = {{-36, 42}, {-16, 62}})));
+      Physiolibrary.Blocks.Math.Integrator int(                                     y_start = 7.4, k=1/
+            HalfTime)                                                                              annotation(Placement(transformation(extent = {{-36, 42}, {-16, 62}})));
       Modelica.Blocks.Math.Feedback feedback annotation(Placement(transformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin = {-64, 52})));
       parameter Physiolibrary.Types.Time HalfTime = 8340;
       //(displayUnit="d");
@@ -14152,7 +14153,8 @@ acidity")}),                                                                    
                 80}})));
       Physiolibrary.Types.Constants.ConcentrationConst Chloride(k = 100) annotation(Placement(transformation(extent={{-98,24},
                 {-82,42}})));
-      TitratableAcid titratableAcid(HalfTime = 8280) annotation(Placement(transformation(extent = {{-50, -68}, {-8, -30}}, origin={12.105,
+      TitratableAcid titratableAcid(HalfTime(displayUnit="h") = 21600)
+                                                     annotation(Placement(transformation(extent = {{-50, -68}, {-8, -30}}, origin={12.105,
                 -8},                                                                                                                             rotation = 0), visible = true));
       Physiolibrary.Types.Constants.pHConst pHu(k = 6) annotation(Placement(transformation(extent={{-94,-58},
                 {-86,-50}})));
@@ -20760,20 +20762,24 @@ Temperature")}),       Diagram(coordinateSystem(preserveAspectRatio=false)));
       parameter Physiolibrary.Types.Time t_var = 1;
       Real var( start = h_term_start);
       // Real h_term = (k1 * H + k6);
-      parameter Real h_term_start = (0.22 * 10 ^ (9 - 7.4) -12.734);
+      constant Real h_term_start = (0.22 * 10 ^ (9 - 7.4) -12.734);
       parameter Real k1_ac = 0.22;
       Real k6_ac;// = -12.734;
+      parameter Real k1_al = 0.0258;
+      Real k6_al;// -5.003
       Real h_term = k1 * H + k6;
       Real gas_term = k2 * (k3 + k4 / (PO2A - 32)) * (PCOA + k5);
       outer Interfaces.ModelSettings modelSettings
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
-      parameter Real comp = -4;
-    equation
-      comp = k1_ac * 10 ^ (9 - 7.4) + k6_ac;
+      parameter Real comp = h_term_start;
 
-      k1 = if pHa <= 7.4 then k1_ac else 0.0258;
-    //   k6 = if pHa <= 7.4 then -12.734 else -5.003;
-      k6 = if pHa <= 7.4 then k6_ac else -5.003;
+    equation
+      comp = k1_ac * 10 ^ (9 - 7.4) + k6_ac "computes k6 for acidosis";
+      comp = k1_al * 10 ^ (9 - 7.4) + k6_al "computes k6 for alkalosis";
+    //k1 = if pHa <= 7.4 then 0.22 else 0.0258;
+      k1 = if pHa <= 7.4 then k1_ac else k1_al;
+    //k6 = if pHa <= 7.4 then -12.734 else -5.003;
+      k6 = if pHa <= 7.4 then k6_ac else k6_al;
       k3 = 0.58;
       k4 = 3.496;
       k2 = if PCOA > 40 then 1 else 0.0396;
@@ -20805,7 +20811,8 @@ Ventilation"),
               lineColor={0,0,255},
               pattern=LinePattern.Dash)}),
                                     Diagram(coordinateSystem(preserveAspectRatio=false,
-              extent={{-100,-100},{100,100}})));
+              extent={{-100,-100},{100,100}})),
+        experiment(StopTime=864000, Interval=150));
     end AlveolarVentilation;
   end Respiratory;
 
@@ -34017,9 +34024,10 @@ Ventilation"),
     model CompleteModel
       extends Results.SimplestCircWithGas(
                                   modelSettings(UseMetabolicUABalance=true,
-            UseRespiratoryCompensation=true,
-          useIons=false), alveolarVentilation(VRD_T(displayUnit="s") = 1, t_var(
-              displayUnit="h") = 86400));
+            UseRespiratoryCompensation=true),
+                          alveolarVentilation(VRD_T(displayUnit="s") = 1,
+          t_var(displayUnit="h") = 21600,
+          k1_ac=0.03));
       Kidney.KidneyMetabolicCompensation ammoniumExcretion1 if
                                                      modelSettings.UseMetabolicUABalance
         annotation (Placement(transformation(extent={{-86,0},{-60,20}})));
@@ -34205,9 +34213,23 @@ Ventilation"),
                           alveolarVentilation(VRD_T=800));
     end RespiratoryAlkalosis;
 
+    model MetabolicAcidosisAcute
+      extends Results.CompleteModel(
+                            modelSettings(
+          useIons=true,
+          breakTime(displayUnit="d") = 86400,
+          breakLength(displayUnit="h") = 3600,
+          makeUAstep=true,
+          fixedMetabolismCompensation=false,
+          UAstepRatio=100),                  alveolarVentilation(k1_ac=0.03, t_var=
+              21600));
+      annotation (experiment(StopTime=864000, Interval=150));
+    end MetabolicAcidosisAcute;
+
     model MetabolicAlkalosis
-      extends Results.CompleteModel;
-      Ions.vomiting vomiting(totalHCO3Amount=0.1)
+      extends Results.CompleteModel(alveolarVentilation(k1_al=2.5),
+          ammoniumExcretion1(titratableAcid(HalfTime=172800)));
+      Ions.vomiting vomiting(totalHCO3Amount=0.15,pulse(startTime=86400))
         annotation (Placement(transformation(extent={{-60,-40},{-80,-20}})));
     equation
       connect(vomiting.HCO3, veins.port_BEox) annotation (Line(
@@ -34219,22 +34241,9 @@ Ventilation"),
           color={107,45,134},
           thickness=1));
 
-      annotation (experiment(
-          StopTime=5000000,
-          __Dymola_NumberOfIntervals=5000,
-          Tolerance=1e-05));
+      annotation (experiment(StopTime=518400, Interval=149.999904));
     end MetabolicAlkalosis;
 
-    model MetabolicAcidosisAcute
-      extends Results.CompleteModel(
-                            modelSettings(
-          useIons=true,
-          breakTime(displayUnit="d") = 86400,
-          breakLength(displayUnit="h") = 3600,
-          makeUAstep=true,
-          UAstepRatio=100,
-          fixedMetabolismCompensation=true), alveolarVentilation(k1_ac=0.03));
-    end MetabolicAcidosisAcute;
   end Results;
   annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
       Physiomodel(version="1.0.0")));
