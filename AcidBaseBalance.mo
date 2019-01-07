@@ -34031,7 +34031,8 @@ Ventilation"),
       Kidney.KidneyMetabolicCompensation ammoniumExcretion1 if
                                                      modelSettings.UseMetabolicUABalance
         annotation (Placement(transformation(extent={{-86,0},{-60,20}})));
-      Tissues.ISF iSF annotation (Placement(transformation(
+      Tissues.ISF iSF(iSF_initialization(isf_dCO2=0.0, isf_dHCO3=0.0))
+                      annotation (Placement(transformation(
             extent={{-14,-12},{14,12}},
             rotation=270,
             origin={-12,-30})));
