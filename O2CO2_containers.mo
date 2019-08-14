@@ -9,14 +9,14 @@ package O2CO2_containers
     Physiolibrary.Types.RealIO.ConcentrationOutput ctCO2_array[numberOfIntervals +
       1]                                                                            annotation (
         Placement(transformation(extent={{92,70},{112,90}}),  iconTransformation(
-            extent={{92,-40},{112,-20}})));
+            extent={{90,0},{110,20}})));
 
     Physiolibrary.Types.RealIO.PressureInput PO2 annotation (Placement(
           transformation(extent={{-68,28},{-50,46}}),    iconTransformation(
             extent={{-114,28},{-94,48}})));
     Physiolibrary.Types.RealIO.ConcentrationOutput ctO2_array[numberOfIntervals +
       1] annotation (Placement(transformation(extent={{94,52},{114,72}}),
-          iconTransformation(extent={{92,-76},{112,-56}})));
+          iconTransformation(extent={{90,-20},{110,0}})));
 
 
     parameter Physiolibrary.Types.Pressure dPCO2 = (pCO2max-pCO2min)/numberOfIntervals;
@@ -36,13 +36,13 @@ package O2CO2_containers
           transformation(extent={{-66,38},{-52,52}}),  iconTransformation(extent={
               {-114,-6},{-94,14}})));
     Physiolibrary.Types.RealIO.ConcentrationOutput ctCO2 annotation (Placement(
-          transformation(extent={{86,14},{106,34}}),  iconTransformation(extent={{88,64},
-              {108,84}})));
+          transformation(extent={{86,14},{106,34}}),  iconTransformation(extent={{90,80},
+              {110,100}})));
     Physiolibrary.Types.RealIO.ConcentrationOutput ctO2 annotation (Placement(
-          transformation(extent={{76,22},{96,42}}),iconTransformation(extent={{90,
-              38},{110,58}})));
+          transformation(extent={{76,22},{96,42}}),iconTransformation(extent={{90,60},
+              {110,80}})));
     Physiolibrary.Types.RealIO.pHOutput pH annotation (Placement(transformation(
-            extent={{80,0},{100,20}}),   iconTransformation(extent={{92,10},{112,30}})));
+            extent={{80,0},{100,20}}),   iconTransformation(extent={{90,40},{110,60}})));
     NewBloodyMary_testing.OSA.PO2PCO2 pO2pCO2
       annotation (Placement(transformation(extent={{-28,-48},{58,42}})));
     Physiolibrary.Types.RealIO.TemperatureInput temp annotation (Placement(
@@ -50,8 +50,8 @@ package O2CO2_containers
                                                         iconTransformation(extent=
              {{-116,-66},{-94,-44}})));
     Physiolibrary.Types.RealIO.FractionOutput sO2 annotation (Placement(
-          transformation(extent={{86,-18},{106,2}}), iconTransformation(extent={{92,
-              -16},{112,4}})));
+          transformation(extent={{86,-18},{106,2}}), iconTransformation(extent={{90,20},
+              {110,40}})));
     Modelica.Blocks.Interfaces.RealInput Hb_g_per_dl
       "normal 15 g/dl; mmol/l = Hb_g_dl/16.114" annotation (Placement(
           transformation(extent={{-106,68},{-76,98}}), iconTransformation(extent={
@@ -61,14 +61,34 @@ package O2CO2_containers
     Modelica.Blocks.Sources.Constant const(k=1.6114)
       annotation (Placement(transformation(extent={{-60,60},{-40,80}})));
     Physiolibrary.Types.RealIO.ConcentrationOutput ctHb annotation (Placement(
-          transformation(extent={{26,74},{46,94}}),iconTransformation(extent={{92,-104},
-              {112,-84}})));
+          transformation(extent={{26,74},{46,94}}),iconTransformation(extent={{-10,-10},
+              {10,10}},
+          rotation=270,
+          origin={72,-108})));
     inner ModelSettings modelSettings
       annotation (Placement(transformation(extent={{-94,-94},{-74,-74}})));
 
       NewBloodyMary_testing.OSA.PO2PCO2 ctCO2_curve[numberOfIntervals+1];
       NewBloodyMary_testing.OSA.PO2PCO2 ctO2_curve[numberOfIntervals+1];
 
+    Physiolibrary.Types.RealIO.ConcentrationOutput dctCO2_array
+                                                              [numberOfIntervals +
+      1]                                                                            annotation (
+        Placement(transformation(extent={{130,66},{150,86}}), iconTransformation(
+            extent={{90,-40},{110,-20}})));
+    Physiolibrary.Types.RealIO.ConcentrationOutput dctO2_array
+                                                             [numberOfIntervals +
+      1] annotation (Placement(transformation(extent={{130,48},{150,68}}),
+          iconTransformation(extent={{90,-60},{110,-40}})));
+    Physiolibrary.Types.RealIO.ConcentrationOutput r_ctCO2_array
+                                                              [numberOfIntervals +
+      1]                                                                            annotation (
+        Placement(transformation(extent={{130,66},{150,86}}), iconTransformation(
+            extent={{90,-80},{110,-60}})));
+    Physiolibrary.Types.RealIO.ConcentrationOutput r_ctO2_array
+                                                             [numberOfIntervals +
+      1] annotation (Placement(transformation(extent={{130,48},{150,68}}),
+          iconTransformation(extent={{90,-100},{110,-80}})));
   equation
      pO2pCO2.ctAlb = modelSettings.cAlb;
      pO2pCO2.ctPi = modelSettings.cPi;
@@ -97,6 +117,12 @@ package O2CO2_containers
 
      ctCO2_curve[i].pCO2=pCO2array[i];
      ctCO2_array[i]=ctCO2_curve[i].ctCO2;
+     if (i==1) then
+       dctCO2_array[i]=ctCO2_array[i];
+     else
+       dctCO2_array[i]=ctCO2_array[i]-ctCO2_array[i-1];
+     end if;
+     r_ctCO2_array[i]=sqrt(dctCO2_array[i]);
 
 
 
@@ -117,6 +143,13 @@ package O2CO2_containers
 
      ctO2_curve[i].pO2=pO2array[i];
      ctO2_array[i]=ctO2_curve[i].ctO2;
+
+     if (i==1) then
+       dctO2_array[i]=ctO2_array[i];
+     else
+       dctO2_array[i]=ctO2_array[i]-ctO2_array[i-1];
+     end if;
+     r_ctO2_array[i]=sqrt(dctO2_array[i]);
 
     end for;
 

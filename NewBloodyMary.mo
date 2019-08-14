@@ -1566,11 +1566,11 @@ package NewBloodyMary_testing
             rotation=0,
             origin={-110,-60})));
       ctO2content bloodctO2content
-        annotation (Placement(transformation(extent={{-80,20},{-20,80}})));
+        annotation (Placement(transformation(extent={{-82,20},{-22,80}})));
       ctCO2content bloodctCO2content
         annotation (Placement(transformation(extent={{26,20},{86,80}})));
       BEINV vanSlykeEquation
-        annotation (Placement(transformation(extent={{-34,-74},{28,-14}})));
+        annotation (Placement(transformation(extent={{-34,-72},{28,-12}})));
       Physiolibrary.Types.RealIO.ConcentrationOutput ceHb
         "effiective concentration of hemoglobin (mmol/l)" annotation (Placement(
             transformation(
@@ -1591,55 +1591,60 @@ package NewBloodyMary_testing
     equation
       connect(bloodctCO2content.pCO2, pCO2)
         annotation (Line(points={{23,74},{23,74},{11,74}}, color={0,0,127}));
-      connect(bloodctO2content.pCO2, pCO2) annotation (Line(points={{-83,50},{-100,
-              50},{-100,98},{18,98},{18,74},{11,74}}, color={0,0,127}));
+      connect(bloodctO2content.pCO2, pCO2) annotation (Line(points={{-85,50},{
+              -100,50},{-100,98},{18,98},{18,74},{11,74}},
+                                                      color={0,0,127}));
       connect(bloodctO2content.pO2, pO2)
-        annotation (Line(points={{-83,74},{-94,74}}, color={0,0,127}));
+        annotation (Line(points={{-85,74},{-94,74}}, color={0,0,127}));
       connect(vanSlykeEquation.BEox, BEox)
-        annotation (Line(points={{-37.1,-20},{-54,-20}}, color={0,0,127}));
-      connect(vanSlykeEquation.pCO2, pCO2) annotation (Line(points={{-37.1,-32},
-              {-100,-32},{-100,98},{18,98},{18,74},{11,74}}, color={0,0,127}));
+        annotation (Line(points={{-37.1,-18},{-46,-18},{-46,-20},{-54,-20}},
+                                                         color={0,0,127}));
+      connect(vanSlykeEquation.pCO2, pCO2) annotation (Line(points={{-37.1,-30},
+              {-100,-30},{-100,98},{18,98},{18,74},{11,74}}, color={0,0,127}));
       connect(vanSlykeEquation.ctHb, ctHb)
-        annotation (Line(points={{-37.1,-44},{-76,-44}}, color={0,0,127}));
-      connect(bloodctO2content.ctHb, ctHb) annotation (Line(points={{-17,74},{2,
+        annotation (Line(points={{-37.1,-42},{-56,-42},{-56,-44},{-76,-44}},
+                                                         color={0,0,127}));
+      connect(bloodctO2content.ctHb, ctHb) annotation (Line(points={{-19,74},{2,
               74},{2,-4},{62,-4},{62,-92},{-66,-92},{-66,-44},{-76,-44}}, color=
              {0,0,127}));
-      connect(ctAlb, vanSlykeEquation.cAlb) annotation (Line(points={{-61,-51.5},{-37.5,
-              -51.5},{-37.5,-51.8},{-37.1,-51.8}},    color={0,0,127}));
-      connect(bloodctO2content.T, T) annotation (Line(points={{-83,38},{-89,38},
+      connect(ctAlb, vanSlykeEquation.cAlb) annotation (Line(points={{-61,-51.5},
+              {-37.5,-51.5},{-37.5,-49.8},{-37.1,-49.8}},
+                                                      color={0,0,127}));
+      connect(bloodctO2content.T, T) annotation (Line(points={{-85,38},{-89,38},
               {-89,-8},{-98,-8}}, color={0,0,127}));
-      connect(T, vanSlykeEquation.temp) annotation (Line(points={{-98,-8},{-88,-8},{
-              -88,-73.4},{-37.1,-73.4}},  color={0,0,127}));
+      connect(T, vanSlykeEquation.temp) annotation (Line(points={{-98,-8},{-88,
+              -8},{-88,-71.4},{-37.1,-71.4}},
+                                          color={0,0,127}));
       connect(bloodctCO2content.T, vanSlykeEquation.temp) annotation (Line(
-            points={{23,50},{6,50},{6,-8},{-88,-8},{-88,-73.4},{-37.1,-73.4}},
+            points={{23,50},{6,50},{6,-8},{-88,-8},{-88,-71.4},{-37.1,-71.4}},
             color={0,0,127}));
       connect(bloodctCO2content.ctHb, ctHb) annotation (Line(points={{23,38},{2,
               38},{2,-4},{62,-4},{62,-92},{-66,-92},{-66,-44},{-76,-44}}, color=
              {0,0,127}));
       connect(bloodctO2content.sO2, bloodctCO2content.sO2) annotation (Line(
-            points={{-32,17},{-32,6},{16,6},{16,26},{23,26}}, color={0,0,127}));
+            points={{-34,17},{-34,6},{16,6},{16,26},{23,26}}, color={0,0,127}));
       connect(cDPG, bloodctO2content.cDPG)
-        annotation (Line(points={{-4,62},{-17,62}}, color={0,0,127}));
+        annotation (Line(points={{-4,62},{-19,62}}, color={0,0,127}));
       connect(FMetHb, bloodctO2content.FMetHb)
-        annotation (Line(points={{-4,50},{-17,50}}, color={0,0,127}));
+        annotation (Line(points={{-4,50},{-19,50}}, color={0,0,127}));
       connect(FHbF, bloodctO2content.FHbF)
-        annotation (Line(points={{-4,38},{-17,38}}, color={0,0,127}));
+        annotation (Line(points={{-4,38},{-19,38}}, color={0,0,127}));
       connect(FHbCO, bloodctO2content.FCOHb)
-        annotation (Line(points={{-4,26},{-17,26}}, color={0,0,127}));
+        annotation (Line(points={{-4,26},{-19,26}}, color={0,0,127}));
       connect(vanSlykeEquation.pH, bloodctCO2content.pH) annotation (Line(
-            points={{31.1,-44},{44,-44},{44,16},{12,16},{12,62},{23,62}}, color=
+            points={{31.1,-42},{44,-42},{44,16},{12,16},{12,62},{23,62}}, color=
              {0,0,127}));
       connect(bloodctO2content.pH, bloodctCO2content.pH) annotation (Line(
-            points={{-83,62.6},{-98,62.6},{-98,92},{4,92},{4,62},{23,62}},
+            points={{-85,62.6},{-98,62.6},{-98,92},{4,92},{4,62},{23,62}},
             color={0,0,127}));
       connect(pH, bloodctCO2content.pH) annotation (Line(points={{56,-44},{44,
               -44},{44,16},{12,16},{12,62},{23,62}}, color={0,0,127}));
       connect(sO2, bloodctCO2content.sO2) annotation (Line(points={{30,6},{16,6},
               {16,26},{23,26}}, color={0,0,127}));
       connect(bloodctO2content.cdO2p, cdCO2)
-        annotation (Line(points={{-56,17},{-56,0},{-45,0}}, color={0,0,127}));
-      connect(bloodctO2content.totalO2, ctO2) annotation (Line(points={{-44,17},
-              {-44,0},{-28.5,0}}, color={0,0,127}));
+        annotation (Line(points={{-58,17},{-58,0},{-45,0}}, color={0,0,127}));
+      connect(bloodctO2content.totalO2, ctO2) annotation (Line(points={{-46,17},
+              {-46,0},{-28.5,0}}, color={0,0,127}));
       connect(bloodctCO2content.ctCO2, ctCO2)
         annotation (Line(points={{89,62},{101,62}}, color={0,0,127}));
       connect(bloodctCO2content.cHCO3, cHCO3)
@@ -1647,12 +1652,13 @@ package NewBloodyMary_testing
       connect(bloodctCO2content.cdCO2p, cdO2)
         annotation (Line(points={{89,38},{101,38}}, color={0,0,127}));
       connect(bloodctO2content.ceHb, ceHb)
-        annotation (Line(points={{-68,17},{-68,0},{-58,0}}, color={0,0,127}));
-      connect(vanSlykeEquation.cPi, ctPi) annotation (Line(points={{-37.1,-59},{-45.55,
-              -59},{-45.55,-59.5},{-59,-59.5}}, color={0,0,127}));
-      connect(vanSlykeEquation.sO2, bloodctCO2content.sO2) annotation (Line(points={
-              {-37.1,-66.2},{-54,-66.2},{-54,-80},{76,-80},{76,-2},{16,-2},{16,26},{
-              23,26}}, color={0,0,127}));
+        annotation (Line(points={{-70,17},{-70,0},{-58,0}}, color={0,0,127}));
+      connect(vanSlykeEquation.cPi, ctPi) annotation (Line(points={{-37.1,-57},
+              {-45.55,-57},{-45.55,-59.5},{-59,-59.5}},
+                                                color={0,0,127}));
+      connect(vanSlykeEquation.sO2, bloodctCO2content.sO2) annotation (Line(points={{-37.1,
+              -64.2},{-54,-64.2},{-54,-80},{76,-80},{76,-2},{16,-2},{16,26},{23,
+              26}},    color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-100,-100},
                 {100,100}}),       graphics={
             Rectangle(
@@ -2660,7 +2666,7 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-68,38},{-60,46}})));
         Physiolibrary.Types.Constants.TemperatureConst temperature(k=310.15)
           annotation (Placement(transformation(extent={{-72,-4},{-64,4}})));
-        Physiolibrary.Types.Constants.ConcentrationConst BEox(k=-19)
+        Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
           annotation (Placement(transformation(extent={{-82,70},{-74,78}})));
         Physiolibrary.Types.Constants.PressureConst pO2(k(displayUnit="kPa")=
             13300)
@@ -3064,6 +3070,77 @@ package NewBloodyMary_testing
           VCO2ml:=VCO2*22.414;
           VO2ml :=VO2*22.414;
       end testAlvEquil;
+
+      model TestPO2PCO2_test_curve
+
+        PO2PCO2 pO2PCO2_1
+          annotation (Placement(transformation(extent={{-14,-2},{56,66}})));
+        Physiolibrary.Types.Constants.PressureConst pCO2(k(displayUnit="kPa")=
+               5330)
+          annotation (Placement(transformation(extent={{-90,48},{-82,56}})));
+        Physiolibrary.Types.Constants.ConcentrationConst ctHb(k=8)
+          annotation (Placement(transformation(extent={{-60,40},{-52,48}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cAlb(k=0.66)
+          annotation (Placement(transformation(extent={{-82,34},{-74,42}})));
+        Physiolibrary.Types.Constants.TemperatureConst temperature(k=310.15)
+          annotation (Placement(transformation(extent={{-72,-4},{-64,4}})));
+        Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
+          annotation (Placement(transformation(extent={{-82,70},{-74,78}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cDPG(k=5)
+          annotation (Placement(transformation(extent={{-80,22},{-72,30}})));
+        Physiolibrary.Types.Constants.FractionConst fCOHb(k=0.005)
+          annotation (Placement(transformation(extent={{-38,10},{-30,18}})));
+        Physiolibrary.Types.Constants.FractionConst fMetHb1(k=0.005)
+          annotation (Placement(transformation(extent={{-60,16},{-52,24}})));
+        Physiolibrary.Types.Constants.FractionConst fHbF(k=0.005)
+          annotation (Placement(transformation(extent={{-54,4},{-46,12}})));
+        Physiolibrary.Types.Constants.ConcentrationConst cPi(k=1.15)
+          annotation (Placement(transformation(extent={{-58,30},{-50,38}})));
+        Modelica.Blocks.Sources.Ramp ramp(
+          duration=1000,
+          height=0.99,
+          offset=0.01)
+          annotation (Placement(transformation(extent={{-86,-62},{-50,-26}})));
+        Physiolibrary.Types.Constants.PressureConst pO2_max(k(displayUnit=
+                "mmHg") = 133.322387415)
+          annotation (Placement(transformation(extent={{-58,-90},{-50,-82}})));
+        Modelica.Blocks.Math.Product product
+          annotation (Placement(transformation(extent={{-18,-60},{2,-40}})));
+      equation
+        connect(pCO2.y, pO2PCO2_1.pCO2) annotation (Line(points={{-81,52},{
+                -17.5,52},{-17.5,51.72}},
+                                       color={0,0,127}));
+        connect(BEox.y, pO2PCO2_1.BEox) annotation (Line(points={{-73,74},{-42,
+                74},{-42,65.32},{-17.5,65.32}},
+                                              color={0,0,127}));
+        connect(pO2PCO2_1.ctHb, ctHb.y) annotation (Line(points={{-17.5,44.92},
+                {-22,44.92},{-22,44},{-51,44}},
+                                              color={0,0,127}));
+        connect(cAlb.y, pO2PCO2_1.ctAlb) annotation (Line(points={{-73,38},{-32,
+                38},{-32,38.12},{-17.5,38.12}},
+                                              color={0,0,127}));
+        connect(cDPG.y, pO2PCO2_1.cDPG) annotation (Line(points={{-71,26},{
+                -17.5,26},{-17.5,25.2}}, color={0,0,127}));
+        connect(temperature.y, pO2PCO2_1.T) annotation (Line(points={{-63,0},{
+                -42,0},{-42,-2},{-17.5,-2}},   color={0,0,127}));
+        connect(fHbF.y, pO2PCO2_1.FHbF) annotation (Line(points={{-45,8},{-32,8},
+                {-32,4.8},{-17.5,4.8}}, color={0,0,127}));
+        connect(fCOHb.y, pO2PCO2_1.FHbCO) annotation (Line(points={{-29,14},{
+                -22,14},{-22,11.6},{-17.5,11.6}},
+                                              color={0,0,127}));
+        connect(fMetHb1.y, pO2PCO2_1.FMetHb) annotation (Line(points={{-51,20},
+                {-34,20},{-34,18.4},{-17.5,18.4}}, color={0,0,127}));
+        connect(cPi.y, pO2PCO2_1.ctPi) annotation (Line(points={{-49,34},{-34,
+                34},{-34,31.32},{-17.5,31.32}}, color={0,0,127}));
+        connect(product.u1, ramp.y)
+          annotation (Line(points={{-20,-44},{-48.2,-44}}, color={0,0,127}));
+        connect(product.u2, pO2_max.y) annotation (Line(points={{-20,-56},{-38,
+                -56},{-38,-86},{-49,-86}}, color={0,0,127}));
+        connect(pO2PCO2_1.pO2, pO2_max.y) annotation (Line(points={{-17.5,58.52},
+                {-38,58.52},{-38,-86},{-49,-86}}, color={0,0,127}));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
+                  -100},{100,100}})));
+      end TestPO2PCO2_test_curve;
     end testOSA;
 
     model AlvEq
@@ -6017,8 +6094,7 @@ package NewBloodyMary_testing
             extent={{-20,-20},{20,20}},
             rotation=270,
             origin={-20,-120})));
-      Physiolibrary.Types.RealIO.pHOutput pH_ery "intracellular erytrocytes pH"
-                                                                                  annotation (Placement(
+      Physiolibrary.Types.RealIO.pHOutput pH_ery "intracellular erytrocytes pH"   annotation (Placement(
             transformation(extent={{-14,-98},{26,-58}}),iconTransformation(
             extent={{-20,-20},{20,20}},
             rotation=270,
@@ -12315,8 +12391,8 @@ parameters")}));
             period=15,
             nperiod=1,
             startTime(displayUnit="s") = 20000,
-            amplitude=1e-3), unlimitedSolutePump(SoluteFlow(displayUnit="mol/s")
-               = 1, useSoluteFlowInput=true))
+            amplitude=1e-3), unlimitedSolutePump(SoluteFlow(displayUnit="mol/s")=
+                 1, useSoluteFlowInput=true))
           annotation (Placement(transformation(extent={{80,0},{100,20}})));
       equation
         connect(BloodBE.solutionVolume,bloodVolume. y) annotation (Line(points={{58,-24},
@@ -12785,7 +12861,97 @@ parameters")}));
 
   end Icons;
 
-  annotation (uses(Modelica(version="3.2.1"), Physiolibrary(version="2.3.1"),
+  model test_disoc
+    Modelica.Blocks.Sources.Ramp                      pO2_const(
+      duration=10,
+      offset=133,
+      height=26000)
+      annotation (Placement(transformation(extent={{-138,92},{-130,100}})));
+    Physiolibrary.Types.RealIO.FractionOutput sO2 annotation(Placement(transformation(extent = {{-8, -8}, {8, 8}}, rotation = 0, origin={4,8}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,58})));
+    Physiolibrary.Types.RealIO.ConcentrationOutput cHCO3(displayUnit="mmol/l")
+      "outgoing concentration of HCO3"                                                                            annotation(Placement(transformation(extent = {{-7, -7}, {7, 7}}, rotation = 0, origin={5,116}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,78})));
+    Physiolibrary.Types.RealIO.ConcentrationInput BEox annotation(Placement(transformation(extent={{-160,
+              -40},{-120,0}}),                                                                                                 iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={-186,110})));
+    Physiolibrary.Types.RealIO.pHOutput pH(start=7.4)   annotation(Placement(transformation(extent={{-7,-7},
+              {7,7}},                                                                                                    rotation = 0, origin={1,-41}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,98})));
+    Physiolibrary.Types.RealIO.ConcentrationOutput cdO2 annotation(Placement(transformation(extent={{-6,6},{
+              6,-6}},                                                                                                    rotation = 0, origin={-46,0}),     iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,0})));
+    Physiolibrary.Types.RealIO.ConcentrationOutput cdCO2 annotation(Placement(transformation(extent = {{-7, 7}, {7, -7}}, rotation = 0, origin={5,104}),    iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,-20})));
+    AcidBaseBalance.Acidbase.OSA.ctO2content
+                bloodctO2content
+      annotation (Placement(transformation(extent={{-80,14},{-20,74}})));
+    AcidBaseBalance.Acidbase.OSA.ctCO2content
+                 bloodctCO2content
+      annotation (Placement(transformation(extent={{-80,86},{-20,146}})));
+    AcidBaseBalance.Acidbase.OSA.BEINV
+          vanSlykeEquation
+      annotation (Placement(transformation(extent={{-82,-76},{-20,-16}})));
+    Physiolibrary.Types.RealIO.ConcentrationOutput ceHb
+      "effiective concentration of hemoglobin (mmol/l)"                                                   annotation(Placement(transformation(extent = {{-6, 6}, {6, -6}}, rotation = 0, origin = {-58, 0}), iconTransformation(extent = {{-10, -10}, {10, 10}}, rotation = 0, origin={66,20})));
+    Physiolibrary.Types.Constants.PressureConst       pCO2_const(k(displayUnit=
+            "mmHg") = 5332.8954966)
+      annotation (Placement(transformation(extent={{-132,36},{-124,44}})));
+      inner AcidBaseBalance.Interfaces.ModelSettings
+                                     modelSettings(
+      useIons=true,
+      useOsmoticFlow=false,
+      UseMetabolicUABalance=false,
+      arterialO2conc_start=8.23882,
+      arterialCO2conc_start=21.659,
+      venousO2conc_start=6.03882,
+      venousCO2conc_start=23.529,
+      UseRespiratoryCompensation=true)
+                            annotation (Placement(transformation(extent={{-100,80},
+              {-80,100}})));
+  equation
+    connect(vanSlykeEquation.BEox,BEox)  annotation(Line(points={{-84.8182,-22},
+            {-116,-22},{-116,-20},{-140,-20}},                                                color = {0, 0, 127}));
+    connect(bloodctO2content.pH,bloodctCO2content. pH) annotation(Line(points={{-83,
+            56.6},{-20,56.6},{-20,128},{-83,128}},                                                                                                 color={238,46,
+            47},
+        thickness=0.5));
+    connect(bloodctCO2content.cHCO3,cHCO3)  annotation(Line(points={{-17,116},{
+            -36,116},{-36,302},{-56,302},{-56,116},{5,116}},                                color = {0, 0, 127}));
+    connect(bloodctO2content.ceHb,ceHb)  annotation(Line(points={{-68,11},{-68,
+            0},{-58,0}},                                                                           color = {0, 0, 127}));
+    connect(bloodctCO2content.cdCO2p,cdCO2)
+      annotation (Line(points={{-17,104},{-36,104},{-36,290},{-56,290},{-56,104},
+            {5,104}},                                      color={0,0,127}));
+    connect(bloodctO2content.cdO2p,cdO2)
+      annotation (Line(points={{-56,11},{-56,0},{-46,0}}, color={0,0,127}));
+    connect(bloodctO2content.sO2,sO2)
+      annotation (Line(points={{-32,11},{-32,8},{4,8}}, color={0,0,127}));
+    connect(vanSlykeEquation.pH,bloodctCO2content. pH) annotation (Line(points={{
+            -23.3818,-40.6},{88,-40.6},{88,-194},{-20,-194},{-20,128},{-83,128}},
+                                                                         color={238,46,
+            47},
+        thickness=0.5));
+    connect(bloodctCO2content.sO2,sO2)  annotation (Line(points={{-83,92},{10,
+            92},{10,-108},{88,-108},{88,8},{4,8}},
+                                              color={0,0,127}));
+    connect(vanSlykeEquation.sO2,sO2)  annotation (Line(points={{-84.8182,-68.2},
+            {10,-68.2},{10,-268},{124,-268},{124,-192},{88,-192},{88,8},{4,8}},
+                                                                       color={0,0,
+            127}));
+    connect(bloodctO2content.pCO2,vanSlykeEquation. pCO2) annotation (Line(points={{-83,44},
+            {-62,44},{-62,-34},{-84.8182,-34}},         color={0,0,127},
+        thickness=0.5));
+    connect(bloodctCO2content.pCO2,vanSlykeEquation. pCO2) annotation (Line(
+          points={{-83,140},{-62,140},{-62,-34},{-84.8182,-34}},color={0,0,127},
+        thickness=0.5));
+    connect(vanSlykeEquation.pH,pH)  annotation (Line(points={{-23.3818,-40.6},
+            {89.24,-40.6},{89.24,-41},{1,-41}},          color={238,46,47},
+        thickness=0.5));
+    connect(pO2_const.y, bloodctO2content.pO2) annotation (Line(points={{-129.6,
+            96},{-106,96},{-106,68},{-83,68}}, color={0,0,127}));
+    connect(pCO2_const.y, bloodctCO2content.pCO2) annotation (Line(points={{
+            -123,40},{-112,40},{-112,140},{-83,140},{-83,140}}, color={0,0,127}));
+    annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+          coordinateSystem(preserveAspectRatio=false)));
+  end test_disoc;
+  annotation (uses(
       Physiomodel(version="1.0.0"),
-      Complex(version="3.2.2")));
+      Complex(version="3.2.2"),
+      Modelica(version="3.2.2"),
+      Physiolibrary(version="2.3.2-beta")));
 end NewBloodyMary_testing;
