@@ -3138,8 +3138,9 @@ package NewBloodyMary_testing
           annotation (Line(points={{-20,-44},{-48.2,-44}}, color={0,0,127}));
         connect(product.u2, pO2_max.y) annotation (Line(points={{-20,-56},{-38,
                 -56},{-38,-86},{-49,-86}}, color={0,0,127}));
-        annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
-                  -100},{100,100}})));
+        annotation (Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})),
+          experiment(StartTime = 0, StopTime = 1000, Tolerance = 1e-6, Interval = 0.2),
+  __OpenModelica_simulationFlags(lv = "LOG_STATS", outputFormat = "mat", s = "dassl"));
       end TestPO2PCO2_test_curve;
     end testOSA;
 
