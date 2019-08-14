@@ -3102,11 +3102,13 @@ package NewBloodyMary_testing
           offset=0.01)
           annotation (Placement(transformation(extent={{-86,-62},{-50,-26}})));
         Physiolibrary.Types.Constants.PressureConst pO2_max(k(displayUnit=
-                "mmHg") = 133.322387415)
+                "mmHg") = 26664.5)
           annotation (Placement(transformation(extent={{-58,-90},{-50,-82}})));
         Modelica.Blocks.Math.Product product
           annotation (Placement(transformation(extent={{-18,-60},{2,-40}})));
       equation
+        connect(product.y, pO2PCO2_1.pO2) annotation(
+          Line(points = {{4, -50}, {80, -50}, {80, 80}, {-36, 80}, {-36, 60}, {-18, 60}, {-18, 58}}, color = {0, 0, 127}));
         connect(pCO2.y, pO2PCO2_1.pCO2) annotation (Line(points={{-81,52},{
                 -17.5,52},{-17.5,51.72}},
                                        color={0,0,127}));
@@ -3136,8 +3138,6 @@ package NewBloodyMary_testing
           annotation (Line(points={{-20,-44},{-48.2,-44}}, color={0,0,127}));
         connect(product.u2, pO2_max.y) annotation (Line(points={{-20,-56},{-38,
                 -56},{-38,-86},{-49,-86}}, color={0,0,127}));
-        connect(pO2PCO2_1.pO2, pO2_max.y) annotation (Line(points={{-17.5,58.52},
-                {-38,58.52},{-38,-86},{-49,-86}}, color={0,0,127}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio=false, extent={{-100,
                   -100},{100,100}})));
       end TestPO2PCO2_test_curve;
