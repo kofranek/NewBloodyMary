@@ -2049,7 +2049,7 @@ total"),      Text(
       end pO2fromDissO2;
 
       model Measure_pO2fromDissO2
-        extends Modelica.Icons.RoundSensor;
+        extends Modelica.Icons.RotationalSensor;
 
         Physiolibrary.Types.RealIO.TemperatureInput Temp annotation (Placement(
               transformation(extent={{-110,-2},{-70,38}}),  iconTransformation(
@@ -8540,7 +8540,7 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
             "Simple albumin and Pi calculations, according to [Wolf, 2011]"
             extends
               AcidBaseBalance.Acidbase.FullBloodAcidbase.PlasmaElectrochemical.Auxilliary.PlasmaElectrochemicalBase;
-            import Modelica.Units.SI.*;
+            import Modelica.SIunits.*;
 
             type cont = enumeration(
                 Na,
@@ -9638,7 +9638,7 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
     model FlowMeasure "Volumetric flow between ports"
       //extends Physiolibrary.Hydraulic.Interfaces.OnePort;
       //extends Icons.FlowMeasure;
-      extends Modelica.Icons.RoundSensor;
+      extends Modelica.Icons.RotationalSensor;
 
       Physiolibrary.Types.RealIO.VolumeFlowRateOutput volumeFlow
         "Actual volume flow rate" annotation (Placement(transformation(
@@ -9759,7 +9759,7 @@ Implemented in Modelica by Filip Jezek, FEE CTU in Prague, 2016
     model FlowConcentrationMeasure "Volumetric flow between ports"
       //extends Physiolibrary.Hydraulic.Interfaces.OnePort;
       //extends Icons.FlowMeasure;
-      extends Modelica.Icons.RoundSensor;
+      extends Modelica.Icons.RotationalSensor;
 
       Physiolibrary.Types.RealIO.VolumeFlowRateOutput volumeFlow
         "Actual volume flow rate" annotation (Placement(transformation(
@@ -13787,7 +13787,7 @@ initialization")}));
           annotation (Placement(transformation(extent={{-54,-4},{-46,4}})));
         Modelica.Blocks.Sources.Sine sine(
           amplitude=0.5e-4,
-          f=10,
+          freqHz=10,
           offset=0.5e-4)
           annotation (Placement(transformation(extent={{-90,-10},{-70,10}})));
         Physiolibrary.Chemical.Sources.UnlimitedSolutionStorage UA(
@@ -25304,7 +25304,7 @@ Ventilation"),
         annotation (Placement(transformation(extent={{-100,80},{-80,100}})));
       Tissues.limitO2Metabolism limitO2Metabolism
         annotation (Placement(transformation(extent={{-40,40},{-20,60}})));
-      Modelica.Blocks.Sources.ContinuousClock clock
+      Modelica.Blocks.Sources.Clock clock
         annotation (Placement(transformation(extent={{-80,40},{-60,60}})));
       Physiolibrary.Types.Constants.ConcentrationConst tO2(k=1)
         annotation (Placement(transformation(extent={{-50,-4},{-42,4}})));
@@ -34246,11 +34246,6 @@ Ventilation"),
     end MetabolicAlkalosis;
 
   end Results;
-  annotation(uses(
-      Physiomodel(version="1.0.0"),
-      Physiolibrary(version="3.0.0-alpha10"),
-      Modelica(version="4.0.0")),
-    version="1",
-    conversion(from(version="", script=
-            "modelica://AcidBaseBalance/ConvertFromAcidBaseBalance_.mos")));
+  annotation(uses(Physiolibrary(version="2.3.2-beta"), Modelica(version="3.2.2"),
+      Physiomodel(version="1.0.0")));
 end AcidBaseBalance;

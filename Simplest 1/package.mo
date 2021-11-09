@@ -923,10 +923,8 @@ package Simplest "simplest acid-base and electrolyte homesostasis"
             fillPattern=FillPattern.Solid,
             textString="%name")}),                                                                                                 Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})));
   end SimplestTissueAndSID;
-  annotation (uses(
-      Physiolibrary(version="3.0.0-alpha10"),
-      Modelica(version="4.0.0"),
-      AcidBaseBalance(version="1")),
-    version="2",
-    conversion(noneFromVersion="", noneFromVersion="1"));
+  annotation (uses(Physiolibrary(version="3.0.0-alpha10"), Modelica(version=
+            "4.0.0")),
+    version="1",
+    conversion(noneFromVersion=""));
 end Simplest;
