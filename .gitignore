@@ -5,3 +5,5 @@
 /dslog.txt
 /dsmodel.c
 /dymosim.exe
+/*.mat
+/*.c

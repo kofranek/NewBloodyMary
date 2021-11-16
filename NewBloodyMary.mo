@@ -3107,7 +3107,7 @@ package NewBloodyMary_testing
         Modelica.Blocks.Math.Product product
           annotation (Placement(transformation(extent={{-18,-60},{2,-40}})));
       equation
-        connect(product.y, pO2PCO2_1.pO2) annotation(
+        connect(product.y, pO2PCO2_1.pO2) annotation (
           Line(points = {{4, -50}, {80, -50}, {80, 80}, {-36, 80}, {-36, 60}, {-18, 60}, {-18, 58}}, color = {0, 0, 127}));
         connect(pCO2.y, pO2PCO2_1.pCO2) annotation (Line(points={{-81,52},{
                 -17.5,52},{-17.5,51.72}},
@@ -3140,7 +3140,10 @@ package NewBloodyMary_testing
                 -56},{-38,-86},{-49,-86}}, color={0,0,127}));
         annotation (Diagram(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}})),
           experiment(StartTime = 0, StopTime = 1000, Tolerance = 1e-6, Interval = 0.2),
-  __OpenModelica_simulationFlags(lv = "LOG_STATS", outputFormat = "mat", s = "dassl"));
+          __OpenModelica_simulationFlags(
+            lv="LOG_STATS",
+            outputFormat="mat",
+            s="dassl"));
       end TestPO2PCO2_test_curve;
     end testOSA;
 
@@ -12954,7 +12957,8 @@ parameters")}));
   end test_disoc;
   annotation (uses(
       Physiomodel(version="1.0.0"),
-      Complex(version="3.2.2"),
-      Modelica(version="3.2.2"),
-      Physiolibrary(version="2.3.2-beta")));
+      Complex(version="4.0.0"),
+      Modelica(version="4.0.0"),
+      Physiolibrary(version="3.0.0-alpha10"),
+      AcidBaseBalance(version="1")));
 end NewBloodyMary_testing;
