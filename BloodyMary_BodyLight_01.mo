@@ -672,21 +672,11 @@ and mixing"),
             transformation(extent={{-116,-52},{-100,-36}}), iconTransformation(
               extent={{-116,-52},{-100,-36}})));
 
-      O2CO2 O2CO2_ven
-        annotation (Placement(transformation(extent={{-44,-36},{30,58}})));
-
     equation
 
      DO2=Q*O2art;
      O2ER=VO2/DO2;
-
-      connect(O2CO2_ven.BEox, BEox) annotation (Line(points={{-45.85,22.0588},{-78,22.0588},
-              {-78,88},{-100,88}}, color={0,0,127}));
-      connect(CO2ven, O2CO2_ven.ctCO2) annotation (Line(points={{-18,74},{-40,74},{-40,
-              72},{-68,72},{-68,28},{-48,28}}, color={0,0,127}));
-      connect(O2CO2_ven.ctO2, O2ven) annotation (Line(points={{-45.85,33.1176},{-58,
-              33.1176},{-58,60},{72,60},{72,10},{104,10}}, color={0,0,127}));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+     annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
             Rectangle(
               extent={{-100,100},{100,-100}},
               lineColor={28,108,200},
