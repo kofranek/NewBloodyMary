@@ -434,8 +434,8 @@ package Simplest "simplest acid-base and electrolyte homesostasis"
     BloodGases bloodGases
       annotation (Placement(transformation(extent={{-52,32},{-8,74}})));
     AcidBaseBalance.Acidbase.OSA.O2CO2
-          artBlood
-      annotation (Placement(transformation(extent={{16,-48},{72,38}})));
+          venBlood
+      annotation (Placement(transformation(extent={{18,-48},{74,38}})));
     Physiolibrary.Types.RealIO.ConcentrationInput BEox annotation (Placement(
           transformation(extent={{-30,0},{-16,14}}), iconTransformation(extent=
               {{-110,28},{-90,48}})));
@@ -487,21 +487,21 @@ package Simplest "simplest acid-base and electrolyte homesostasis"
             66.02},{1.78,64},{30,64}}, color={0,0,127}));
     connect(bloodGases.O2v, O2v) annotation (Line(points={{-8.44,70.64},{-2,
             70.64},{-2,74},{24,74}}, color={0,0,127}));
-    connect(artBlood.ctO2, O2v) annotation (Line(points={{14.6,15.2353},{-2,
+    connect(venBlood.ctO2, O2v) annotation (Line(points={{16.6,15.2353},{-2,
             15.2353},{-2,74},{24,74}}, color={0,0,127}));
-    connect(artBlood.ctCO2, CO2v) annotation (Line(points={{14.6,10.1765},{2,
+    connect(venBlood.ctCO2, CO2v) annotation (Line(points={{16.6,10.1765},{2,
             10.1765},{2,64},{30,64}}, color={0,0,127}));
-    connect(artBlood.BEox, BEox) annotation (Line(points={{14.6,5.11765},{-0.7,
+    connect(venBlood.BEox, BEox) annotation (Line(points={{16.6,5.11765},{-0.7,
             5.11765},{-0.7,7},{-23,7}}, color={0,0,127}));
-    connect(artBlood.pO2, pO2_v) annotation (Line(points={{73.4,13.2118},{80.7,
+    connect(venBlood.pO2, pO2_v) annotation (Line(points={{75.4,13.2118},{80.7,
             13.2118},{80.7,27},{95,27}}, color={0,0,127}));
-    connect(artBlood.pCO2, pCO2_v) annotation (Line(points={{73.4,8.15294},{
+    connect(venBlood.pCO2, pCO2_v) annotation (Line(points={{75.4,8.15294},{
             81.7,8.15294},{81.7,19},{97,19}}, color={0,0,127}));
-    connect(artBlood.pH, pH_v) annotation (Line(points={{73.4,2.08235},{86,
+    connect(venBlood.pH, pH_v) annotation (Line(points={{75.4,2.08235},{86,
             2.08235},{86,9},{95,9}}, color={0,0,127}));
-    connect(artBlood.cHCO3, cHCO3_v) annotation (Line(points={{73.4,-2.97647},{
+    connect(venBlood.cHCO3, cHCO3_v) annotation (Line(points={{75.4,-2.97647},{
             82.7,-2.97647},{82.7,-2},{97,-2}}, color={0,0,127}));
-    connect(artBlood.sO2, sO2_v) annotation (Line(points={{73.4,-8.03529},{82,
+    connect(venBlood.sO2, sO2_v) annotation (Line(points={{75.4,-8.03529},{82,
             -8.03529},{82,-12},{96,-12}}, color={0,0,127}));
     annotation(Icon(coordinateSystem(preserveAspectRatio = false, extent = {{-100, -100}, {100, 100}}),
           graphics={Rectangle(
