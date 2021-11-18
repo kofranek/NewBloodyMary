@@ -44,7 +44,7 @@ package BloodyMary_BodyLight_01
               fillPattern=FillPattern.Solid), Text(
               extent={{-96,34},{94,-20}},
               textColor={0,0,0},
-              textString="O2/CO2 from ml/min 
+              textString="from ml/min 
 to mol/sec"),
             Text(
               extent={{-100,-100},{110,-130}},
@@ -930,6 +930,37 @@ and mixing"),
               textString="DO2_calculation")}), Diagram(coordinateSystem(
               preserveAspectRatio=false)));
     end DO2_curve_calculation;
+
+    model to_mlO2CO2_per_min
+      //gas volume STPD ml/min => mol/m3
+      Modelica.Blocks.Interfaces.RealOutput ml_min annotation (Placement(
+            transformation(extent={{100,-8},{120,12}}), iconTransformation(
+              extent={{100,-8},{120,12}})));
+      Physiolibrary.Types.RealIO.MolarFlowRateInput molarflowrate annotation (
+          Placement(transformation(extent={{-136,-16},{-96,24}}),
+            iconTransformation(extent={{-136,-16},{-96,24}})));
+    equation
+      //22.414 ml => 1 mmol
+      // 1 ml => 1/22.414 mmol=>//22.414/1000 mol
+     molarflowrate=ml_min/22.414/1000/60; //mol/sec
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+              Rectangle(
+              extent={{-100,100},{100,-100}},
+              lineColor={0,0,0},
+              fillColor={170,255,255},
+              fillPattern=FillPattern.Solid), Text(
+              extent={{-96,34},{94,-20}},
+              textColor={0,0,0},
+              textString="from mol/sec 
+to ml/min"),Text(
+              extent={{-100,-100},{110,-130}},
+              textColor={0,0,0},
+              textString="%name")}),          Diagram(coordinateSystem(
+              preserveAspectRatio=false)),
+        Documentation(info="<html>
+<p>conversion albumin g/l =&gt; mol/m3</p>
+</html>"));
+    end to_mlO2CO2_per_min;
   end Packages;
 
   package Tests
@@ -939,9 +970,9 @@ and mixing"),
         annotation (Placement(transformation(extent={{-83,60},{-75,66}})));
       Physiolibrary.Types.Constants.FractionConst FAi1(k=0.5)
         annotation (Placement(transformation(extent={{-54,10},{-46,18}})));
-      Physiolibrary.Types.Constants.FractionConst Fq1(k=0.5)
+      Physiolibrary.Types.Constants.FractionConst Fq1(k=0.8)
         annotation (Placement(transformation(extent={{-60,22},{-52,30}})));
-      Physiolibrary.Types.Constants.FractionConst Fsh(k=0.02)
+      Physiolibrary.Types.Constants.FractionConst Fsh(k=0.1)
         annotation (Placement(transformation(extent={{-50,32},{-42,40}})));
       Physiolibrary.Types.Constants.VolumeFlowRateConst CardiacOutput(k(
             displayUnit="l/min") = 8.3333333333333e-05)
@@ -951,18 +982,18 @@ and mixing"),
             rotation=180,
             origin={-90,54})));
       inner AcidBaseBalance.Interfaces.ModelSettings modelSettings(PB=
-            106657.909932, Temperature(displayUnit="degC") = bodyTemperature.k)
+            101325.0144354,Temperature(displayUnit="degC") = bodyTemperature.k)
         annotation (Placement(transformation(extent={{-84,78},{-64,98}})));
       Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
         annotation (Placement(transformation(extent={{-60,72},{-52,80}})));
       Physiolibrary.Types.Constants.MolarFlowRateConst VCO2(k=
             0.00016666666666667)
-        annotation (Placement(transformation(extent={{-104,-30},{-96,-22}})));
+        annotation (Placement(transformation(extent={{-130,20},{-122,28}})));
       Packages.SimplestTissue
                      simplestTissue
         annotation (Placement(transformation(extent={{-18,-82},{32,-32}})));
       Physiolibrary.Types.Constants.TemperatureConst bodyTemperature(k=311.15)
-        annotation (Placement(transformation(extent={{-90,-10},{-82,-2}})));
+        annotation (Placement(transformation(extent={{92,80},{100,88}})));
       Packages.AlvEq_2units_with_shunts_and_mixing
         alvEq_2units_with_shunts_and_mixing1
         annotation (Placement(transformation(extent={{-6,6},{78,80}})));
@@ -973,9 +1004,11 @@ and mixing"),
       Modelica.Blocks.Sources.Constant RQ(k=0.8)
         annotation (Placement(transformation(extent={{-126,-96},{-116,-86}})));
       Modelica.Blocks.Math.Product product1
-        annotation (Placement(transformation(extent={{-80,-94},{-60,-74}})));
+        annotation (Placement(transformation(extent={{-82,-94},{-62,-74}})));
       Packages.DO2_calculation dO2_calculation
         annotation (Placement(transformation(extent={{112,-82},{158,-30}})));
+      Packages.to_mlO2CO2_per_min VCO2_ml
+        annotation (Placement(transformation(extent={{-44,-116},{-24,-96}})));
     equation
       connect(simplestTissue.Q,CardiacOutput. y) annotation (Line(points={{-18.75,
               -57.25},{-36,-57.25},{-36,-38},{-68,-38},{-68,54},{-85,54}},
@@ -1017,14 +1050,14 @@ and mixing"),
             points={{-123.5,-45},{-116,-45},{-116,-46},{-114.4,-46}}, color={0,
               0,127}));
       connect(RQ.y, product1.u2)
-        annotation (Line(points={{-115.5,-91},{-82,-90}}, color={0,0,127}));
+        annotation (Line(points={{-115.5,-91},{-84,-90}}, color={0,0,127}));
       connect(from_mlO2CO2_per_min.molarflowrate, product1.u1) annotation (Line(
             points={{-87.04,-45.84},{-82,-45.84},{-82,-68},{-90,-68},{-90,-78},
-              {-82,-78}}, color={0,0,127}));
-      connect(product1.y, simplestTissue.MCO2) annotation (Line(points={{-59,
+              {-84,-78}}, color={0,0,127}));
+      connect(product1.y, simplestTissue.MCO2) annotation (Line(points={{-61,
               -84},{-24,-84},{-24,-73.75},{-18.75,-73.75}}, color={0,0,127}));
       connect(simplestTissue.MO2, product1.u1) annotation (Line(points={{-19.25,
-              -65.75},{-82,-65.75},{-82,-68},{-90,-68},{-90,-78},{-82,-78}},
+              -65.75},{-82,-65.75},{-82,-68},{-90,-68},{-90,-78},{-84,-78}},
             color={0,0,127}));
       connect(dO2_calculation.O2art, simplestTissue.O2a) annotation (Line(
             points={{110.16,-47.16},{88,-47.16},{88,-14},{-22,-14},{-22,-35.5},
@@ -1034,18 +1067,21 @@ and mixing"),
             color={0,0,127}));
       connect(dO2_calculation.VO2, product1.u1) annotation (Line(points={{
               110.16,-67.44},{58,-67.44},{58,-94},{-38,-94},{-38,-65.75},{-82,
-              -65.75},{-82,-68},{-90,-68},{-90,-78},{-82,-78}}, color={0,0,127}));
+              -65.75},{-82,-68},{-90,-68},{-90,-78},{-84,-78}}, color={0,0,127}));
+      connect(VCO2_ml.molarflowrate, simplestTissue.MCO2) annotation (Line(
+            points={{-45.6,-105.6},{-52,-105.6},{-52,-84},{-24,-84},{-24,-73.75},
+              {-18.75,-73.75}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
-                -140,-100},{180,100}}),                             graphics={
+                -140,-120},{240,100}}),                             graphics={
               Rectangle(
-              extent={{-56,98},{144,-102}},
+              extent={{-58,98},{142,-102}},
               lineColor={0,0,0},
               fillColor={170,255,170},
               fillPattern=FillPattern.Solid), Text(
               extent={{-34,24},{128,-28}},
               textColor={0,0,0},
               textString="BloodyMary_01")}), Diagram(coordinateSystem(
-              preserveAspectRatio=false, extent={{-140,-100},{180,100}})));
+              preserveAspectRatio=false, extent={{-140,-120},{240,100}})));
     end BloodyMary_01;
   end Tests;
   annotation (uses(
