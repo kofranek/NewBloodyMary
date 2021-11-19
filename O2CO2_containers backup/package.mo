@@ -227,9 +227,9 @@ package O2CO2_containers
 
   package Test
     model testO2CO2curves
-      Physiolibrary.Types.Constants.PressureConst PCO2(k=4666.283559525)
+      Physiolibrary.Types.Constants.PressureConst PCO2(k=5332.8954966)
         annotation (Placement(transformation(extent={{-84,78},{-76,86}})));
-      Physiolibrary.Types.Constants.PressureConst PO2(k=3333.059685375)
+      Physiolibrary.Types.Constants.PressureConst PO2(k=13332.2387415)
         annotation (Placement(transformation(extent={{-84,62},{-76,70}})));
       Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
         annotation (Placement(transformation(extent={{-88,46},{-80,54}})));
@@ -257,8 +257,6 @@ package O2CO2_containers
             coordinateSystem(preserveAspectRatio=false)));
     end testO2CO2curves;
   end Test;
-  annotation (uses(Physiolibrary(version="3.0.0-alpha10"), Modelica(version=
-            "4.0.0")),
-    version="1",
-    conversion(noneFromVersion=""));
+  annotation (uses(Physiolibrary(version="2.3.2-beta"), Modelica(version=
+            "3.2.2")));
 end O2CO2_containers;
