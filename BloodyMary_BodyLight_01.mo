@@ -1190,7 +1190,10 @@ to ml/min"),Text(
               extent={{-100,100},{100,-100}},
               lineColor={28,108,200},
               fillColor={244,125,35},
-              fillPattern=FillPattern.Solid)}), Diagram(coordinateSystem(
+              fillPattern=FillPattern.Solid), Text(
+              extent={{-100,-102},{96,-122}},
+              textColor={28,108,200},
+              textString="%name")}),            Diagram(coordinateSystem(
               preserveAspectRatio=false)));
     end O2CO2curves;
 
@@ -1581,7 +1584,7 @@ to ml/min"),Text(
             rotation=180,
             origin={-90,54})));
       inner AcidBaseBalance.Interfaces.ModelSettings modelSettings(
-        PB=101325.0144354,
+        final PB=PB.k,
         ctHb=Hb.k,         Temperature(displayUnit="degC") = bodyTemperature.k)
         annotation (Placement(transformation(extent={{-136,78},{-116,98}})));
       Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
@@ -1624,7 +1627,11 @@ to ml/min"),Text(
         "concentratin of hemoglonin in mmol/L (Hb=Hb_g_gl*0.6206)"
         annotation (Placement(transformation(extent={{-74,80},{-64,92}})));
       Packages.O2CO2curves o2CO2curves
-        annotation (Placement(transformation(extent={{140,20},{180,58}})));
+        annotation (Placement(transformation(extent={{146,32},{186,70}})));
+      Physiolibrary.Types.Constants.PressureConst PB(k=101325.0144354)
+        annotation (Placement(transformation(extent={{-126,-4},{-118,4}})));
+      Packages.O2CO2curves o2CO2curves1
+        annotation (Placement(transformation(extent={{150,-16},{190,22}})));
     equation
       connect(simplestTissue.Q,CardiacOutput. y) annotation (Line(points={{-18.75,
               -57.25},{-36,-57.25},{-36,-38},{-68,-38},{-68,54},{-85,54}},
@@ -1694,18 +1701,33 @@ to ml/min"),Text(
       connect(fd.y, vAi.fd) annotation (Line(points={{-123,73},{-120,73},{-120,
               61.6},{-116.28,61.6}}, color={0,0,127}));
       connect(o2CO2curves.PCO2, alvEq_2units_with_shunts_and_mixing1.PaCO2)
-        annotation (Line(points={{139.2,53.44},{116,53.44},{116,62.425},{
+        annotation (Line(points={{145.2,65.44},{116,65.44},{116,62.425},{
               79.8261,62.425}}, color={0,0,127}));
       connect(o2CO2curves.PO2, alvEq_2units_with_shunts_and_mixing1.PaO2)
-        annotation (Line(points={{139.2,46.22},{124,46.22},{124,67.05},{79.8261,
+        annotation (Line(points={{145.2,58.22},{108,58.22},{108,67.05},{79.8261,
               67.05}}, color={0,0,127}));
-      connect(o2CO2curves.BEox, simplestTissue.BEox) annotation (Line(points={{
-              139.2,39.76},{130,39.76},{130,88},{-18,88},{-18,60},{-16,60},{-16,
-              6},{-26,6},{-26,-47.5},{-18,-47.5}}, color={0,0,127}));
-      connect(bodyTemperature.y, o2CO2curves.temp) annotation (Line(points={{
-              -86.5,94},{110,94},{110,28.55},{139,28.55}}, color={0,0,127}));
-      connect(Hb.y, o2CO2curves.ctHb) annotation (Line(points={{-62.75,86},{30,
-              86},{30,84},{118,84},{118,34.44},{138.8,34.44}}, color={0,0,127}));
+      connect(o2CO2curves.BEox, simplestTissue.BEox) annotation (Line(points={{145.2,
+              51.76},{130,51.76},{130,88},{-18,88},{-18,60},{-16,60},{-16,6},{
+              -26,6},{-26,-47.5},{-18,-47.5}},     color={0,0,127}));
+      connect(bodyTemperature.y, o2CO2curves.temp) annotation (Line(points={{-86.5,
+              94},{-86.5,100},{132,100},{132,40.55},{145,40.55}},
+                                                           color={0,0,127}));
+      connect(Hb.y, o2CO2curves.ctHb) annotation (Line(points={{-62.75,86},{134,
+              86},{134,46.44},{144.8,46.44}}, color={0,0,127}));
+      connect(o2CO2curves1.temp, o2CO2curves.temp) annotation (Line(points={{
+              149,-7.45},{132,-7.45},{132,40.55},{145,40.55}}, color={0,0,127}));
+      connect(o2CO2curves1.ctHb, o2CO2curves.ctHb) annotation (Line(points={{
+              148.8,-1.56},{134,-1.56},{134,46.44},{144.8,46.44}}, color={0,0,
+              127}));
+      connect(o2CO2curves1.BEox, simplestTissue.BEox) annotation (Line(points={
+              {149.2,3.76},{138,3.76},{138,51.76},{130,51.76},{130,88},{-18,88},
+              {-18,60},{-16,60},{-16,6},{-26,6},{-26,-47.5},{-18,-47.5}}, color
+            ={0,0,127}));
+      connect(simplestTissue.pO2_v, o2CO2curves1.PO2) annotation (Line(points={
+              {32,-51},{46,-51},{46,-50},{102,-50},{102,10.22},{149.2,10.22}},
+            color={0,0,127}));
+      connect(simplestTissue.pCO2_v, o2CO2curves1.PCO2) annotation (Line(points
+            ={{32,-56},{104,-56},{104,17.44},{149.2,17.44}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
                 -140,-120},{240,100}}),                             graphics={
               Rectangle(
@@ -1718,7 +1740,65 @@ to ml/min"),Text(
               textString="BloodyMary_01")}), Diagram(coordinateSystem(
               preserveAspectRatio=false, extent={{-140,-120},{240,100}})));
     end BloodyMary_01;
+
+    model disociationCurve
+      Packages.O2CO2curves o2CO2curves
+        annotation (Placement(transformation(extent={{-20,-10},{24,38}})));
+      Physiolibrary.Types.Constants.ConcentrationConst Hb(final k(displayUnit=
+              "mmol/l") = 15*0.6206)
+        "concentratin of hemoglonin in mmol/L (Hb=Hb_g_gl*0.6206)"
+        annotation (Placement(transformation(extent={{-66,2},{-56,14}})));
+      Physiolibrary.Types.Constants.PressureConst PO2(k=3333.059685375)
+        annotation (Placement(transformation(extent={{-80,40},{-72,48}})));
+      Physiolibrary.Types.Constants.PressureConst PCO2(k=4666.283559525)
+        annotation (Placement(transformation(extent={{-80,56},{-72,64}})));
+      Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
+        annotation (Placement(transformation(extent={{-84,24},{-76,32}})));
+      Physiolibrary.Types.Constants.TemperatureConst temp(k=310.15)
+        annotation (Placement(transformation(extent={{-72,-30},{-64,-22}})));
+      inner AcidBaseBalance.Interfaces.ModelSettings modelSettings(
+        PB=PB.k,
+        ctHb=Hb.k,
+        Temperature(displayUnit="degC") = bodyTemperature.k)
+        annotation (Placement(transformation(extent={{-84,-90},{-64,-70}})));
+      Physiolibrary.Types.Constants.TemperatureConst bodyTemperature(k=310.15)
+        annotation (Placement(transformation(extent={{-84,-52},{-72,-40}})));
+      Physiolibrary.Types.Constants.PressureConst PB(k=101325.0144354)
+        annotation (Placement(transformation(extent={{-110,-144},{-102,-136}})));
+      Physiolibrary.Types.Constants.PressureConst PB1(k=101325.0144354)
+        annotation (Placement(transformation(extent={{-46,72},{-38,80}})));
+    equation
+      connect(Hb.y, o2CO2curves.ctHb)
+        annotation (Line(points={{-54.75,8},{-21.32,8.24}}, color={0,0,127}));
+      connect(temp.y, o2CO2curves.temp) annotation (Line(points={{-63,-26},{-44,
+              -26},{-44,0.8},{-21.1,0.8}}, color={0,0,127}));
+      connect(BEox.y, o2CO2curves.BEox) annotation (Line(points={{-75,28},{-38,
+              28},{-38,14.96},{-20.88,14.96}}, color={0,0,127}));
+      connect(o2CO2curves.PO2, PO2.y) annotation (Line(points={{-20.88,23.12},{
+              -34,23.12},{-34,44},{-71,44}}, color={0,0,127}));
+      connect(o2CO2curves.PCO2, PCO2.y) annotation (Line(points={{-20.88,32.24},
+              {-28,32.24},{-28,60},{-71,60}}, color={0,0,127}));
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+              Rectangle(
+              extent={{-100,100},{100,-100}},
+              lineColor={28,108,200},
+              fillColor={170,255,85},
+              fillPattern=FillPattern.Solid)}), Diagram(coordinateSystem(
+              preserveAspectRatio=false)));
+    end disociationCurve;
   end Tests;
+
+  package Wagner
+    model Wagner2001
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+              Rectangle(
+              extent={{-100,100},{100,-100}},
+              lineColor={28,108,200},
+              fillColor={0,140,72},
+              fillPattern=FillPattern.Solid)}), Diagram(coordinateSystem(
+              preserveAspectRatio=false)));
+    end Wagner2001;
+  end Wagner;
   annotation (uses(
       Physiolibrary(version="3.0.0-alpha10"),
       AcidBaseBalance(version="1"),

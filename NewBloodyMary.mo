@@ -3099,7 +3099,7 @@ package NewBloodyMary_testing
         Modelica.Blocks.Sources.Ramp ramp(
           duration=1000,
           height=0.99,
-          offset=0.01)
+          offset=0.1)
           annotation (Placement(transformation(extent={{-86,-62},{-50,-26}})));
         Physiolibrary.Types.Constants.PressureConst pO2_max(k(displayUnit=
                 "mmHg") = 26664.5)
@@ -3108,7 +3108,8 @@ package NewBloodyMary_testing
           annotation (Placement(transformation(extent={{-18,-60},{2,-40}})));
       equation
         connect(product.y, pO2PCO2_1.pO2) annotation (
-          Line(points = {{4, -50}, {80, -50}, {80, 80}, {-36, 80}, {-36, 60}, {-18, 60}, {-18, 58}}, color = {0, 0, 127}));
+          Line(points={{3,-50},{80,-50},{80,80},{-36,80},{-36,60},{-17.5,60},{
+                -17.5,58.52}},                                                                       color = {0, 0, 127}));
         connect(pCO2.y, pO2PCO2_1.pCO2) annotation (Line(points={{-81,52},{
                 -17.5,52},{-17.5,51.72}},
                                        color={0,0,127}));
