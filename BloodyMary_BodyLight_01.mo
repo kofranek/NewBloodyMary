@@ -1713,7 +1713,7 @@ to ml/min"),Text(
       Packages.O2CO2curves o2CO2curves
         annotation (Placement(transformation(extent={{-20,-10},{24,38}})));
       Physiolibrary.Types.Constants.ConcentrationConst Hb(final k(displayUnit=
-              "mmol/l") = 15*0.6206)
+              "mmol/l") = 9.309)
         "concentratin of hemoglonin in mmol/L (Hb=Hb_g_gl*0.6206)"
         annotation (Placement(transformation(extent={{-66,2},{-56,14}})));
       Physiolibrary.Types.Constants.PressureConst PO2(k=3333.059685375)
@@ -1732,9 +1732,8 @@ to ml/min"),Text(
       Physiolibrary.Types.Constants.TemperatureConst bodyTemperature(k=310.15)
         annotation (Placement(transformation(extent={{-84,-52},{-72,-40}})));
       Physiolibrary.Types.Constants.PressureConst PB(k=101325.0144354)
-        annotation (Placement(transformation(extent={{-110,-144},{-102,-136}})));
-      Physiolibrary.Types.Constants.PressureConst PB1(k=101325.0144354)
-        annotation (Placement(transformation(extent={{-46,72},{-38,80}})));
+        annotation (Placement(transformation(extent={{-88,-8},{-80,0}})));
+
     equation
       connect(Hb.y, o2CO2curves.ctHb)
         annotation (Line(points={{-54.75,8},{-21.32,8.24}}, color={0,0,127}));
