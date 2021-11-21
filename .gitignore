@@ -7,3 +7,6 @@
 /dymosim.exe
 /*.mat
 /*.c
+/*.h
+/*.xml
+

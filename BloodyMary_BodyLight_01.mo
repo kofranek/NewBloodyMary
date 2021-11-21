@@ -1626,12 +1626,8 @@ to ml/min"),Text(
               "mmol/l") = 15*0.6206)
         "concentratin of hemoglonin in mmol/L (Hb=Hb_g_gl*0.6206)"
         annotation (Placement(transformation(extent={{-74,80},{-64,92}})));
-      Packages.O2CO2curves o2CO2curves
-        annotation (Placement(transformation(extent={{146,32},{186,70}})));
       Physiolibrary.Types.Constants.PressureConst PB(k=101325.0144354)
         annotation (Placement(transformation(extent={{-126,-4},{-118,4}})));
-      Packages.O2CO2curves o2CO2curves1
-        annotation (Placement(transformation(extent={{150,-16},{190,22}})));
     equation
       connect(simplestTissue.Q,CardiacOutput. y) annotation (Line(points={{-18.75,
               -57.25},{-36,-57.25},{-36,-38},{-68,-38},{-68,54},{-85,54}},
@@ -1700,34 +1696,6 @@ to ml/min"),Text(
               -116.28,58.4}}, color={0,0,127}));
       connect(fd.y, vAi.fd) annotation (Line(points={{-123,73},{-120,73},{-120,
               61.6},{-116.28,61.6}}, color={0,0,127}));
-      connect(o2CO2curves.PCO2, alvEq_2units_with_shunts_and_mixing1.PaCO2)
-        annotation (Line(points={{145.2,65.44},{116,65.44},{116,62.425},{
-              79.8261,62.425}}, color={0,0,127}));
-      connect(o2CO2curves.PO2, alvEq_2units_with_shunts_and_mixing1.PaO2)
-        annotation (Line(points={{145.2,58.22},{108,58.22},{108,67.05},{79.8261,
-              67.05}}, color={0,0,127}));
-      connect(o2CO2curves.BEox, simplestTissue.BEox) annotation (Line(points={{145.2,
-              51.76},{130,51.76},{130,88},{-18,88},{-18,60},{-16,60},{-16,6},{
-              -26,6},{-26,-47.5},{-18,-47.5}},     color={0,0,127}));
-      connect(bodyTemperature.y, o2CO2curves.temp) annotation (Line(points={{-86.5,
-              94},{-86.5,100},{132,100},{132,40.55},{145,40.55}},
-                                                           color={0,0,127}));
-      connect(Hb.y, o2CO2curves.ctHb) annotation (Line(points={{-62.75,86},{134,
-              86},{134,46.44},{144.8,46.44}}, color={0,0,127}));
-      connect(o2CO2curves1.temp, o2CO2curves.temp) annotation (Line(points={{
-              149,-7.45},{132,-7.45},{132,40.55},{145,40.55}}, color={0,0,127}));
-      connect(o2CO2curves1.ctHb, o2CO2curves.ctHb) annotation (Line(points={{
-              148.8,-1.56},{134,-1.56},{134,46.44},{144.8,46.44}}, color={0,0,
-              127}));
-      connect(o2CO2curves1.BEox, simplestTissue.BEox) annotation (Line(points={
-              {149.2,3.76},{138,3.76},{138,51.76},{130,51.76},{130,88},{-18,88},
-              {-18,60},{-16,60},{-16,6},{-26,6},{-26,-47.5},{-18,-47.5}}, color
-            ={0,0,127}));
-      connect(simplestTissue.pO2_v, o2CO2curves1.PO2) annotation (Line(points={
-              {32,-51},{46,-51},{46,-50},{102,-50},{102,10.22},{149.2,10.22}},
-            color={0,0,127}));
-      connect(simplestTissue.pCO2_v, o2CO2curves1.PCO2) annotation (Line(points
-            ={{32,-56},{104,-56},{104,17.44},{149.2,17.44}}, color={0,0,127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{
                 -140,-120},{240,100}}),                             graphics={
               Rectangle(
