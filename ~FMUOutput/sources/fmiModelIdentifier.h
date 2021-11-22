@@ -1,5 +1,5 @@
 #ifndef FMI_MODELIDENTIFIER_H 
 #define FMI_MODELIDENTIFIER_H 
-#define MODEL_IDENTIFIER BloodyMary_0BodyLight_001_Tests_disociationCurve 
-#define FMI_MODULE_NAME BloodyMary_0BodyLight_001_Tests_disociationCurve.dll 
+#define MODEL_IDENTIFIER BloodyMary_0BodyLight_001_Tests_BloodyMary_001 
+#define FMI_MODULE_NAME BloodyMary_0BodyLight_001_Tests_BloodyMary_001.dll 
 #endif 

@@ -253,7 +253,15 @@ package O2CO2_containers
               -50,20.4},{-50,-4},{-67,-4}}, color={0,0,127}));
       connect(Hb_g_per_dl.y, o2CO2curves.Hb_g_per_dl) annotation (Line(points={
               {-67,-38},{-36,-38},{-36,12.08},{-6.84,12.08}}, color={0,0,127}));
-      annotation (Icon(coordinateSystem(preserveAspectRatio=false)), Diagram(
+      annotation (Icon(coordinateSystem(preserveAspectRatio=false), graphics={
+              Rectangle(
+              extent={{-100,100},{100,-100}},
+              lineColor={28,108,200},
+              fillColor={170,255,85},
+              fillPattern=FillPattern.Solid), Text(
+              extent={{-84,52},{74,-18}},
+              textColor={28,108,200},
+              textString="O2 CO2 curves")}),                         Diagram(
             coordinateSystem(preserveAspectRatio=false)));
     end testO2CO2curves;
   end Test;
