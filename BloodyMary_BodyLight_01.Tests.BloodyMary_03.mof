@@ -1,0 +1,1191 @@
+model BloodyMary_03
+  parameter Boolean modelSettings.useIons = true;
+  parameter Boolean modelSettings.useOsmoticFlow = true;
+  parameter Physiolibrary.Types.VolumeFlowRate modelSettings.NormalAlveolarVentilation
+     = 7.68333E-05;
+  parameter Boolean modelSettings.UseRespiratoryCompensation = true;
+  parameter Physiolibrary.Types.Fraction modelSettings.respiratoryQuotient = 
+    0.85;
+  parameter Physiolibrary.Types.Pressure modelSettings.PB = PB.k 
+    "Barometric Pressure";
+  parameter Physiolibrary.Types.Fraction modelSettings.FiO2 = 0.21 
+    "Frattion of O2";
+  parameter Physiolibrary.Types.Fraction modelSettings.FiCO2_start = 0.0004;
+  parameter Physiolibrary.Types.Fraction modelSettings.lungShuntFraction = 0.02;
+  parameter Physiolibrary.Types.Fraction modelSettings.perfusionFraction = 0.5 
+    "alveolar perfusion fraction of the first half of the lungs";
+  parameter Physiolibrary.Types.Fraction modelSettings.ventilationFraction = 0.5
+     "alveolar ventilation fraction of the first half of the lungs";
+  parameter Physiolibrary.Types.Concentration modelSettings.cAlb = 0.66;
+  parameter Physiolibrary.Types.Concentration modelSettings.ctHb = 9.309;
+  parameter Physiolibrary.Types.Concentration modelSettings.cPi = 1.15;
+  parameter Physiolibrary.Types.Concentration modelSettings.cDPG = 5;
+  parameter Physiolibrary.Types.Fraction modelSettings.FMetHb = 0.005;
+  parameter Physiolibrary.Types.Fraction modelSettings.FCOHb = 0.005;
+  parameter Physiolibrary.Types.Fraction modelSettings.FHbF = 0.005;
+  parameter Physiolibrary.Types.Temperature modelSettings.Temperature = 
+    bodyTemperature.k;
+  parameter Physiolibrary.Types.Concentration modelSettings.arterialO2conc_start
+     = 8.23882;
+  parameter Physiolibrary.Types.Concentration modelSettings.arterialCO2conc_start
+     = 21.659;
+  parameter Physiolibrary.Types.Concentration modelSettings.venousO2conc_start
+     = 6.03882;
+  parameter Physiolibrary.Types.Concentration modelSettings.venousCO2conc_start
+     = 23.529;
+  parameter Physiolibrary.Types.Volume modelSettings.ISFvolume_start = 0.01;
+  parameter Physiolibrary.Types.Concentration modelSettings.IonConcentration[
+    AcidBaseBalance.Ions.IonsEnum.Albumin] = {130, 100, 2.5, 0.65} 
+    "Plasma ion concentrations";
+  constant Integer modelSettings.IonElemChrgs[:] = {1, -1, -1, -1} 
+    "elementary charges of ions";
+  parameter Physiolibrary.Types.DiffusionPermeability modelSettings.O2DiffusionPermeability
+     = 0.005;
+  parameter Physiolibrary.Types.DiffusionPermeability modelSettings.CO2DiffusionPermeability
+     = 0.005 "According to partial pressure difference in plasma and tissues, a study by SA";
+  parameter Physiolibrary.Types.DiffusionPermeability modelSettings.IonPermeabilities
+    [:] = {100, 100, 50, 0} "Albumin permeability calculated from lympha flow and 3:1 concentration difference";
+  parameter Physiolibrary.Types.DiffusionPermeability modelSettings.HCO3Permeability
+     = 5E-05 "just a wild guess";
+  parameter Physiolibrary.Types.MolarFlowRate modelSettings.metabolismO2FlowRate
+     = 0.00018333333333333;
+  parameter Boolean modelSettings.UseMetabolicUABalance = true;
+  parameter Boolean modelSettings.fixedMetabolismCompensation = false;
+  parameter Physiolibrary.Types.MolarFlowRate modelSettings.metabolismUAFlowRate_norm
+     = 6.944444E-07;
+  parameter Boolean modelSettings.makeUAstep = false;
+  parameter Physiolibrary.Types.Fraction modelSettings.UAstepRatio = 1.5;
+  parameter Boolean modelSettings.makeCO2FractionStep = false;
+  parameter Physiolibrary.Types.Fraction modelSettings.FiCO2_step = 0.08;
+  parameter Boolean modelSettings.makeVentilationPerfusionFractionStep = false;
+  parameter Physiolibrary.Types.Fraction modelSettings.ventilationPerfusionFraction_step
+     = 0.75;
+  parameter Boolean modelSettings.makeVAstep = false;
+  parameter Physiolibrary.Types.Fraction modelSettings.VAstepRatio = 1.5;
+  parameter Physiolibrary.Types.Time modelSettings.breakTime = 36000;
+  parameter Physiolibrary.Types.Time modelSettings.break2Time = 36000;
+  parameter Physiolibrary.Types.Time modelSettings.breakLength = 172800;
+  parameter Physiolibrary.Types.Fraction FAi1.k = 0.5 "Constant Fraction output value";
+  parameter Physiolibrary.Types.Fraction Fq1.k = 0.5 "Constant Fraction output value";
+  parameter Physiolibrary.Types.Fraction Fsh.k = 0.02 "Constant Fraction output value";
+  parameter Physiolibrary.Types.VolumeFlowRate CardiacOutput.k(displayUnit = 
+    "l/min") = 6.6666666666667E-05 "Constant VolumeFlowRate output value";
+  parameter Physiolibrary.Types.Concentration BEox.k = 0 "Constant Concentration output value";
+  parameter Physiolibrary.Types.Temperature bodyTemperature.k = 310.15 
+    "Constant Temperature output value";
+  parameter Real VO2_ml_min.k(start = 1) = 250 "Constant output value";
+  parameter Real RQ.k(start = 1) = 0.85 "Constant output value";
+  parameter Physiolibrary.Types.Volume VD.k = 0.00015 "Constant Volume output value";
+  parameter Physiolibrary.Types.Volume VT.k = 0.0005 "Constant Volume output value";
+  parameter Physiolibrary.Types.Frequency fd.k = 0.22333333333333 
+    "Constant Frequency output value";
+  parameter Physiolibrary.Types.Pressure PB.k = 101325.0144354 "Constant Pressure output value";
+
+  Physiolibrary.Types.MolarFlowRate modelSettings.metabolismUAFlowRate = (if 
+    modelSettings.makeUAstep and time > modelSettings.breakTime and time < 
+    modelSettings.breakTime+modelSettings.breakLength then modelSettings.UAstepRatio
+    *modelSettings.metabolismUAFlowRate_norm else modelSettings.metabolismUAFlowRate_norm);
+  Physiolibrary.Types.Fraction modelSettings.FiCO2 = (if  not modelSettings.makeCO2FractionStep
+     then modelSettings.FiCO2_start else (if time < modelSettings.breakTime
+     then modelSettings.FiCO2_start else modelSettings.FiCO2_step));
+  Physiolibrary.Types.Fraction modelSettings.ventilationFractionStep = (if  not 
+    modelSettings.makeVentilationPerfusionFractionStep then modelSettings.ventilationFraction
+     else (if time > modelSettings.breakTime and time < modelSettings.breakTime+
+    modelSettings.breakLength then modelSettings.ventilationPerfusionFraction_step
+     else modelSettings.ventilationFraction)) "alveolar perfusion fraction of the first half of the lungs";
+  Physiolibrary.Types.Fraction modelSettings.perfusionFractionStep = (if  not 
+    modelSettings.makeVentilationPerfusionFractionStep then modelSettings.perfusionFraction
+     else (if time > modelSettings.break2Time and time < modelSettings.break2Time
+    +modelSettings.breakLength then modelSettings.ventilationPerfusionFraction_step
+     else modelSettings.perfusionFraction)) "alveolar perfusion fraction of the first half of the lungs";
+  Physiolibrary.Types.VolumeFlowRate modelSettings.AlveolarVentilationFlowRate
+     = (if  not modelSettings.makeVAstep then modelSettings.NormalAlveolarVentilation
+     else (if time > modelSettings.breakTime and time < modelSettings.breakTime+
+    modelSettings.breakLength then modelSettings.NormalAlveolarVentilation*
+    modelSettings.VAstepRatio else modelSettings.NormalAlveolarVentilation)) 
+    "alveolar perfusion fraction of the first half of the lungs";
+  Physiolibrary.Types.RealIO.FractionOutput FAi1.y "Fraction constant";
+  Physiolibrary.Types.RealIO.FractionOutput Fq1.y "Fraction constant";
+  Physiolibrary.Types.RealIO.FractionOutput Fsh.y "Fraction constant";
+  Physiolibrary.Types.RealIO.VolumeFlowRateOutput CardiacOutput.y 
+    "VolumeFlowRate constant";
+  Physiolibrary.Types.RealIO.ConcentrationOutput BEox.y "Concentration constant";
+  Physiolibrary.Types.RealIO.MolarFlowRateInput simplestTissue.MCO2;
+  Physiolibrary.Types.RealIO.MolarFlowRateInput simplestTissue.MO2;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput simplestTissue.Q;
+  Physiolibrary.Types.RealIO.ConcentrationInput simplestTissue.O2a;
+  Physiolibrary.Types.RealIO.ConcentrationInput simplestTissue.CO2a;
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.CO2v;
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.O2v;
+  Physiolibrary.Types.RealIO.MolarFlowRateInput simplestTissue.bloodGases.MCO2;
+  Physiolibrary.Types.RealIO.MolarFlowRateInput simplestTissue.bloodGases.MO2;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput simplestTissue.bloodGases.Q;
+  Physiolibrary.Types.RealIO.ConcentrationInput simplestTissue.bloodGases.O2a;
+  Physiolibrary.Types.RealIO.ConcentrationInput simplestTissue.bloodGases.CO2a;
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.bloodGases.CO2v;
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.bloodGases.O2v;
+  Real simplestTissue.venBlood.HCO3act = 0.0307*(simplestTissue.venBlood.pCO2/
+    133.32)*10^(simplestTissue.venBlood.pH-6.105) "HCO3 act acc to Berend, N ENGL J MED 2018";
+  Real simplestTissue.venBlood.SBE = simplestTissue.venBlood.HCO3act-24.8+16.2*(
+    simplestTissue.venBlood.pH-7.4);
+  Physiolibrary.Types.RealIO.FractionOutput simplestTissue.venBlood.sO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.venBlood.cHCO3 
+    "outgoing concentration of HCO3";
+  Physiolibrary.Types.RealIO.ConcentrationInput simplestTissue.venBlood.BEox;
+  Physiolibrary.Types.RealIO.pHOutput simplestTissue.venBlood.pH(start = 7.4, 
+    displayUnit = "iu");
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.venBlood.cdO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.venBlood.cdCO2;
+  Physiolibrary.Types.RealIO.pHInput simplestTissue.venBlood.bloodctO2content.pH;
+  Physiolibrary.Types.RealIO.PressureInput simplestTissue.venBlood.bloodctO2content.pCO2
+    (start = 5330);
+  Physiolibrary.Types.RealIO.PressureInput simplestTissue.venBlood.bloodctO2content.pO2
+    (start = 13300);
+  Physiolibrary.Types.RealIO.FractionOutput simplestTissue.venBlood.bloodctO2content.sO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.venBlood.bloodctO2content.totalO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.venBlood.bloodctO2content.cdO2p
+     "dissolved O2 concentration in plasma";
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.venBlood.bloodctO2content.ceHb
+     "effective concentration of hemoglobin";
+  Physiolibrary.Types.RealIO.PressureInput simplestTissue.venBlood.bloodctCO2content.pCO2
+    (start = 5330) "pCO2 in Pa";
+  Physiolibrary.Types.RealIO.pHInput simplestTissue.venBlood.bloodctCO2content.pH;
+  Physiolibrary.Types.RealIO.FractionInput simplestTissue.venBlood.bloodctCO2content.sO2
+     "O2 hemoglobin saturation ";
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.venBlood.bloodctCO2content.ctCO2
+     "total blood CO2 concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.venBlood.bloodctCO2content.cHCO3
+     "plasma HCO3 concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.venBlood.bloodctCO2content.cdCO2p
+     "plasma CO2 dissolved concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.PressureInput simplestTissue.venBlood.vanSlykeEquation.pCO2
+     "pCO2 at given temperature in Pa";
+  Physiolibrary.Types.RealIO.pHOutput simplestTissue.venBlood.vanSlykeEquation.pH
+     "plasma pH at given temperature";
+  Physiolibrary.Types.RealIO.ConcentrationInput simplestTissue.venBlood.vanSlykeEquation.BEox
+     "BEox in mmol/l";
+  Physiolibrary.Types.RealIO.PressureInput simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.pCO2
+     "pCO2 at given temperature in Pa";
+  Physiolibrary.Types.RealIO.pHInput simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.pH
+     "pH at given temperature";
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.BEox
+     "Base Excess (in fully oxygenated blood) in mmol/l";
+  Physiolibrary.Types.RealIO.FractionInput simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.sO2
+     "O2 hemoglobin saturation";
+  Modelica.Blocks.Interfaces.RealInput simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.u1
+     "Input signal 1 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealInput simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.u2
+     "Input signal 2 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealOutput simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.y1
+     "Output signal 1 (y1 = y2)";
+  Modelica.Blocks.Interfaces.RealOutput simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.y2
+     "Output signal 2 (y1 = y2)";
+  Physiolibrary.Types.RealIO.FractionInput simplestTissue.venBlood.vanSlykeEquation.sO2
+     "O2 hemoglobin saturation";
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.venBlood.ceHb 
+    "effiective concentration of hemoglobin (mmol/l)";
+  Physiolibrary.Types.RealIO.ConcentrationInput simplestTissue.venBlood.ctO2;
+  Physiolibrary.Types.RealIO.PressureOutput simplestTissue.venBlood.pO2(start = 13300);
+  Physiolibrary.Types.RealIO.ConcentrationInput simplestTissue.venBlood.ctCO2;
+  Physiolibrary.Types.RealIO.PressureOutput simplestTissue.venBlood.pCO2(
+    start = 5333);
+  Modelica.Blocks.Interfaces.RealInput simplestTissue.venBlood.inverseBlockConstraints.u1
+     "Input signal 1 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealInput simplestTissue.venBlood.inverseBlockConstraints.u2
+     "Input signal 2 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealOutput simplestTissue.venBlood.inverseBlockConstraints.y1
+     "Output signal 1 (y1 = y2)";
+  Modelica.Blocks.Interfaces.RealOutput simplestTissue.venBlood.inverseBlockConstraints.y2
+     "Output signal 2 (y1 = y2)";
+  Modelica.Blocks.Interfaces.RealInput simplestTissue.venBlood.inverseBlockConstraints1.u1
+     "Input signal 1 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealInput simplestTissue.venBlood.inverseBlockConstraints1.u2
+     "Input signal 2 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealOutput simplestTissue.venBlood.inverseBlockConstraints1.y1
+     "Output signal 1 (y1 = y2)";
+  Modelica.Blocks.Interfaces.RealOutput simplestTissue.venBlood.inverseBlockConstraints1.y2
+     "Output signal 2 (y1 = y2)";
+  Physiolibrary.Types.RealIO.ConcentrationInput simplestTissue.BEox;
+  Physiolibrary.Types.RealIO.PressureOutput simplestTissue.pO2_v(start = 13300);
+  Physiolibrary.Types.RealIO.PressureOutput simplestTissue.pCO2_v(start = 5333);
+  Physiolibrary.Types.RealIO.pHOutput simplestTissue.pH_v(start = 7.4);
+  Physiolibrary.Types.RealIO.ConcentrationOutput simplestTissue.cHCO3_v 
+    "outgoing concentration of HCO3";
+  Physiolibrary.Types.RealIO.FractionOutput simplestTissue.sO2_v;
+  Physiolibrary.Types.RealIO.TemperatureOutput bodyTemperature.y 
+    "Temperature constant";
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.CvO2;
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.CvCO2;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput alvEq_2units_with_shunts_and_mixing1.Q;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput alvEq_2units_with_shunts_and_mixing1.VAi;
+  Physiolibrary.Types.RealIO.VolumeFlowRateOutput alvEq_2units_with_shunts_and_mixing1.VAe;
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput alvEq_2units_with_shunts_and_mixing1.VO2;
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput alvEq_2units_with_shunts_and_mixing1.VCO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.ctCO2a;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.ctO2a;
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.BEox
+     "BEox in mmol/l";
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq1.CvO2;
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq1.CvCO2;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.PAO2;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.PACO2;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq1.Q;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq1.VAi;
+  Physiolibrary.Types.RealIO.VolumeFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.VAe;
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.VO2;
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.VCO2;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PAO2;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PACO2;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAi;
+  Physiolibrary.Types.RealIO.VolumeFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAe;
+  Physiolibrary.Types.RealIO.MolarFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VO2;
+  Physiolibrary.Types.RealIO.MolarFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VCO2;
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAi_BTPS_l_per_min 
+    "inspired alveolar ventilation in l BTPS/min";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.temp_cels 
+    "?core body temperature in ?C";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PB_mmHg 
+    "barometric pressure";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VO2_mmol_per_min(
+    start = 11) "rate of oxygen comsumption [mmol/min]";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VCO2_mmol_per_min(
+    start = 10) "rate of carbon dioxide production [mmol/min]";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PAO2_mmHg 
+    "alveolar pO2 [mmHg]";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PACO2_mmHg 
+    "alveolar PCO2 [mmHg]";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAe_BTPS_l_per_min 
+    "expired alveolar ventilation in l BTPS/min";
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CvO2;
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CvCO2;
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.VO2;
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.VCO2;
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CpcO2;
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CpcCO2;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.Q;
+  Physiolibrary.Types.RealIO.FractionOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.sO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.cHCO3
+     "outgoing concentration of HCO3";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.ctCO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.ctO2;
+  Physiolibrary.Types.RealIO.pHOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.pH
+    (start = 7.4);
+  Physiolibrary.Types.RealIO.pHInput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.pH;
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.pCO2
+    (start = 5330);
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.pO2
+    (start = 13300);
+  Physiolibrary.Types.RealIO.FractionOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.sO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.totalO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.cdO2p
+     "dissolved O2 concentration in plasma";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.ceHb
+     "effective concentration of hemoglobin";
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.pCO2
+    (start = 5330) "pCO2 in Pa";
+  Physiolibrary.Types.RealIO.pHInput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.pH;
+  Physiolibrary.Types.RealIO.FractionInput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.sO2
+     "O2 hemoglobin saturation ";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.ctCO2
+     "total blood CO2 concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.cHCO3
+     "plasma HCO3 concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.cdCO2p
+     "plasma CO2 dissolved concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.pCO2
+     "pCO2 at given temperature in Pa";
+  Physiolibrary.Types.RealIO.pHInput alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.pH
+     "pH at given temperature";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.BEox
+     "Base Excess (in fully oxygenated blood) in mmol/l";
+  Physiolibrary.Types.RealIO.FractionInput alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.sO2
+     "O2 hemoglobin saturation";
+  Modelica.Blocks.Interfaces.RealInput alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.u1
+     "Input signal 1 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealInput alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.u2
+     "Input signal 2 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.y1
+     "Output signal 1 (y1 = y2)";
+  Modelica.Blocks.Interfaces.RealOutput alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.y2
+     "Output signal 2 (y1 = y2)";
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq1.BEox
+     "BEox in mmol/l";
+  Physiolibrary.Types.RealIO.FractionInput alvEq_2units_with_shunts_and_mixing1.Fsh
+     "shunt fraction";
+  Physiolibrary.Types.RealIO.FractionInput alvEq_2units_with_shunts_and_mixing1.F_q1
+     "alveolar perfusion fraction";
+  Physiolibrary.Types.RealIO.FractionInput alvEq_2units_with_shunts_and_mixing1.F_VAi1
+     "alveolar ventilation fraction";
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq2.CvO2;
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq2.CvCO2;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.PAO2;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.PACO2;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq2.Q;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq2.VAi;
+  Physiolibrary.Types.RealIO.VolumeFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.VAe;
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.VO2;
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.VCO2;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PAO2;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PACO2;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAi;
+  Physiolibrary.Types.RealIO.VolumeFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAe;
+  Physiolibrary.Types.RealIO.MolarFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VO2;
+  Physiolibrary.Types.RealIO.MolarFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VCO2;
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAi_BTPS_l_per_min 
+    "inspired alveolar ventilation in l BTPS/min";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.temp_cels 
+    "?core body temperature in ?C";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PB_mmHg 
+    "barometric pressure";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VO2_mmol_per_min(
+    start = 11) "rate of oxygen comsumption [mmol/min]";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VCO2_mmol_per_min(
+    start = 10) "rate of carbon dioxide production [mmol/min]";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PAO2_mmHg 
+    "alveolar pO2 [mmHg]";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PACO2_mmHg 
+    "alveolar PCO2 [mmHg]";
+  Real alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAe_BTPS_l_per_min 
+    "expired alveolar ventilation in l BTPS/min";
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CvO2;
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CvCO2;
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.VO2;
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.VCO2;
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CpcO2;
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CpcCO2;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.Q;
+  Physiolibrary.Types.RealIO.FractionOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.sO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.cHCO3
+     "outgoing concentration of HCO3";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.ctCO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.ctO2;
+  Physiolibrary.Types.RealIO.pHOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.pH
+    (start = 7.4);
+  Physiolibrary.Types.RealIO.pHInput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.pH;
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.pCO2
+    (start = 5330);
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.pO2
+    (start = 13300);
+  Physiolibrary.Types.RealIO.FractionOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.sO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.totalO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.cdO2p
+     "dissolved O2 concentration in plasma";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.ceHb
+     "effective concentration of hemoglobin";
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.pCO2
+    (start = 5330) "pCO2 in Pa";
+  Physiolibrary.Types.RealIO.pHInput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.pH;
+  Physiolibrary.Types.RealIO.FractionInput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.sO2
+     "O2 hemoglobin saturation ";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.ctCO2
+     "total blood CO2 concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.cHCO3
+     "plasma HCO3 concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.cdCO2p
+     "plasma CO2 dissolved concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.pCO2
+     "pCO2 at given temperature in Pa";
+  Physiolibrary.Types.RealIO.pHInput alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.pH
+     "pH at given temperature";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.BEox
+     "Base Excess (in fully oxygenated blood) in mmol/l";
+  Physiolibrary.Types.RealIO.FractionInput alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.sO2
+     "O2 hemoglobin saturation";
+  Modelica.Blocks.Interfaces.RealInput alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.u1
+     "Input signal 1 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealInput alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.u2
+     "Input signal 2 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.y1
+     "Output signal 1 (y1 = y2)";
+  Modelica.Blocks.Interfaces.RealOutput alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.y2
+     "Output signal 2 (y1 = y2)";
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.alvEq2.BEox
+     "BEox in mmol/l";
+  Physiolibrary.Types.VolumeFlowRate alvEq_2units_with_shunts_and_mixing1.Qsh = 
+    alvEq_2units_with_shunts_and_mixing1.Q*alvEq_2units_with_shunts_and_mixing1.Fsh;
+  Physiolibrary.Types.VolumeFlowRate alvEq_2units_with_shunts_and_mixing1.Qpulm
+     = alvEq_2units_with_shunts_and_mixing1.Q-alvEq_2units_with_shunts_and_mixing1.Qsh;
+  Physiolibrary.Types.VolumeFlowRate alvEq_2units_with_shunts_and_mixing1.Q_alv1
+     = alvEq_2units_with_shunts_and_mixing1.Qpulm*alvEq_2units_with_shunts_and_mixing1.F_q1;
+  Physiolibrary.Types.VolumeFlowRate alvEq_2units_with_shunts_and_mixing1.VAi_alv1
+     = alvEq_2units_with_shunts_and_mixing1.VAi*alvEq_2units_with_shunts_and_mixing1.F_VAi1;
+  Physiolibrary.Types.VolumeFlowRate alvEq_2units_with_shunts_and_mixing1.Q_alv2
+     = alvEq_2units_with_shunts_and_mixing1.Qpulm-alvEq_2units_with_shunts_and_mixing1.Q_alv1;
+  Physiolibrary.Types.VolumeFlowRate alvEq_2units_with_shunts_and_mixing1.VAi_alv2
+     = alvEq_2units_with_shunts_and_mixing1.VAi-alvEq_2units_with_shunts_and_mixing1.VAi_alv1;
+  Real alvEq_2units_with_shunts_and_mixing1.artBlood.HCO3act = 0.0307*(
+    alvEq_2units_with_shunts_and_mixing1.artBlood.pCO2/133.32)*10^(
+    alvEq_2units_with_shunts_and_mixing1.artBlood.pH-6.105) "HCO3 act acc to Berend, N ENGL J MED 2018";
+  Real alvEq_2units_with_shunts_and_mixing1.artBlood.SBE = alvEq_2units_with_shunts_and_mixing1.artBlood.HCO3act
+    -24.8+16.2*(alvEq_2units_with_shunts_and_mixing1.artBlood.pH-7.4);
+  Physiolibrary.Types.RealIO.FractionOutput alvEq_2units_with_shunts_and_mixing1.artBlood.sO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.artBlood.cHCO3
+     "outgoing concentration of HCO3";
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.artBlood.BEox;
+  Physiolibrary.Types.RealIO.pHOutput alvEq_2units_with_shunts_and_mixing1.artBlood.pH
+    (start = 7.4);
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.artBlood.cdO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.artBlood.cdCO2;
+  Physiolibrary.Types.RealIO.pHInput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.pH;
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.pCO2
+    (start = 5330);
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.pO2
+    (start = 13300);
+  Physiolibrary.Types.RealIO.FractionOutput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.sO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.totalO2;
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.cdO2p
+     "dissolved O2 concentration in plasma";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.ceHb
+     "effective concentration of hemoglobin";
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.pCO2
+    (start = 5330) "pCO2 in Pa";
+  Physiolibrary.Types.RealIO.pHInput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.pH;
+  Physiolibrary.Types.RealIO.FractionInput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.sO2
+     "O2 hemoglobin saturation ";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.ctCO2
+     "total blood CO2 concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.cHCO3
+     "plasma HCO3 concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.cdCO2p
+     "plasma CO2 dissolved concentration (in mmol/l)";
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.pCO2
+     "pCO2 at given temperature in Pa";
+  Physiolibrary.Types.RealIO.pHOutput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.pH
+     "plasma pH at given temperature";
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.BEox
+     "BEox in mmol/l";
+  Physiolibrary.Types.RealIO.PressureInput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.pCO2
+     "pCO2 at given temperature in Pa";
+  Physiolibrary.Types.RealIO.pHInput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.pH
+     "pH at given temperature";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.BEox
+     "Base Excess (in fully oxygenated blood) in mmol/l";
+  Physiolibrary.Types.RealIO.FractionInput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.sO2
+     "O2 hemoglobin saturation";
+  Modelica.Blocks.Interfaces.RealInput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.u1
+     "Input signal 1 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealInput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.u2
+     "Input signal 2 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealOutput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.y1
+     "Output signal 1 (y1 = y2)";
+  Modelica.Blocks.Interfaces.RealOutput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.y2
+     "Output signal 2 (y1 = y2)";
+  Physiolibrary.Types.RealIO.FractionInput alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.sO2
+     "O2 hemoglobin saturation";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.artBlood.ceHb
+     "effiective concentration of hemoglobin (mmol/l)";
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.artBlood.ctO2;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.artBlood.pO2
+    (start = 13300);
+  Physiolibrary.Types.RealIO.ConcentrationInput alvEq_2units_with_shunts_and_mixing1.artBlood.ctCO2;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.artBlood.pCO2
+    (start = 5333);
+  Modelica.Blocks.Interfaces.RealInput alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.u1
+     "Input signal 1 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealInput alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.u2
+     "Input signal 2 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealOutput alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.y1
+     "Output signal 1 (y1 = y2)";
+  Modelica.Blocks.Interfaces.RealOutput alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.y2
+     "Output signal 2 (y1 = y2)";
+  Modelica.Blocks.Interfaces.RealInput alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.u1
+     "Input signal 1 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealInput alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.u2
+     "Input signal 2 (u1 = u2)";
+  Modelica.Blocks.Interfaces.RealOutput alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.y1
+     "Output signal 1 (y1 = y2)";
+  Modelica.Blocks.Interfaces.RealOutput alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.y2
+     "Output signal 2 (y1 = y2)";
+  Physiolibrary.Types.RealIO.ConcentrationOutput alvEq_2units_with_shunts_and_mixing1.HCO3a;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.PaO2;
+  Physiolibrary.Types.RealIO.PressureOutput alvEq_2units_with_shunts_and_mixing1.PaCO2;
+  Physiolibrary.Types.RealIO.pHOutput alvEq_2units_with_shunts_and_mixing1.pHa;
+  Physiolibrary.Types.RealIO.FractionOutput alvEq_2units_with_shunts_and_mixing1.sO2a;
+  Modelica.Blocks.Interfaces.RealInput from_mlO2CO2_per_min.ml_min 
+    "O2 ml/min  mol/sec";
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput from_mlO2CO2_per_min.molarflowrate;
+  Modelica.Blocks.Interfaces.RealOutput VO2_ml_min.y "Connector of Real output signal";
+  Modelica.Blocks.Interfaces.RealOutput RQ.y "Connector of Real output signal";
+  Modelica.Blocks.Interfaces.RealInput product1.u1 "Connector of Real input signal 1";
+  Modelica.Blocks.Interfaces.RealInput product1.u2 "Connector of Real input signal 2";
+  Modelica.Blocks.Interfaces.RealOutput product1.y "Connector of Real output signal";
+  Modelica.Blocks.Interfaces.RealOutput VCO2_ml.ml_min;
+  Physiolibrary.Types.RealIO.MolarFlowRateInput VCO2_ml.molarflowrate;
+  Physiolibrary.Types.RealIO.FrequencyInput vAi.fd;
+  Physiolibrary.Types.RealIO.VolumeInput vAi.Vt "dechový objem";
+  Physiolibrary.Types.RealIO.VolumeInput vAi.Vd "objem mrtvého prostoru";
+  Physiolibrary.Types.RealIO.VolumeFlowRateOutput vAi.VAi;
+  Physiolibrary.Types.RealIO.VolumeOutput VD.y "Volume constant";
+  Physiolibrary.Types.RealIO.VolumeOutput VT.y "Volume constant";
+  Physiolibrary.Types.RealIO.FrequencyOutput fd.y "Frequency constant";
+  Physiolibrary.Types.RealIO.PressureOutput PB.y "Pressure constant";
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput dO2DCO2_calculation.DO2;
+  Physiolibrary.Types.RealIO.FractionOutput dO2DCO2_calculation.O2ER;
+  Physiolibrary.Types.RealIO.ConcentrationInput dO2DCO2_calculation.O2art;
+  Physiolibrary.Types.RealIO.VolumeFlowRateInput dO2DCO2_calculation.Q 
+    "perfusion";
+  Physiolibrary.Types.RealIO.MolarFlowRateInput dO2DCO2_calculation.VO2;
+  Physiolibrary.Types.RealIO.FractionOutput dO2DCO2_calculation.CO2ER;
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput dO2DCO2_calculation.VDO2 
+    "oxygen venous delivery";
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput dO2DCO2_calculation.DCO2 
+    "arterial oxygen delivery";
+  Physiolibrary.Types.RealIO.MolarFlowRateOutput dO2DCO2_calculation.VDCO2 
+    "arterial oxygen delivery";
+  Physiolibrary.Types.RealIO.ConcentrationInput dO2DCO2_calculation.CO2art;
+  Physiolibrary.Types.RealIO.MolarFlowRateInput dO2DCO2_calculation.VCO2;
+
+// Equations and algorithms
+
+  // Component FAi1
+  // class Physiolibrary.Types.Constants.FractionConst
+  equation
+    FAi1.y = FAi1.k;
+
+  // Component Fq1
+  // class Physiolibrary.Types.Constants.FractionConst
+  equation
+    Fq1.y = Fq1.k;
+
+  // Component Fsh
+  // class Physiolibrary.Types.Constants.FractionConst
+  equation
+    Fsh.y = Fsh.k;
+
+  // Component CardiacOutput
+  // class Physiolibrary.Types.Constants.VolumeFlowRateConst
+  equation
+    CardiacOutput.y = CardiacOutput.k;
+
+  // Component BEox
+  // class Physiolibrary.Types.Constants.ConcentrationConst
+  equation
+    BEox.y = BEox.k;
+
+  // Component simplestTissue.bloodGases
+  // class Simplest.BloodGases
+  equation
+    simplestTissue.bloodGases.CO2v = simplestTissue.bloodGases.MCO2/
+      simplestTissue.bloodGases.Q+simplestTissue.bloodGases.CO2a;
+    simplestTissue.bloodGases.O2v = simplestTissue.bloodGases.O2a-
+      simplestTissue.bloodGases.MO2/simplestTissue.bloodGases.Q;
+
+  // Component simplestTissue.venBlood.bloodctO2content
+  // class AcidBaseBalance.Acidbase.OSA.ctO2content
+  algorithm
+    (simplestTissue.venBlood.bloodctO2content.totalO2, simplestTissue.venBlood.bloodctO2content.sO2,
+       simplestTissue.venBlood.bloodctO2content.cdO2p, simplestTissue.venBlood.bloodctO2content.ceHb) 
+       := AcidBaseBalance.Acidbase.OSA.O2totalSI(modelSettings.ctHb, 
+      simplestTissue.venBlood.bloodctO2content.pO2, simplestTissue.venBlood.bloodctO2content.pH,
+       simplestTissue.venBlood.bloodctO2content.pCO2, modelSettings.cDPG, 
+      modelSettings.FCOHb, modelSettings.FMetHb, modelSettings.FHbF, 
+      modelSettings.Temperature);
+
+  // Component simplestTissue.venBlood.bloodctCO2content
+  // class AcidBaseBalance.Acidbase.OSA.ctCO2content
+  algorithm
+    (simplestTissue.venBlood.bloodctCO2content.ctCO2, simplestTissue.venBlood.bloodctCO2content.cHCO3,
+       simplestTissue.venBlood.bloodctCO2content.cdCO2p)  := AcidBaseBalance.Acidbase.OSA.CO2totalSI
+      (simplestTissue.venBlood.bloodctCO2content.pH, simplestTissue.venBlood.bloodctCO2content.pCO2,
+       modelSettings.Temperature, modelSettings.ctHb, simplestTissue.venBlood.bloodctCO2content.sO2);
+
+  // Component simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation
+  // class AcidBaseBalance.Acidbase.OSA.bloodBEox
+  algorithm
+    simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.BEox := 
+      AcidBaseBalance.Acidbase.OSA.cBEoxOf(simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.pH,
+       simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.pCO2/1000, 
+      modelSettings.ctHb, modelSettings.Temperature-273.15, modelSettings.cAlb, 
+      modelSettings.cPi, simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.sO2);
+
+  // Component simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1
+  // class Modelica.Blocks.Math.InverseBlockConstraints
+  equation
+    simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.u1 = 
+      simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.u2;
+    simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.y1 = 
+      simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.y2;
+
+  // Component simplestTissue.venBlood.vanSlykeEquation
+  // class AcidBaseBalance.Acidbase.OSA.BEINV
+  equation
+    simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.u1 = 
+      simplestTissue.venBlood.vanSlykeEquation.BEox;
+    simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.BEox = 
+      simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.u2;
+    simplestTissue.venBlood.vanSlykeEquation.pH = simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.y1;
+    simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.pH = 
+      simplestTissue.venBlood.vanSlykeEquation.inverseBlockConstraints1.y2;
+    simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.pCO2 = 
+      simplestTissue.venBlood.vanSlykeEquation.pCO2;
+    simplestTissue.venBlood.vanSlykeEquation.vanSlykeEquation.sO2 = 
+      simplestTissue.venBlood.vanSlykeEquation.sO2;
+
+  // Component simplestTissue.venBlood.inverseBlockConstraints
+  // class Modelica.Blocks.Math.InverseBlockConstraints
+  equation
+    simplestTissue.venBlood.inverseBlockConstraints.u1 = simplestTissue.venBlood.inverseBlockConstraints.u2;
+    simplestTissue.venBlood.inverseBlockConstraints.y1 = simplestTissue.venBlood.inverseBlockConstraints.y2;
+
+  // Component simplestTissue.venBlood.inverseBlockConstraints1
+  // class Modelica.Blocks.Math.InverseBlockConstraints
+  equation
+    simplestTissue.venBlood.inverseBlockConstraints1.u1 = simplestTissue.venBlood.inverseBlockConstraints1.u2;
+    simplestTissue.venBlood.inverseBlockConstraints1.y1 = simplestTissue.venBlood.inverseBlockConstraints1.y2;
+
+  // Component simplestTissue.venBlood
+  // class AcidBaseBalance.Acidbase.OSA.O2CO2
+  equation
+    simplestTissue.venBlood.vanSlykeEquation.BEox = simplestTissue.venBlood.BEox;
+    simplestTissue.venBlood.cHCO3 = simplestTissue.venBlood.bloodctCO2content.cHCO3;
+    simplestTissue.venBlood.cdCO2 = simplestTissue.venBlood.bloodctCO2content.cdCO2p;
+    simplestTissue.venBlood.inverseBlockConstraints.u2 = simplestTissue.venBlood.bloodctCO2content.ctCO2;
+    simplestTissue.venBlood.bloodctO2content.pCO2 = simplestTissue.venBlood.bloodctCO2content.pCO2;
+    simplestTissue.venBlood.inverseBlockConstraints.y2 = simplestTissue.venBlood.bloodctCO2content.pCO2;
+    simplestTissue.venBlood.vanSlykeEquation.pCO2 = simplestTissue.venBlood.bloodctCO2content.pCO2;
+    simplestTissue.venBlood.bloodctO2content.pH = simplestTissue.venBlood.bloodctCO2content.pH;
+    simplestTissue.venBlood.pH = simplestTissue.venBlood.bloodctCO2content.pH;
+    simplestTissue.venBlood.vanSlykeEquation.pH = simplestTissue.venBlood.bloodctCO2content.pH;
+    simplestTissue.venBlood.bloodctO2content.sO2 = simplestTissue.venBlood.bloodctCO2content.sO2;
+    simplestTissue.venBlood.sO2 = simplestTissue.venBlood.bloodctCO2content.sO2;
+    simplestTissue.venBlood.vanSlykeEquation.sO2 = simplestTissue.venBlood.bloodctCO2content.sO2;
+    simplestTissue.venBlood.cdO2 = simplestTissue.venBlood.bloodctO2content.cdO2p;
+    simplestTissue.venBlood.ceHb = simplestTissue.venBlood.bloodctO2content.ceHb;
+    simplestTissue.venBlood.inverseBlockConstraints1.y2 = simplestTissue.venBlood.bloodctO2content.pO2;
+    simplestTissue.venBlood.inverseBlockConstraints1.u2 = simplestTissue.venBlood.bloodctO2content.totalO2;
+    simplestTissue.venBlood.inverseBlockConstraints.u1 = simplestTissue.venBlood.ctCO2;
+    simplestTissue.venBlood.inverseBlockConstraints1.u1 = simplestTissue.venBlood.ctO2;
+    simplestTissue.venBlood.pCO2 = simplestTissue.venBlood.inverseBlockConstraints.y1;
+    simplestTissue.venBlood.pO2 = simplestTissue.venBlood.inverseBlockConstraints1.y1;
+
+  // Component simplestTissue
+  // class BloodyMary_BodyLight_01.Packages.SimplestTissue
+  equation
+    simplestTissue.venBlood.BEox = simplestTissue.BEox;
+    simplestTissue.bloodGases.CO2a = simplestTissue.CO2a;
+    simplestTissue.bloodGases.CO2v = simplestTissue.CO2v;
+    simplestTissue.venBlood.ctCO2 = simplestTissue.CO2v;
+    simplestTissue.bloodGases.MCO2 = simplestTissue.MCO2;
+    simplestTissue.bloodGases.MO2 = simplestTissue.MO2;
+    simplestTissue.bloodGases.O2a = simplestTissue.O2a;
+    simplestTissue.bloodGases.O2v = simplestTissue.O2v;
+    simplestTissue.venBlood.ctO2 = simplestTissue.O2v;
+    simplestTissue.bloodGases.Q = simplestTissue.Q;
+    simplestTissue.venBlood.cHCO3 = simplestTissue.cHCO3_v;
+    simplestTissue.venBlood.pCO2 = simplestTissue.pCO2_v;
+    simplestTissue.venBlood.pH = simplestTissue.pH_v;
+    simplestTissue.venBlood.pO2 = simplestTissue.pO2_v;
+    simplestTissue.venBlood.sO2 = simplestTissue.sO2_v;
+
+  // Component bodyTemperature
+  // class Physiolibrary.Types.Constants.TemperatureConst
+  equation
+    bodyTemperature.y = bodyTemperature.k;
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases
+  // class AcidBaseBalance.Acidbase.OSA.AlvGases
+  algorithm
+    (alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PAO2_mmHg, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PACO2_mmHg, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAe_BTPS_l_per_min) 
+       := AcidBaseBalance.Acidbase.OSA.AlveolarGases(alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAi_BTPS_l_per_min,
+       modelSettings.FiO2, modelSettings.FiCO2, alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.temp_cels,
+       alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PB_mmHg, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VO2_mmol_per_min, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VCO2_mmol_per_min);
+  equation
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.temp_cels = 
+      modelSettings.Temperature-273.15;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PB_mmHg = 
+      modelSettings.PB/133.322365;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PAO2_mmHg = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PAO2/133.322365;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PACO2_mmHg = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PACO2/133.322365;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAi_BTPS_l_per_min = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAi*60000;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAe = alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAe_BTPS_l_per_min
+      /60000;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VO2 = alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VO2_mmol_per_min
+      /60/1000;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VCO2 = alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VCO2_mmol_per_min
+      /60/1000;
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance
+  // class AcidBaseBalance.Acidbase.OSA.O2CO2Balance
+  equation
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.VO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.Q*(
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CpcO2-
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CvO2);
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.VCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.Q*(
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CvCO2-
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CpcCO2);
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content
+  // class AcidBaseBalance.Acidbase.OSA.ctO2content
+  algorithm
+    (alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.totalO2, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.sO2, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.cdO2p, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.ceHb)  := 
+      AcidBaseBalance.Acidbase.OSA.O2totalSI(modelSettings.ctHb, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.pO2, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.pH, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.pCO2, 
+      modelSettings.cDPG, modelSettings.FCOHb, modelSettings.FMetHb, 
+      modelSettings.FHbF, modelSettings.Temperature);
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content
+  // class AcidBaseBalance.Acidbase.OSA.ctCO2content
+  algorithm
+    (alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.ctCO2, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.cHCO3, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.cdCO2p)  := 
+      AcidBaseBalance.Acidbase.OSA.CO2totalSI(alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.pH,
+       alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.pCO2, 
+      modelSettings.Temperature, modelSettings.ctHb, alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.sO2);
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation
+  // class AcidBaseBalance.Acidbase.OSA.bloodBEox
+  algorithm
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.BEox := 
+      AcidBaseBalance.Acidbase.OSA.cBEoxOf(alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.pH,
+       alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.pCO2/1000, 
+      modelSettings.ctHb, modelSettings.Temperature-273.15, modelSettings.cAlb, 
+      modelSettings.cPi, alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.sO2);
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1
+  // class Modelica.Blocks.Math.InverseBlockConstraints
+  equation
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.u1 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.u2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.y1 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.y2;
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq1
+  // class AcidBaseBalance.Acidbase.OSA.AlvEq
+  equation
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.u1 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.BEox;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CvCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.CvCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CvO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.CvO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PACO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.PACO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.pCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.PACO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.pCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.PACO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.pCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.PACO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.PAO2 = alvEq_2units_with_shunts_and_mixing1.alvEq1.PAO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.pO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.PAO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.Q = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.Q;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAe = alvEq_2units_with_shunts_and_mixing1.alvEq1.VAe;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VAi = alvEq_2units_with_shunts_and_mixing1.alvEq1.VAi;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VCO2 = alvEq_2units_with_shunts_and_mixing1.alvEq1.VCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.VCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.VCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.alvGases.VO2 = alvEq_2units_with_shunts_and_mixing1.alvEq1.VO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.VO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.VO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.cHCO3 = alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.cHCO3;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.ctCO2 = alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.ctCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CpcCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.ctCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.pH = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.pH;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.y1 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.pH;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.pH = alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.pH;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.sO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.sO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.sO2 = alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.sO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.sO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctCO2content.sO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.ctO2 = alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.totalO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.o2CO2Balance.CpcO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.bloodctO2content.totalO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.BEox = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.u2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.vanSlykeEquation.pH = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq1.inverseBlockConstraints1.y2;
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases
+  // class AcidBaseBalance.Acidbase.OSA.AlvGases
+  algorithm
+    (alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PAO2_mmHg, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PACO2_mmHg, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAe_BTPS_l_per_min) 
+       := AcidBaseBalance.Acidbase.OSA.AlveolarGases(alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAi_BTPS_l_per_min,
+       modelSettings.FiO2, modelSettings.FiCO2, alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.temp_cels,
+       alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PB_mmHg, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VO2_mmol_per_min, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VCO2_mmol_per_min);
+  equation
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.temp_cels = 
+      modelSettings.Temperature-273.15;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PB_mmHg = 
+      modelSettings.PB/133.322365;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PAO2_mmHg = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PAO2/133.322365;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PACO2_mmHg = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PACO2/133.322365;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAi_BTPS_l_per_min = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAi*60000;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAe = alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAe_BTPS_l_per_min
+      /60000;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VO2 = alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VO2_mmol_per_min
+      /60/1000;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VCO2 = alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VCO2_mmol_per_min
+      /60/1000;
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance
+  // class AcidBaseBalance.Acidbase.OSA.O2CO2Balance
+  equation
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.VO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.Q*(
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CpcO2-
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CvO2);
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.VCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.Q*(
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CvCO2-
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CpcCO2);
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content
+  // class AcidBaseBalance.Acidbase.OSA.ctO2content
+  algorithm
+    (alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.totalO2, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.sO2, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.cdO2p, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.ceHb)  := 
+      AcidBaseBalance.Acidbase.OSA.O2totalSI(modelSettings.ctHb, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.pO2, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.pH, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.pCO2, 
+      modelSettings.cDPG, modelSettings.FCOHb, modelSettings.FMetHb, 
+      modelSettings.FHbF, modelSettings.Temperature);
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content
+  // class AcidBaseBalance.Acidbase.OSA.ctCO2content
+  algorithm
+    (alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.ctCO2, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.cHCO3, 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.cdCO2p)  := 
+      AcidBaseBalance.Acidbase.OSA.CO2totalSI(alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.pH,
+       alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.pCO2, 
+      modelSettings.Temperature, modelSettings.ctHb, alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.sO2);
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation
+  // class AcidBaseBalance.Acidbase.OSA.bloodBEox
+  algorithm
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.BEox := 
+      AcidBaseBalance.Acidbase.OSA.cBEoxOf(alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.pH,
+       alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.pCO2/1000, 
+      modelSettings.ctHb, modelSettings.Temperature-273.15, modelSettings.cAlb, 
+      modelSettings.cPi, alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.sO2);
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1
+  // class Modelica.Blocks.Math.InverseBlockConstraints
+  equation
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.u1 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.u2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.y1 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.y2;
+
+  // Component alvEq_2units_with_shunts_and_mixing1.alvEq2
+  // class AcidBaseBalance.Acidbase.OSA.AlvEq
+  equation
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.u1 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.BEox;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CvCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.CvCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CvO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.CvO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PACO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.PACO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.pCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.PACO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.pCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.PACO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.pCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.PACO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.PAO2 = alvEq_2units_with_shunts_and_mixing1.alvEq2.PAO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.pO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.PAO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.Q = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.Q;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAe = alvEq_2units_with_shunts_and_mixing1.alvEq2.VAe;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VAi = alvEq_2units_with_shunts_and_mixing1.alvEq2.VAi;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VCO2 = alvEq_2units_with_shunts_and_mixing1.alvEq2.VCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.VCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.VCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.alvGases.VO2 = alvEq_2units_with_shunts_and_mixing1.alvEq2.VO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.VO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.VO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.cHCO3 = alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.cHCO3;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.ctCO2 = alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.ctCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CpcCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.ctCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.pH = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.pH;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.y1 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.pH;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.pH = alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.pH;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.sO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.sO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.sO2 = alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.sO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.sO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctCO2content.sO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.ctO2 = alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.totalO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.o2CO2Balance.CpcO2 = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.bloodctO2content.totalO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.BEox = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.u2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.vanSlykeEquation.pH = 
+      alvEq_2units_with_shunts_and_mixing1.alvEq2.inverseBlockConstraints1.y2;
+
+  // Component alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content
+  // class AcidBaseBalance.Acidbase.OSA.ctO2content
+  algorithm
+    (alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.totalO2, 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.sO2, 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.cdO2p, 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.ceHb)  := 
+      AcidBaseBalance.Acidbase.OSA.O2totalSI(modelSettings.ctHb, 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.pO2, 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.pH, 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.pCO2, 
+      modelSettings.cDPG, modelSettings.FCOHb, modelSettings.FMetHb, 
+      modelSettings.FHbF, modelSettings.Temperature);
+
+  // Component alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content
+  // class AcidBaseBalance.Acidbase.OSA.ctCO2content
+  algorithm
+    (alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.ctCO2, 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.cHCO3, 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.cdCO2p) 
+       := AcidBaseBalance.Acidbase.OSA.CO2totalSI(alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.pH,
+       alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.pCO2, 
+      modelSettings.Temperature, modelSettings.ctHb, alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.sO2);
+
+  // Component alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation
+  // class AcidBaseBalance.Acidbase.OSA.bloodBEox
+  algorithm
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.BEox
+       := AcidBaseBalance.Acidbase.OSA.cBEoxOf(alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.pH,
+       alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.pCO2
+      /1000, modelSettings.ctHb, modelSettings.Temperature-273.15, 
+      modelSettings.cAlb, modelSettings.cPi, alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.sO2);
+
+  // Component alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1
+  // class Modelica.Blocks.Math.InverseBlockConstraints
+  equation
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.u1
+       = alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.u2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.y1
+       = alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.y2;
+
+  // Component alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation
+  // class AcidBaseBalance.Acidbase.OSA.BEINV
+  equation
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.u1
+       = alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.BEox;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.BEox
+       = alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.u2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.pH = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.y1;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.pH
+       = alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.inverseBlockConstraints1.y2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.pCO2
+       = alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.pCO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.vanSlykeEquation.sO2
+       = alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.sO2;
+
+  // Component alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints
+  // class Modelica.Blocks.Math.InverseBlockConstraints
+  equation
+    alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.u1 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.u2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.y1 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.y2;
+
+  // Component alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1
+  // class Modelica.Blocks.Math.InverseBlockConstraints
+  equation
+    alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.u1 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.u2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.y1 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.y2;
+
+  // Component alvEq_2units_with_shunts_and_mixing1.artBlood
+  // class AcidBaseBalance.Acidbase.OSA.O2CO2
+  equation
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.BEox = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.BEox;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.cHCO3 = alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.cHCO3;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.cdCO2 = alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.cdCO2p;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.u2 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.ctCO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.pCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.pCO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.y2 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.pCO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.pCO2 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.pCO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.pH = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.pH;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.pH = alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.pH;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.pH = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.pH;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.sO2 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.sO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.sO2 = alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.sO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.vanSlykeEquation.sO2 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctCO2content.sO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.cdO2 = alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.cdO2p;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.ceHb = alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.ceHb;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.y2 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.pO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.u2 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.bloodctO2content.totalO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.u1 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.ctCO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.u1 = 
+      alvEq_2units_with_shunts_and_mixing1.artBlood.ctO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.pCO2 = alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints.y1;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.pO2 = alvEq_2units_with_shunts_and_mixing1.artBlood.inverseBlockConstraints1.y1;
+
+  // Component alvEq_2units_with_shunts_and_mixing1
+  // class BloodyMary_BodyLight_01.Packages.AlvEq_2units_with_shunts_and_mixing
+  equation
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.Q = alvEq_2units_with_shunts_and_mixing1.Q_alv1;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.Q = alvEq_2units_with_shunts_and_mixing1.Q_alv2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.VAi = alvEq_2units_with_shunts_and_mixing1.VAi_alv1;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.VAi = alvEq_2units_with_shunts_and_mixing1.VAi_alv2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.ctO2*alvEq_2units_with_shunts_and_mixing1.Q_alv1
+      +alvEq_2units_with_shunts_and_mixing1.alvEq2.ctO2*alvEq_2units_with_shunts_and_mixing1.Q_alv2
+      +alvEq_2units_with_shunts_and_mixing1.CvO2*alvEq_2units_with_shunts_and_mixing1.Qsh
+       = alvEq_2units_with_shunts_and_mixing1.Q*alvEq_2units_with_shunts_and_mixing1.ctO2a;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.ctCO2*alvEq_2units_with_shunts_and_mixing1.Q_alv1
+      +alvEq_2units_with_shunts_and_mixing1.alvEq2.ctCO2*alvEq_2units_with_shunts_and_mixing1.Q_alv2
+      +alvEq_2units_with_shunts_and_mixing1.CvCO2*alvEq_2units_with_shunts_and_mixing1.Qsh
+       = alvEq_2units_with_shunts_and_mixing1.Q*alvEq_2units_with_shunts_and_mixing1.ctCO2a;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.VAe+alvEq_2units_with_shunts_and_mixing1.alvEq2.VAe
+       = alvEq_2units_with_shunts_and_mixing1.VAe;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.VO2+alvEq_2units_with_shunts_and_mixing1.alvEq2.VO2
+       = alvEq_2units_with_shunts_and_mixing1.VO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.VCO2+alvEq_2units_with_shunts_and_mixing1.alvEq2.VCO2
+       = alvEq_2units_with_shunts_and_mixing1.VCO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.ctO2 = alvEq_2units_with_shunts_and_mixing1.ctO2a;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.ctCO2 = alvEq_2units_with_shunts_and_mixing1.ctCO2a;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.BEox = alvEq_2units_with_shunts_and_mixing1.BEox;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.BEox = alvEq_2units_with_shunts_and_mixing1.BEox;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.BEox = alvEq_2units_with_shunts_and_mixing1.BEox;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.CvCO2 = alvEq_2units_with_shunts_and_mixing1.CvCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.CvCO2 = alvEq_2units_with_shunts_and_mixing1.CvCO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq1.CvO2 = alvEq_2units_with_shunts_and_mixing1.CvO2;
+    alvEq_2units_with_shunts_and_mixing1.alvEq2.CvO2 = alvEq_2units_with_shunts_and_mixing1.CvO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.cHCO3 = alvEq_2units_with_shunts_and_mixing1.HCO3a;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.pCO2 = alvEq_2units_with_shunts_and_mixing1.PaCO2;
+    alvEq_2units_with_shunts_and_mixing1.artBlood.pO2 = alvEq_2units_with_shunts_and_mixing1.PaO2;
+    alvEq_2units_with_shunts_and_mixing1.pHa = alvEq_2units_with_shunts_and_mixing1.artBlood.pH;
+    alvEq_2units_with_shunts_and_mixing1.sO2a = alvEq_2units_with_shunts_and_mixing1.artBlood.sO2;
+
+  // Component from_mlO2CO2_per_min
+  // class BloodyMary_BodyLight_01.Packages.from_mlO2CO2_per_min
+  equation
+    from_mlO2CO2_per_min.molarflowrate = from_mlO2CO2_per_min.ml_min/22.414/1000
+      /60;
+
+  // Component VO2_ml_min
+  // class Modelica.Blocks.Sources.Constant
+  equation
+    VO2_ml_min.y = VO2_ml_min.k;
+
+  // Component RQ
+  // class Modelica.Blocks.Sources.Constant
+  equation
+    RQ.y = RQ.k;
+
+  // Component product1
+  // class Modelica.Blocks.Math.Product
+  equation
+    product1.y = product1.u1*product1.u2;
+
+  // Component VCO2_ml
+  // class BloodyMary_BodyLight_01.Packages.to_mlO2CO2_per_min
+  equation
+    VCO2_ml.molarflowrate = VCO2_ml.ml_min/22.414/1000/60;
+
+  // Component vAi
+  // class BloodyMary_BodyLight_01.Packages.VAi
+  equation
+    vAi.VAi = vAi.fd*(vAi.Vt-vAi.Vd);
+
+  // Component VD
+  // class Physiolibrary.Types.Constants.VolumeConst
+  equation
+    VD.y = VD.k;
+
+  // Component VT
+  // class Physiolibrary.Types.Constants.VolumeConst
+  equation
+    VT.y = VT.k;
+
+  // Component fd
+  // class Physiolibrary.Types.Constants.FrequencyConst
+  equation
+    fd.y = fd.k;
+
+  // Component PB
+  // class Physiolibrary.Types.Constants.PressureConst
+  equation
+    PB.y = PB.k;
+
+  // Component dO2DCO2_calculation
+  // class BloodyMary_BodyLight_01.Packages.DO2DCO2_calculation
+  equation
+    dO2DCO2_calculation.DO2 = dO2DCO2_calculation.Q*dO2DCO2_calculation.O2art;
+    dO2DCO2_calculation.O2ER = dO2DCO2_calculation.VO2/dO2DCO2_calculation.DO2;
+    dO2DCO2_calculation.VDO2 = dO2DCO2_calculation.DO2-dO2DCO2_calculation.VO2;
+    dO2DCO2_calculation.DCO2 = dO2DCO2_calculation.Q*dO2DCO2_calculation.CO2art;
+    dO2DCO2_calculation.VDCO2 = dO2DCO2_calculation.VCO2+dO2DCO2_calculation.DCO2;
+    dO2DCO2_calculation.CO2ER = dO2DCO2_calculation.VCO2/dO2DCO2_calculation.VDCO2;
+
+  // This model
+  // class BloodyMary_BodyLight_01.Tests.BloodyMary_03
+  equation
+    alvEq_2units_with_shunts_and_mixing1.BEox = BEox.y;
+    simplestTissue.BEox = BEox.y;
+    alvEq_2units_with_shunts_and_mixing1.Q = CardiacOutput.y;
+    dO2DCO2_calculation.Q = CardiacOutput.y;
+    simplestTissue.Q = CardiacOutput.y;
+    alvEq_2units_with_shunts_and_mixing1.F_VAi1 = FAi1.y;
+    alvEq_2units_with_shunts_and_mixing1.F_q1 = Fq1.y;
+    alvEq_2units_with_shunts_and_mixing1.Fsh = Fsh.y;
+    product1.u2 = RQ.y;
+    dO2DCO2_calculation.VCO2 = VCO2_ml.molarflowrate;
+    product1.y = VCO2_ml.molarflowrate;
+    simplestTissue.MCO2 = VCO2_ml.molarflowrate;
+    vAi.Vd = VD.y;
+    from_mlO2CO2_per_min.ml_min = VO2_ml_min.y;
+    vAi.Vt = VT.y;
+    simplestTissue.CO2v = alvEq_2units_with_shunts_and_mixing1.CvCO2;
+    simplestTissue.O2v = alvEq_2units_with_shunts_and_mixing1.CvO2;
+    vAi.VAi = alvEq_2units_with_shunts_and_mixing1.VAi;
+    dO2DCO2_calculation.O2art = alvEq_2units_with_shunts_and_mixing1.ctCO2a;
+    simplestTissue.CO2a = alvEq_2units_with_shunts_and_mixing1.ctCO2a;
+    dO2DCO2_calculation.CO2art = alvEq_2units_with_shunts_and_mixing1.ctO2a;
+    simplestTissue.O2a = alvEq_2units_with_shunts_and_mixing1.ctO2a;
+    from_mlO2CO2_per_min.molarflowrate = dO2DCO2_calculation.VO2;
+    product1.u1 = dO2DCO2_calculation.VO2;
+    simplestTissue.MO2 = dO2DCO2_calculation.VO2;
+    vAi.fd = fd.y;
+
+end BloodyMary_03;
