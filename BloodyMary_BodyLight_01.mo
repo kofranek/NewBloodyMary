@@ -2241,8 +2241,8 @@ and mixing"),
         annotation (Placement(transformation(extent={{-92,-40},{-84,-32}})));
       Physiolibrary.Types.Constants.FractionConst F7_rest(k=0.062)
         annotation (Placement(transformation(extent={{-92,-62},{-84,-54}})));
-      Physiolibrary.Types.RealIO.VolumeFlowRateOutput REST_3_TISSUE annotation
-        (Placement(transformation(extent={{186,0},{206,20}}),
+      Physiolibrary.Types.RealIO.VolumeFlowRateOutput REST_3_TISSUE annotation (
+         Placement(transformation(extent={{186,0},{206,20}}),
             iconTransformation(
             extent={{-10,-10},{10,10}},
             rotation=90,
@@ -2944,11 +2944,11 @@ and mixing"),
 
     model testO2CO2curves
       Physiolibrary.Types.Constants.PressureConst PCO2(k=4666.283559525)
-        annotation (Placement(transformation(extent={{-84,78},{-76,86}})));
+        annotation (Placement(transformation(extent={{-84,80},{-76,88}})));
       Physiolibrary.Types.Constants.PressureConst PO2(k=3333.059685375)
-        annotation (Placement(transformation(extent={{-84,62},{-76,70}})));
+        annotation (Placement(transformation(extent={{-84,64},{-76,72}})));
       Physiolibrary.Types.Constants.ConcentrationConst BEox(k=0)
-        annotation (Placement(transformation(extent={{-88,46},{-80,54}})));
+        annotation (Placement(transformation(extent={{-88,48},{-80,56}})));
       Physiolibrary.Types.Constants.TemperatureConst temp(k=310.15)
         annotation (Placement(transformation(extent={{-76,-8},{-68,0}})));
       Modelica.Blocks.Sources.Constant Hb_g_per_dl(k=15)
@@ -2960,11 +2960,11 @@ and mixing"),
         annotation (Placement(transformation(extent={{-6,6},{50,70}})));
     equation
       connect(o2CO2curves.PCO2, PCO2.y) annotation (Line(points={{-7.12,62.32},
-              {-26,62.32},{-26,82},{-75,82}}, color={0,0,127}));
+              {-26,62.32},{-26,84},{-75,84}}, color={0,0,127}));
       connect(o2CO2curves.PO2, PO2.y) annotation (Line(points={{-7.12,50.16},{
-              -36,50.16},{-36,66},{-75,66}}, color={0,0,127}));
+              -36,50.16},{-36,68},{-75,68}}, color={0,0,127}));
       connect(o2CO2curves.BEox, BEox.y) annotation (Line(points={{-7.12,39.28},
-              {-50,39.28},{-50,50},{-79,50}}, color={0,0,127}));
+              {-50,39.28},{-50,52},{-79,52}}, color={0,0,127}));
       connect(o2CO2curves.temp, temp.y) annotation (Line(points={{-7.4,20.4},{
               -50,20.4},{-50,-4},{-67,-4}}, color={0,0,127}));
       connect(Hb_g_per_dl.y, o2CO2curves.Hb_g_per_dl) annotation (Line(points={{-67,-38},
@@ -3221,8 +3221,8 @@ and mixing"),
         annotation (Line(points={{16.58,-74.54},{-52,-74.54},{-52,-43.84},{
               -85.04,-43.84}}, color={0,0,127}));
       connect(VCO2_ml.molarflowrate, simplestTissueDO2_1.MCO2) annotation (Line(
-            points={{-88.4,-116.4},{4,-116.4},{4,-87.46},{16.58,-87.46}}, color
-            ={0,0,127}));
+            points={{-88.4,-116.4},{4,-116.4},{4,-87.46},{16.58,-87.46}}, color=
+             {0,0,127}));
       connect(RQ.y, product1.u2) annotation (Line(points={{-109.5,-87},{-76,-87},
               {-76,-94},{-68,-94}}, color={0,0,127}));
       connect(product1.y, simplestTissueDO2_1.MCO2) annotation (Line(points={{
@@ -3333,6 +3333,21 @@ and mixing"),
         annotation (Placement(transformation(extent={{20,-100},{96,-24}})));
       Packages.Simplest7Tissue simplest7Tissue
         annotation (Placement(transformation(extent={{160,-156},{224,-90}})));
+      O2CO2_containers.O2CO2curves o2CO2curves(
+        numberOfIntervals=100,
+        pCO2min=133.322387415,
+        pO2min=133.322387415)
+        annotation (Placement(transformation(extent={{242,18},{298,82}})));
+      Physiolibrary.Types.Constants.PressureConst PCO2_curve(k=4666.283559525)
+        annotation (Placement(transformation(extent={{190,76},{198,84}})));
+      Physiolibrary.Types.Constants.PressureConst PO2_curve(k=3333.059685375)
+        annotation (Placement(transformation(extent={{190,60},{198,68}})));
+      Physiolibrary.Types.Constants.ConcentrationConst BEox_curve(k=0)
+        annotation (Placement(transformation(extent={{186,44},{194,52}})));
+      Physiolibrary.Types.Constants.TemperatureConst temp_curve(k=310.15)
+        annotation (Placement(transformation(extent={{184,4},{192,12}})));
+      Modelica.Blocks.Sources.Constant Hb_g_per_dl_curve(k=15)
+        annotation (Placement(transformation(extent={{184,-40},{204,-20}})));
     equation
       connect(alvEq_2units_with_shunts_and_mixing1.Q, CardiacOutput.y)
         annotation (Line(points={{-5.26957,56.875},{-62,56.875},{-62,54},{-85,
@@ -3407,9 +3422,20 @@ and mixing"),
         annotation (Line(points={{160,-103.933},{144,-103.933},{144,32.5938},{
               79.6435,32.5938}},
                          color={0,0,127}));
-      connect(simplest7Tissue.MCO2, oneTissue.MCO2) annotation (Line(points={{
-              190.72,-86.3333},{190.72,-70},{112,-70},{112,-120},{4,-120},{4,
-              -87.46},{16.58,-87.46}}, color={0,0,127}));
+      connect(simplest7Tissue.MCO2, oneTissue.MCO2) annotation (Line(points={{190.72,
+              -86.3333},{190.72,-70},{112,-70},{112,-120},{4,-120},{4,-87.46},{
+              16.58,-87.46}},          color={0,0,127}));
+      connect(PCO2_curve.y, o2CO2curves.PCO2) annotation (Line(points={{199,80},
+              {230,80},{230,74.32},{240.88,74.32}}, color={0,0,127}));
+      connect(PO2_curve.y, o2CO2curves.PO2) annotation (Line(points={{199,64},{
+              230,64},{230,62.16},{240.88,62.16}}, color={0,0,127}));
+      connect(BEox_curve.y, o2CO2curves.BEox) annotation (Line(points={{195,48},
+              {230,48},{230,51.28},{240.88,51.28}}, color={0,0,127}));
+      connect(temp_curve.y, o2CO2curves.temp) annotation (Line(points={{193,8},
+              {220,8},{220,32.4},{240.6,32.4}}, color={0,0,127}));
+      connect(Hb_g_per_dl_curve.y, o2CO2curves.Hb_g_per_dl) annotation (Line(
+            points={{205,-30},{230,-30},{230,24.08},{241.16,24.08}}, color={0,0,
+              127}));
       annotation (Icon(coordinateSystem(preserveAspectRatio=false, extent={{-140,
                 -160},{240,100}}),                                  graphics={
               Rectangle(
